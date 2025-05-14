@@ -3,7 +3,7 @@
   "WorkspaceRootPath": "C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Campus_SantaAna\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Campus_SantaAna\\campus.ui\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "AbsoluteMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|c:\\users\\user\\source\\repos\\proyecto_santa_ana\\campus_santaana\\campus.ui\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
       "RelativeMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|solutionrelative:campus.ui\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
@@ -11,7 +11,7 @@
       "RelativeMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|solutionrelative:campus.ui\\models\\identitymodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BA675387-90A7-4FAC-B60C-9EF6F100DBA7}|Campus.AccesoDatos\\Campus.AccesoDatos.csproj|c:\\users\\user\\source\\repos\\proyecto_santa_ana\\campus_santaana\\campus.accesodatos\\contexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BA675387-90A7-4FAC-B60C-9EF6F100DBA7}|Campus.AccesoDatos\\Campus.AccesoDatos.csproj|C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Campus_SantaAna\\campus.accesodatos\\contexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BA675387-90A7-4FAC-B60C-9EF6F100DBA7}|Campus.AccesoDatos\\Campus.AccesoDatos.csproj|solutionrelative:campus.accesodatos\\contexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -56,8 +56,7 @@
               "RelativeToolTip": "Campus.UI\\Models\\IdentityModels.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABcAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T06:28:03.977Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-14T06:28:03.977Z"
             },
             {
               "$type": "Document",
@@ -94,8 +93,7 @@
               "RelativeToolTip": "Campus.AccesoDatos\\Contexto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T05:35:35.566Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-14T05:35:35.566Z"
             }
           ]
         }
