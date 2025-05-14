@@ -9,7 +9,7 @@ namespace Campus.AccesoDatos
 {
     public class Contexto : DbContext
     {
-        public Contexto() : base("name=Cpntexto")
+        public Contexto() : base("name=Contexto")
         {
         }
     

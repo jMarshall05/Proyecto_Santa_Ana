@@ -3,29 +3,26 @@
   "WorkspaceRootPath": "C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Campus_SantaAna\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Proyecto_SantaAna_BD.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|c:\\users\\user\\source\\repos\\proyecto_santa_ana\\campus_santaana\\campus.ui\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|solutionrelative:campus.ui\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|c:\\users\\user\\source\\repos\\proyecto_santa_ana\\campus_santaana\\campus.ui\\models\\identitymodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|solutionrelative:campus.ui\\models\\identitymodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BA675387-90A7-4FAC-B60C-9EF6F100DBA7}|Campus.AccesoDatos\\Campus.AccesoDatos.csproj|c:\\users\\user\\source\\repos\\proyecto_santa_ana\\campus_santaana\\campus.accesodatos\\contexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BA675387-90A7-4FAC-B60C-9EF6F100DBA7}|Campus.AccesoDatos\\Campus.AccesoDatos.csproj|C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Campus_SantaAna\\campus.accesodatos\\contexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BA675387-90A7-4FAC-B60C-9EF6F100DBA7}|Campus.AccesoDatos\\Campus.AccesoDatos.csproj|solutionrelative:campus.accesodatos\\contexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|c:\\users\\user\\source\\repos\\proyecto_santa_ana\\campus_santaana\\campus.ui\\global.asax.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Proyecto_SantaAna_BD.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Campus_SantaAna\\campus.ui\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|solutionrelative:campus.ui\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Campus_SantaAna\\campus.ui\\models\\identitymodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|solutionrelative:campus.ui\\models\\identitymodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Campus_SantaAna\\campus.ui\\global.asax.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AF0617DC-3380-4E91-A45D-6286BD0F24DA}|Campus.UI\\Campus.UI.csproj|solutionrelative:campus.ui\\global.asax.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Proyecto_SantaAna_BD.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Proyecto_SantaAna_BD.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|ResultFrame"
     }
   ],
   "DocumentGroupContainers": [
@@ -35,7 +32,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -43,7 +40,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Proyecto_SantaAna_BD.sql ",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Proyecto_SantaAna_BD.sql",
               "RelativeDocumentMoniker": "..\\Proyecto_SantaAna_BD.sql",
@@ -54,7 +51,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "IdentityModels.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Campus_SantaAna\\Campus.UI\\Models\\IdentityModels.cs",
               "RelativeDocumentMoniker": "Campus.UI\\Models\\IdentityModels.cs",
@@ -62,8 +59,7 @@
               "RelativeToolTip": "Campus.UI\\Models\\IdentityModels.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABcAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T06:28:03.977Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-14T06:28:03.977Z"
             },
             {
               "$type": "Document",
@@ -75,12 +71,11 @@
               "RelativeToolTip": "Campus.UI\\Global.asax.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T05:54:42.973Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-14T05:54:42.973Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Web.config",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Campus_SantaAna\\Campus.UI\\Web.config",
               "RelativeDocumentMoniker": "Campus.UI\\Web.config",
@@ -93,13 +88,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "Contexto.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Campus_SantaAna\\Campus.AccesoDatos\\Contexto.cs",
               "RelativeDocumentMoniker": "Campus.AccesoDatos\\Contexto.cs",
               "ToolTip": "C:\\Users\\User\\source\\repos\\Proyecto_Santa_Ana\\Campus_SantaAna\\Campus.AccesoDatos\\Contexto.cs",
               "RelativeToolTip": "Campus.AccesoDatos\\Contexto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAApAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-14T05:35:35.566Z",
               "EditorCaption": ""
