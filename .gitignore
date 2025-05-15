@@ -398,3 +398,13 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+Campus_SantaAna\Campus.AccesoDatos\obj
+Campus_SantaAna\Campus.UI\obj
+Campus_SantaAna\Campus.Abstracciones\obj
+Campus_SantaAna\Campus.LogicaDeNegocio\obj
+
+
+
+Campus_SantaAna\Campus.AccesoDatos\bin
+Campus_SantaAna\Campus.UI\bin
