@@ -74,6 +74,7 @@ namespace Campus.UI.Controllers
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        
         {
             if (!ModelState.IsValid)
             {
@@ -82,7 +83,8 @@ namespace Campus.UI.Controllers
 
             // No cuenta los errores de inicio de sesión para el bloqueo de la cuenta
             // Para permitir que los errores de contraseña desencadenen el bloqueo de la cuenta, cambie a shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var user = UserManager.FindByEmail(model.Email);
+            var result = await SignInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -158,12 +160,14 @@ namespace Campus.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-
-                var user = new ApplicationUser { UserName = model.Nombre + " " + model.Apellido, Email = model.Email };
+                Random rnd = new Random();
+                int numero = rnd.Next(0, 100);
+                string numeroFormateado = numero.ToString("D2");
+                var user = new ApplicationUser { UserName = model.Nombre.ToUpper().First()+ model.Apellido+numeroFormateado, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await UserManager.AddToRoleAsync(user.Id, "Estudiantes");
+                    await UserManager.AddToRoleAsync(user.Id, model.Rol);
                     var usuario = ConvertirDto(model, user);
                     await _agregarUsuariosLN.AgregarUsuario(usuario);
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);

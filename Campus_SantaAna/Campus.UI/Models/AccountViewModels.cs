@@ -100,6 +100,9 @@ namespace Campus.UI.Models
         [Display(Name = "Confirmar contraseña")]
         [Compare("Password", ErrorMessage = "La contraseña y la contraseña de confirmación no coinciden.")]
         public string ConfirmPassword { get; set; }
+        [Display(Name = "Rol ")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public string Rol { get; set; }
     }
 
     public class ResetPasswordViewModel
