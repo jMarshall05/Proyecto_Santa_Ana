@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Campus.UI.Models
@@ -60,14 +61,34 @@ namespace Campus.UI.Models
 
         [Display(Name = "¿Recordar cuenta?")]
         public bool RememberMe { get; set; }
+
+
     }
 
     public class RegisterViewModel
     {
         [Required]
+        [Display(Name = "Primer Nombre")] 
+        public string Nombre { get; set; }
+        [Required]
+        [Display(Name = "Apellido")]
+        public string Apellido { get; set; }
+        [Required]
         [EmailAddress]
         [Display(Name = "Correo electrónico")]
         public string Email { get; set; }
+        [Required]
+        [Display(Name = "Numero de Telefono")]
+        [DataType(DataType.PhoneNumber)]
+        public int Telefono { get; set; }
+        [Required]
+        [Display(Name = "Fecha de Nacimiento")]
+        [DataType(DataType.Date)]
+        public DateTime FechaDeNacimiento { get; set; }
+        [Required]
+        [Display(Name = "Cedula")]
+        public int Cedula { get; set; }
+
 
         [Required]
         [StringLength(100, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 6)]

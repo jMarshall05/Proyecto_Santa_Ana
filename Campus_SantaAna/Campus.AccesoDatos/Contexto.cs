@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos
 {
@@ -12,7 +13,7 @@ namespace Campus.AccesoDatos
         public Contexto() : base("name=Contexto")
         {
         }
-    
+    public DbSet<UsuariosAD> Usuarios { get; set; }
 
     }
 }

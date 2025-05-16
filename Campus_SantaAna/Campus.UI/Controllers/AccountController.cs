@@ -9,6 +9,10 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Campus.UI.Models;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.AgregarUsuariosLN;
+using Campus.LogicaDeNegocio.Usuarios.AgregarUsuarios;
+using Campus.Abstracciones.ModelosUI;
+using Microsoft.Ajax.Utilities;
 
 namespace Campus.UI.Controllers
 {
@@ -17,9 +21,11 @@ namespace Campus.UI.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private IAgregarUsuariosLN _agregarUsuariosLN;
 
         public AccountController()
         {
+            _agregarUsuariosLN = new AgregarUsuariosLN();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -151,7 +157,7 @@ namespace Campus.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Nombre + model.Apellido, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -421,6 +427,26 @@ namespace Campus.UI.Controllers
             }
 
             base.Dispose(disposing);
+        }
+
+        private UsuariosDto ConvertirDto(RegisterViewModel model)
+        {
+
+            var user = UserManager.FindByEmailAsync(model.Email);
+            string rol = UserManager.GetRoles(user.Id.ToString()).FirstOrDefault();
+            return new UsuariosDto
+            {
+                IdUsuario = user.Id.ToString(),
+                Nombre = model.Nombre,
+                Apellido = model.Apellido,
+                Email = model.Email,
+                Telefono = model.Telefono,
+                FechaDeNacimiento = model.FechaDeNacimiento,
+                Cedula = model.Cedula,
+                FechaDeRegistro = DateTime.Now,
+                IdRol = rol, // Asignar un rol predeterminado
+                Estado = true // Asignar estado activo por defecto
+            };
         }
 
         #region Aplicaciones auxiliares

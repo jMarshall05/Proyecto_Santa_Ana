@@ -1,13 +1,13 @@
 Create Database Proyecto_SantaAna
 Use Proyecto_SantaAna;
 
-CREATE TABLE Usuarios (
+CREATE TABLE Usuarios_tb (
     IdUsuario nvarchar(128) not null,
     Nombre varchar(25) not null,
     Apellido varchar(25) not null,
     Email nvarchar(100) unique not null,
     Telefono int not null,
-    Edad int not null,
+    FechaDeNacimiento datetime not null,
     Cedula int unique not null,
     FechaDeRegistro datetime not null,
     FechaDeModificacion datetime null,
