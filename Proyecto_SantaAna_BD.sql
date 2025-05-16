@@ -1,6 +1,6 @@
 Create Database Proyecto_SantaAna
 Use Proyecto_SantaAna;
-
+drop TABLE Usuarios_tb
 CREATE TABLE Usuarios_tb (
     IdUsuario nvarchar(128) not null,
     Nombre varchar(25) not null,
@@ -11,14 +11,11 @@ CREATE TABLE Usuarios_tb (
     Cedula int unique not null,
     FechaDeRegistro datetime not null,
     FechaDeModificacion datetime null,
-    IdRol nvarchar(128) not null,
+    Rol nvarchar(128) not null,
     Estado bit not null,
     
     CONSTRAINT PK_UsuariosID PRIMARY KEY (IdUsuario),
-    
-    CONSTRAINT FK_Usuarios_AspNetRoles FOREIGN KEY (IdRol) 
-        REFERENCES AspNetRoles(Id) ON DELETE CASCADE,
-        
+          
     CONSTRAINT FK_Usuarios_AspNetUsers FOREIGN KEY (IdUsuario)
         REFERENCES AspNetUsers(Id) ON DELETE CASCADE
 );

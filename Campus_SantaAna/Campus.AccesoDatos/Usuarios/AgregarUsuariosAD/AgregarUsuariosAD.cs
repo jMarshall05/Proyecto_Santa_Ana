@@ -42,7 +42,7 @@ namespace Campus.AccesoDatos.Usuarios.AgregarUsuariosAD
                 FechaDeNacimiento = usuario.FechaDeNacimiento,
                 Cedula = usuario.Cedula,
                 FechaDeRegistro = usuario.FechaDeRegistro,
-                IdRol = usuario.IdRol,
+                Rol = usuario.Rol,
                 Estado = usuario.Estado
 
             };

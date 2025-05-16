@@ -30,8 +30,8 @@ namespace Campus.AccesoDatos.ModelosAD
         public DateTime FechaDeRegistro { get; set; }
         [Column("FechaDeModificacion")]
         public DateTime? FechaDeModificacion { get; set; }
-        [Column("IdRol")]
-        public string IdRol { get; set; }
+        [Column("Rol")]
+        public string Rol { get; set; }
         [Column("Estado")]
         public bool Estado { get; set; }
 

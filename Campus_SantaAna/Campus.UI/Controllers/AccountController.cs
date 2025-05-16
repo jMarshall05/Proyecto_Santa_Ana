@@ -13,6 +13,7 @@ using Campus.Abstracciones.LogicaDeNegocio.Usuarios.AgregarUsuariosLN;
 using Campus.LogicaDeNegocio.Usuarios.AgregarUsuarios;
 using Campus.Abstracciones.ModelosUI;
 using Microsoft.Ajax.Utilities;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Campus.UI.Controllers
 {
@@ -28,7 +29,7 @@ namespace Campus.UI.Controllers
             _agregarUsuariosLN = new AgregarUsuariosLN();
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -40,9 +41,9 @@ namespace Campus.UI.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -126,7 +127,7 @@ namespace Campus.UI.Controllers
             // Si un usuario introduce códigos incorrectos durante un intervalo especificado de tiempo, la cuenta del usuario 
             // se bloqueará durante un período de tiempo especificado. 
             // Puede configurar el bloqueo de la cuenta en IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -157,12 +158,16 @@ namespace Campus.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Nombre + model.Apellido, Email = model.Email };
+
+                var user = new ApplicationUser { UserName = model.Nombre + " " + model.Apellido, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    await UserManager.AddToRoleAsync(user.Id, "Estudiantes");
+                    var usuario = ConvertirDto(model, user);
+                    await _agregarUsuariosLN.AgregarUsuario(usuario);
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar un correo electrónico con este vínculo
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -429,14 +434,13 @@ namespace Campus.UI.Controllers
             base.Dispose(disposing);
         }
 
-        private UsuariosDto ConvertirDto(RegisterViewModel model)
+        private UsuariosDto ConvertirDto(RegisterViewModel model, ApplicationUser user)
         {
 
-            var user = UserManager.FindByEmailAsync(model.Email);
-            string rol = UserManager.GetRoles(user.Id.ToString()).FirstOrDefault();
+            string rol = UserManager.GetRoles(user.Id).FirstOrDefault();
             return new UsuariosDto
             {
-                IdUsuario = user.Id.ToString(),
+                IdUsuario = user.Id,
                 Nombre = model.Nombre,
                 Apellido = model.Apellido,
                 Email = model.Email,
@@ -444,7 +448,7 @@ namespace Campus.UI.Controllers
                 FechaDeNacimiento = model.FechaDeNacimiento,
                 Cedula = model.Cedula,
                 FechaDeRegistro = DateTime.Now,
-                IdRol = rol, // Asignar un rol predeterminado
+                Rol = rol, // Asignar un rol predeterminado
                 Estado = true // Asignar estado activo por defecto
             };
         }

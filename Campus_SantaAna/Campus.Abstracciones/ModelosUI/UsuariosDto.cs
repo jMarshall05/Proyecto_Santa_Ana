@@ -35,8 +35,8 @@ namespace Campus.Abstracciones.ModelosUI
         public DateTime FechaDeRegistro { get; set; }
         [DisplayName("Fecha de Modificación")]
         public DateTime? FechaDeModificacion { get; set; }
-        [DisplayName("Id de Rol")]
-        public string IdRol { get; set; }
+        [DisplayName("Rol")]
+        public string Rol { get; set; }
         [DisplayName("Estado")]
         public bool Estado { get; set; }
 
