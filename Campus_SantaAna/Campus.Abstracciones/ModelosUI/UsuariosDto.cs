@@ -24,7 +24,7 @@ namespace Campus.Abstracciones.ModelosUI
         public string Email { get; set; }
         [DisplayName("Teléfono")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public string Telefono { get; set; }
+        public int Telefono { get; set; }
         [DisplayName("Fecha de Nacimiento")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public DateTime FechaDeNacimiento { get; set; }
@@ -35,8 +35,8 @@ namespace Campus.Abstracciones.ModelosUI
         public DateTime FechaDeRegistro { get; set; }
         [DisplayName("Fecha de Modificación")]
         public DateTime? FechaDeModificacion { get; set; }
-        [DisplayName("Id de Rol")]
-        public string IdRol { get; set; }
+        [DisplayName("Rol")]
+        public string Rol { get; set; }
         [DisplayName("Estado")]
         public bool Estado { get; set; }
 

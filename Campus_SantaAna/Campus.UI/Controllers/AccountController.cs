@@ -9,6 +9,11 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Campus.UI.Models;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.AgregarUsuariosLN;
+using Campus.LogicaDeNegocio.Usuarios.AgregarUsuarios;
+using Campus.Abstracciones.ModelosUI;
+using Microsoft.Ajax.Utilities;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Campus.UI.Controllers
 {
@@ -17,12 +22,14 @@ namespace Campus.UI.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private IAgregarUsuariosLN _agregarUsuariosLN;
 
         public AccountController()
         {
+            _agregarUsuariosLN = new AgregarUsuariosLN();
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -34,9 +41,9 @@ namespace Campus.UI.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -67,6 +74,7 @@ namespace Campus.UI.Controllers
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        
         {
             if (!ModelState.IsValid)
             {
@@ -75,7 +83,8 @@ namespace Campus.UI.Controllers
 
             // No cuenta los errores de inicio de sesión para el bloqueo de la cuenta
             // Para permitir que los errores de contraseña desencadenen el bloqueo de la cuenta, cambie a shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var user = UserManager.FindByEmail(model.Email);
+            var result = await SignInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -120,7 +129,7 @@ namespace Campus.UI.Controllers
             // Si un usuario introduce códigos incorrectos durante un intervalo especificado de tiempo, la cuenta del usuario 
             // se bloqueará durante un período de tiempo especificado. 
             // Puede configurar el bloqueo de la cuenta en IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -151,12 +160,18 @@ namespace Campus.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                Random rnd = new Random();
+                int numero = rnd.Next(0, 100);
+                string numeroFormateado = numero.ToString("D2");
+                var user = new ApplicationUser { UserName = model.Nombre.ToUpper().First()+ model.Apellido+numeroFormateado, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    await UserManager.AddToRoleAsync(user.Id, model.Rol);
+                    var usuario = ConvertirDto(model, user);
+                    await _agregarUsuariosLN.AgregarUsuario(usuario);
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar un correo electrónico con este vínculo
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -421,6 +436,25 @@ namespace Campus.UI.Controllers
             }
 
             base.Dispose(disposing);
+        }
+
+        private UsuariosDto ConvertirDto(RegisterViewModel model, ApplicationUser user)
+        {
+
+            string rol = UserManager.GetRoles(user.Id).FirstOrDefault();
+            return new UsuariosDto
+            {
+                IdUsuario = user.Id,
+                Nombre = model.Nombre,
+                Apellido = model.Apellido,
+                Email = model.Email,
+                Telefono = model.Telefono,
+                FechaDeNacimiento = model.FechaDeNacimiento,
+                Cedula = model.Cedula,
+                FechaDeRegistro = DateTime.Now,
+                Rol = rol, // Asignar un rol predeterminado
+                Estado = true // Asignar estado activo por defecto
+            };
         }
 
         #region Aplicaciones auxiliares

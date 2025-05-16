@@ -55,12 +55,18 @@
     <Compile Include="ModelosAD\UsuariosAD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Usuarios\AgregarUsuariosAD\AgregarUsuariosAD.cs" />
+    <Compile Include="Usuarios\ListarUsuariosAD\ListarUsuariosAD.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Campus.Abstracciones\Campus.Abstracciones.csproj">
+      <Project>{7F0CCEA0-D9A0-495F-BA52-55CD544EB5E3}</Project>
+      <Name>Campus.Abstracciones</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
