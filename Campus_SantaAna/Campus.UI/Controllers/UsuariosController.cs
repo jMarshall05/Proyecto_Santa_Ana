@@ -4,16 +4,20 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
+using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 
 namespace Campus.UI.Controllers
 {
     public class UsuariosController : Controller
     {
         private IListarUsuariosLN _listarUsuariosLN;
+        private IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
         public UsuariosController()
         {
             _listarUsuariosLN = new ListarUsuariosLN();
+            _obtenerUsuariosPorIdLN = new ObtenerUsuariosPorIdLN();
         }
         // GET: Usuarios
         public ActionResult ListarUsuarios()
@@ -23,9 +27,10 @@ namespace Campus.UI.Controllers
         }
 
         // GET: Usuarios/Details/5
-        public ActionResult Details(int id)
+        public ActionResult DetallesDeUsuarioParcial(string id)
         {
-            return View();
+            var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
+            return PartialView("_DetallesDeUsuarioParcial", usuario);
         }
 
         // GET: Usuarios/Create
