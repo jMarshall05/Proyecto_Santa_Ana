@@ -1,7 +1,7 @@
 ﻿@model Campus.UI.Models.RegisterViewModel
 
 @{
-    ViewBag.Title = "Registrarse";
+    ViewBag.Title = "Registro de Usuarios";
     var fechaMaxima = DateTime.Now.ToString("yyyy-MM-dd");
 }
 
@@ -12,7 +12,6 @@
     {
         @Html.AntiForgeryToken()
 
-        <h4>Cree una cuenta nueva.</h4>
         <hr />
 
         @Html.ValidationSummary("", new { @class = "text-danger" })

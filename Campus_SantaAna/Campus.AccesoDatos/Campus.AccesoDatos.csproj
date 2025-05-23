@@ -56,6 +56,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Usuarios\AgregarUsuariosAD\AgregarUsuariosAD.cs" />
     <Compile Include="Usuarios\ListarUsuariosAD\ListarUsuariosAD.cs" />
+    <Compile Include="Usuarios\ObtenerUsuariosPorIdAD\ObtenerUsuariosPorIdAD.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
