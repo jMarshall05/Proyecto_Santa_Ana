@@ -66,5 +66,12 @@
     <Build Include="dbo\Tables\AspNetUserLogins.sql" />
     <Build Include="dbo\Tables\AspNetUserClaims.sql" />
     <Build Include="dbo\Tables\AspNetRoles.sql" />
+    <Build Include="dbo\Tables\tareas.sql" />
+    <Build Include="dbo\Tables\materias.sql" />
+    <Build Include="dbo\Tables\historial_calificaciones.sql" />
+    <Build Include="dbo\Tables\grupos.sql" />
+    <Build Include="dbo\Tables\entregas.sql" />
+    <Build Include="dbo\Tables\calificaciones.sql" />
+    <Build Include="dbo\Tables\anuncios.sql" />
   </ItemGroup>
 </Project>
