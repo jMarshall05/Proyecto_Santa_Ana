@@ -55,6 +55,7 @@
     <Compile Include="ModelosAD\UsuariosAD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Usuarios\AgregarUsuariosAD\AgregarUsuariosAD.cs" />
+    <Compile Include="Usuarios\EditarUsuariosAD\EditarUsuarioAD.cs" />
     <Compile Include="Usuarios\ListarUsuariosAD\ListarUsuariosAD.cs" />
     <Compile Include="Usuarios\ObtenerUsuariosPorIdAD\ObtenerUsuariosPorIdAD.cs" />
   </ItemGroup>
@@ -68,6 +69,7 @@
       <Name>Campus.Abstracciones</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

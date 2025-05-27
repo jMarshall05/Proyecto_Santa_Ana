@@ -43,9 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccesoDatos\Usuarios\AgregarUsuariosAD\IAgregarUsuariosAD.cs" />
+    <Compile Include="AccesoDatos\Usuarios\EditarUsuariosAD\IEditarUsuarioAD.cs" />
     <Compile Include="AccesoDatos\Usuarios\ListarUsuariosAD\IListarUsuariosAD.cs" />
     <Compile Include="AccesoDatos\Usuarios\ObtenerUsuariosPorIdAD\IObtenerUsuariosPorIdAD.cs" />
     <Compile Include="LogicaDeNegocio\Usuarios\AgregarUsuariosLN\IAgregarUsuariosLN.cs" />
+    <Compile Include="LogicaDeNegocio\Usuarios\EditarUsuariosLN\IEditarUsuarioLN.cs" />
     <Compile Include="LogicaDeNegocio\Usuarios\ListarUsuariosLN\IListarUsuariosLN.cs" />
     <Compile Include="LogicaDeNegocio\Usuarios\ObtenerUsuariosPorIdLN\IObtenerUsuariosPorIdLN.cs" />
     <Compile Include="ModelosUI\UsuariosDto.cs" />

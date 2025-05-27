@@ -23,10 +23,12 @@ namespace Campus.UI.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private IAgregarUsuariosLN _agregarUsuariosLN;
+        private Random rnd;
 
         public AccountController()
         {
             _agregarUsuariosLN = new AgregarUsuariosLN();
+             rnd = new Random();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -160,17 +162,15 @@ namespace Campus.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                Random rnd = new Random();
-                int numero = rnd.Next(0, 100);
-                string numeroFormateado = numero.ToString("D2");
-                var user = new ApplicationUser { UserName = model.Nombre.ToUpper().First()+ model.Apellido+numeroFormateado, Email = model.Email };
+                string numeroRamdon = rnd.Next(0, 100).ToString("D2");
+                var user = new ApplicationUser { UserName = model.Nombre.ToUpper().First()+ model.Apellido+ numeroRamdon, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     await UserManager.AddToRoleAsync(user.Id, model.Rol);
                     var usuario = ConvertirDto(model, user);
                     await _agregarUsuariosLN.AgregarUsuario(usuario);
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                   // await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar un correo electrónico con este vínculo
