@@ -1,93 +1,71 @@
 ﻿@model Campus.Abstracciones.ModelosUI.UsuariosDto
 
-<div>
-    <h4>UsuariosDto</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
+<div class="container mt-4">
+    <div class="card shadow rounded-4">
+        <div class="card-header bg-primary text-white rounded-top-4">
+            <h4 class="mb-0"><i class="fas fa-user me-2"></i>Detalle del Usuario</h4>
+        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
+        <div class="card-body">
+            <table class="table table-bordered table-striped align-middle">
+                <tbody>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+                        <td>@Html.DisplayFor(model => model.Nombre)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Apellido)</th>
+                        <td>@Html.DisplayFor(model => model.Apellido)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Email)</th>
+                        <td>@Html.DisplayFor(model => model.Email)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Telefono)</th>
+                        <td>@Html.DisplayFor(model => model.Telefono)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.FechaDeNacimiento)</th>
+                        <td>@Html.DisplayFor(model => model.FechaDeNacimiento)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Cedula)</th>
+                        <td>@Html.DisplayFor(model => model.Cedula)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.FechaDeRegistro)</th>
+                        <td>@Html.DisplayFor(model => model.FechaDeRegistro)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.FechaDeModificacion)</th>
+                        <td>@Html.DisplayFor(model => model.FechaDeModificacion)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Rol)</th>
+                        <td>@Html.DisplayFor(model => model.Rol)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Estado)</th>
+                        <td>
+                            @if (Model.Estado)
+                            {
+                                <span class="badge bg-success">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Inactivo</span>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Apellido)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Apellido)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Telefono)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Telefono)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.FechaDeNacimiento)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.FechaDeNacimiento)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Cedula)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Cedula)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.FechaDeRegistro)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.FechaDeRegistro)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.FechaDeModificacion)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.FechaDeModificacion)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Rol)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Rol)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-
-    </dl>
-</div>
-<div class="text-end">
-    <a class="btn btn-secondary" data-bs-dismiss="modal">
-        <i class="fas fa-arrow-left me-1"></i> Volver a la lista
-    </a>
+        <div class="card-footer text-end">
+            <a class="btn btn-secondary" data-bs-dismiss="modal">
+                <i class="fas fa-arrow-left me-1"></i> Volver a la lista
+            </a>
+        </div>
+    </div>
 </div>
