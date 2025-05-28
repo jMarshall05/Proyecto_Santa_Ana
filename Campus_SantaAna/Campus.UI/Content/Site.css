@@ -1,0 +1,58 @@
+﻿/* Set padding to keep content from hitting the edges */
+.body-content {
+    margin-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+body {
+    font-family: 'Segoe UI', sans-serif;
+}
+
+header {
+    background-color: #f8d7da;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.custom-btn {
+    background-color: #d9534f;
+    color: white;
+    font-size: 1.1rem;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+    .custom-btn:hover {
+        background-color: #c9302c;
+        transform: scale(1.03);
+        color: white;
+    }
+
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.card-title i {
+    margin-right: 8px;
+}
+

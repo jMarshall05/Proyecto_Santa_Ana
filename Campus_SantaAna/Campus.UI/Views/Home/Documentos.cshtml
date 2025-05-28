@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = "Documentos";
+}
+
+<main aria-labelledby="title" class="container mt-5">
+    <h2 id="title" class="mb-4 text-center text-danger">📄 @ViewBag.Title</h2>
+    <p class="lead text-center">Aquí puedes consultar la normativa y reglamentos actualizados del centro educativo.</p>
+
+    <div class="card mb-4 shadow-sm" data-aos="fade-up">
+        <div class="card-body">
+            <h5 class="card-title"><i class="fas fa-file-contract"></i> Normativa Interna</h5>
+            <p class="card-text">Consulta las reglas y lineamientos internos para el año 2025</p>
+
+            <a href="https://santaana.ed.cr/wp-content/uploads/C.S.A.-NORMATIVA-INTERNA-2024-.pdf"
+               class="btn custom-btn" target="_blank">Ver Documento</a>
+        </div>
+    </div>
+
+    <div class="card mb-4 shadow-sm" data-aos="fade-up" data-aos-delay="100">
+        <div class="card-body">
+            <h5 class="card-title"><i class="fas fa-clipboard-check"></i> Reglamento de Evaluación</h5>
+            <p class="card-text">Revisa los criterios y procesos de evaluación vigentes para este año.</p>
+            <a href="https://santaana.ed.cr/wp-content/uploads/REGLAMENTO-DE-EVALUACION-2024.pdf"
+               class="btn custom-btn" target="_blank">Ver Documento</a>
+        </div>
+    </div>
+</main>
+
+
+
+
+<script>
+    AOS.init();
+</script>
