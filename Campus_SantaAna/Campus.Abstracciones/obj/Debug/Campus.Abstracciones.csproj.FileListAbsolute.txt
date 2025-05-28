@@ -1,6 +1,0 @@
-C:\Users\User\source\repos\Proyecto_Santa_Ana\Campus_SantaAna\Campus.Abstracciones\bin\Debug\Campus.Abstracciones.dll
-C:\Users\User\source\repos\Proyecto_Santa_Ana\Campus_SantaAna\Campus.Abstracciones\bin\Debug\Campus.Abstracciones.pdb
-C:\Users\User\source\repos\Proyecto_Santa_Ana\Campus_SantaAna\Campus.Abstracciones\obj\Debug\Campus.Abstracciones.csproj.AssemblyReference.cache
-C:\Users\User\source\repos\Proyecto_Santa_Ana\Campus_SantaAna\Campus.Abstracciones\obj\Debug\Campus.Abstracciones.csproj.CoreCompileInputs.cache
-C:\Users\User\source\repos\Proyecto_Santa_Ana\Campus_SantaAna\Campus.Abstracciones\obj\Debug\Campus.Abstracciones.dll
-C:\Users\User\source\repos\Proyecto_Santa_Ana\Campus_SantaAna\Campus.Abstracciones\obj\Debug\Campus.Abstracciones.pdb
