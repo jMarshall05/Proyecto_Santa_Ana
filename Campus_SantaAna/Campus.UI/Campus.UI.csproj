@@ -170,6 +170,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AnunciosController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
@@ -258,6 +259,11 @@
     <Content Include="Views\Usuarios\ListarUsuarios.cshtml" />
     <Content Include="Views\Usuarios\_DetallesDeUsuarioParcial.cshtml" />
     <Content Include="Views\Usuarios\_EditarUsuarioParcial.cshtml" />
+    <Content Include="Views\anuncios\Create.cshtml" />
+    <Content Include="Views\anuncios\Delete.cshtml" />
+    <Content Include="Views\anuncios\Edit.cshtml" />
+    <Content Include="Views\anuncios\ListarAnuncios.cshtml" />
+    <Content Include="Views\Home\Documentos.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

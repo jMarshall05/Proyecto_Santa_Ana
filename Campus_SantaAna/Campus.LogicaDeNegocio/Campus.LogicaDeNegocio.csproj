@@ -42,6 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="anuncios\AgregarAnuncios\AgregarAnunciosLN.cs" />
+    <Compile Include="anuncios\EditarAnuncios\EditarAnunciosLN.cs" />
+    <Compile Include="anuncios\EliminarAnuncios\EliminarAnunciosLN.cs" />
+    <Compile Include="anuncios\ListarAnuncios\ListarAnunciosLN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Usuarios\AgregarUsuarios\AgregarUsuariosLN.cs" />
     <Compile Include="Usuarios\EditarUsuarios\EditarUsuariosLN.cs" />
