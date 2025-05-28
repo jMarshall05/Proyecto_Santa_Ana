@@ -10,11 +10,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Campus.AccesoDatos</RootNamespace>
     <AssemblyName>Campus.AccesoDatos</AssemblyName>
-    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -51,7 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="anuncios\AgregarAnunciosAD\AgregarAnunciosAD.cs" />
+    <Compile Include="anuncios\EditarAnunciosAD\EditarAnunciosAD.cs" />
+    <Compile Include="anuncios\EliminarAnunciosAD\EliminarAnunciosAD.cs" />
+    <Compile Include="anuncios\ListarAnunciosAD\ListarAnunciosAD.cs" />
     <Compile Include="Contexto.cs" />
+    <Compile Include="ModelosAD\AnunciosAD.cs" />
     <Compile Include="ModelosAD\UsuariosAD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Usuarios\AgregarUsuariosAD\AgregarUsuariosAD.cs" />

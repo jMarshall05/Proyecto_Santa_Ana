@@ -14,6 +14,7 @@ namespace Campus.AccesoDatos
         {
         }
     public DbSet<UsuariosAD> Usuarios { get; set; }
+    public DbSet<AnunciosAD> Anuncios { get; set; }
 
     }
 }
