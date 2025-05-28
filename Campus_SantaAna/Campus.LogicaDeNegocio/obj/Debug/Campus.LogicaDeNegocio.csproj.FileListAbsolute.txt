@@ -1,6 +1,0 @@
-C:\Users\User\source\repos\Proyecto_Santa_Ana\Campus_SantaAna\Campus.LogicaDeNegocio\bin\Debug\Campus.LogicaDeNegocio.dll
-C:\Users\User\source\repos\Proyecto_Santa_Ana\Campus_SantaAna\Campus.LogicaDeNegocio\bin\Debug\Campus.LogicaDeNegocio.pdb
-C:\Users\User\source\repos\Proyecto_Santa_Ana\Campus_SantaAna\Campus.LogicaDeNegocio\obj\Debug\Campus.LogicaDeNegocio.csproj.AssemblyReference.cache
-C:\Users\User\source\repos\Proyecto_Santa_Ana\Campus_SantaAna\Campus.LogicaDeNegocio\obj\Debug\Campus.LogicaDeNegocio.csproj.CoreCompileInputs.cache
-C:\Users\User\source\repos\Proyecto_Santa_Ana\Campus_SantaAna\Campus.LogicaDeNegocio\obj\Debug\Campus.LogicaDeNegocio.dll
-C:\Users\User\source\repos\Proyecto_Santa_Ana\Campus_SantaAna\Campus.LogicaDeNegocio\obj\Debug\Campus.LogicaDeNegocio.pdb

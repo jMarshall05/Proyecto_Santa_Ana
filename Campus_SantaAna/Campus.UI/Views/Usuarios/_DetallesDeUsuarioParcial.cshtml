@@ -1,0 +1,71 @@
+﻿@model Campus.Abstracciones.ModelosUI.UsuariosDto
+
+<div class="container mt-4">
+    <div class="card shadow rounded-4">
+        <div class="card-header bg-primary text-white rounded-top-4">
+            <h4 class="mb-0"><i class="fas fa-user me-2"></i>Detalle del Usuario</h4>
+        </div>
+
+        <div class="card-body">
+            <table class="table table-bordered table-striped align-middle">
+                <tbody>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+                        <td>@Html.DisplayFor(model => model.Nombre)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Apellido)</th>
+                        <td>@Html.DisplayFor(model => model.Apellido)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Email)</th>
+                        <td>@Html.DisplayFor(model => model.Email)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Telefono)</th>
+                        <td>@Html.DisplayFor(model => model.Telefono)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.FechaDeNacimiento)</th>
+                        <td>@Html.DisplayFor(model => model.FechaDeNacimiento)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Cedula)</th>
+                        <td>@Html.DisplayFor(model => model.Cedula)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.FechaDeRegistro)</th>
+                        <td>@Html.DisplayFor(model => model.FechaDeRegistro)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.FechaDeModificacion)</th>
+                        <td>@Html.DisplayFor(model => model.FechaDeModificacion)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Rol)</th>
+                        <td>@Html.DisplayFor(model => model.Rol)</td>
+                    </tr>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Estado)</th>
+                        <td>
+                            @if (Model.Estado)
+                            {
+                                <span class="badge bg-success">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Inactivo</span>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer text-end">
+            <a class="btn btn-secondary" data-bs-dismiss="modal">
+                <i class="fas fa-arrow-left me-1"></i> Volver a la lista
+            </a>
+        </div>
+    </div>
+</div>

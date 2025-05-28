@@ -1,0 +1,118 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.EditarUsuariosLN;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
+using Campus.Abstracciones.ModelosUI;
+using Campus.AccesoDatos.ModelosAD;
+using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
+using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
+using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
+
+namespace Campus.UI.Controllers
+{
+    public class UsuariosController : Controller
+    {
+        private IListarUsuariosLN _listarUsuariosLN;
+        private IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
+        private IEditarUsuarioLN _editarUsuarioLN;
+        public UsuariosController()
+        {
+            _listarUsuariosLN = new ListarUsuariosLN();
+            _obtenerUsuariosPorIdLN = new ObtenerUsuariosPorIdLN();
+            _editarUsuarioLN = new EditarUsuariosLN();
+        }
+        // GET: Usuarios
+        public ActionResult ListarUsuarios()
+        {
+            var listaDeUsuarios = _listarUsuariosLN.ListarUsuarios();
+            return View(listaDeUsuarios);
+        }
+
+        // GET: Usuarios/Details/5
+        public ActionResult DetallesDeUsuarioParcial(string id)
+        {
+            var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
+            return PartialView("_DetallesDeUsuarioParcial", usuario);
+        }
+
+        // GET: Usuarios/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Usuarios/Create
+        [HttpPost]
+        public ActionResult Create(FormCollection collection)
+        {
+            try
+            {
+                // TODO: Add insert logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: Usuarios/Edit/5
+        public ActionResult EditarUsuarioParcial(string id)
+        {
+            var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
+            return PartialView("_EditarUsuarioParcial", usuario);
+        }
+
+        // POST: Usuarios/Edit/5
+        [HttpPost]
+        public ActionResult EditarUsuarioParcial(string id, UsuariosDto usuario)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _editarUsuarioLN.EditarUsuario(id, usuario);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Por favor, corrija los errores en el formulario.");
+                    return PartialView("_EditarUsuarioParcial", usuario);
+                }
+
+
+                return RedirectToAction("ListarUsuarios");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: Usuarios/Delete/5
+        public ActionResult Delete(int id)
+        {
+            return View();
+        }
+
+        // POST: Usuarios/Delete/5
+        [HttpPost]
+        public ActionResult Delete(int id, FormCollection collection)
+        {
+            try
+            {
+                // TODO: Add delete logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+    }
+}

@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -41,12 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccesoDatos\Usuarios\AgregarUsuariosAD\IAgregarUsuariosAD.cs" />
+    <Compile Include="AccesoDatos\Usuarios\EditarUsuariosAD\IEditarUsuarioAD.cs" />
+    <Compile Include="AccesoDatos\Usuarios\ListarUsuariosAD\IListarUsuariosAD.cs" />
+    <Compile Include="AccesoDatos\Usuarios\ObtenerUsuariosPorIdAD\IObtenerUsuariosPorIdAD.cs" />
+    <Compile Include="LogicaDeNegocio\Usuarios\AgregarUsuariosLN\IAgregarUsuariosLN.cs" />
+    <Compile Include="LogicaDeNegocio\Usuarios\EditarUsuariosLN\IEditarUsuarioLN.cs" />
+    <Compile Include="LogicaDeNegocio\Usuarios\ListarUsuariosLN\IListarUsuariosLN.cs" />
+    <Compile Include="LogicaDeNegocio\Usuarios\ObtenerUsuariosPorIdLN\IObtenerUsuariosPorIdLN.cs" />
+    <Compile Include="ModelosUI\UsuariosDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="AccesoDatos\" />
-    <Folder Include="LogicaDeNegocio\" />
-    <Folder Include="ModelosUI\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

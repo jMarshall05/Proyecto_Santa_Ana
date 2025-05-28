@@ -1,24 +1,21 @@
 Create Database Proyecto_SantaAna
 Use Proyecto_SantaAna;
-
-CREATE TABLE Usuarios (
+drop TABLE Usuarios_tb
+CREATE TABLE Usuarios_tb (
     IdUsuario nvarchar(128) not null,
     Nombre varchar(25) not null,
     Apellido varchar(25) not null,
     Email nvarchar(100) unique not null,
     Telefono int not null,
-    Edad int not null,
+    FechaDeNacimiento datetime not null,
     Cedula int unique not null,
     FechaDeRegistro datetime not null,
     FechaDeModificacion datetime null,
-    IdRol nvarchar(128) not null,
+    Rol nvarchar(128) not null,
     Estado bit not null,
     
     CONSTRAINT PK_UsuariosID PRIMARY KEY (IdUsuario),
-    
-    CONSTRAINT FK_Usuarios_AspNetRoles FOREIGN KEY (IdRol) 
-        REFERENCES AspNetRoles(Id) ON DELETE CASCADE,
-        
+          
     CONSTRAINT FK_Usuarios_AspNetUsers FOREIGN KEY (IdUsuario)
         REFERENCES AspNetUsers(Id) ON DELETE CASCADE
 );
@@ -163,4 +160,94 @@ GO
 select * from AspNetUsers
 select * from AspNetUserRoles
 select * from AspNetRoles
+
+script 
+-- Tabla: materias
+CREATE TABLE materias (
+    id_materia int IDENTITY(1,1) PRIMARY KEY,
+    nombre varchar(100) NOT NULL,
+    descripcion text
+);
+
+-- Tabla: tareas
+CREATE TABLE tareas (
+    id_tarea int IDENTITY(1,1) PRIMARY KEY,
+    titulo varchar(150) NOT NULL,
+    descripcion text,
+    fecha_entrega datetime,
+    id_materia int NOT NULL,
+    archivo_adjunto varchar(255),
+
+    CONSTRAINT FK_tareas_materias FOREIGN KEY (id_materia)
+        REFERENCES materias(id_materia)
+);
+
+-- Tabla: entregas
+CREATE TABLE entregas (
+    id_entrega int IDENTITY(1,1) PRIMARY KEY,
+    id_tarea int NOT NULL,
+    id_estudiante nvarchar(128) NOT NULL,
+    archivo_entregado varchar(255),
+    fecha_entrega datetime,
+    estado varchar(50),
+
+    CONSTRAINT FK_entregas_tareas FOREIGN KEY (id_tarea)
+        REFERENCES tareas(id_tarea),
+    CONSTRAINT FK_entregas_usuarios FOREIGN KEY (id_estudiante)
+        REFERENCES Usuarios_tb(IdUsuario)
+);
+
+-- Tabla: calificaciones
+CREATE TABLE calificaciones (
+    id_calificacion int IDENTITY(1,1) PRIMARY KEY,
+    id_entrega int NOT NULL,
+    calificacion decimal(5,2),
+    comentario text,
+    fecha_calificacion datetime,
+
+    CONSTRAINT FK_calificaciones_entregas FOREIGN KEY (id_entrega)
+        REFERENCES entregas(id_entrega)
+);
+
+CREATE TABLE grupos (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    id_grupo INT NOT NULL,
+    nombre_grupo VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    creado_por NVARCHAR(128) NOT NULL,
+    id_usuario NVARCHAR(128) NOT NULL,
+    estado VARCHAR(50)
+);
+
+
+
+
+-- Tabla: historial_calificaciones
+CREATE TABLE historial_calificaciones (
+    id_historial int IDENTITY(1,1) PRIMARY KEY,
+    id_calificacion int NOT NULL,
+    id_estudiante nvarchar(128) NOT NULL,
+    id_materia int NOT NULL,
+    fecha_registro datetime,
+    comentario text,
+
+    CONSTRAINT FK_historial_calificaciones_calificaciones FOREIGN KEY (id_calificacion)
+        REFERENCES calificaciones(id_calificacion),
+    CONSTRAINT FK_historial_calificaciones_usuarios FOREIGN KEY (id_estudiante)
+        REFERENCES Usuarios_tb(IdUsuario),
+    CONSTRAINT FK_historial_calificaciones_materias FOREIGN KEY (id_materia)
+        REFERENCES materias(id_materia)
+);
+
+-- Tabla: anuncios
+CREATE TABLE anuncios (
+    id_anuncio int IDENTITY(1,1) PRIMARY KEY,
+    titulo varchar(150),
+    descripcion text,
+    fecha_evento datetime,
+    fecha_publicacion datetime
+);
+
+
+
 

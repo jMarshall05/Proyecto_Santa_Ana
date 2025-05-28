@@ -42,6 +42,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Usuarios\AgregarUsuarios\AgregarUsuariosLN.cs" />
+    <Compile Include="Usuarios\EditarUsuarios\EditarUsuariosLN.cs" />
+    <Compile Include="Usuarios\ListarUsuarios\ListarUsuariosLN.cs" />
+    <Compile Include="Usuarios\ObtenerUsuariosPorId\ObtenerUsuariosPorIdLN.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Campus.Abstracciones\Campus.Abstracciones.csproj">
+      <Project>{7F0CCEA0-D9A0-495F-BA52-55CD544EB5E3}</Project>
+      <Name>Campus.Abstracciones</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Campus.AccesoDatos\Campus.AccesoDatos.csproj">
+      <Project>{BA675387-90A7-4FAC-B60C-9EF6F100DBA7}</Project>
+      <Name>Campus.AccesoDatos</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
