@@ -1,0 +1,66 @@
+﻿@model IEnumerable<TareaDto>
+
+@{
+    ViewBag.Title = "Listado de Tareas";
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Create", "Tareas")" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Agregar Tarea
+    </a>
+</div>
+
+
+<table class="table table-bordered table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Fecha de Entrega</th>
+            <th>Materia</th>
+            <th>Archivo Adjunto</th>
+            <th>Fecha de Publicación</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var tarea in Model)
+            {
+                <tr>
+                    <td>@tarea.IdTarea</td>
+                    <td>@tarea.Titulo</td>
+                    <td>@tarea.Descripcion</td>
+                    <td>@tarea.FechaEntrega.ToShortDateString()</td>
+                    <td>@tarea.Materia?.Nombre</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(tarea.ArchivoAdjunto))
+                        {
+                            <a href="@Url.Content("~/Archivos/" + tarea.ArchivoAdjunto)" target="_blank">Ver archivo</a>
+                        }
+                        else
+                        {
+                            <span>No adjunto</span>
+                        }
+                    </td>
+                    <td>@(tarea.FechaPublicacion.ToShortDateString())</td>
+
+                    <td>
+                        @* Reemplaza con tus rutas de acción reales *@
+                        @Html.ActionLink("Editar", "EditarTarea", new { id = tarea.IdTarea }, new { @class = "btn btn-warning btn-sm" })
+                        @Html.ActionLink("Eliminar", "EliminarTarea", new { id = tarea.IdTarea }, new { @class = "btn btn-danger btn-sm ms-2" })
+                        @Html.ActionLink("Detalles", "DetallesTarea", new { id = tarea.IdTarea }, new { @class = "btn btn-info btn-sm ms-2" })
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" class="text-center">No hay tareas registradas.</td>
+            </tr>
+        }
+    </tbody>
+</table>

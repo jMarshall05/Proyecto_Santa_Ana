@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -47,6 +47,10 @@
     <Compile Include="anuncios\EliminarAnuncios\EliminarAnunciosLN.cs" />
     <Compile Include="anuncios\ListarAnuncios\ListarAnunciosLN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="tareas\agregarTarea\AgregarTareaLN.cs" />
+    <Compile Include="tareas\editarTarea\EditarTareaLN.cs" />
+    <Compile Include="tareas\eliminarTarea\EliminarTareaLN.cs" />
+    <Compile Include="tareas\listarTarea\ListarTareaLN.cs" />
     <Compile Include="Usuarios\AgregarUsuarios\AgregarUsuariosLN.cs" />
     <Compile Include="Usuarios\EditarUsuarios\EditarUsuariosLN.cs" />
     <Compile Include="Usuarios\ListarUsuarios\ListarUsuariosLN.cs" />
