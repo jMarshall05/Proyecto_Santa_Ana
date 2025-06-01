@@ -26,6 +26,7 @@ namespace Campus.UI.Controllers
             _editarAnunciosLN = new EditarAnunciosLN();
         }
 
+     
         public ActionResult ListarAnuncios()
         {
             var listaDeAnuncios = _listarAnunciosLN.ListarAnuncios();
@@ -38,7 +39,7 @@ namespace Campus.UI.Controllers
             return View();
         }
 
-     
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(AnuncioDto anuncio)
@@ -52,6 +53,7 @@ namespace Campus.UI.Controllers
             return View(anuncio);
         }
 
+   
         public ActionResult Edit(int id)
         {
             var anuncio = _listarAnunciosLN.ObtenerAnuncioPorId(id);
@@ -63,7 +65,6 @@ namespace Campus.UI.Controllers
             return View(anuncio);
         }
 
-       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(AnuncioDto anuncio)
@@ -84,7 +85,6 @@ namespace Campus.UI.Controllers
             return View();
         }
 
-    
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -100,5 +100,23 @@ namespace Campus.UI.Controllers
                 return View("Delete", id);
             }
         }
+        public ActionResult AnunciosEstudiantes()
+        {
+            var listaDeAnuncios = _listarAnunciosLN.ListarAnuncios();
+            return View(listaDeAnuncios);
+        }
+        
+        public ActionResult Details(int id)
+        {
+            var anuncio = _listarAnunciosLN.ObtenerAnuncioPorId(id);
+            if (anuncio == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(anuncio);
+        }
+
     }
 }
+
