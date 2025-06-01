@@ -20,6 +20,12 @@ namespace Campus.LogicaDeNegocio.Tareas.EditarTareaLN
         {
             try
             {
+                // Validación adicional de fechas
+                if (tarea.FechaEntrega == DateTime.MinValue)
+                {
+                    throw new ArgumentException("La fecha de entrega no puede estar vacía");
+                }
+
                 return await _editarTareaAD.EditarTarea(id, tarea);
             }
             catch (Exception ex)

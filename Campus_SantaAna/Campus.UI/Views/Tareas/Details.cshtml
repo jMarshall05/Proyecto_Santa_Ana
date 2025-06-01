@@ -1,0 +1,135 @@
+﻿@model TareaDto
+
+@{
+    ViewBag.Title = "Detalles de Tarea";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h3 class="card-title mb-0">
+            <i class="bi bi-info-circle"></i> Detalles de Tarea
+        </h3>
+    </div>
+
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h4 class="text-primary">@Model.Titulo</h4>
+                <p class="text-muted">ID: @Model.IdTarea</p>
+            </div>
+            <div class="col-md-6 text-end">
+                @if (Model.FechaCreacion > DateTime.MinValue)
+                {
+                    <span class="badge bg-info">
+                        Creada: @Model.FechaCreacion.ToString("dd/MM/yyyy")
+                    </span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">
+                        Fecha no disponible
+                    </span>
+                }
+
+                @if (Model.FechaModificacion > DateTime.MinValue)
+                {
+                    <span class="badge bg-warning ms-2">
+                        Modificada: @Model.FechaModificacion.ToString("dd/MM/yyyy")
+                    </span>
+                }
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <h5>Descripción</h5>
+            <div class="p-3 bg-light rounded">
+                @Model.Descripcion
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <h5>Fecha de Entrega</h5>
+                    <p>@Model.FechaEntrega.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-ES"))</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <h5>Archivo Adjunto</h5>
+                    @if (!string.IsNullOrEmpty(Model.ArchivoAdjunto))
+                    {
+                        <a href="@Url.Content("~/Uploads/" + Model.ArchivoAdjunto)"
+                           class="btn btn-outline-primary"
+                           target="_blank">
+                            <i class="bi bi-download"></i> @Model.ArchivoAdjunto
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No hay archivo adjunto</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer bg-light">
+        <div class="d-flex justify-content-between">
+            @Html.ActionLink("Volver al listado", "ListarTareas", null, new { @class = "btn btn-secondary" })
+
+            <div>
+                @Html.ActionLink("Editar", "Edit", new { id = Model.IdTarea }, new { @class = "btn btn-warning me-2" })
+
+                <button type="button"
+                        class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal">
+                    <i class="bi bi-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Eliminación -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de eliminar la tarea <strong>@Model.Titulo</strong>?</p>
+                <p class="text-muted">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                @using (Html.BeginForm("Delete", "Tareas", new { id = Model.IdTarea }, FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Confirmar Eliminación
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <style>
+        .card {
+            border: none;
+            border-radius: 10px;
+        }
+
+        h5 {
+            color: #6c757d;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+}

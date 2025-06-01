@@ -29,7 +29,7 @@ namespace Campus.AccesoDatos.ModelosAD
 
         [Column("fecha_creacion")]
         [Required]
-        public DateTime FechaCreacion { get; set; }
+        public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
         [Column("fecha_modificacion")]
         public DateTime FechaModificacion { get; set; }
@@ -37,10 +37,5 @@ namespace Campus.AccesoDatos.ModelosAD
         [Column("FechaPublicacion")]
         public DateTime FechaPublicacion { get; set; }
 
-        [Column("id_materia")]
-        [ForeignKey("Materia")]
-        public int IdMateria { get; set; }
-
-        public MateriaAD Materia { get; set; }
     }
 }

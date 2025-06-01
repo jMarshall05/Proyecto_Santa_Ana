@@ -21,9 +21,6 @@ public class TareaDto
     [DisplayName("Fecha de Entrega")]
     public DateTime FechaEntrega { get; set; }
 
-    [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-    [DisplayName("ID de Materia")]
-    [ForeignKey(nameof(Materia))]
     public int IdMateria { get; set; }
 
     [DisplayName("Archivo Adjunto")]
@@ -31,7 +28,7 @@ public class TareaDto
 
     [Required]
     [DisplayName("Fecha de Creación")]
-    public DateTime FechaCreacion { get; set; }
+    public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
     [DisplayName("Fecha de Modificación")]
     public DateTime FechaModificacion { get; set; }
@@ -39,5 +36,4 @@ public class TareaDto
     [DisplayName("Fecha de Publicación")]
     public DateTime FechaPublicacion { get; set; }
 
-    public virtual MateriaDto Materia { get; set; }
 }
