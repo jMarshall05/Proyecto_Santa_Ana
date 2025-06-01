@@ -1,0 +1,24 @@
+﻿@model Campus.Abstracciones.ModelosUI.AnuncioDto
+
+@{
+    ViewBag.Title = "Detalle del Evento";
+}
+
+
+<div class="detalle-container">
+    <div class="detalle-titulo">@Model.Titulo</div>
+
+    <div class="detalle-fecha">
+        <strong>Fecha del Evento:</strong> @Model.FechaEvento.ToString("dd MMM yyyy")<br />
+        <strong>Publicado el:</strong> @Model.FechaPublicacion.ToString("dd MMM yyyy")
+    </div>
+
+    <div class="detalle-descripcion">
+        <strong>Descripción:</strong><br />
+        @Model.Descripcion
+    </div>
+
+    <div class="btn-volver">
+        @Html.ActionLink("← Volver", "AnunciosEstudiantes", "Anuncios", null, new { @class = "btn btn-secondary" })
+    </div>
+</div>
