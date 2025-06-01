@@ -7,8 +7,9 @@
     <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
+    @RenderSection("styles", required: false)
 </head>
+
 <body>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
         <div class="container">
@@ -20,14 +21,17 @@
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     @*@if (User.IsInRole("Administradores"))
-        {*@
+                        {*@
                     <li>@Html.ActionLink("Gestion de Uuarios", "ListarUsuarios", "Usuarios", new { area = "" }, new { @class = "nav-link" })</li>
                     @*               }*@
                     <li>@Html.ActionLink("Acerca de", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Tareas", "ListarTareas", "Tareas", new { area = "" }, new { @class = "nav-link" })</li>
+
                     <li>@Html.ActionLink("Contacto", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Documentos", "Documentos", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Administrar Anuncios", "ListarAnuncios", "Anuncios", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Anuncios", "AnunciosEstudiantes", "Anuncios", new { area = "" }, new { @class = "nav-link" })</li>
+
 
                 </ul>
                 @Html.Partial("_LoginPartial")
@@ -46,6 +50,17 @@
     @Scripts.Render("~/bundles/bootstrap")
     <script src="~/Scripts/datatable/dataTables.js"></script>
     @RenderSection("scripts", required: false)
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- Toastr para notificaciones -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <!-- Bootstrap DateTimePicker -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
 </body>
 </html>
