@@ -30,7 +30,6 @@ namespace Campus.AccesoDatos.Tareas.AgregarTareaAD
             {
                 Titulo = tarea.Titulo,
                 Descripcion = tarea.Descripcion,
-                IdMateria = tarea.IdMateria,
                 ArchivoAdjunto = tarea.ArchivoAdjunto,
                 FechaEntrega = tarea.FechaEntrega,
                 FechaCreacion = tarea.FechaCreacion,

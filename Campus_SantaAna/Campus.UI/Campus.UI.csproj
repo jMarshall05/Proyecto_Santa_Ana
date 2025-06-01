@@ -387,6 +387,8 @@
     <Content Include="Views\Home\Documentos.cshtml" />
     <Content Include="Views\Tareas\ListarTareas.cshtml" />
     <Content Include="Views\Tareas\Create.cshtml" />
+    <Content Include="Views\Tareas\Edit.cshtml" />
+    <Content Include="Views\Tareas\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

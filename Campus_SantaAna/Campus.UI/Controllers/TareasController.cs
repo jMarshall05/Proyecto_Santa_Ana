@@ -50,28 +50,24 @@ namespace Campus.UI.Controllers
         // POST: Tareas/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(TareaDto tarea, HttpPostedFileBase ArchivoAdjunto)
+        public async Task<ActionResult> Create(TareaDto tarea)
         {
             if (ModelState.IsValid)
             {
-                if (ArchivoAdjunto != null && ArchivoAdjunto.ContentLength > 0)
+                try
                 {
-                    // Ejemplo: guardar el archivo en una carpeta del servidor
-                    var fileName = Path.GetFileName(ArchivoAdjunto.FileName);
-                    var path = Path.Combine(Server.MapPath("~/Uploads"), fileName);
-                    ArchivoAdjunto.SaveAs(path);
+                    // Fechas automáticas
+                    tarea.FechaCreacion = DateTime.Now;
+                    tarea.FechaModificacion = DateTime.Now;
 
-                    tarea.ArchivoAdjunto = fileName; // Guardamos solo el nombre o la ruta
+                    await _agregarTareaLN.AgregarTarea(tarea);
+                    return RedirectToAction("ListarTareas");
                 }
-
-                tarea.FechaCreacion = DateTime.Now;
-
-                await _agregarTareaLN.AgregarTarea(tarea);
-                return RedirectToAction("ListarTareas");
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Error al crear la tarea: " + ex.Message);
+                }
             }
-
-            var materias = ObtenerMaterias();
-            ViewBag.Materias = new SelectList(materias, "IdMateria", "Nombre");
 
             return View(tarea);
         }
@@ -107,8 +103,29 @@ namespace Campus.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _editarTareaLN.EditarTarea(id, tarea);
-                return RedirectToAction("ListarTareas");
+                try
+                {
+                    // Mantenemos la fecha original de creación
+                    var tareaOriginal = await _listarTareaLN.ObtenerPorIdAsync(id);
+                    tarea.FechaCreacion = tareaOriginal.FechaCreacion;
+
+                    // Actualizamos la fecha de modificación
+                    tarea.FechaModificacion = DateTime.Now;
+
+                    // Validación de fecha de publicación
+                    if (tarea.FechaPublicacion < tarea.FechaCreacion)
+                    {
+                        ModelState.AddModelError("FechaPublicacion", "La fecha de publicación no puede ser anterior a la fecha de creación");
+                        return View(tarea);
+                    }
+
+                    await _editarTareaLN.EditarTarea(id, tarea);
+                    return RedirectToAction("ListarTareas");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Error al editar la tarea: " + ex.Message);
+                }
             }
             return View(tarea);
         }
@@ -139,6 +156,16 @@ namespace Campus.UI.Controllers
                 var tarea = await _listarTareaLN.ObtenerPorIdAsync(id);
                 return View("Delete", tarea);
             }
+        }
+
+        public async Task<ActionResult> Details(int id)
+        {
+            var tarea = await _listarTareaLN.ObtenerPorIdAsync(id);
+            if (tarea == null)
+            {
+                return HttpNotFound();
+            }
+            return View(tarea);
         }
     }
 }
