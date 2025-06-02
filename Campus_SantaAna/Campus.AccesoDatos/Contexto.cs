@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Campus.AccesoDatos.ModelosAD;
 
@@ -14,6 +15,9 @@ namespace Campus.AccesoDatos
         {
         }
     public DbSet<UsuariosAD> Usuarios { get; set; }
+    public DbSet<AnunciosAD> Anuncios { get; set; }
+    public DbSet<TareasAD> Tareas { get; set; }
+
 
     }
 }

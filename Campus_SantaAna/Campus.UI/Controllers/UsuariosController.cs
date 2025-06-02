@@ -3,17 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.EditarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
+using Campus.Abstracciones.ModelosUI;
+using Campus.AccesoDatos.ModelosAD;
+using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
+using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 
 namespace Campus.UI.Controllers
 {
     public class UsuariosController : Controller
     {
         private IListarUsuariosLN _listarUsuariosLN;
+        private IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
+        private IEditarUsuarioLN _editarUsuarioLN;
         public UsuariosController()
         {
             _listarUsuariosLN = new ListarUsuariosLN();
+            _obtenerUsuariosPorIdLN = new ObtenerUsuariosPorIdLN();
+            _editarUsuarioLN = new EditarUsuariosLN();
         }
         // GET: Usuarios
         public ActionResult ListarUsuarios()
@@ -23,9 +33,10 @@ namespace Campus.UI.Controllers
         }
 
         // GET: Usuarios/Details/5
-        public ActionResult Details(int id)
+        public ActionResult DetallesDeUsuarioParcial(string id)
         {
-            return View();
+            var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
+            return PartialView("_DetallesDeUsuarioParcial", usuario);
         }
 
         // GET: Usuarios/Create
@@ -51,20 +62,30 @@ namespace Campus.UI.Controllers
         }
 
         // GET: Usuarios/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult EditarUsuarioParcial(string id)
         {
-            return View();
+            var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
+            return PartialView("_EditarUsuarioParcial", usuario);
         }
 
         // POST: Usuarios/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult EditarUsuarioParcial(string id, UsuariosDto usuario)
         {
             try
             {
-                // TODO: Add update logic here
+                if (ModelState.IsValid)
+                {
+                    _editarUsuarioLN.EditarUsuario(id, usuario);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Por favor, corrija los errores en el formulario.");
+                    return PartialView("_EditarUsuarioParcial", usuario);
+                }
 
-                return RedirectToAction("Index");
+
+                return RedirectToAction("ListarUsuarios");
             }
             catch
             {

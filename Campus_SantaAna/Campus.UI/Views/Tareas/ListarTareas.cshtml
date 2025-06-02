@@ -1,0 +1,340 @@
+﻿@model IEnumerable<TareaDto>
+
+@{
+    ViewBag.Title = "Listado de Tareas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <div class="card shadow border-0 mt-4">
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="m-0 text-primary">
+                    <!-- Cambiado a color azul -->
+                    <i class="fas fa-tasks me-2"></i>Listado de Tareas
+                </h4>
+                <a href="@Url.Action("Create", "Tareas")" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus-circle me-1"></i> Nueva Tarea
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="tareasTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center">ID</th>
+                            <th>Título</th>
+                            <th>Descripción</th>
+                            <th>Entrega</th>
+                            <th class="text-center">Archivo</th>
+                            <th>Publicación</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var tarea in Model)
+                            {
+                                <tr class="hover-shadow">
+                                    <td class="text-center fw-bold">@tarea.IdTarea</td>
+                                    <td class="fw-semibold">@tarea.Titulo</td>
+                                    <td>
+                                        <span class="d-inline-block text-truncate" style="max-width: 200px;"
+                                              title="@tarea.Descripcion">
+                                            @tarea.Descripcion
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge @(tarea.FechaEntrega < DateTime.Now ? "bg-danger" : "bg-success")">
+                                            @tarea.FechaEntrega.ToString("dd/MM/yyyy")
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(tarea.ArchivoAdjunto))
+                                        {
+                                            <a href="@Url.Content("~/Uploads/" + tarea.ArchivoAdjunto)"
+                                               target="_blank"
+                                               class="btn btn-sm btn-outline-primary rounded-circle"
+                                               data-bs-toggle="tooltip"
+                                               title="Descargar archivo">
+                                                <i class="fas fa-file-download"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Sin archivo</span>
+                                        }
+                                    </td>
+                                    <td>@tarea.FechaPublicacion.ToString("dd/MM/yyyy")</td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center">
+                                            <a href="@Url.Action("Edit", new { id = tarea.IdTarea })"
+                                               class="btn btn-sm btn-warning mx-1"
+                                               data-bs-toggle="tooltip"
+                                               title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+
+                                            <a href="@Url.Action("Details", new { id = tarea.IdTarea })"
+                                               class="btn btn-sm btn-info mx-1"
+                                               data-bs-toggle="tooltip"
+                                               title="Detalles">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+
+                                            <button type="button"
+                                                    class="btn btn-sm btn-danger mx-1"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal-@tarea.IdTarea"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Eliminar">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+
+                                        <!-- Modal de Eliminación -->
+                                        <div class="modal fade" id="deleteModal-@tarea.IdTarea" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content border-0 shadow">
+                                                    <div class="modal-header bg-danger text-white">
+                                                        <h5 class="modal-title">
+                                                            <i class="fas fa-exclamation-triangle me-2"></i>Confirmar Eliminación
+                                                        </h5>
+                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>¿Estás seguro de eliminar la tarea: <strong>@tarea.Titulo</strong>?</p>
+                                                        <p class="small text-muted">Esta acción no se puede deshacer.</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                            <i class="fas fa-times me-1"></i> Cancelar
+                                                        </button>
+                                                        @using (Html.BeginForm("Delete", "Tareas", new { id = tarea.IdTarea }, FormMethod.Post))
+                                                        {
+                                                            @Html.AntiForgeryToken()
+                                                            <button type="submit" class="btn btn-danger">
+                                                                <i class="fas fa-trash-alt me-1"></i> Eliminar
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No hay tareas registradas</h5>
+                                        <a href="@Url.Action("Create")" class="btn btn-primary mt-2">
+                                            <i class="fas fa-plus me-1"></i> Crear primera tarea
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border-radius: 12px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .text-primary {
+            color: #2c5cc5 !important; /* Azul más vibrante */
+        }
+
+        /* Estilos para la barra de búsqueda */
+        .dataTables_filter input {
+            border: 2px solid #dee2e6 !important;
+            border-radius: 20px !important;
+            padding: 8px 15px !important;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            width: 300px !important;
+        }
+
+            .dataTables_filter input:focus {
+                border-color: #2c5cc5 !important;
+                box-shadow: 0 0 0 0.2rem rgba(44, 92, 197, 0.25) !important;
+                outline: none;
+            }
+
+        .dataTables_filter label {
+            position: relative;
+            display: block;
+        }
+
+            .dataTables_filter label:after {
+                content: "\f002";
+                font-family: "Font Awesome 5 Free";
+                font-weight: 900;
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #6c757d;
+            }
+
+        /* Estilos para el dropdown de cantidad de registros */
+        .dataTables_length select {
+            border: 2px solid #dee2e6;
+            border-radius: 20px;
+            padding: 5px 10px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+            .dataTables_length select:focus {
+                border-color: #2c5cc5;
+                box-shadow: 0 0 0 0.2rem rgba(44, 92, 197, 0.25);
+                outline: none;
+            }
+
+        .dataTables_info {
+            padding-top: 10px !important;
+            font-size: 0.9rem;
+            color: #6c757d !important;
+        }
+
+        .paginate_button {
+            border-radius: 50% !important;
+            width: 35px;
+            height: 35px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 2px;
+        }
+
+            .paginate_button.current {
+                background: #2c5cc5 !important;
+                color: white !important;
+                border: none !important;
+            }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+            .table thead th {
+                border-bottom: 2px solid #e9ecef;
+                text-transform: uppercase;
+                font-size: 0.8rem;
+                letter-spacing: 0.5px;
+                background-color: #f8f9fa;
+            }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(44, 92, 197, 0.05);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .badge {
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.5rem;
+            border-radius: 8px;
+        }
+
+        .btn-outline-primary {
+            border-width: 2px;
+        }
+
+        .rounded-circle {
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+}
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <script>
+        $(document).ready(function () {
+            // Inicializar DataTable con configuración mejorada
+            $('#tareasTable').DataTable({
+                responsive: true,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
+                    search: "_INPUT_",
+                    searchPlaceholder: "Buscar tareas...",
+                    lengthMenu: "Mostrar _MENU_ registros por página",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ tareas",
+                    infoEmpty: "No hay tareas para mostrar",
+                    infoFiltered: "(filtrado de _MAX_ tareas totales)",
+                    paginate: {
+                        first: "Primera",
+                        last: "Última",
+                        next: "Siguiente",
+                        previous: "Anterior"
+                    }
+                },
+                dom: '<"top"<"d-flex justify-content-between align-items-center"lf>>rt<"bottom"ip><"clear">',
+                columnDefs: [
+                    { orderable: false, targets: [6] },
+                    { searchable: false, targets: [0, 4, 6] }
+                ],
+                initComplete: function () {
+                    // Personalizar el dropdown de cantidad de registros
+                    $('.dataTables_length').addClass('mb-3');
+                    $('.dataTables_length label').addClass('d-flex align-items-center');
+                    $('.dataTables_length select').addClass('form-select-sm');
+
+                    // Personalizar la barra de búsqueda
+                    $('.dataTables_filter').addClass('mb-3');
+                    $('.dataTables_filter label').addClass('position-relative');
+                }
+            });
+
+            // Inicializar tooltips
+            $('[data-bs-toggle="tooltip"]').tooltip({
+                trigger: 'hover',
+                placement: 'top'
+            });
+
+            // Efecto hover para filas
+            $('.table-hover tbody tr').hover(
+                function () {
+                    $(this).css('cursor', 'pointer');
+                },
+                function () {
+                    $(this).css('cursor', 'default');
+                }
+            );
+        });
+    </script>
+}
