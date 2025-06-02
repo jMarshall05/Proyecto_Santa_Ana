@@ -25,7 +25,7 @@
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     @*@if (User.IsInRole("Administradores"))
-        {*@
+            {*@
                     <li>@Html.ActionLink("Gestion de Usuarios", "ListarUsuarios", "Usuarios", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
                     @*               }*@
                     <li>@Html.ActionLink("Tareas", "ListarTareas", "Tareas", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
@@ -39,7 +39,7 @@
 
 
                 </ul>
-                <a class="nav-link" href="/Account/Login" style="color: white;">Iniciar sesión</a>
+                @Html.Partial("_LoginPartial")
             </div>
         </div>
     </nav>
