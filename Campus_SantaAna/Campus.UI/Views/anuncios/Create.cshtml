@@ -42,7 +42,7 @@
 <body>
     <div class="form-container">
         <main aria-labelledby="title">
-            <h2 id="title">@ViewBag.Title</h2>
+            <h2 class="container-title">Publicar Nuevo Anuncio</h2>
 
             @using (Html.BeginForm("Create", "Anuncios", FormMethod.Post))
             {
@@ -60,22 +60,20 @@
                 </div>
 
                 <div class="row mb-3">
+                    <label for="FechaEvento">Fecha del Evento</label>
                     @Html.TextBoxFor(m => m.FechaEvento, new { @class = "form-control", type = "datetime-local", placeholder = "Fecha del Evento", required = "required" })
                     @Html.ValidationMessageFor(m => m.FechaEvento, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="row mb-3">
+                    <label for="FechaPublicacion">Fecha de Publicación</label>
                     @Html.TextBoxFor(m => m.FechaPublicacion, new { @class = "form-control", type = "datetime-local", placeholder = "Fecha de Publicación", required = "required" })
                     @Html.ValidationMessageFor(m => m.FechaPublicacion, "", new { @class = "text-danger" })
                 </div>
 
-                <div class="row mb-3">
-                    <button type="submit" class="btn w-100" style="background-color: #F44336; border-color: #F44336; color: white;">Guardar</button>
-                </div>
 
-                <p class="text-center">
-                    @Html.ActionLink("Cancelar", "ListarAnuncios", null, new { @class = "text-decoration-none", style = "color:#F44336;" })
-                </p>
+                    <button type="submit" class="btn" style="background-color: #F44336; border-color: #F44336; color: white;">Guardar</button>
+                    @Html.ActionLink("Cancelar", "ListarAnuncios", null, new { @class = "btn btn-secondary ml-2" })
             }
         </main>
     </div>
