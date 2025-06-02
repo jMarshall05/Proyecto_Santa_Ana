@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.AnuncioDto>
+
+@{
+    ViewBag.Title = "Lista de Anuncios";
+}
+
+<h2>Lista de Anuncios</h2>
+
+<p>
+    @Html.ActionLink("Registrar Anuncio", "Create", "Anuncios", null, new { @class = "btn btn-success" })
+</p>
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Titulo)</th>
+            <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
+            <th>@Html.DisplayNameFor(model => model.FechaEvento)</th>
+            <th>@Html.DisplayNameFor(model => model.FechaPublicacion)</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var anuncio in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => anuncio.Titulo)</td>
+                <td>@Html.DisplayFor(modelItem => anuncio.Descripcion)</td>
+                <td>@Html.DisplayFor(modelItem => anuncio.FechaEvento)</td>
+                <td>@Html.DisplayFor(modelItem => anuncio.FechaPublicacion)</td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { id = anuncio.IdAnuncio }, new { @class = "btn btn-sm btn-primary" }) |
+
+                    @Html.ActionLink("Eliminar", "Delete", "Anuncios", new { id = anuncio.IdAnuncio }, new { @class = "btn btn-sm btn-danger" })
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+2/2
+

@@ -26,5 +26,11 @@ namespace Campus.UI.Controllers
 
             return View();
         }
+        public ActionResult Documentos()
+        {
+
+
+            return View();
+        }
     }
 }

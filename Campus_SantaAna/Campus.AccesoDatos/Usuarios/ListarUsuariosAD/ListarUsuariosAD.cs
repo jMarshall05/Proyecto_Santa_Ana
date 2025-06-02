@@ -21,6 +21,7 @@ namespace Campus.AccesoDatos.Usuarios.ListarUsuariosAD
             List<UsuariosDto> ListaDeUsuarios = (from Usuarios in _elContexto.Usuarios 
                                                  select new UsuariosDto
                                                  {
+                                                     IdUsuario = Usuarios.IdUsuario,
                                                      Nombre=Usuarios.Nombre,
                                                      Apellido = Usuarios.Apellido,
                                                      Email = Usuarios.Email,

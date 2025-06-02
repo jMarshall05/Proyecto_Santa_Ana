@@ -1,0 +1,19 @@
+﻿@model Campus.Abstracciones.ModelosUI.AnuncioDto
+
+@{
+    ViewBag.Title = "Eliminar Anuncio";
+}
+
+
+<h2>¿Estás segura de que deseas eliminar este anuncio?</h2>
+
+<p>Esta acción no se puede deshacer.</p>
+
+@using (Html.BeginForm("DeleteConfirmed", "Anuncios", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@ViewBag.AnuncioId" />
+
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    @Html.ActionLink("Cancelar", "ListarAnuncios", null, new { @class = "btn btn-secondary" })
+}
