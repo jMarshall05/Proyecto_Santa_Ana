@@ -1,15 +1,15 @@
 ﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.UsuariosDto>
 
 @{
-    ViewBag.Title = "ListarUsuarios";
+    ViewBag.Title = "Usuarios Matriculados";
 }
 
-<h2>ListarUsuarios</h2>
+<h2 class="container-title">Usuarios Matriculados</h2>
 
-<p>
-    @Html.ActionLink("Registrar Usuario", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "btn btn-success" })
+<div class="d-flex justify-content-end mb-3">
+    @Html.ActionLink("Registrar Usuario", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "btn btn-secondary" })
+</div>
 
-</p>
 
 <div class="modal fade" id="UsuariosModal" tabindex="-1" aria-labelledby="UsuariosModalTittleLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
@@ -27,8 +27,8 @@
 </div>
 
 <div class="table-responsive">
-    <table class="table" , id="TablaDeUsuarios">
-        <thead>
+    <table class="table table-bordered" , id="TablaDeUsuarios">
+        <thead class="table-danger">
             <tr>
                 <th>
                     @Html.DisplayNameFor(model => model.Nombre)
@@ -71,14 +71,15 @@
                     </td>
                     <td>
                         <div class="btn-group" role="group">
-                            <button class="btn btn-outline-warning btn-Editar " data-id="@item.IdUsuario">
+                            <button class="btn btn-sm btn-primary btn-Editar" data-id="@item.IdUsuario">
                                 <i class="fas fa-edit me-1"></i> Editar
                             </button>
-                            <button class="btn btn-outline-info btn-Detalles " data-id="@item.IdUsuario">
+                            <button class="btn btn-sm btn-warning btn-Detalles" data-id="@item.IdUsuario">
                                 <i class="fas fa-info-circle me-1"></i> Detalles
                             </button>
                         </div>
                     </td>
+
                 </tr>
             }
         </tbody>
@@ -87,5 +88,8 @@
 </div>
 @section scripts{
     <script src="~/Scripts/Usuarios/ScriptDeUsuarios.js"></script>
+
+
 }
+
 

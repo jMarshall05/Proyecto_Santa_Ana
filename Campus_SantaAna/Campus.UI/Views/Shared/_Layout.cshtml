@@ -4,16 +4,20 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
+    <title>@ViewBag.Title - Santa Ana a un Click</title>
+    <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />    @Styles.Render("~/Content/css")
+
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @RenderSection("styles", required: false)
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm" style="background-color: #F44336; border-color: #F44336; color: white;">
         <div class="container">
-            @Html.ActionLink("Santa Ana a un Click", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                <img src="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" alt="Logo" style="height: 65px;" />
+            </a>
             <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Alternar navegación" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -21,20 +25,21 @@
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     @*@if (User.IsInRole("Administradores"))
-                        {*@
-                    <li>@Html.ActionLink("Gestion de Uuarios", "ListarUsuarios", "Usuarios", new { area = "" }, new { @class = "nav-link" })</li>
+        {*@
+                    <li>@Html.ActionLink("Gestion de Usuarios", "ListarUsuarios", "Usuarios", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
                     @*               }*@
-                    @*<li>@Html.ActionLink("Acerca de", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>*@
-                    <li>@Html.ActionLink("Tareas", "ListarTareas", "Tareas", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Tareas", "ListarTareas", "Tareas", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
 
-                    @*<li>@Html.ActionLink("Contacto", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>*@
-                    <li>@Html.ActionLink("Documentos", "Documentos", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Administrar Anuncios", "ListarAnuncios", "Anuncios", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Anuncios", "AnunciosEstudiantes", "Anuncios", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Documentos", "Documentos", "Home", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
+                    <li>@Html.ActionLink("Administrar Anuncios", "ListarAnuncios", "Anuncios", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
+                    <li>@Html.ActionLink("Anuncios", "AnunciosEstudiantes", "Anuncios", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
+                    <li><a href="https://santaana.ed.cr/" class="nav-link" style="color: white;" target="_blank">Sobre Nosotros</a></li>
+
+
 
 
                 </ul>
-                @Html.Partial("_LoginPartial")
+                <a class="nav-link" href="/Account/Login" style="color: white;">Iniciar sesión</a>
             </div>
         </div>
     </nav>
@@ -42,7 +47,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - Mi aplicación ASP.NET</p>
+            <p>&copy; @DateTime.Now.Year - Santa Ana a un Click</p>
         </footer>
     </div>
 
