@@ -17,6 +17,11 @@ namespace Campus.LogicaDeNegocio.Usuarios.EditarUsuarios
         {
             _editarUsuario = new EditarUsuarioAD();
         }
+        public Task<int> EditarUsuarioAdmin(string id, UsuariosDto usuario)
+        {
+            return _editarUsuario.EditarUsuarioAdmin(id, usuario);
+        }
+
         public Task<int> EditarUsuario(string id, UsuariosDto usuario)
         {
             return _editarUsuario.EditarUsuario(id, usuario);
