@@ -21,15 +21,15 @@
             background-color: #f66359; 
             background-image: url('https://santaana.ed.cr/wp-content/uploads/csalib.png');
             background-repeat: no-repeat;
-            background-position: center center; /*centrado de la imagen*/
-            background-size: 700px;
+            background-position: left center; /*centrado de la imagen*/
+            background-size: 600px;
         }
 
 
         .login-container {
             margin-top: 5%;
             margin-left: 500px;
-            background-color: rgba(255, 255, 255, 0.95); /* Fondo rojo translúcido */
+            background-color: whitesmoke; /* Fondo rojo translúcido */
             padding: 2rem;
             border-radius: 1rem;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
@@ -50,69 +50,73 @@
 </head>
 
 <body>
-    <div class="login-container">
-        <main aria-labelledby="title">
-            <h2 id="title">@ViewBag.Title</h2>
+    <div class="container">
+        <div class="row justify-content-end">
+            <div class="col-md-5  login-container">
+                <main aria-labelledby="title">
+                    <h2 id="title">@ViewBag.Title</h2>
 
-            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <hr />
+
+                        @Html.ValidationSummary("", new { @class = "text-danger" })
+
+                        <div class="row mb-3">
+                            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", placeholder = "Nombre" })
+                        </div>
+
+                        <div class="row mb-3">
+                            @Html.TextBoxFor(m => m.Apellido, new { @class = "form-control", placeholder = "Apellido" })
+                        </div>
+
+                        <div class="row mb-3">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "Email" })
+                        </div>
+
+                        <div class="row mb-3">
+                            @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", type = "tel", minLength = "8", maxlength = "8", placeholder = "Telefono" })
+                        </div>
+
+                        <div class="row mb-3">
+                            @Html.TextBoxFor(m => m.Cedula, new { @class = "form-control", minLength = "9", maxlength = "9", placeholder = "Cedula" })
+                        </div>
+
+                        <div class="row mb-3">
+                            @Html.TextBoxFor(m => m.FechaDeNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", max = fechaMaxima, placeholder = "Fecha de Nacimiento" })
+                        </div>
+
+                        <div class="row mb-3">
+
+                            @Html.DropDownListFor(m => m.Rol, new List<SelectListItem>
             {
-                @Html.AntiForgeryToken()
+                new SelectListItem { Text = "Estuadiante", Value = "Estudiantes" },
+                new SelectListItem { Text = "Profesor", Value = "Profesores" },
+                new SelectListItem { Text = "Administrador", Value = "Administradores" }
+            }, "Seleccione un tipo de Rol", new { @class = "form-control", id = "Rol" })
+                        </div>
 
-                <hr />
+                        <div class="row mb-3">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Contraseña" })
+                        </div>
 
-                @Html.ValidationSummary("", new { @class = "text-danger" })
+                        <div class="row mb-3">
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirmar Contraseña" })
+                        </div>
 
-                <div class="row mb-3">
-                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", placeholder = "Nombre" })
-                </div>
+                        <div class="row">
+                            <input type="submit" value="Registrarse" class="btn w-100" style="background-color: #F44336; border-color: #F44336; color: white;" />
+                        </div>
 
-                <div class="row mb-3">
-                    @Html.TextBoxFor(m => m.Apellido, new { @class = "form-control", placeholder = "Apellido" })
-                </div>
-
-                <div class="row mb-3">
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "Email" })
-                </div>
-
-                <div class="row mb-3">
-                    @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", type = "tel", minLength = "8", maxlength = "8", placeholder = "Telefono" })
-                </div>
-
-                <div class="row mb-3">
-                    @Html.TextBoxFor(m => m.Cedula, new { @class = "form-control", minLength = "9", maxlength = "9", placeholder = "Cedula" })
-                </div>
-
-                <div class="row mb-3">
-                    @Html.TextBoxFor(m => m.FechaDeNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", max = fechaMaxima, placeholder = "Fecha de Nacimiento" })
-                </div>
-
-                <div class="row mb-3">
-
-                    @Html.DropDownListFor(m => m.Rol, new List<SelectListItem>
-    {
-        new SelectListItem { Text = "Estuadiante", Value = "Estudiantes" },
-        new SelectListItem { Text = "Profesor", Value = "Profesores" },
-        new SelectListItem { Text = "Administrador", Value = "Administradores" }
-    }, "Seleccione un tipo de Rol", new { @class = "form-control", id = "Rol" })
-                </div>
-
-                <div class="row mb-3">
-                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Contraseña" })
-                </div>
-
-                <div class="row mb-3">
-                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirmar Contraseña" })
-                </div>
-
-                <div class="row">
-                    <input type="submit" value="Registrarse" class="btn w-100" style="background-color: #F44336; border-color: #F44336; color: white;" />
-                </div>
-
-                <p class="text-center">
-                    @Html.ActionLink("Volver al Inicio", "Login")
-                </p>
-            }
-        </main>
+                        <p class="text-center">
+                            @Html.ActionLink("Volver al Inicio", "Login")
+                        </p>
+                    }
+                </main>
+            </div>
+        </div>
     </div>
 
     @section Scripts {
