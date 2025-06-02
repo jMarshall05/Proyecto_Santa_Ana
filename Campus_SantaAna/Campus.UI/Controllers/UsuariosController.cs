@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.EditarUsuariosLN;
@@ -11,6 +12,8 @@ using Campus.AccesoDatos.ModelosAD;
 using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace Campus.UI.Controllers
 {
@@ -19,11 +22,27 @@ namespace Campus.UI.Controllers
         private IListarUsuariosLN _listarUsuariosLN;
         private IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
         private IEditarUsuarioLN _editarUsuarioLN;
+        private ApplicationUserManager _userManager;
         public UsuariosController()
         {
             _listarUsuariosLN = new ListarUsuariosLN();
             _obtenerUsuariosPorIdLN = new ObtenerUsuariosPorIdLN();
             _editarUsuarioLN = new EditarUsuariosLN();
+        }
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+        public UsuariosController(ApplicationUserManager userManager)
+        {
+            UserManager = userManager;
         }
         // GET: Usuarios
         public ActionResult ListarUsuarios()
@@ -76,7 +95,7 @@ namespace Campus.UI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    _editarUsuarioLN.EditarUsuario(id, usuario);
+                    _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
                 }
                 else
                 {
@@ -92,6 +111,40 @@ namespace Campus.UI.Controllers
                 return View();
             }
         }
+
+        public async Task<ActionResult> EditarUsuario(string id, UsuariosDto usuario)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var user = await UserManager.FindByIdAsync(id);
+                    if (user != null)
+                    {
+                        var result = await UserManager.SetEmailAsync(id, usuario.Email);
+                        if (result.Succeeded)
+                        {
+                           await _editarUsuarioLN.EditarUsuario(id, usuario);
+                        }
+                    }
+
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Por favor, corrija los errores en el formulario.");
+                    return PartialView("_EditarUsuarioParcial", usuario);
+                }
+
+
+
+                return RedirectToAction("ListarUsuarios");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
 
         // GET: Usuarios/Delete/5
         public ActionResult Delete(int id)
