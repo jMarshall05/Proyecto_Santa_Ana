@@ -7,6 +7,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Campus.UI.Models;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
+using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 
 namespace Campus.UI.Controllers
 {
@@ -15,9 +17,11 @@ namespace Campus.UI.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private IObtenerUsuariosPorIdLN _ObtenerUsuarioPorIdLN;
 
         public ManageController()
         {
+            _ObtenerUsuarioPorIdLN = new ObtenerUsuariosPorIdLN();
         }
 
         public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -64,14 +68,20 @@ namespace Campus.UI.Controllers
                 : "";
 
             var userId = User.Identity.GetUserId();
+            var usuario = _ObtenerUsuarioPorIdLN.ObtenerUsuarioPorId(userId);
             var model = new IndexViewModel
             {
                 HasPassword = HasPassword(),
                 PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
                 TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
                 Logins = await UserManager.GetLoginsAsync(userId),
-                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
-            };
+                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId),
+                Nombre= usuario.Nombre,
+                Apellido= usuario.Apellido,
+                Email=usuario.Email,
+                Cedula=usuario.Cedula,
+                Id=userId
+            }; 
             return View(model);
         }
 
