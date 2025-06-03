@@ -7,38 +7,7 @@
     <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />
     @Styles.Render("~/Content/css")
 }
-        <div class="row mb-3">
-            @Html.LabelFor(m => m.Cedula, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Cedula, new { @class = "form-control", minLength = "9", maxlength = "9" })
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            @Html.LabelFor(m => m.FechaDeNacimiento, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.FechaDeNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", max = fechaMaxima })
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            @Html.LabelFor(m => m.Rol, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(m => m.Rol, new List<SelectListItem>
-{
-    new SelectListItem { Text = "Estudiante", Value = "Estudiantes" },
-    new SelectListItem { Text = "Profesor", Value = "Profesores" },
-    new SelectListItem { Text = "Administrador", Value = "Administradores" }
-}, "Seleccione un tipo", new { @class = "form-control", id = "Rol" })
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            @Html.LabelFor(m => m.Password, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-            </div>
-        </div>
+       
 
 <!DOCTYPE html>
 <html lang="es">
