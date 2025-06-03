@@ -1,16 +1,44 @@
 ﻿@model Campus.UI.Models.IndexViewModel
 @{
-    ViewBag.Title = "Administrar";
+    ViewBag.Title = "Administrar Cuenta";
 }
 
 <main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
+    <h2 id="title">@ViewBag.Title</h2>
 
     <p class="text-success">@ViewBag.StatusMessage</p>
+    <h4>Cambiar la configuración de la cuenta</h4>
+    <form id="formEditar" method="post" action="@Url.Action("EditarUsuario", "Usuarios")">
+        <display name="Id" data-id="@Model.Id" />
+
+        <table class="table table-bordered table-striped align-middle" id="tablaDatos">
+            <tbody>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+                    <td class="valor" data-campo="Nombre">@Model.Nombre</td>
+                </tr>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Apellido)</th>
+                    <td class="valor" data-campo="Apellido">@Model.Apellido</td>
+                </tr>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Email)</th>
+                    <td class="valor" data-campo="Email">@Model.Email</td>
+                </tr>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Cedula)</th>
+                    <td>@Html.DisplayFor(model => model.Cedula)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button type="button" id="btnEditar" class="btn btn-primary">Editar datos</button>
+    </form>
     <div>
-        <h4>Cambiar la configuración de la cuenta</h4>
         <hr />
+
         <dl class="dl-horizontal">
+
             <dt>Contraseña:</dt>
             <dd>
                 [
@@ -31,13 +59,13 @@
             </dd>
             @*
                 Los números de teléfono se pueden usar como una segunda fase de comprobación en un sistema de autenticación en dos fases.
-                
+
                 Consulte <a href="https://go.microsoft.com/fwlink/?LinkId=403804">este artículo</a>
                     para obtener detalles sobre cómo configurar esta aplicación ASP.NET para que sea compatible con la autenticación en dos fases mediante SMS.
-                
+
                 Quite la marca de comentario del bloque siguiente después de configurar la autenticación en dos fases
             *@
-            @*  
+            @*
                 <dt>Número de teléfono:</dt>
                 <dd>
                     @(Model.PhoneNumber ?? "None")
@@ -87,3 +115,7 @@
         </dl>
     </div>
 </main>
+
+@section scripts{
+    <script src="~/Scripts/Manage/ManageScript.js"></script>
+}
