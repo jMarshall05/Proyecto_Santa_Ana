@@ -28,6 +28,7 @@ namespace Campus.AccesoDatos.Usuarios.EditarUsuariosAD
                 usuarioExistente.Telefono = usuario.Telefono;
                 usuarioExistente.FechaDeNacimiento = usuario.FechaDeNacimiento;
                 usuarioExistente.FechaDeModificacion = DateTime.Now;
+                usuarioExistente.Id_grupo = usuario.Id_grupo;
                 usuarioExistente.Estado = usuario.Estado;
 
                 EntityState estado = _elContexto.Entry(usuarioExistente).State = EntityState.Modified;

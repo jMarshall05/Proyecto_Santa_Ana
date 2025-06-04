@@ -46,6 +46,7 @@
     <Compile Include="anuncios\EditarAnuncios\EditarAnunciosLN.cs" />
     <Compile Include="anuncios\EliminarAnuncios\EliminarAnunciosLN.cs" />
     <Compile Include="anuncios\ListarAnuncios\ListarAnunciosLN.cs" />
+    <Compile Include="Grupos\ListarGrupos\ListarGruposLN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="tareas\agregarTarea\AgregarTareaLN.cs" />
     <Compile Include="tareas\editarTarea\EditarTareaLN.cs" />

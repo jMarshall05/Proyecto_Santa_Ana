@@ -14,9 +14,10 @@ namespace Campus.AccesoDatos
         public Contexto() : base("name=Contexto")
         {
         }
-    public DbSet<UsuariosAD> Usuarios { get; set; }
-    public DbSet<AnunciosAD> Anuncios { get; set; }
-    public DbSet<TareasAD> Tareas { get; set; }
+        public DbSet<UsuariosAD> Usuarios { get; set; }
+        public DbSet<AnunciosAD> Anuncios { get; set; }
+        public DbSet<TareasAD> Tareas { get; set; }
+        public DbSet<GruposAD> Grupos { get; set; }
 
 
     }

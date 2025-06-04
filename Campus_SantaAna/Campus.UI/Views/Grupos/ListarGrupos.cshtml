@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.GruposDto>
+
+@{
+    ViewBag.Title = "ListarGrupos";
+}
+
+<h2>ListarGrupos</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.nombre_grupo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.creado_por)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.estado)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.nombre_grupo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.descripcion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.creado_por)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.estado)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id_grupo }) |
+            @Html.ActionLink("Details", "Details", new { id=item.id_grupo }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.id_grupo })
+        </td>
+    </tr>
+}
+
+</table>

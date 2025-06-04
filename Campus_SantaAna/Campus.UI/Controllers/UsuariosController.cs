@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.EditarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.ModelosAD;
+using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
@@ -23,11 +25,13 @@ namespace Campus.UI.Controllers
         private IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
         private IEditarUsuarioLN _editarUsuarioLN;
         private ApplicationUserManager _userManager;
+        private IListarGruposLN _listarGrupos;
         public UsuariosController()
         {
             _listarUsuariosLN = new ListarUsuariosLN();
             _obtenerUsuariosPorIdLN = new ObtenerUsuariosPorIdLN();
             _editarUsuarioLN = new EditarUsuariosLN();
+            _listarGrupos = new ListarGruposLN();
         }
         public ApplicationUserManager UserManager
         {
@@ -54,7 +58,11 @@ namespace Campus.UI.Controllers
         // GET: Usuarios/Details/5
         public ActionResult DetallesDeUsuarioParcial(string id)
         {
+           
+            
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
+            var grupo = _listarGrupos.BuscarGruposPorUsuario((int)usuario.Id_grupo);
+            ViewBag.NombreGrupo = grupo.nombre_grupo;
             return PartialView("_DetallesDeUsuarioParcial", usuario);
         }
 
@@ -83,6 +91,8 @@ namespace Campus.UI.Controllers
         // GET: Usuarios/Edit/5
         public ActionResult EditarUsuarioParcial(string id)
         {
+            var listaDeGrupos = _listarGrupos.ListarGrupos();
+            ViewBag.ListaDeGrupos = new SelectList(listaDeGrupos, "id_grupo", "nombre_grupo");
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
             return PartialView("_EditarUsuarioParcial", usuario);
         }

@@ -40,6 +40,8 @@ namespace Campus.Abstracciones.ModelosUI
         public string Rol { get; set; }
         [DisplayName("Estado")]
         public bool Estado { get; set; }
+        [DisplayName("Id de Grupo")]
+        public int? Id_grupo { get; set; }
 
     }
 }
