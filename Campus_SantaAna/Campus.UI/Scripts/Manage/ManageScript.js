@@ -46,8 +46,8 @@
                 $("#filaGuardar").remove();
                 $("#btnEditar").prop("disabled", false);
 
-                // Mostrar mensaje de éxito
                 alert("Datos guardados correctamente");
+
             },
             error: function () {
                 alert("Error al guardar los datos");
