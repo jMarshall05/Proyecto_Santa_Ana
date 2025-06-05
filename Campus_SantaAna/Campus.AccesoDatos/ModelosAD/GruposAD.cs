@@ -23,5 +23,9 @@ namespace Campus.AccesoDatos.ModelosAD
         public string creado_por { get; set; }
         [Column("estado")]
         public bool estado { get; set; }
+        [Column("FechaDeCreacion")]
+        public DateTime FechaDeCreacion { get; set; }
+        [Column("FechaDeModificacion")]
+        public DateTime? FechaDeModificacion { get; set; }
     }
 }

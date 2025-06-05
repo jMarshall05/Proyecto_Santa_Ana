@@ -4,6 +4,8 @@
     [descripcion]  TEXT           NOT NULL,
     [creado_por]   NVARCHAR (128) NOT NULL,
     [estado]       BIT   NOT NULL,
+    [FechaDeCreacion] DATETIME NOT NULL, 
+    [FechaDeModificacion] DATETIME NULL, 
     PRIMARY KEY CLUSTERED ([id_grupo] ASC)
 );
 

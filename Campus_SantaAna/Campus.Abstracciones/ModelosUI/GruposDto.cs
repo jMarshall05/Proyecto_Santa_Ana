@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,11 @@ namespace Campus.Abstracciones.ModelosUI
         public string creado_por { get; set; }
         [Display(Name = "Estado")]
         public bool estado { get; set; }
+        [Display(Name = "Fecha de Creación")]
+        [Required(ErrorMessage = "La fecha de creación es obligatoria.")]
+        public DateTime FechaDeCreacion { get; set; }
+        [Display(Name = "Fecha de Modificación")]
+        public DateTime? FechaDeModificacion { get; set; }
 
     }
 }

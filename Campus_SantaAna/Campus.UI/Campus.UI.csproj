@@ -334,6 +334,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\datatable\dataTables.js" />
+    <Content Include="Scripts\Grupos\ScriptDeGrupos.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
     <Content Include="Scripts\jquery-3.7.0.slim.js" />
@@ -396,6 +397,7 @@
     <Content Include="Views\Tareas\Edit.cshtml" />
     <Content Include="Views\Tareas\Details.cshtml" />
     <Content Include="Views\Grupos\ListarGrupos.cshtml" />
+    <Content Include="Views\Grupos\_AgregarGrupoParcial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

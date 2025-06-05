@@ -47,6 +47,7 @@
     <Compile Include="AccesoDatos\anuncios\EditarAnunciosAD\IEditarAnunciosAD.cs" />
     <Compile Include="AccesoDatos\anuncios\EliminarAnunciosAD\IEliminarAnunciosAD.cs" />
     <Compile Include="AccesoDatos\anuncios\ListarAnunciosAD\IListarAnunciosAD.cs" />
+    <Compile Include="AccesoDatos\Grupos\AgregarGrupo\IAgregarGrupoAD.cs" />
     <Compile Include="AccesoDatos\Grupos\ListarGrupos\IListarGruposAD.cs" />
     <Compile Include="AccesoDatos\tareas\agregarTareaAD\IAgregarTarea.cs" />
     <Compile Include="AccesoDatos\tareas\editarTareaAD\IEditarTarea.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="LogicaDeNegocio\anuncios\EditarAnunciosLN\IEditarAnunciosLN.cs" />
     <Compile Include="LogicaDeNegocio\anuncios\EliminarAnunciosLN\IEliminarAnunciosLN.cs" />
     <Compile Include="LogicaDeNegocio\anuncios\ListarAnunciosLN\IListarAnunciosLN.cs" />
+    <Compile Include="LogicaDeNegocio\Grupos\AgregarGrupo\IAgregarGrupoLN.cs" />
     <Compile Include="LogicaDeNegocio\Grupos\ListarGrupos\IListarGruposLN.cs" />
     <Compile Include="LogicaDeNegocio\tareas\agregarTareaLN\IAgregarTareaLN.cs" />
     <Compile Include="LogicaDeNegocio\tareas\editarTareaLN\IEditarTareaLN.cs" />
