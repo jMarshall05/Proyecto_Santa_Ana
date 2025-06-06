@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Web;
 
 namespace Campus.Abstracciones.ModelosUI
 {
@@ -30,13 +31,15 @@ namespace Campus.Abstracciones.ModelosUI
 
         [Required]
         [DisplayName("Fecha de Creación")]
-        public DateTime FechaCreacion { get; set; } = DateTime.Now;
+        public DateTime FechaCreacion { get; set; }
 
         [DisplayName("Fecha de Modificación")]
-        public DateTime FechaModificacion { get; set; }
+        public DateTime? FechaModificacion { get; set; }
 
         [DisplayName("Fecha de Publicación")]
         public DateTime FechaPublicacion { get; set; }
+        [NotMapped]
+        public HttpPostedFileBase Archivo { get; set; }
 
     }
 }
