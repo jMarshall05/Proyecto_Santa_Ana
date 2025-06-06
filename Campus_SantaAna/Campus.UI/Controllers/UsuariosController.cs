@@ -59,8 +59,12 @@ namespace Campus.UI.Controllers
         public ActionResult DetallesDeUsuarioParcial(string id)
         {
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
-            var grupo = _listarGrupos.BuscarGruposPorId((int)usuario.Id_grupo);
-            ViewBag.NombreGrupo = grupo.nombre_grupo;
+            if (usuario.Id_grupo != null)
+            {
+                var grupo = _listarGrupos.BuscarGruposPorId((int)usuario.Id_grupo); 
+                ViewBag.NombreGrupo = grupo.nombre_grupo;
+            }
+           
             return PartialView("_DetallesDeUsuarioParcial", usuario);
         }
 
@@ -132,7 +136,7 @@ namespace Campus.UI.Controllers
                         var result = await UserManager.SetEmailAsync(id, usuario.Email);
                         if (result.Succeeded)
                         {
-                           await _editarUsuarioLN.EditarUsuario(id, usuario);
+                            await _editarUsuarioLN.EditarUsuario(id, usuario);
                         }
                     }
 

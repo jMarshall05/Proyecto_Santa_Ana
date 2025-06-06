@@ -25,20 +25,20 @@
             </button>
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    @if (User.IsInRole("Administradores"))
-                        {
+                    @*@if (User.IsInRole("Administradores"))
+                        {*@
                     <li>@Html.ActionLink("Gestion de Usuarios", "ListarUsuarios", "Usuarios", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
                     <li>@Html.ActionLink("Gestion de Grupos", "ListarGrupos", "Grupos", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
-                    }
+                    @*}
                     @if (User.IsInRole("Profesores") || User.IsInRole("Administradores") )
-                        {
+                        {*@
                     <li>@Html.ActionLink("Tareas", "ListarTareas", "Tareas", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
                     <li>@Html.ActionLink("Administrar Anuncios", "ListarAnuncios", "Anuncios", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
-                     } 
+                     @*} 
                     @if (User.IsInRole("Estudiantes") || User.IsInRole("Profesores") || User.IsInRole("Administradores"))
-                        {
+                        {*@
                     <li>@Html.ActionLink("Anuncios", "AnunciosEstudiantes", "Anuncios", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
-                    }
+                        @*}*@
 
                     <li>@Html.ActionLink("Documentos", "Documentos", "Home", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
 
