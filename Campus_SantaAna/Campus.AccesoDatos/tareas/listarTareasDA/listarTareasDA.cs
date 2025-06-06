@@ -45,7 +45,8 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                 Titulo = tarea.Titulo,
                 Descripcion = tarea.Descripcion,
                 FechaEntrega = tarea.FechaEntrega,
-                FechaPublicacion = tarea.FechaPublicacion
+                FechaPublicacion = tarea.FechaPublicacion,
+                ArchivoAdjunto = tarea.ArchivoAdjunto
             };
         }
     }

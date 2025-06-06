@@ -123,10 +123,26 @@ namespace Campus.UI.Controllers
             {
                 try
                 {
+                    if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
+                    {
+                        // Ruta del servidor donde se guardará el archivo
+                        var nombreArchivo = Path.GetFileName(tarea.Archivo.FileName);
+                        var rutaCarpeta = Server.MapPath("~/Uploads/");
+                        var rutaCompleta = Path.Combine(rutaCarpeta, nombreArchivo);
+
+                        // Crear carpeta si no existe
+                        if (!Directory.Exists(rutaCarpeta))
+                            Directory.CreateDirectory(rutaCarpeta);
+
+                        // Guardar archivo
+                        tarea.Archivo.SaveAs(rutaCompleta);
+
+                        // Guardar solo la ruta relativa en la base de datos
+                        tarea.ArchivoAdjunto = "~/Uploads/" + nombreArchivo;
+                    }
+
                     // Mantenemos la fecha original de creación
                     var tareaOriginal = await _listarTareaLN.ObtenerPorIdAsync(id);
-                    tarea.FechaCreacion = tareaOriginal.FechaCreacion;
-
                     // Actualizamos la fecha de modificación
                     tarea.FechaModificacion = DateTime.Now;
 
