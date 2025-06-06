@@ -65,23 +65,43 @@
                         @Html.ValidationSummary("", new { @class = "text-danger" })
 
                         <div class="row mb-3">
-                            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", placeholder = "Nombre" })
+                            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control",
+                           placeholder = "Nombre",
+                           pattern = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$",
+                           maxlength = "150",
+                           required = "required",
+                           oninput = "this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')"
+                       })
                         </div>
 
                         <div class="row mb-3">
-                            @Html.TextBoxFor(m => m.Apellido, new { @class = "form-control", placeholder = "Apellido" })
+                            @Html.TextBoxFor(m => m.Apellido, new { @class = "form-control", placeholder = "Apellido",
+                           pattern = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$",
+                           maxlength = "150",
+                           required = "required",
+                           oninput = "this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')"
+                       })
                         </div>
 
                         <div class="row mb-3">
-                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "Email" })
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control"
+                           , type = "email",
+                           placeholder = "Email",
+                           maxlength = "150",
+                           required = "required"
+                       })
                         </div>
 
                         <div class="row mb-3">
-                            @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", type = "tel", minLength = "8", maxlength = "8", placeholder = "Telefono" })
+                            @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", type = "tel", minLength = "8", maxlength = "8", placeholder = "Telefono",
+                           oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                       })
                         </div>
 
                         <div class="row mb-3">
-                            @Html.TextBoxFor(m => m.Cedula, new { @class = "form-control", minLength = "9", maxlength = "9", placeholder = "Cedula" })
+                            @Html.TextBoxFor(m => m.Cedula, new { @class = "form-control", minLength = "9", maxlength = "9", placeholder = "Cedula",
+                           oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                       })
                         </div>
 
                         <div class="row mb-3">

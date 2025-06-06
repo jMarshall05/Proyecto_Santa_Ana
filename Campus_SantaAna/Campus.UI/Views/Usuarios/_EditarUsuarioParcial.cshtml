@@ -48,7 +48,7 @@
                     </div>
                     <div class="col-md-6">
                         @Html.LabelFor(model => model.Id_grupo, htmlAttributes: new { @class = "form-label fw-bold" })
-                        @Html.DropDownListFor(model => model.Id_grupo, (SelectList)ViewBag.ListaDeGrupos, "Agregue el usuario a un grupo", new { @class = "form-control", required = "required" })
+                        @Html.DropDownListFor(model => model.Id_grupo, (SelectList)ViewBag.ListaDeGrupos, "Agregue el usuario a un grupo", new { @class = "form-control" })
 
                         @Html.ValidationMessageFor(model => model.Id_grupo, "", new { @class = "text-danger" })
                     </div>
@@ -67,9 +67,9 @@
                     }, "Seleccione un tipo", new { @class = "form-select", id = "Rol" })
                 </div>
 
-                <div class="form-check mb-3">
-                    @Html.CheckBoxFor(model => model.Estado, new { @class = "form-check-input", id = "chkEstado" })
-                    @Html.LabelFor(model => model.Estado, new { @class = "form-check-label", @for = "chkEstado" })
+                <div class="form-check form-switch mb-3">
+                    @Html.EditorFor(model => model.Estado, new { htmlAttributes = new { @class = "form-check-input" } })
+                    @Html.LabelFor(model => model.Estado, htmlAttributes: new { @class = "form-check-label fw-bold" })
                     @Html.ValidationMessageFor(model => model.Estado, "", new { @class = "text-danger" })
                 </div>
 
