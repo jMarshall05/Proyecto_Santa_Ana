@@ -28,6 +28,7 @@
                     @*@if (User.IsInRole("Administradores"))
                         {*@
                     <li>@Html.ActionLink("Gestion de Usuarios", "ListarUsuarios", "Usuarios", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
+                    <li>@Html.ActionLink("Gestion de Grupos", "ListarGrupos", "Grupos", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
                     @*               }*@
                     <li>@Html.ActionLink("Tareas", "ListarTareas", "Tareas", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
 
