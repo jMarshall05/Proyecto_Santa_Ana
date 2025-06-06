@@ -19,8 +19,8 @@
         },
         dom: '<"top"<"d-flex justify-content-between align-items-center"lf>>rt<"bottom"ip><"clear">',
         columnDefs: [
-            { orderable: false, targets: [4] }, // Cambiado de [6] a [5] porque tienes 6 columnas (índice 0-5)
-            { searchable: false, targets: [0, 4] } // Ajustado para las columnas correctas
+            { orderable: false, targets: [3] }, // Cambiado de [6] a [5] porque tienes 6 columnas (índice 0-5)
+            { searchable: false, targets: [0, 3] } // Ajustado para las columnas correctas
         ],
         initComplete: function () {
             // Personalizar el dropdown de cantidad de registros
@@ -34,7 +34,7 @@
         }
     });
 
-    
+
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
@@ -69,9 +69,42 @@
     });
 
 
+    $(document).on('click', '.btn-Detalles-Grupo', function (event) {
+        var id = $(this).data('id');
+        $.ajax({
+            url: "/Grupos/DetallesDeGrupoParcial",
+            data: { id: id },
+            type: "GET",
+            success: function (data) {
+                $(".modal-body").html(data);
+                $(".modal-title").html("Detalles del Grupo");
+                $("#GruposModal").modal("show");
+
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
 
 
+    $(document).on('click', '.btn-Editar-Grupo', function (event) {
+        var id = $(this).data('id');
+        $.ajax({
+            url: "/Grupos/EditarGrupoParcial",
+            data: { id: id },
+            type: "GET",
+            success: function (data) {
+                $(".modal-body").html(data);
+                $(".modal-title").html("Modificar Grupo");
+                $("#GruposModal").modal("show");
 
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
 
 
 

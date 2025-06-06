@@ -5,12 +5,15 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.AgregarGrupo;
+using Campus.Abstracciones.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
 using Campus.LogicaDeNegocio.Grupos.AgregarGrupo;
+using Campus.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
+using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 
 namespace Campus.UI.Controllers
@@ -20,11 +23,13 @@ namespace Campus.UI.Controllers
         private IListarGruposLN _listarGrupos;
         private IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
         private IAgregarGrupoLN _agregarGrupoLN;
+        private IEditarGrupoLN _editarGrupoLN;
         public GruposController()
         {
             _listarGrupos = new ListarGruposLN();
             _obtenerUsuariosPorIdLN = new ObtenerUsuariosPorIdLN();
             _agregarGrupoLN = new AgregarGrupoLN();
+            _editarGrupoLN = new EditarGrupoLN();
         }
         // GET: Grupos
         public ActionResult ListarGrupos()
@@ -34,19 +39,25 @@ namespace Campus.UI.Controllers
             return View(listaDeGrupos);
         }
 
-         public ActionResult BuscarGruposPorUsuario()
+        public ActionResult BuscarGruposPorUsuario()
         {
             string id = User.Identity.GetUserId();
-            var Usuario=_obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);  
+            var Usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
 
-            var grupo = _listarGrupos.BuscarGruposPorUsuario((int)Usuario.Id_grupo);
+            var grupo = _listarGrupos.BuscarGruposPorId((int)Usuario.Id_grupo);
             return View(grupo);
         }
 
         // GET: Grupos/Details/5
-        public ActionResult Details(int id)
+        public ActionResult DetallesDeGrupoParcial(int id)
         {
-            return View();
+            var grupo = _listarGrupos.BuscarGruposPorId(id);
+            if (grupo == null)
+            {
+                ModelState.AddModelError("", "Grupo no encontrado.");
+                return PartialView("_DetallesDeGrupoParcial", new GruposDto());
+            }
+            return PartialView("_DetallesDeGrupoParcial", grupo);
         }
 
         // GET: Grupos/Create
@@ -57,23 +68,25 @@ namespace Campus.UI.Controllers
 
         // POST: Grupos/Create
         [HttpPost]
-        public async Task<ActionResult> AgregarGrupoParcial(string id,GruposDto grupo)
+        public async Task<ActionResult> AgregarGrupoParcial(string id, GruposDto grupo)
         {
             try
             {
-                
+
                 if (!ModelState.IsValid)
                 {
                     ModelState.AddModelError("", "Por favor, complete todos los campos requeridos.");
-                    return PartialView("_AgregarGrupoParcial",grupo);
+                    return PartialView("_AgregarGrupoParcial", grupo);
                 }
+                if (id.IsNullOrWhiteSpace())
+                    return RedirectToAction("Login", "Account");
                 var Usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
                 grupo.creado_por = Usuario.Nombre + " " + Usuario.Apellido;
                 int resultado = await _agregarGrupoLN.AgregarGrupo(grupo);
                 if (resultado == 0)
                 {
                     ModelState.AddModelError("", "No se pudo agregar el grupo. Por favor, intente nuevamente.");
-                    return PartialView("_AgregarGrupoParcial",grupo);
+                    return PartialView("_AgregarGrupoParcial", grupo);
                 }
                 return RedirectToAction("ListarGrupos");
             }
@@ -84,20 +97,31 @@ namespace Campus.UI.Controllers
         }
 
         // GET: Grupos/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult EditarGrupoParcial(int id)
         {
-            return View();
+            var grupo = _listarGrupos.BuscarGruposPorId(id);
+            return PartialView("_EditarGrupoParcial", grupo);
         }
 
         // POST: Grupos/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public async Task<ActionResult> EditarGrupoParcial(int id, GruposDto grupo)
         {
             try
             {
-                // TODO: Add update logic here
+                if (!ModelState.IsValid)
+                {
+                    ModelState.AddModelError("", "Por favor, complete todos los campos requeridos.");
+                    return PartialView("_EditarGrupoParcial", grupo);
+                }
+                int resultado = await _editarGrupoLN.EditarGrupo(id, grupo);
+                if (resultado == 1)
+                {
+                    return RedirectToAction("ListarGrupos");
+                }
 
-                return RedirectToAction("Index");
+                ModelState.AddModelError("", "Por favor, complete todos los campos requeridos.");
+                return PartialView("_EditarGrupoParcial", grupo);
             }
             catch
             {

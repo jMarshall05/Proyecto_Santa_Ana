@@ -10,6 +10,6 @@ namespace Campus.Abstracciones.AccesoDatos.Grupos.ListarGrupos
     public interface IListarGruposAD
     {
         List<GruposDto> ListarGrupos();
-        GruposDto BuscarGruposPorUsuario(int idGrupo);
+        GruposDto BuscarGruposPorId(int idGrupo);
     }
 }

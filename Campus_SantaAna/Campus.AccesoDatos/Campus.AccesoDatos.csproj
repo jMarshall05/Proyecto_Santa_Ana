@@ -58,6 +58,7 @@
     <Compile Include="anuncios\ListarAnunciosAD\ListarAnunciosAD.cs" />
     <Compile Include="Contexto.cs" />
     <Compile Include="Grupos\AgregarGrupo\AgregarGrupoAD.cs" />
+    <Compile Include="Grupos\EditarGrupo\EditarGrupoAD.cs" />
     <Compile Include="Grupos\ListarGrupos\ListarGruposAD.cs" />
     <Compile Include="ModelosAD\AnunciosAD.cs" />
     <Compile Include="ModelosAD\GruposAD.cs" />

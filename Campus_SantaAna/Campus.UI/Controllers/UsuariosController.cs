@@ -58,10 +58,8 @@ namespace Campus.UI.Controllers
         // GET: Usuarios/Details/5
         public ActionResult DetallesDeUsuarioParcial(string id)
         {
-           
-            
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
-            var grupo = _listarGrupos.BuscarGruposPorUsuario((int)usuario.Id_grupo);
+            var grupo = _listarGrupos.BuscarGruposPorId((int)usuario.Id_grupo);
             ViewBag.NombreGrupo = grupo.nombre_grupo;
             return PartialView("_DetallesDeUsuarioParcial", usuario);
         }

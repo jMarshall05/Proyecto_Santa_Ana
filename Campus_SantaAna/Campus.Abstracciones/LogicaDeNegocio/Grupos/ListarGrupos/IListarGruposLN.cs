@@ -10,7 +10,7 @@ namespace Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos
     public interface IListarGruposLN
     {
         List<GruposDto> ListarGrupos();
-        GruposDto BuscarGruposPorUsuario(int idGrupo);
+        GruposDto BuscarGruposPorId(int idGrupo);
 
     }
 }

@@ -16,7 +16,7 @@ namespace Campus.AccesoDatos.Grupos.ListarGrupos
             _elContexto = new Contexto();
         }
 
-        public GruposDto BuscarGruposPorUsuario(int idGrupo)
+        public GruposDto BuscarGruposPorId(int idGrupo)
         {
             GruposDto grupo = (from Grupos in _elContexto.Grupos
                                where Grupos.id_grupo == idGrupo
@@ -26,6 +26,8 @@ namespace Campus.AccesoDatos.Grupos.ListarGrupos
                                    nombre_grupo = Grupos.nombre_grupo,
                                    descripcion = Grupos.descripcion,
                                    creado_por = Grupos.creado_por,
+                                   FechaDeCreacion = Grupos.FechaDeCreacion,
+                                   FechaDeModificacion = Grupos.FechaDeModificacion,
                                    estado = Grupos.estado
                                }).FirstOrDefault();
             return grupo;

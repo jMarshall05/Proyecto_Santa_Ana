@@ -18,9 +18,9 @@ namespace Campus.LogicaDeNegocio.Grupos.ListarGrupos
             _listarGrupos = new ListarGruposAD();
         }
 
-        public GruposDto BuscarGruposPorUsuario(int idGrupo)
+        public GruposDto BuscarGruposPorId(int idGrupo)
         {
-            return _listarGrupos.BuscarGruposPorUsuario(idGrupo);
+            return _listarGrupos.BuscarGruposPorId(idGrupo);
         }
 
         public List<GruposDto> ListarGrupos()
