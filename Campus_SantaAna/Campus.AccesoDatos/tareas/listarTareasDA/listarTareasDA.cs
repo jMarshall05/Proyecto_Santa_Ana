@@ -26,7 +26,8 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                     Titulo = t.Titulo,
                     Descripcion = t.Descripcion,
                     FechaEntrega = t.FechaEntrega,
-                    FechaPublicacion = t.FechaPublicacion
+                    FechaPublicacion = t.FechaPublicacion,
+                    ArchivoAdjunto = t.ArchivoAdjunto
                 })
                 .ToListAsync();
         }

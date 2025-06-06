@@ -56,7 +56,7 @@
                                     <td class="text-center">
                                         @if (!string.IsNullOrEmpty(tarea.ArchivoAdjunto))
                                         {
-                                            <a href="@Url.Content("~/Uploads/" + tarea.ArchivoAdjunto)"
+                                            <a href="@Url.Content(tarea.ArchivoAdjunto)"
                                                target="_blank"
                                                class="btn btn-sm btn-outline-primary rounded-circle"
                                                data-bs-toggle="tooltip"
