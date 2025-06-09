@@ -50,7 +50,7 @@
         }
     );
 
-    $(document).on('click', '.btn-Agregar-Grupo', function (event) {
+    function AgregarGrupo (event) {
         var id = $(this).data('id');
         $.ajax({
             url: "/Grupos/AgregarGrupoParcial",
@@ -66,10 +66,12 @@
                 console.log(error);
             }
         });
-    });
+    };
+    $(document).on('click', '.btn-Agregar-Grupo', AgregarGrupo) 
 
 
-    $(document).on('click', '.btn-Detalles-Grupo', function (event) {
+
+  function DetallesGrupo(event) {
         var id = $(this).data('id');
         $.ajax({
             url: "/Grupos/DetallesDeGrupoParcial",
@@ -85,10 +87,12 @@
                 console.log(error);
             }
         });
-    });
+    };
+$(document).on('click', '.btn-Detalles-Grupo', DetallesGrupo) 
 
 
-    $(document).on('click', '.btn-Editar-Grupo', function (event) {
+
+    function EditarGrupo(event) {
         var id = $(this).data('id');
         $.ajax({
             url: "/Grupos/EditarGrupoParcial",
@@ -104,7 +108,9 @@
                 console.log(error);
             }
         });
-    });
+        $(document).on('click', '.btn-Editar-Grupo', EditarGrupo) 
+
+    };
 
 
 

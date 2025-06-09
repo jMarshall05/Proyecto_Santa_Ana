@@ -54,7 +54,7 @@
     );
 
     // Event handler para el botón Detalles
-    $(document).on('click', '.btn-Detalles', function (event) {
+    function DetallesTarea (event) {
         var id = $(this).data('id');
         $.ajax({
             url: "/Usuarios/DetallesDeUsuarioParcial",
@@ -69,10 +69,12 @@
                 console.log(error);
             }
         });
-    });
+    };
+$(document).on('click', '.btn-Detalles', DetallesTarea)
+
 
     // Event handler para el botón Editar
-    $(document).on('click', '.btn-Editar', function (event) {
+   function EditarTarea (event) {
         var id = $(this).data('id');
         $.ajax({
             url: "/Usuarios/EditarUsuarioParcial",
@@ -87,5 +89,6 @@
                 console.log(error);
             }
         });
-    });
+    };
+    $(document).on('click', '.btn-Editar', EditarTarea) 
 });
