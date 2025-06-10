@@ -1,4 +1,4 @@
-﻿@model Campus.Abstracciones.ModelosUI.GruposDto
+﻿@model Campus.Abstracciones.ModelosUI.UsuariosGruposDto
 
 <div class="card shadow-sm border-0">
     <div class="card-header bg-primary text-white">
@@ -7,53 +7,53 @@
     <div class="card-body">
         <div class="row mb-3">
             <div class="col-md-4 fw-bold text-muted">
-                @Html.DisplayNameFor(model => model.nombre_grupo)
+                @Html.DisplayNameFor(model => model.grupo.nombre_grupo)
             </div>
             <div class="col-md-8">
-                @Html.DisplayFor(model => model.nombre_grupo)
+                @Html.DisplayFor(model => model.grupo.nombre_grupo)
             </div>
         </div>
 
         <div class="row mb-3">
             <div class="col-md-4 fw-bold text-muted">
-                @Html.DisplayNameFor(model => model.descripcion)
+                @Html.DisplayNameFor(model => model.grupo.descripcion)
             </div>
             <div class="col-md-8">
-                @Html.DisplayFor(model => model.descripcion)
+                @Html.DisplayFor(model => model.grupo.descripcion)
             </div>
         </div>
 
         <div class="row mb-3">
             <div class="col-md-4 fw-bold text-muted">
-                @Html.DisplayNameFor(model => model.creado_por)
+                @Html.DisplayNameFor(model => model.grupo.creado_por)
             </div>
             <div class="col-md-8">
-                @Html.DisplayFor(model => model.creado_por)
+                @Html.DisplayFor(model => model.grupo.creado_por)
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-md-4 fw-bold text-muted">
-                @Html.DisplayNameFor(model => model.FechaDeCreacion)
+                @Html.DisplayNameFor(model => model.grupo.FechaDeCreacion)
             </div>
             <div class="col-md-8">
-                @Html.DisplayFor(model => model.FechaDeCreacion)
+                @Html.DisplayFor(model => model.grupo.FechaDeCreacion)
             </div>
         </div>
 
         <div class="row mb-3">
             <div class="col-md-4 fw-bold text-muted">
-                @Html.DisplayNameFor(model => model.FechaDeModificacion)
+                @Html.DisplayNameFor(model => model.grupo.FechaDeModificacion)
             </div>
             <div class="col-md-8">
-                @Html.DisplayFor(model => model.FechaDeModificacion)
+                @Html.DisplayFor(model => model.grupo.FechaDeModificacion)
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-md-4 fw-bold text-muted">
-                @Html.DisplayNameFor(model => model.estado)
+                @Html.DisplayNameFor(model => model.grupo.estado)
             </div>
             <div class="col-md-8">
-                @if (Model.estado)
+                @if (Model.grupo.estado)
                 {
                     <span class="badge bg-success">Activo</span>
                 }
@@ -62,6 +62,33 @@
                     <span class="badge bg-danger">Inactivo</span>
                 }
             </div>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 table-bordered" id="TablaDeUsuarios">
+                <thead class="table-danger">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.usuarios.First().Nombre)</th>
+                        <th>@Html.DisplayNameFor(model => model.usuarios.First().Apellido)</th>
+                        <th>@Html.DisplayNameFor(model => model.usuarios.First().Email)</th>
+                        <th>@Html.DisplayNameFor(model => model.usuarios.First().Telefono)</th>
+                        <th>@Html.DisplayNameFor(model => model.usuarios.First().Cedula)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.usuarios)
+                    {
+                        <tr class="hover-shadow">
+                            <td class="fw-semibold">@Html.DisplayFor(modelItem => item.Nombre)</td>
+                            <td class="fw-semibold">@Html.DisplayFor(modelItem => item.Apellido)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Telefono)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Cedula)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
     <div class="card-footer bg-light d-flex justify-content-end">

@@ -7,11 +7,14 @@ using System.Web.Mvc;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.AgregarGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListaDeUsuariosPorGrupoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.AccesoDatos.ModelosAD;
 using Campus.LogicaDeNegocio.Grupos.AgregarGrupo;
 using Campus.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.LogicaDeNegocio.Usuarios.ListaDeUsuariosPorGrupo;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
@@ -24,12 +27,14 @@ namespace Campus.UI.Controllers
         private IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
         private IAgregarGrupoLN _agregarGrupoLN;
         private IEditarGrupoLN _editarGrupoLN;
+        private IListaDeUsuariosPorGrupoLN _usuariosPorGrupo;
         public GruposController()
         {
             _listarGrupos = new ListarGruposLN();
             _obtenerUsuariosPorIdLN = new ObtenerUsuariosPorIdLN();
             _agregarGrupoLN = new AgregarGrupoLN();
             _editarGrupoLN = new EditarGrupoLN();
+            _usuariosPorGrupo = new ListaDeUsuariosPorGrupoLN();
         }
         // GET: Grupos
         public ActionResult ListarGrupos()
@@ -51,13 +56,14 @@ namespace Campus.UI.Controllers
         // GET: Grupos/Details/5
         public ActionResult DetallesDeGrupoParcial(int id)
         {
-            var grupo = _listarGrupos.BuscarGruposPorId(id);
-            if (grupo == null)
+            var grupo = _listarGrupos.BuscarGruposPorId(id); 
+            var usuariosEnGrupo = _usuariosPorGrupo.ObtenerUsuariosPorGrupo(id);
+            var UsuariosGruposDto = new UsuariosGruposDto
             {
-                ModelState.AddModelError("", "Grupo no encontrado.");
-                return PartialView("_DetallesDeGrupoParcial", new GruposDto());
-            }
-            return PartialView("_DetallesDeGrupoParcial", grupo);
+                grupo = grupo,
+               usuarios = usuariosEnGrupo
+            };
+                       return PartialView("_DetallesDeGrupoParcial", UsuariosGruposDto);
         }
 
         // GET: Grupos/Create

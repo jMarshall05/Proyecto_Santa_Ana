@@ -157,9 +157,6 @@ namespace Campus.UI.Controllers
                         // Guardar solo la ruta relativa en la base de datos
                         tarea.ArchivoAdjunto = "~/Uploads/" + nombreArchivo;
                     }
-
-                    // Mantenemos la fecha original de creación
-                    var tareaOriginal = await _listarTareaLN.ObtenerPorIdAsync(id);
                     // Actualizamos la fecha de modificación
                     tarea.FechaModificacion = DateTime.Now;
 
