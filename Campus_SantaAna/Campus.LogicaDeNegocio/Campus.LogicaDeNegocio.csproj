@@ -56,6 +56,7 @@
     <Compile Include="tareas\listarTarea\ListarTareaLN.cs" />
     <Compile Include="Usuarios\AgregarUsuarios\AgregarUsuariosLN.cs" />
     <Compile Include="Usuarios\EditarUsuarios\EditarUsuariosLN.cs" />
+    <Compile Include="Usuarios\ListaDeUsuariosPorGrupo\ListaDeUsuariosPorGrupoLN.cs" />
     <Compile Include="Usuarios\ListarUsuarios\ListarUsuariosLN.cs" />
     <Compile Include="Usuarios\ObtenerUsuariosPorId\ObtenerUsuariosPorIdLN.cs" />
   </ItemGroup>

@@ -17,6 +17,7 @@
             @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
                 @Html.AntiForgeryToken()
+                @Html.ValidationSummary("", new { @class = "text-danger" })
                 @Html.HiddenFor(model => model.IdTarea)
                 <div class="row">
                     <!-- Columna Izquierda - Título y Descripción -->
@@ -110,25 +111,25 @@
 
 
                 <!-- Archivo Adjunto -->
-        <div class="form-group mb-4">
-            @Html.Label("Archivo Adjunto", new { @class = "font-weight-bold text-primary mb-2" })
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text bg-light h-100">
-                        <i class="fas fa-paperclip text-primary"></i>
-                    </span>
+                <div class="form-group mb-4">
+                    @Html.Label("Archivo Adjunto", new { @class = "font-weight-bold text-primary mb-2" })
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-light h-100">
+                                <i class="fas fa-paperclip text-primary"></i>
+                            </span>
+                        </div>
+                        <input type="file" name="Archivo" class="form-control" />
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.ArchivoAdjunto))
+                    {
+                        <a href="@Url.Content(Model.ArchivoAdjunto)"
+                           class="btn btn-outline-primary"
+                           target="_blank">
+                            <i class="bi bi-download"></i> @Path.GetFileName(Model.ArchivoAdjunto)
+                        </a>
+                    }
                 </div>
-                <input type="file" name="Archivo" class="form-control" />
-            </div>
-            @if (!string.IsNullOrEmpty(Model.ArchivoAdjunto))
-            {
-                <a href="@Url.Content(Model.ArchivoAdjunto)"
-                   class="btn btn-outline-primary"
-                   target="_blank">
-                    <i class="bi bi-download"></i> @Model.ArchivoAdjunto
-                </a>
-            }
-        </div>
 
 
                 <!-- Botones -->

@@ -62,7 +62,7 @@
                         <a href="@Url.Content(Model.ArchivoAdjunto)"
                            class="btn btn-outline-primary"
                            target="_blank">
-                            <i class="bi bi-download"></i> @Model.ArchivoAdjunto
+                            <i class="bi bi-download"></i> @Path.GetFileName(Model.ArchivoAdjunto)
                         </a>
                     }
                     else

@@ -14,6 +14,7 @@ using System.IO;
 using System.Web;
 using System;
 using System.Reflection;
+using System.Linq;
 
 namespace Campus.UI.Controllers
 {
@@ -59,6 +60,14 @@ namespace Campus.UI.Controllers
                 {
                     if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
                     {
+                        var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".pdf", ".docx", ".pptx", ".xlsx", ".txt" };
+                        var extensionArchivo = Path.GetExtension(tarea.Archivo.FileName).ToLower();
+
+                        if (!extensionesPermitidas.Contains(extensionArchivo))
+                        {
+                            ModelState.AddModelError("", "Tipo de archivo no permitido.");
+                            return View(tarea);
+                        }
                         // Ruta del servidor donde se guardará el archivo
                         var nombreArchivo = Path.GetFileName(tarea.Archivo.FileName);
                         var rutaCarpeta = Server.MapPath("~/Uploads/");
@@ -125,6 +134,14 @@ namespace Campus.UI.Controllers
                 {
                     if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
                     {
+                        var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".pdf", ".docx", ".pptx", ".xlsx",".txt" };
+                        var extensionArchivo = Path.GetExtension(tarea.Archivo.FileName).ToLower();
+
+                        if (!extensionesPermitidas.Contains(extensionArchivo))
+                        {
+                            ModelState.AddModelError("", "No se permiten archvos "+ extensionArchivo+".");
+                            return View(tarea);
+                        }
                         // Ruta del servidor donde se guardará el archivo
                         var nombreArchivo = Path.GetFileName(tarea.Archivo.FileName);
                         var rutaCarpeta = Server.MapPath("~/Uploads/");
@@ -140,9 +157,6 @@ namespace Campus.UI.Controllers
                         // Guardar solo la ruta relativa en la base de datos
                         tarea.ArchivoAdjunto = "~/Uploads/" + nombreArchivo;
                     }
-
-                    // Mantenemos la fecha original de creación
-                    var tareaOriginal = await _listarTareaLN.ObtenerPorIdAsync(id);
                     // Actualizamos la fecha de modificación
                     tarea.FechaModificacion = DateTime.Now;
 
