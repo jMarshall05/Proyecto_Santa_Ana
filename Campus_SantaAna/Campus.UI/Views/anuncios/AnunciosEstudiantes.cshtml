@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.AnuncioDto>
+
+@{
+    ViewBag.Title = "Lista de Anuncios";
+}
+
+<div class="container">
+    <h1 class="container-title">Próximos Eventos Escolares</h1>
+
+    @if (!Model.Any())
+    {
+        <p class="text-center text-muted">No hay eventos disponibles por el momento. ¡Vuelve pronto!</p>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var anuncio in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="event-card">
+                        <div class="event-title">@anuncio.Titulo</div>
+                        <div class="event-date">
+                            <strong>Evento:</strong> @anuncio.FechaEvento.ToString("dd MMM yyyy")<br />
+                            <strong>Publicado:</strong> @anuncio.FechaPublicacion.ToString("dd MMM yyyy")
+                        </div>
+                        <div class="event-description">@anuncio.Descripcion</div>
+                        @* Link a detalles del evento *@
+                        <a href="@Url.Action("Details", "Anuncios", new { id = anuncio.IdAnuncio })" class="btn btn-details">Ver Detalles</a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+@section scripts{
+<script>
+    $(document).ready(function () {
+        // Pequeña animación de fadeIn para las tarjetas
+        $('.event-card').hide().each(function (index) {
+            $(this).delay(150 * index).fadeIn(600);
+        });
+    });
+</script>
+    }

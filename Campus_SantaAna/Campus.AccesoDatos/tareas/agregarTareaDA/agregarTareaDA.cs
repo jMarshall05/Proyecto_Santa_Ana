@@ -33,9 +33,7 @@ namespace Campus.AccesoDatos.Tareas.AgregarTareaAD
                 ArchivoAdjunto = tarea.ArchivoAdjunto,
                 FechaEntrega = tarea.FechaEntrega,
                 FechaCreacion = tarea.FechaCreacion,
-                FechaModificacion = tarea.FechaModificacion,
                 FechaPublicacion = tarea.FechaPublicacion
-
 
             };
         }

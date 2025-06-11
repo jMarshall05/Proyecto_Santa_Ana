@@ -57,7 +57,11 @@
     <Compile Include="anuncios\EliminarAnunciosAD\EliminarAnunciosAD.cs" />
     <Compile Include="anuncios\ListarAnunciosAD\ListarAnunciosAD.cs" />
     <Compile Include="Contexto.cs" />
+    <Compile Include="Grupos\AgregarGrupo\AgregarGrupoAD.cs" />
+    <Compile Include="Grupos\EditarGrupo\EditarGrupoAD.cs" />
+    <Compile Include="Grupos\ListarGrupos\ListarGruposAD.cs" />
     <Compile Include="ModelosAD\AnunciosAD.cs" />
+    <Compile Include="ModelosAD\GruposAD.cs" />
     <Compile Include="ModelosAD\materiaAD.cs" />
     <Compile Include="ModelosAD\TareasAD.cs" />
     <Compile Include="ModelosAD\UsuariosAD.cs" />
@@ -68,6 +72,7 @@
     <Compile Include="tareas\listarTareasDA\listarTareasDA.cs" />
     <Compile Include="Usuarios\AgregarUsuariosAD\AgregarUsuariosAD.cs" />
     <Compile Include="Usuarios\EditarUsuariosAD\EditarUsuarioAD.cs" />
+    <Compile Include="Usuarios\ListaDeUsuariosPorGrupoAD\ListaDeUsuariosPorGrupoAD.cs" />
     <Compile Include="Usuarios\ListarUsuariosAD\ListarUsuariosAD.cs" />
     <Compile Include="Usuarios\ObtenerUsuariosPorIdAD\ObtenerUsuariosPorIdAD.cs" />
   </ItemGroup>

@@ -32,7 +32,8 @@ namespace Campus.AccesoDatos.Usuarios.ObtenerUsuariosPorIdAD
                     FechaDeRegistro = usuario.FechaDeRegistro,
                     FechaDeModificacion = usuario.FechaDeModificacion,
                     Rol = usuario.Rol,
-                    Estado = usuario.Estado
+                    Estado = usuario.Estado,
+                    Id_grupo = usuario.Id_grupo
 
                 };
             }

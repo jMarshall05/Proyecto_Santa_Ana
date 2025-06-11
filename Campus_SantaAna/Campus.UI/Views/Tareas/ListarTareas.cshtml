@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TareaDto>
+﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.TareaDto>
 
 @{
     ViewBag.Title = "Listado de Tareas";
@@ -9,11 +9,12 @@
     <div class="card shadow border-0 mt-4">
         <div class="card-header bg-white py-3">
             <div class="d-flex justify-content-between align-items-center">
-                <h4 class="m-0 text-primary">
+                <h4 class="m-0 text-danger">  <!-- Cambiado a color ROJO -->
+
                     <!-- Cambiado a color azul -->
                     <i class="fas fa-tasks me-2"></i>Listado de Tareas
                 </h4>
-                <a href="@Url.Action("Create", "Tareas")" class="btn btn-primary btn-sm">
+                <a href="@Url.Action("Create", "Tareas")" class="btn btn-secondary btn-sm">
                     <i class="fas fa-plus-circle me-1"></i> Nueva Tarea
                 </a>
             </div>
@@ -21,8 +22,8 @@
 
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0" id="tareasTable">
-                    <thead class="table-light">
+                <table class="table table-hover align-middle mb-0 table-bordered" id="tareasTable">
+                    <thead class="table-danger">
                         <tr>
                             <th class="text-center">ID</th>
                             <th>Título</th>
@@ -55,7 +56,7 @@
                                     <td class="text-center">
                                         @if (!string.IsNullOrEmpty(tarea.ArchivoAdjunto))
                                         {
-                                            <a href="@Url.Content("~/Uploads/" + tarea.ArchivoAdjunto)"
+                                            <a href="@Url.Content( @Path.GetFileName(tarea.ArchivoAdjunto))"
                                                target="_blank"
                                                class="btn btn-sm btn-outline-primary rounded-circle"
                                                data-bs-toggle="tooltip"
@@ -244,7 +245,6 @@
                 text-transform: uppercase;
                 font-size: 0.8rem;
                 letter-spacing: 0.5px;
-                background-color: #f8f9fa;
             }
 
         .table-hover tbody tr:hover {
@@ -277,64 +277,12 @@
             align-items: center;
             justify-content: center;
         }
+
+
     </style>
 }
 
 @section Scripts {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-    <script>
-        $(document).ready(function () {
-            // Inicializar DataTable con configuración mejorada
-            $('#tareasTable').DataTable({
-                responsive: true,
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
-                    search: "_INPUT_",
-                    searchPlaceholder: "Buscar tareas...",
-                    lengthMenu: "Mostrar _MENU_ registros por página",
-                    info: "Mostrando _START_ a _END_ de _TOTAL_ tareas",
-                    infoEmpty: "No hay tareas para mostrar",
-                    infoFiltered: "(filtrado de _MAX_ tareas totales)",
-                    paginate: {
-                        first: "Primera",
-                        last: "Última",
-                        next: "Siguiente",
-                        previous: "Anterior"
-                    }
-                },
-                dom: '<"top"<"d-flex justify-content-between align-items-center"lf>>rt<"bottom"ip><"clear">',
-                columnDefs: [
-                    { orderable: false, targets: [6] },
-                    { searchable: false, targets: [0, 4, 6] }
-                ],
-                initComplete: function () {
-                    // Personalizar el dropdown de cantidad de registros
-                    $('.dataTables_length').addClass('mb-3');
-                    $('.dataTables_length label').addClass('d-flex align-items-center');
-                    $('.dataTables_length select').addClass('form-select-sm');
-
-                    // Personalizar la barra de búsqueda
-                    $('.dataTables_filter').addClass('mb-3');
-                    $('.dataTables_filter label').addClass('position-relative');
-                }
-            });
-
-            // Inicializar tooltips
-            $('[data-bs-toggle="tooltip"]').tooltip({
-                trigger: 'hover',
-                placement: 'top'
-            });
-
-            // Efecto hover para filas
-            $('.table-hover tbody tr').hover(
-                function () {
-                    $(this).css('cursor', 'pointer');
-                },
-                function () {
-                    $(this).css('cursor', 'default');
-                }
-            );
-        });
-    </script>
+    <script src="~/Scripts/Tareas/ScriptTareas.js"></script>
 }

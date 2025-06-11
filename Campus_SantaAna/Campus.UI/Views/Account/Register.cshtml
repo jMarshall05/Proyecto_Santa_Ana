@@ -3,95 +3,144 @@
 @{
     ViewBag.Title = "Registro de Usuarios";
     var fechaMaxima = DateTime.Now.ToString("yyyy-MM-dd");
+    Layout = null;
+    <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />
+    @Styles.Render("~/Content/css")
 }
+       
 
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f66359; 
+            background-image: url('https://santaana.ed.cr/wp-content/uploads/csalib.png');
+            background-repeat: no-repeat;
+            background-position: left center; /*centrado de la imagen*/
+            background-size: 600px;
+        }
 
-    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
-    {
-        @Html.AntiForgeryToken()
 
-        <hr />
+        .login-container {
+            margin-top: 5%;
+            margin-left: 500px;
+            background-color: whitesmoke; /* Fondo rojo translúcido */
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            color: black;
+        }
 
-        @Html.ValidationSummary("", new { @class = "text-danger" })
 
-        <div class="row mb-3">
-            @Html.LabelFor(m => m.Nombre, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
+        h2, h4 {
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-end">
+            <div class="col-md-5  login-container">
+                <main aria-labelledby="title">
+                    <h2 id="title">@ViewBag.Title</h2>
+
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <hr />
+
+                        @Html.ValidationSummary("", new { @class = "text-danger" })
+
+                        <div class="row mb-3">
+                            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control",
+                           placeholder = "Nombre",
+                           pattern = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$",
+                           maxlength = "150",
+                           required = "required",
+                           oninput = "this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')"
+                       })
+                        </div>
+
+                        <div class="row mb-3">
+                            @Html.TextBoxFor(m => m.Apellido, new { @class = "form-control", placeholder = "Apellido",
+                           pattern = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$",
+                           maxlength = "150",
+                           required = "required",
+                           oninput = "this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')"
+                       })
+                        </div>
+
+                        <div class="row mb-3">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control"
+                           , type = "email",
+                           placeholder = "Email",
+                           maxlength = "150",
+                           required = "required"
+                       })
+                        </div>
+
+                        <div class="row mb-3">
+                            @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", type = "tel", minLength = "8", maxlength = "8", placeholder = "Telefono",
+                           oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                       })
+                        </div>
+
+                        <div class="row mb-3">
+                            @Html.TextBoxFor(m => m.Cedula, new { @class = "form-control", minLength = "9", maxlength = "9", placeholder = "Cedula",
+                           oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                       })
+                        </div>
+
+                        <div class="row mb-3">
+                            @Html.TextBoxFor(m => m.FechaDeNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", max = fechaMaxima, placeholder = "Fecha de Nacimiento" })
+                        </div>
+
+                        <div class="row mb-3">
+
+                            @Html.DropDownListFor(m => m.Rol, new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Estuadiante", Value = "Estudiantes" },
+                new SelectListItem { Text = "Profesor", Value = "Profesores" },
+                new SelectListItem { Text = "Administrador", Value = "Administradores" }
+            }, "Seleccione un tipo de Rol", new { @class = "form-control", id = "Rol" })
+                        </div>
+
+                        <div class="row mb-3">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Contraseña" })
+                        </div>
+
+                        <div class="row mb-3">
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirmar Contraseña" })
+                        </div>
+
+                        <div class="row">
+                            <input type="submit" value="Registrarse" class="btn w-100" style="background-color: #F44336; border-color: #F44336; color: white;" />
+                        </div>
+
+                        <p class="text-center">
+                            @Html.ActionLink("Volver", "ListarUsuarios", "Usuarios")
+                        </p>
+                    }
+                </main>
             </div>
         </div>
+    </div>
 
-        <div class="row mb-3">
-            @Html.LabelFor(m => m.Apellido, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Apellido, new { @class = "form-control" })
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            @Html.LabelFor(m => m.Email, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            @Html.LabelFor(m => m.Telefono, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", type = "tel",minLength="8", maxlength="8" })
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            @Html.LabelFor(m => m.Cedula, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Cedula, new { @class = "form-control", minLength = "9", maxlength = "9" })
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            @Html.LabelFor(m => m.FechaDeNacimiento, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.FechaDeNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", max = fechaMaxima })
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            @Html.LabelFor(m => m.Rol, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(m => m.Rol, new List<SelectListItem>
-{
-    new SelectListItem { Text = "Estuadiante", Value = "Estudiantes" },
-    new SelectListItem { Text = "Profesor", Value = "Profesores" },
-    new SelectListItem { Text = "Administrador", Value = "Administradores" }
-}, "Seleccione un tipo", new { @class = "form-control", id = "Rol" })
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            @Html.LabelFor(m => m.Password, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="offset-md-2 col-md-10">
-                <input type="submit" value="Registrarse" class="btn btn-outline-dark" />
-            </div>
-        </div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
     }
-</main>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+</body>
+</html>
