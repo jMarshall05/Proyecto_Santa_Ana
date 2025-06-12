@@ -49,22 +49,22 @@ namespace Campus.UI.Controllers
             string id = User.Identity.GetUserId();
             var Usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
 
-            var grupo = _listarGrupos.BuscarGruposPorId((int)Usuario.Id_grupo);
-            return View(grupo);
+            //var grupo = _listarGrupos.BuscarGruposPorId((int)Usuario.Id_grupo);
+            return View(/*grupo*/);
         }
 
         // GET: Grupos/Details/5
-        public ActionResult DetallesDeGrupoParcial(int id)
-        {
-            var grupo = _listarGrupos.BuscarGruposPorId(id); 
-            var usuariosEnGrupo = _usuariosPorGrupo.ObtenerUsuariosPorGrupo(id);
-            var UsuariosGruposDto = new UsuariosGruposDto
-            {
-                grupo = grupo,
-               usuarios = usuariosEnGrupo
-            };
-                       return PartialView("_DetallesDeGrupoParcial", UsuariosGruposDto);
-        }
+        //public ActionResult DetallesDeGrupoParcial(int id)
+        //{
+        //    var grupo = _listarGrupos.BuscarGruposPorId(id); 
+        //    var usuariosEnGrupo = _usuariosPorGrupo.ObtenerUsuariosPorGrupo(id);
+        //    var UsuariosGruposDto = new UsuariosGruposDto
+        //    {
+        //        grupo = grupo,
+        //       usuarios = usuariosEnGrupo
+        //    };
+        //               return PartialView("_DetallesDeGrupoParcial", UsuariosGruposDto);
+        //}
 
         // GET: Grupos/Create
         public ActionResult AgregarGrupoParcial(string id)
@@ -103,15 +103,15 @@ namespace Campus.UI.Controllers
         }
 
         // GET: Grupos/Edit/5
-        public ActionResult EditarGrupoParcial(int id)
-        {
-            var grupo = _listarGrupos.BuscarGruposPorId(id);
-            return PartialView("_EditarGrupoParcial", grupo);
-        }
+        //public ActionResult EditarGrupoParcial(int id)
+        //{
+        //    var grupo = _listarGrupos.BuscarGruposPorId(id);
+        //    return PartialView("_EditarGrupoParcial", grupo);
+        //}
 
         // POST: Grupos/Edit/5
         [HttpPost]
-        public async Task<ActionResult> EditarGrupoParcial(int id, GruposDto grupo)
+        public async Task<ActionResult> EditarGrupoParcial(int id_grupo, GruposDto grupo)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace Campus.UI.Controllers
                     ModelState.AddModelError("", "Por favor, complete todos los campos requeridos.");
                     return PartialView("_EditarGrupoParcial", grupo);
                 }
-                int resultado = await _editarGrupoLN.EditarGrupo(id, grupo);
+                int resultado = await _editarGrupoLN.EditarGrupo(id_grupo, grupo);
                 if (resultado == 1)
                 {
                     return RedirectToAction("ListarGrupos");

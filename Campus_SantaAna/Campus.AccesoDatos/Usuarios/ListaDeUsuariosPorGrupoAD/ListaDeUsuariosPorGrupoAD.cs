@@ -19,7 +19,7 @@ namespace Campus.AccesoDatos.Usuarios.ListaDeUsuariosPorGrupoAD
         public List<UsuariosDto> ObtenerUsuariosPorGrupo(int idGrupo)
         {
            List<UsuariosDto> listaUsuarios = (from usuario in _elContexto.Usuarios
-                                              where usuario.Id_grupo == idGrupo
+                                              where 1 == idGrupo
                                               select new UsuariosDto
                                               {
                                                   Nombre = usuario.Nombre,

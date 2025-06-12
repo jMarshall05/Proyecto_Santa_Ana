@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.EditarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ListarEstudianteGrupoLN;
+using Campus.LogicaDeNegocio.EstudianteGrupo.ListarEstudianteGrupo;
 
 namespace Campus.UI.Controllers
 {
@@ -26,12 +25,17 @@ namespace Campus.UI.Controllers
         private IEditarUsuarioLN _editarUsuarioLN;
         private ApplicationUserManager _userManager;
         private IListarGruposLN _listarGrupos;
+        private IAgregarEstudianteGrupoLN _agregarEstudianteGrupoLN;
+        private IListarEstudianteGrupoLN _listarEstudianteGrupoLN;
         public UsuariosController()
         {
             _listarUsuariosLN = new ListarUsuariosLN();
             _obtenerUsuariosPorIdLN = new ObtenerUsuariosPorIdLN();
             _editarUsuarioLN = new EditarUsuariosLN();
             _listarGrupos = new ListarGruposLN();
+            _agregarEstudianteGrupoLN = new AgregarEstudianteGrupoLN();
+            _listarEstudianteGrupoLN = new ListarEstudianteGrupoLN();
+
         }
         public ApplicationUserManager UserManager
         {
@@ -59,12 +63,13 @@ namespace Campus.UI.Controllers
         public ActionResult DetallesDeUsuarioParcial(string id)
         {
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
-            if (usuario.Id_grupo != null)
-            {
-                var grupo = _listarGrupos.BuscarGruposPorId((int)usuario.Id_grupo); 
-                ViewBag.NombreGrupo = grupo.nombre_grupo;
-            }
-           
+
+            //if (usuario.Id_grupo != null)
+            //{
+            //    var grupo = _listarGrupos.BuscarGruposPorId((int)usuario.Id_grupo);
+            //    ViewBag.NombreGrupo = grupo.nombre_grupo;
+            //}
+
             return PartialView("_DetallesDeUsuarioParcial", usuario);
         }
 
@@ -96,23 +101,30 @@ namespace Campus.UI.Controllers
             var listaDeGrupos = _listarGrupos.ListarGrupos();
             ViewBag.ListaDeGrupos = new SelectList(listaDeGrupos, "id_grupo", "nombre_grupo");
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
-            return PartialView("_EditarUsuarioParcial", usuario);
+            var estudiante = new EstudianteGrupoDto
+            {
+                //Usuario = usuario,
+            };
+            return PartialView("_EditarUsuarioParcial", estudiante);
         }
 
         // POST: Usuarios/Edit/5
         [HttpPost]
-        public ActionResult EditarUsuarioParcial(string id, UsuariosDto usuario)
+        public ActionResult EditarUsuarioParcial(string id, EstudianteGrupoDto estudiante)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
+                    //_editarUsuarioLN.EditarUsuarioAdmin(id, estudiante.Usuario);
+                    //estudiante.Usuario.IdUsuario = id;
+                    _agregarEstudianteGrupoLN.AgregarEstudianteGrupo(estudiante);
+
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Por favor, corrija los errores en el formulario.");
-                    return PartialView("_EditarUsuarioParcial", usuario);
+                    ModelState.AddModelError("", "Por favor, algo fallo al editar.");
+                    return View("ListarUsuarios");
                 }
 
 

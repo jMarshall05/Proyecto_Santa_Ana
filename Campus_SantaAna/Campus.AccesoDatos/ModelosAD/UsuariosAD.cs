@@ -35,8 +35,6 @@ namespace Campus.AccesoDatos.ModelosAD
         public string Rol { get; set; }
         [Column("Estado")]
         public bool Estado { get; set; }
-        [Column("Id_grupo")]
-        public int? Id_grupo { get; set; }
 
     }
 }
