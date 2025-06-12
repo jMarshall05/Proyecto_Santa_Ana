@@ -17,7 +17,7 @@ namespace Campus.AccesoDatos.Usuarios.EditarUsuariosAD
         {
             _elContexto = new Contexto();
         }
-        public async Task<int> EditarUsuario(string id, UsuariosDto usuario)
+        public async Task<int> EditarUsuarioAdmin(string id, UsuariosDto usuario)
         {
             UsuariosAD usuarioExistente = _elContexto.Usuarios.FirstOrDefault(u => u.IdUsuario == id);
             if (usuarioExistente != null)
@@ -28,6 +28,7 @@ namespace Campus.AccesoDatos.Usuarios.EditarUsuariosAD
                 usuarioExistente.Telefono = usuario.Telefono;
                 usuarioExistente.FechaDeNacimiento = usuario.FechaDeNacimiento;
                 usuarioExistente.FechaDeModificacion = DateTime.Now;
+                usuarioExistente.Id_grupo = usuario.Id_grupo;
                 usuarioExistente.Estado = usuario.Estado;
 
                 EntityState estado = _elContexto.Entry(usuarioExistente).State = EntityState.Modified;
@@ -39,5 +40,25 @@ namespace Campus.AccesoDatos.Usuarios.EditarUsuariosAD
                 throw new Exception("El usuario no existe o no se pudo encontrar en la base de datos.");
             }
         }
+        public async Task<int> EditarUsuario(string id, UsuariosDto usuario) {
+            UsuariosAD usuarioExistente = _elContexto.Usuarios.FirstOrDefault(u => u.IdUsuario == id);
+            if (usuarioExistente != null)
+            {
+                usuarioExistente.Nombre = usuario.Nombre;
+                usuarioExistente.Apellido = usuario.Apellido;
+                usuarioExistente.Email = usuario.Email;
+                usuarioExistente.FechaDeModificacion = DateTime.Now;
+
+                EntityState estado = _elContexto.Entry(usuarioExistente).State = EntityState.Modified;
+                int resultado = await _elContexto.SaveChangesAsync();
+                return resultado;
+            }
+            else
+            {
+                throw new Exception("El usuario no existe o no se pudo encontrar en la base de datos.");
+            }
+
+        }
+
     }
 }

@@ -21,6 +21,7 @@ namespace Campus.Abstracciones.ModelosUI
         public string Apellido { get; set; }
         [DisplayName("Email")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [EmailAddress(ErrorMessage = "El formato del correo electrónico no es válido.")]
         public string Email { get; set; }
         [DisplayName("Teléfono")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
@@ -39,6 +40,8 @@ namespace Campus.Abstracciones.ModelosUI
         public string Rol { get; set; }
         [DisplayName("Estado")]
         public bool Estado { get; set; }
+        [DisplayName("Id de Grupo")]
+        public int? Id_grupo { get; set; }
 
     }
 }

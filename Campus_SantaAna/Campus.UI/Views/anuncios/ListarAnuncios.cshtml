@@ -4,42 +4,55 @@
     ViewBag.Title = "Lista de Anuncios";
 }
 
-<h2>Lista de Anuncios</h2>
+<h2 class ="container-title">Anuncios Públicados</h2>
 
-<p>
-    @Html.ActionLink("Registrar Anuncio", "Create", "Anuncios", null, new { @class = "btn btn-success" })
-</p>
+ 
 
-<table class="table table-striped table-bordered">
-    <thead class="thead-dark">
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Titulo)</th>
-            <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
-            <th>@Html.DisplayNameFor(model => model.FechaEvento)</th>
-            <th>@Html.DisplayNameFor(model => model.FechaPublicacion)</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var anuncio in Model)
-        {
+    <div class="d-flex justify-content-end mb-3">
+        @Html.ActionLink("Publicar Anuncio", "Create", "Anuncios", null, new { @class = "btn btn-secondary" })
+    </div>
+
+
+
+
+    <table class="table table-striped table-bordered">
+        <thead class="table-danger">
             <tr>
-                <td>@Html.DisplayFor(modelItem => anuncio.Titulo)</td>
-                <td>@Html.DisplayFor(modelItem => anuncio.Descripcion)</td>
-                <td>@Html.DisplayFor(modelItem => anuncio.FechaEvento)</td>
-                <td>@Html.DisplayFor(modelItem => anuncio.FechaPublicacion)</td>
-                <td>
-                    @Html.ActionLink("Editar", "Edit", new { id = anuncio.IdAnuncio }, new { @class = "btn btn-sm btn-primary" }) |
-
-                    @Html.ActionLink("Eliminar", "Delete", "Anuncios", new { id = anuncio.IdAnuncio }, new { @class = "btn btn-sm btn-danger" })
-
-                </td>
+                <th>@Html.DisplayNameFor(model => model.Titulo)</th>
+                <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
+                <th>@Html.DisplayNameFor(model => model.FechaEvento)</th>
+                <th>@Html.DisplayNameFor(model => model.FechaPublicacion)</th>
+                <th>Acciones</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var anuncio in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => anuncio.Titulo)</td>
+                    <td>@Html.DisplayFor(modelItem => anuncio.Descripcion)</td>
+                    <td>@Html.DisplayFor(modelItem => anuncio.FechaEvento)</td>
+                    <td>@Html.DisplayFor(modelItem => anuncio.FechaPublicacion)</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a href="@Url.Action("Edit", "Anuncios", new { id = anuncio.IdAnuncio })" class="btn btn-sm btn-primary">
+                                <i class="fas fa-edit me-1"></i> Editar
+                            </a>
+                            <a href="@Url.Action("Delete", "Anuncios", new { id = anuncio.IdAnuncio })" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash me-1"></i> Eliminar
+                            </a>
+                            <a href="@Url.Action("Details", "Anuncios", new { id = anuncio.IdAnuncio })" class="btn btn-sm btn-warning">
+                                <i class="fas fa-info-circle me-1"></i> Detalle
+                            </a>
+                        </div>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
 
 
 
-2/2
+
 

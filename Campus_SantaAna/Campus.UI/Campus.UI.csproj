@@ -291,6 +291,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AnunciosController.cs" />
+    <Compile Include="Controllers\GruposController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\TareasController.cs" />
@@ -333,6 +334,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\datatable\dataTables.js" />
+    <Content Include="Scripts\Grupos\ScriptDeGrupos.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
     <Content Include="Scripts\jquery-3.7.0.slim.js" />
@@ -342,7 +344,9 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\Manage\ManageScript.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\Tareas\ScriptTareas.js" />
     <Content Include="Scripts\Usuarios\ScriptDeUsuarios.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -392,10 +396,14 @@
     <Content Include="Views\Tareas\Create.cshtml" />
     <Content Include="Views\Tareas\Edit.cshtml" />
     <Content Include="Views\Tareas\Details.cshtml" />
-
+    <Content Include="Views\Grupos\ListarGrupos.cshtml" />
+    <Content Include="Views\Grupos\_AgregarGrupoParcial.cshtml" />
+    <Content Include="Views\Grupos\_EditarGrupoParcial.cshtml" />
+    <Content Include="Views\Grupos\_DetallesDeGrupoParcial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Uploads\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
