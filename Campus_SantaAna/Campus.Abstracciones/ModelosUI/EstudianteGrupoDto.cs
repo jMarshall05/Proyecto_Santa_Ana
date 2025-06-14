@@ -8,8 +8,8 @@ namespace Campus.Abstracciones.ModelosUI
 {
     public class EstudianteGrupoDto
     {
-        public int EstudianteGrupo_Id { get; set; }
-        public string IdEstudiante { get; set; }
-        public int IdGrupo { get; set; }
+        public int IdEstudianteGrupo { get; set; }
+        public string EstudianteId { get; set; }
+        public int GrupoId { get; set; }
     }
 }

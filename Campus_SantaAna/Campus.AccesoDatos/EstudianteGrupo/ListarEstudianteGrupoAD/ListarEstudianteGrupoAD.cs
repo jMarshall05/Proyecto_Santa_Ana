@@ -20,9 +20,9 @@ namespace Campus.AccesoDatos.EstudianteGrupo.ListarEstudianteGrupoAD
             var estudiantesGrupos = _elContexto.EstudianteGrupos
                 .Select(eg => new EstudianteGrupoDto
                 {
-                    EstudianteGrupo_Id = eg.Id,
-                    IdEstudiante = eg.Estudiante_id,
-                    IdGrupo = eg.Grupo_id
+                    IdEstudianteGrupo = eg.IdEstudianteGrupo,
+                    EstudianteId = eg.EstudianteId,
+                    GrupoId = eg.GrupoId
                 }).ToList();
             return estudiantesGrupos;
         }
@@ -30,11 +30,11 @@ namespace Campus.AccesoDatos.EstudianteGrupo.ListarEstudianteGrupoAD
         public List<EstudianteGrupoDto> ListarEstudiantesPorIdGrupo(int idGrupo)
         {
             var estudiantesGrupos = (from EstudianteGrupo in _elContexto.EstudianteGrupos
-                                     where EstudianteGrupo.Grupo_id == idGrupo
+                                     where EstudianteGrupo.GrupoId == idGrupo
                                      select new EstudianteGrupoDto
                                      {
-                                         EstudianteGrupo_Id = EstudianteGrupo.Id,
-                                         IdEstudiante = EstudianteGrupo.Estudiante_id,
+                                         IdEstudianteGrupo = EstudianteGrupo.IdEstudianteGrupo,
+                                         EstudianteId = EstudianteGrupo.EstudianteId,
                                      }).ToList();
             return estudiantesGrupos;
         }
@@ -42,11 +42,11 @@ namespace Campus.AccesoDatos.EstudianteGrupo.ListarEstudianteGrupoAD
         public List<EstudianteGrupoDto> ListarGruposPorIdEstudiante(string idUsuario)
         {
             var estudiantesGrupos = (from EstudianteGrupo in _elContexto.EstudianteGrupos
-                                     where EstudianteGrupo.Estudiante_id == idUsuario
+                                     where EstudianteGrupo.EstudianteId == idUsuario
                                      select new EstudianteGrupoDto
                                      {
-                                         EstudianteGrupo_Id = EstudianteGrupo.Id,
-                                         IdGrupo = EstudianteGrupo.Grupo_id
+                                         IdEstudianteGrupo = EstudianteGrupo.IdEstudianteGrupo,
+                                         GrupoId = EstudianteGrupo.GrupoId
                                      }).ToList();
             return estudiantesGrupos;
         }

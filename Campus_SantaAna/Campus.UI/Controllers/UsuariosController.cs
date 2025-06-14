@@ -74,7 +74,7 @@ namespace Campus.UI.Controllers
         {
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
             var grupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
-            var NombreGrupo = _listarGrupos.BuscarGruposPorId(grupo.IdGrupo);
+            var NombreGrupo = _listarGrupos.BuscarGruposPorId(grupo.GrupoId);
             ViewBag.Grupo = NombreGrupo.nombre_grupo;
             return PartialView("_DetallesDeUsuarioParcial", usuario);
         }
@@ -100,7 +100,7 @@ namespace Campus.UI.Controllers
                 {
                     _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
                     var estudianteGrupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
-                    var estudiante = new EstudianteGrupoDto { IdEstudiante = id, IdGrupo = Idgrupo };
+                    var estudiante = new EstudianteGrupoDto { EstudianteId = id, GrupoId = Idgrupo };
                     if (estudianteGrupo == null)
                     {
                         _agregarEstudianteGrupoLN.AgregarEstudianteGrupo(estudiante);

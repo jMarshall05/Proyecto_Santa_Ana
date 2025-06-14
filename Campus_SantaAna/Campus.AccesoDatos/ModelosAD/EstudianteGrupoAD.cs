@@ -13,12 +13,12 @@ namespace Campus.AccesoDatos.ModelosAD
     public class EstudianteGrupoAD
     {
         [Key]
-        [Column("Id")]
-        public int Id { get; set; }
-        [Column("Estudiante_id")]
-        public string Estudiante_id { get; set; }
-        [Column("Grupo_id")]
-        public int Grupo_id { get; set; }
+        [Column("IdEstudianteGrupo")]
+        public int IdEstudianteGrupo { get; set; }
+        [Column("EstudianteId")]
+        public string EstudianteId { get; set; }
+        [Column("GrupoId")]
+        public int GrupoId { get; set; }
 
     }
 }

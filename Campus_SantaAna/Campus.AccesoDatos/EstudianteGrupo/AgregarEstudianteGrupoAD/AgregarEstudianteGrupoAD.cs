@@ -29,8 +29,8 @@ namespace Campus.AccesoDatos.EstudianteGrupo.AgregarEstudianteGrupoAD
         {
             return new EstudianteGrupoAD
             {
-                Estudiante_id = estudianteGrupo.IdEstudiante,
-                Grupo_id = estudianteGrupo.IdGrupo
+                EstudianteId = estudianteGrupo.EstudianteId,
+                GrupoId = estudianteGrupo.GrupoId
             };
         }
     }

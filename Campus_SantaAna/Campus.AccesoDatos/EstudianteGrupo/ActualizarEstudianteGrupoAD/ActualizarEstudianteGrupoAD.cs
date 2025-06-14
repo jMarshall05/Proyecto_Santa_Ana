@@ -19,8 +19,8 @@ namespace Campus.AccesoDatos.EstudianteGrupo.ActualizarEstudianteGrupoAD
         
         public async Task<int> ActualizarEstudianteGrupo(EstudianteGrupoDto estudiante)
         {
-            EstudianteGrupoAD EstudianteGrupoEnBase = _elContexto.EstudianteGrupos.FirstOrDefault(x => x.Estudiante_id == estudiante.IdEstudiante);
-            EstudianteGrupoEnBase.Grupo_id = estudiante.IdGrupo;
+            EstudianteGrupoAD EstudianteGrupoEnBase = _elContexto.EstudianteGrupos.FirstOrDefault(x => x.EstudianteId == estudiante.EstudianteId);
+            EstudianteGrupoEnBase.GrupoId = estudiante.GrupoId;
             _elContexto.Entry(EstudianteGrupoEnBase).State = System.Data.Entity.EntityState.Modified;
             int resultado = await _elContexto.SaveChangesAsync();
             return resultado;

@@ -65,7 +65,7 @@ namespace Campus.UI.Controllers
             var usuariosEnGrupo =  _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorGrupoId(id);
             foreach (var usuariosEG in usuariosEnGrupo)
             {
-                var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(usuariosEG.IdEstudiante);
+                var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(usuariosEG.EstudianteId);
                 usuarios.Add(usuario);
             }
             var UsuariosGruposDto = new UsuariosGruposDto
