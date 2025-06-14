@@ -46,6 +46,9 @@
     <Compile Include="anuncios\EditarAnuncios\EditarAnunciosLN.cs" />
     <Compile Include="anuncios\EliminarAnuncios\EliminarAnunciosLN.cs" />
     <Compile Include="anuncios\ListarAnuncios\ListarAnunciosLN.cs" />
+    <Compile Include="EstudianteGrupo\ActualizarEstudianteGrupoLN\ActualizarEstudianteGrupoLN.cs" />
+    <Compile Include="EstudianteGrupo\BuscarEstudianteGrupoPorIdLN\BuscarEstudianteGrupoPorIdLN.cs" />
+    <Compile Include="EstudianteGrupo\ListarEstudianteGrupo\ListarEstudianteGrupoLN.cs" />
     <Compile Include="Grupos\AgregarGrupo\AgregarGrupoLN.cs" />
     <Compile Include="Grupos\EditarGrupo\EditarGrupoLN.cs" />
     <Compile Include="Grupos\ListarGrupos\ListarGruposLN.cs" />
@@ -54,6 +57,7 @@
     <Compile Include="tareas\editarTarea\EditarTareaLN.cs" />
     <Compile Include="tareas\eliminarTarea\EliminarTareaLN.cs" />
     <Compile Include="tareas\listarTarea\ListarTareaLN.cs" />
+    <Compile Include="EstudianteGrupo\AgregarEstudianteGrupo\AgregarEstudianteGrupoLN.cs" />
     <Compile Include="Usuarios\AgregarUsuarios\AgregarUsuariosLN.cs" />
     <Compile Include="Usuarios\EditarUsuarios\EditarUsuariosLN.cs" />
     <Compile Include="Usuarios\ListaDeUsuariosPorGrupo\ListaDeUsuariosPorGrupoLN.cs" />
@@ -70,5 +74,6 @@
       <Name>Campus.AccesoDatos</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

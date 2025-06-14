@@ -38,6 +38,7 @@ namespace Campus.Abstracciones.ModelosUI
 
         [DisplayName("Fecha de Publicación")]
         public DateTime FechaPublicacion { get; set; }
+
         [NotMapped]
         public HttpPostedFileBase Archivo { get; set; }
 
