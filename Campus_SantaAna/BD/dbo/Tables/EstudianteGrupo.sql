@@ -1,9 +1,9 @@
-﻿CREATE TABLE [dbo].[EstudianteGrupo]
-(
-	[Id] INT NOT NULL PRIMARY KEY, 
-    [Estudiante_id] NVARCHAR(128) NOT NULL, 
-    [Grupo_id] INT NOT NULL
-    CONSTRAINT [FK_Usuarios_Grupos] FOREIGN KEY (Grupo_id) REFERENCES [dbo].[grupos] ([id_grupo]),
-    CONSTRAINT [FK_EstudianteGrupo_Usuarios] FOREIGN KEY (Estudiante_id) REFERENCES [dbo].[Usuarios_tb] ([IdUsuario])
-)
+﻿CREATE TABLE [dbo].[EstudianteGrupo] (
+    [IdEstudianteGrupo] INT            IDENTITY (1, 1) NOT NULL,
+    [EstudianteId]      NVARCHAR (128) NOT NULL,
+    [GrupoId]           INT            NOT NULL,
+    PRIMARY KEY CLUSTERED ([IdEstudianteGrupo] ASC),
+    CONSTRAINT [FK_EstudianteGrupo_Estudiante] FOREIGN KEY ([EstudianteId]) REFERENCES [dbo].[Usuarios_tb] ([IdUsuario]) ON DELETE CASCADE,
+    CONSTRAINT [FK_EstudianteGrupo_Grupo] FOREIGN KEY ([GrupoId]) REFERENCES [dbo].[grupos] ([id_grupo])
+);
 
