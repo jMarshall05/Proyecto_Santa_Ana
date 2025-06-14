@@ -61,7 +61,6 @@
     <Compile Include="AccesoDatos\Usuarios\AgregarUsuariosAD\IAgregarUsuariosAD.cs" />
     <Compile Include="AccesoDatos\EstudianteGrupo\BuscarEstudianteGrupoPorIdAD\IBuscarEstudianteGrupoPorIdAD.cs" />
     <Compile Include="AccesoDatos\Usuarios\EditarUsuariosAD\IEditarUsuarioAD.cs" />
-    <Compile Include="AccesoDatos\Usuarios\ListaDeUsuariosPorGrupoAD\IListaDeUsuariosPorGrupoAD.cs" />
     <Compile Include="AccesoDatos\Usuarios\ListarUsuariosAD\IListarUsuariosAD.cs" />
     <Compile Include="AccesoDatos\Usuarios\ObtenerUsuariosPorIdAD\IObtenerUsuariosPorIdAD.cs" />
     <Compile Include="LogicaDeNegocio\anuncios\AgregarAnunciosLN\IAgregarAnunciosLN.cs" />
@@ -81,7 +80,6 @@
     <Compile Include="LogicaDeNegocio\Usuarios\AgregarUsuariosLN\IAgregarUsuariosLN.cs" />
     <Compile Include="LogicaDeNegocio\EstudianteGrupo\BuscarEstudianteGrupoPorILN\IBuscarEstudianteGrupoPorILN.cs" />
     <Compile Include="LogicaDeNegocio\Usuarios\EditarUsuariosLN\IEditarUsuarioLN.cs" />
-    <Compile Include="LogicaDeNegocio\Usuarios\ListaDeUsuariosPorGrupoLN\IListaDeUsuariosPorGrupoLN.cs" />
     <Compile Include="LogicaDeNegocio\Usuarios\ListarUsuariosLN\IListarUsuariosLN.cs" />
     <Compile Include="LogicaDeNegocio\Usuarios\ObtenerUsuariosPorIdLN\IObtenerUsuariosPorIdLN.cs" />
     <Compile Include="ModelosUI\AnuncioDto.cs" />

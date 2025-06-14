@@ -8,15 +8,12 @@ using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupo
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.AgregarGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
-using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListaDeUsuariosPorGrupoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
 using Campus.LogicaDeNegocio.Grupos.AgregarGrupo;
 using Campus.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
-using Campus.LogicaDeNegocio.Usuarios.ListaDeUsuariosPorGrupo;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
@@ -29,7 +26,6 @@ namespace Campus.UI.Controllers
         private IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
         private IAgregarGrupoLN _agregarGrupoLN;
         private IEditarGrupoLN _editarGrupoLN;
-        private IListaDeUsuariosPorGrupoLN _usuariosPorGrupo;
         private IBuscarEstudianteGrupoPorIdLN _buscarEstudianteGrupoPorIdLN;
         public GruposController()
         {
@@ -37,7 +33,6 @@ namespace Campus.UI.Controllers
             _obtenerUsuariosPorIdLN = new ObtenerUsuariosPorIdLN();
             _agregarGrupoLN = new AgregarGrupoLN();
             _editarGrupoLN = new EditarGrupoLN();
-            _usuariosPorGrupo = new ListaDeUsuariosPorGrupoLN();
             _buscarEstudianteGrupoPorIdLN = new BuscarEstudianteGrupoPorIdLN();
         }
         // GET: Grupos

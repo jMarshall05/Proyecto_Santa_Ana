@@ -77,7 +77,6 @@
     <Compile Include="Usuarios\AgregarUsuariosAD\AgregarUsuariosAD.cs" />
     <Compile Include="EstudianteGrupo\BuscarEstudianteGrupoPorIAD\BuscarEstudianteGrupoPorIAD.cs" />
     <Compile Include="Usuarios\EditarUsuariosAD\EditarUsuarioAD.cs" />
-    <Compile Include="Usuarios\ListaDeUsuariosPorGrupoAD\ListaDeUsuariosPorGrupoAD.cs" />
     <Compile Include="Usuarios\ListarUsuariosAD\ListarUsuariosAD.cs" />
     <Compile Include="Usuarios\ObtenerUsuariosPorIdAD\ObtenerUsuariosPorIdAD.cs" />
   </ItemGroup>
