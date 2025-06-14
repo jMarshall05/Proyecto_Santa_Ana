@@ -1,4 +1,4 @@
-﻿@model Campus.Abstracciones.ModelosUI.EstudianteGrupoDto
+﻿@model Campus.Abstracciones.ModelosUI.UsuariosDto
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -11,52 +11,59 @@
 
             <div class="card-body">
                 @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
-                @Html.HiddenFor(model => model.Usuario.IdUsuario)
+                @Html.HiddenFor(model => model.IdUsuario)
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        @Html.LabelFor(model => model.Usuario.Nombre, htmlAttributes: new { @class = "form-label fw-bold" })
-                        @Html.TextBoxFor(model => model.Usuario.Nombre, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Usuario.Nombre, "", new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "form-label fw-bold" })
+                        @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
                     </div>
                     <div class="col-md-6">
-                        @Html.LabelFor(model => model.Usuario.Apellido, htmlAttributes: new { @class = "form-label fw-bold" })
-                        @Html.TextBoxFor(model => model.Usuario.Apellido, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Usuario.Apellido, "", new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.Apellido, htmlAttributes: new { @class = "form-label fw-bold" })
+                        @Html.TextBoxFor(model => model.Apellido, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Apellido, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        @Html.LabelFor(model => model.Usuario.Email, htmlAttributes: new { @class = "form-label fw-bold" })
-                        @Html.TextBoxFor(model => model.Usuario.Email, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Usuario.Email, "", new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "form-label fw-bold" })
+                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                     </div>
                     <div class="col-md-6">
-                        @Html.LabelFor(model => model.Usuario.Telefono, htmlAttributes: new { @class = "form-label fw-bold" })
-                        @Html.TextBoxFor(model => model.Usuario.Telefono, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Usuario.Telefono, "", new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.Telefono, htmlAttributes: new { @class = "form-label fw-bold" })
+                        @Html.TextBoxFor(model => model.Telefono, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Telefono, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        @Html.LabelFor(model => model.Usuario.FechaDeNacimiento, htmlAttributes: new { @class = "form-label fw-bold" })
-                        @Html.TextBoxFor(model => model.Usuario.FechaDeNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-                        @Html.ValidationMessageFor(model => model.Usuario.FechaDeNacimiento, "", new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.FechaDeNacimiento, htmlAttributes: new { @class = "form-label fw-bold" })
+                        @Html.TextBoxFor(model => model.FechaDeNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                        @Html.ValidationMessageFor(model => model.FechaDeNacimiento, "", new { @class = "text-danger" })
                     </div>
                     <div class="col-md-6">
-                        @Html.LabelFor(model => model.IdGrupo, htmlAttributes: new { @class = "form-label fw-bold" })
-                        @Html.DropDownListFor(model => model.IdGrupo, (SelectList)ViewBag.ListaDeGrupos, "Agregue el usuario a un grupo", new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.IdGrupo, "", new { @class = "text-danger" })
+                        @Html.Label("IdGrupo", "Grupo", new { @class = "form-label fw-bold" })
+
+                        @Html.DropDownList(
+                            "IdGrupo",
+                            (IEnumerable<SelectListItem>)ViewBag.ListaDeGrupos,
+                            "Agregue el usuario a un grupo",
+                            new { @class = "form-control" }
+                        )
+
+                        @Html.ValidationMessage("IdGrupo", "", new { @class = "text-danger" })
                     </div>
                 </div>
 
 
 
                 <div class="mb-3">
-                    @Html.LabelFor(m => m.Usuario.Rol, htmlAttributes: new { @class = "form-label fw-bold" })
-                    @Html.DropDownListFor(m => m.Usuario.Rol, new List<SelectListItem>
+                    @Html.LabelFor(m => m.Rol, htmlAttributes: new { @class = "form-label fw-bold" })
+                    @Html.DropDownListFor(m => m.Rol, new List<SelectListItem>
                     {
                         new SelectListItem { Text = "Estudiante", Value = "Estudiantes" },
                         new SelectListItem { Text = "Profesor", Value = "Profesores" },
@@ -65,9 +72,9 @@
                 </div>
 
                 <div class="form-check form-switch mb-3">
-                    @Html.EditorFor(model => model.Usuario.Estado, new { htmlAttributes = new { @class = "form-check-input" } })
-                    @Html.LabelFor(model => model.Usuario.Estado, htmlAttributes: new { @class = "form-check-label fw-bold" })
-                    @Html.ValidationMessageFor(model => model.Usuario.Estado, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.Estado, new { htmlAttributes = new { @class = "form-check-input" } })
+                    @Html.LabelFor(model => model.Estado, htmlAttributes: new { @class = "form-check-label fw-bold" })
+                    @Html.ValidationMessageFor(model => model.Estado, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="d-flex justify-content-between">

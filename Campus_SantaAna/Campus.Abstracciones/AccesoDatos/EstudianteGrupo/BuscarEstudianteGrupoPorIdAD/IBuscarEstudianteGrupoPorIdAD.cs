@@ -10,6 +10,6 @@ namespace Campus.Abstracciones.AccesoDatos.EstudianteGrupo.BuscarEstudianteGrupo
     public interface IBuscarEstudianteGrupoPorIAD
     {
         EstudianteGrupoDto BuscarEstudianteGrupoPorEstudianteId(string idEstudiante);
-        EstudianteGrupoDto BuscarEstudianteGrupoPorGrupoId(int idGrupo);
+        List<EstudianteGrupoDto> BuscarEstudianteGrupoPorGrupoId(int idGrupo);
     }
 }

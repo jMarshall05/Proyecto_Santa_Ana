@@ -10,5 +10,8 @@ namespace Campus.Abstracciones.AccesoDatos.EstudianteGrupo.ListarEstudiantesGrup
     public interface IListarEstudiantesGruposAD
     {
         List<EstudianteGrupoDto> ListarEstudiantesGrupos();
+        List<EstudianteGrupoDto> ListarEstudiantesPorIdGrupo(int idGrupo);
+        List<EstudianteGrupoDto> ListarGruposPorIdEstudiante(string idUsuario);
+
     }
 }

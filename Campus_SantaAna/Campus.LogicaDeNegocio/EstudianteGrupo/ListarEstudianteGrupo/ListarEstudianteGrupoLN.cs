@@ -23,5 +23,14 @@ namespace Campus.LogicaDeNegocio.EstudianteGrupo.ListarEstudianteGrupo
             return _listarEstudianteGrupoAD.ListarEstudiantesGrupos();
         }
 
+        public List<EstudianteGrupoDto> ListarEstudiantesPorIdGrupo(int idGrupo)
+        {
+            return _listarEstudianteGrupoAD.ListarEstudiantesPorIdGrupo(idGrupo);
+        }
+
+        public List<EstudianteGrupoDto> ListarGruposPorIdEstudiante(string idUsuario)
+        {
+            return _listarEstudianteGrupoAD.ListarGruposPorIdEstudiante(idUsuario);
+        }
     }
 }

@@ -57,6 +57,7 @@
     <Compile Include="anuncios\EliminarAnunciosAD\EliminarAnunciosAD.cs" />
     <Compile Include="anuncios\ListarAnunciosAD\ListarAnunciosAD.cs" />
     <Compile Include="Contexto.cs" />
+    <Compile Include="EstudianteGrupo\ActualizarEstudianteGrupoAD\ActualizarEstudianteGrupoAD.cs" />
     <Compile Include="EstudianteGrupo\ListarEstudianteGrupoAD\ListarEstudianteGrupoAD.cs" />
     <Compile Include="Grupos\AgregarGrupo\AgregarGrupoAD.cs" />
     <Compile Include="Grupos\EditarGrupo\EditarGrupoAD.cs" />

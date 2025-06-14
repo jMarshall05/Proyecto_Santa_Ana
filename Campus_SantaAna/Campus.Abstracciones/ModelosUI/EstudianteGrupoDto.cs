@@ -9,7 +9,7 @@ namespace Campus.Abstracciones.ModelosUI
     public class EstudianteGrupoDto
     {
         public int EstudianteGrupo_Id { get; set; }
-        public string IdUsuario { get; set; }
+        public string IdEstudiante { get; set; }
         public int IdGrupo { get; set; }
     }
 }

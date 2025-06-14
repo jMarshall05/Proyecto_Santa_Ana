@@ -21,9 +21,33 @@ namespace Campus.AccesoDatos.EstudianteGrupo.ListarEstudianteGrupoAD
                 .Select(eg => new EstudianteGrupoDto
                 {
                     EstudianteGrupo_Id = eg.Id,
-                    IdUsuario = eg.Estudiante_id,
+                    IdEstudiante = eg.Estudiante_id,
                     IdGrupo = eg.Grupo_id
                 }).ToList();
+            return estudiantesGrupos;
+        }
+
+        public List<EstudianteGrupoDto> ListarEstudiantesPorIdGrupo(int idGrupo)
+        {
+            var estudiantesGrupos = (from EstudianteGrupo in _elContexto.EstudianteGrupos
+                                     where EstudianteGrupo.Grupo_id == idGrupo
+                                     select new EstudianteGrupoDto
+                                     {
+                                         EstudianteGrupo_Id = EstudianteGrupo.Id,
+                                         IdEstudiante = EstudianteGrupo.Estudiante_id,
+                                     }).ToList();
+            return estudiantesGrupos;
+        }
+
+        public List<EstudianteGrupoDto> ListarGruposPorIdEstudiante(string idUsuario)
+        {
+            var estudiantesGrupos = (from EstudianteGrupo in _elContexto.EstudianteGrupos
+                                     where EstudianteGrupo.Estudiante_id == idUsuario
+                                     select new EstudianteGrupoDto
+                                     {
+                                         EstudianteGrupo_Id = EstudianteGrupo.Id,
+                                         IdGrupo = EstudianteGrupo.Grupo_id
+                                     }).ToList();
             return estudiantesGrupos;
         }
     }

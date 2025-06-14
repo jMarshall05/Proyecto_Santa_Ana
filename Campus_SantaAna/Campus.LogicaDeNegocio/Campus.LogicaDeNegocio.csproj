@@ -46,6 +46,8 @@
     <Compile Include="anuncios\EditarAnuncios\EditarAnunciosLN.cs" />
     <Compile Include="anuncios\EliminarAnuncios\EliminarAnunciosLN.cs" />
     <Compile Include="anuncios\ListarAnuncios\ListarAnunciosLN.cs" />
+    <Compile Include="EstudianteGrupo\ActualizarEstudianteGrupoLN\ActualizarEstudianteGrupoLN.cs" />
+    <Compile Include="EstudianteGrupo\BuscarEstudianteGrupoPorIdLN\BuscarEstudianteGrupoPorIdLN.cs" />
     <Compile Include="EstudianteGrupo\ListarEstudianteGrupo\ListarEstudianteGrupoLN.cs" />
     <Compile Include="Grupos\AgregarGrupo\AgregarGrupoLN.cs" />
     <Compile Include="Grupos\EditarGrupo\EditarGrupoLN.cs" />

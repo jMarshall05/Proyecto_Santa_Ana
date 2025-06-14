@@ -10,5 +10,7 @@ namespace Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ListarEstudianteG
     public interface IListarEstudianteGrupoLN
     {
         List<EstudianteGrupoDto> ListarEstudianteGrupo();
+        List<EstudianteGrupoDto> ListarEstudiantesPorIdGrupo(int idGrupo);
+        List<EstudianteGrupoDto> ListarGruposPorIdEstudiante(string idUsuario);
     }
 }

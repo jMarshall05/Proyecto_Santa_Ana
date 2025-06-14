@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Campus.Abstracciones.ModelosUI;
 
 namespace Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorILN
 {
-    public interface IBuscarEstudianteGrupoPorILN
+    public interface IBuscarEstudianteGrupoPorIdLN
     {
-        Task <int> BuscarEstudianteGrupoPorEstudianteId(string idEstudiante);
-        Task<int> BuscarEstudianteGrupoPorGrupoId(int idGrupo);
+        EstudianteGrupoDto BuscarEstudianteGrupoPorEstudianteId(string idEstudiante);
+        List<EstudianteGrupoDto> BuscarEstudianteGrupoPorGrupoId(int idGrupo);
     }
 }

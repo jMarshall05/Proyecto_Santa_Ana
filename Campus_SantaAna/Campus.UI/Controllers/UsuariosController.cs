@@ -1,20 +1,24 @@
 ﻿using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ActualizarEstudianteGrupoLN;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
+using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorILN;
+using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ListarEstudianteGrupoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.EditarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
-using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.LogicaDeNegocio.EstudianteGrupo.ActualizarEstudianteGrupoLN;
 using Campus.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
+using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
+using Campus.LogicaDeNegocio.EstudianteGrupo.ListarEstudianteGrupo;
+using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Microsoft.AspNet.Identity.Owin;
-using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ListarEstudianteGrupoLN;
-using Campus.LogicaDeNegocio.EstudianteGrupo.ListarEstudianteGrupo;
 
 namespace Campus.UI.Controllers
 {
@@ -27,6 +31,9 @@ namespace Campus.UI.Controllers
         private IListarGruposLN _listarGrupos;
         private IAgregarEstudianteGrupoLN _agregarEstudianteGrupoLN;
         private IListarEstudianteGrupoLN _listarEstudianteGrupoLN;
+        private IBuscarEstudianteGrupoPorIdLN _buscarEstudianteGrupoPorIdLN;
+        private IActualizarEstudianteGrupoLN _actualizarEstudianteGrupoLN;
+
         public UsuariosController()
         {
             _listarUsuariosLN = new ListarUsuariosLN();
@@ -35,6 +42,8 @@ namespace Campus.UI.Controllers
             _listarGrupos = new ListarGruposLN();
             _agregarEstudianteGrupoLN = new AgregarEstudianteGrupoLN();
             _listarEstudianteGrupoLN = new ListarEstudianteGrupoLN();
+            _buscarEstudianteGrupoPorIdLN = new BuscarEstudianteGrupoPorIdLN();
+            _actualizarEstudianteGrupoLN = new ActualizarEstudianteGrupoLN();
 
         }
         public ApplicationUserManager UserManager
@@ -56,6 +65,7 @@ namespace Campus.UI.Controllers
         public ActionResult ListarUsuarios()
         {
             var listaDeUsuarios = _listarUsuariosLN.ListarUsuarios();
+
             return View(listaDeUsuarios);
         }
 
@@ -63,37 +73,12 @@ namespace Campus.UI.Controllers
         public ActionResult DetallesDeUsuarioParcial(string id)
         {
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
-
-            //if (usuario.Id_grupo != null)
-            //{
-            //    var grupo = _listarGrupos.BuscarGruposPorId((int)usuario.Id_grupo);
-            //    ViewBag.NombreGrupo = grupo.nombre_grupo;
-            //}
-
+            var grupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
+            var NombreGrupo = _listarGrupos.BuscarGruposPorId(grupo.IdGrupo);
+            ViewBag.Grupo = NombreGrupo.nombre_grupo;
             return PartialView("_DetallesDeUsuarioParcial", usuario);
         }
 
-        // GET: Usuarios/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Usuarios/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
         // GET: Usuarios/Edit/5
         public ActionResult EditarUsuarioParcial(string id)
@@ -101,29 +86,30 @@ namespace Campus.UI.Controllers
             var listaDeGrupos = _listarGrupos.ListarGrupos();
             ViewBag.ListaDeGrupos = new SelectList(listaDeGrupos, "id_grupo", "nombre_grupo");
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
-            var estudiante = new EstudianteGrupoDto
-            {
-                //Usuario = usuario,
-            };
-            return PartialView("_EditarUsuarioParcial", estudiante);
+            var ListaDe = _listarGrupos.ListarGrupos();
+            return PartialView("_EditarUsuarioParcial", usuario);
         }
 
         // POST: Usuarios/Edit/5
         [HttpPost]
-        public ActionResult EditarUsuarioParcial(string id, EstudianteGrupoDto estudiante)
+        public ActionResult EditarUsuarioParcial(string id, UsuariosDto usuario, int Idgrupo)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    //_editarUsuarioLN.EditarUsuarioAdmin(id, estudiante.Usuario);
-                    //estudiante.Usuario.IdUsuario = id;
+                    _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
+                    var estudianteGrupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
+                    var estudiante = new EstudianteGrupoDto{IdEstudiante = id,IdGrupo = Idgrupo};
+                    if (estudianteGrupo != null)
+                        {_actualizarEstudianteGrupoLN.ActualizarEstudianteGrupo(estudiante);}
                     _agregarEstudianteGrupoLN.AgregarEstudianteGrupo(estudiante);
+
 
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Por favor, algo fallo al editar.");
+                    ModelState.AddModelError("", "Algo fallo al editar.");
                     return View("ListarUsuarios");
                 }
 

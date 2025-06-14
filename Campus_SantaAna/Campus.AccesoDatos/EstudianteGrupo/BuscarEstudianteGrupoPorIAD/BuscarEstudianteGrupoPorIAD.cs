@@ -18,24 +18,27 @@ namespace Campus.AccesoDatos.EstudianteGrupo.BuscarEstudianteGrupoPorIAD
 
         public EstudianteGrupoDto BuscarEstudianteGrupoPorEstudianteId(string idEstudiante)
         {
-            var estudianteGrupo = _elContexto.EstudianteGrupos
-                .FirstOrDefault(eg => eg.Estudiante_id == idEstudiante);
+            var estudianteGrupo = _elContexto.EstudianteGrupos.FirstOrDefault(eg => eg.Estudiante_id == idEstudiante);
+            if (estudianteGrupo == null)
+                return null;
             return new EstudianteGrupoDto
             {
                 EstudianteGrupo_Id = estudianteGrupo.Id,
                 IdGrupo = estudianteGrupo.Grupo_id
             };
+
         }
 
-        public EstudianteGrupoDto BuscarEstudianteGrupoPorGrupoId(int idGrupo)
+        public List<EstudianteGrupoDto> BuscarEstudianteGrupoPorGrupoId(int idGrupo)
         {
-            var estudianteGrupo = _elContexto.EstudianteGrupos
-                .FirstOrDefault(eg => eg.Grupo_id == idGrupo);
-            return new EstudianteGrupoDto
-            {
-                EstudianteGrupo_Id = estudianteGrupo.Id,
-                IdGrupo = estudianteGrupo.Grupo_id
-            };
+            var estudianteGrupo = (from EstudianteGrupo in _elContexto.EstudianteGrupos
+                                   where EstudianteGrupo.Grupo_id == idGrupo
+                                   select new EstudianteGrupoDto
+                                   {
+                                       EstudianteGrupo_Id = EstudianteGrupo.Id,
+                                       IdEstudiante = EstudianteGrupo.Estudiante_id,
+                                   }).ToList();
+            return estudianteGrupo;
         }
     }
 }
