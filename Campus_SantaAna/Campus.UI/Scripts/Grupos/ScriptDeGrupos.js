@@ -158,10 +158,8 @@ $(document).on('click', '.btn-Detalles-Grupo', DetallesGrupo)
                 console.log(error);
             }
         });
-        $(document).on('click', '.btn-Editar-Grupo', EditarGrupo) 
-
     };
-
+ $(document).on('click', '.btn-Editar-Grupo', EditarGrupo) 
 
 
 

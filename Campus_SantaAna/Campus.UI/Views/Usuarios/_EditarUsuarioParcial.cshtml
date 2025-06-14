@@ -1,5 +1,4 @@
 ﻿@model Campus.Abstracciones.ModelosUI.UsuariosDto
-
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -47,15 +46,20 @@
                         @Html.ValidationMessageFor(model => model.FechaDeNacimiento, "", new { @class = "text-danger" })
                     </div>
                     <div class="col-md-6">
-                        @Html.LabelFor(model => model.Id_grupo, htmlAttributes: new { @class = "form-label fw-bold" })
-                        @Html.DropDownListFor(model => model.Id_grupo, (SelectList)ViewBag.ListaDeGrupos, "Agregue el usuario a un grupo", new { @class = "form-control" })
+                        @Html.Label("IdGrupo", "Grupo", new { @class = "form-label fw-bold" })
 
-                        @Html.ValidationMessageFor(model => model.Id_grupo, "", new { @class = "text-danger" })
+                        @Html.DropDownList(
+                            "IdGrupo",
+                            (IEnumerable<SelectListItem>)ViewBag.ListaDeGrupos,
+                            "Agregue el usuario a un grupo",
+                            new { @class = "form-control" }
+                        )
+
+                        @Html.ValidationMessage("IdGrupo", "", new { @class = "text-danger" })
                     </div>
-
                 </div>
 
-               
+
 
                 <div class="mb-3">
                     @Html.LabelFor(m => m.Rol, htmlAttributes: new { @class = "form-label fw-bold" })
