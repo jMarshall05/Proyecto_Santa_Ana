@@ -100,10 +100,15 @@ namespace Campus.UI.Controllers
                 {
                     _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
                     var estudianteGrupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
-                    var estudiante = new EstudianteGrupoDto{IdEstudiante = id,IdGrupo = Idgrupo};
-                    if (estudianteGrupo != null)
-                        {_actualizarEstudianteGrupoLN.ActualizarEstudianteGrupo(estudiante);}
-                    _agregarEstudianteGrupoLN.AgregarEstudianteGrupo(estudiante);
+                    var estudiante = new EstudianteGrupoDto { IdEstudiante = id, IdGrupo = Idgrupo };
+                    if (estudianteGrupo == null)
+                    {
+                        _agregarEstudianteGrupoLN.AgregarEstudianteGrupo(estudiante);
+                        return RedirectToAction("ListarUsuarios");
+                    }
+                    _actualizarEstudianteGrupoLN.ActualizarEstudianteGrupo(estudiante);
+                    return RedirectToAction("ListarUsuarios");
+
 
 
                 }
@@ -112,9 +117,6 @@ namespace Campus.UI.Controllers
                     ModelState.AddModelError("", "Algo fallo al editar.");
                     return View("ListarUsuarios");
                 }
-
-
-                return RedirectToAction("ListarUsuarios");
             }
             catch
             {

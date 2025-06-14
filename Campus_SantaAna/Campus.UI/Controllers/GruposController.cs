@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorILN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.AgregarGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
@@ -11,6 +12,7 @@ using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListaDeUsuariosPorGrupoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.ModelosAD;
+using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
 using Campus.LogicaDeNegocio.Grupos.AgregarGrupo;
 using Campus.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
@@ -28,6 +30,7 @@ namespace Campus.UI.Controllers
         private IAgregarGrupoLN _agregarGrupoLN;
         private IEditarGrupoLN _editarGrupoLN;
         private IListaDeUsuariosPorGrupoLN _usuariosPorGrupo;
+        private IBuscarEstudianteGrupoPorIdLN _buscarEstudianteGrupoPorIdLN;
         public GruposController()
         {
             _listarGrupos = new ListarGruposLN();
@@ -35,6 +38,7 @@ namespace Campus.UI.Controllers
             _agregarGrupoLN = new AgregarGrupoLN();
             _editarGrupoLN = new EditarGrupoLN();
             _usuariosPorGrupo = new ListaDeUsuariosPorGrupoLN();
+            _buscarEstudianteGrupoPorIdLN = new BuscarEstudianteGrupoPorIdLN();
         }
         // GET: Grupos
         public ActionResult ListarGrupos()
@@ -53,18 +57,24 @@ namespace Campus.UI.Controllers
             return View(/*grupo*/);
         }
 
-        // GET: Grupos/Details/5
-        //public ActionResult DetallesDeGrupoParcial(int id)
-        //{
-        //    var grupo = _listarGrupos.BuscarGruposPorId(id); 
-        //    var usuariosEnGrupo = _usuariosPorGrupo.ObtenerUsuariosPorGrupo(id);
-        //    var UsuariosGruposDto = new UsuariosGruposDto
-        //    {
-        //        grupo = grupo,
-        //       usuarios = usuariosEnGrupo
-        //    };
-        //               return PartialView("_DetallesDeGrupoParcial", UsuariosGruposDto);
-        //}
+        //GET: Grupos/Details/5
+        public ActionResult DetallesDeGrupoParcial(int id)
+        {
+            var grupo = _listarGrupos.BuscarGruposPorId(id);
+            var usuarios = new List<UsuariosDto>();
+            var usuariosEnGrupo =  _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorGrupoId(id);
+            foreach (var usuariosEG in usuariosEnGrupo)
+            {
+                var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(usuariosEG.IdEstudiante);
+                usuarios.Add(usuario);
+            }
+            var UsuariosGruposDto = new UsuariosGruposDto
+            {
+                grupo = grupo,
+                usuarios = usuarios
+            };
+            return PartialView("_DetallesDeGrupoParcial", UsuariosGruposDto);
+        }
 
         // GET: Grupos/Create
         public ActionResult AgregarGrupoParcial(string id)
@@ -103,11 +113,11 @@ namespace Campus.UI.Controllers
         }
 
         // GET: Grupos/Edit/5
-        //public ActionResult EditarGrupoParcial(int id)
-        //{
-        //    var grupo = _listarGrupos.BuscarGruposPorId(id);
-        //    return PartialView("_EditarGrupoParcial", grupo);
-        //}
+        public ActionResult EditarGrupoParcial(int id)
+        {
+            var grupo = _listarGrupos.BuscarGruposPorId(id);
+            return PartialView("_EditarGrupoParcial", grupo);
+        }
 
         // POST: Grupos/Edit/5
         [HttpPost]
