@@ -10,6 +10,6 @@ namespace Campus.Abstracciones.ModelosUI
     {
         public int IdEstudianteGrupo { get; set; }
         public string EstudianteId { get; set; }
-        public int GrupoId { get; set; }
+        public int? GrupoId { get; set; }
     }
 }
