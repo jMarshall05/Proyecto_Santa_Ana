@@ -14,7 +14,10 @@
         <div class="form-group mb-4">
             @Html.LabelFor(model => model.nombre_grupo, htmlAttributes: new { @class = "form-label fw-bold" })
             <div>
-                @Html.EditorFor(model => model.nombre_grupo, new { htmlAttributes = new { @class = "form-control", placeholder = "Ingrese el nombre del grupo" } })
+                @Html.EditorFor(model => model.nombre_grupo, new { htmlAttributes = new { @class = "form-control", placeholder = "Ingrese el nombre del grupo",
+               required = "required"
+           }
+           })
                 @Html.ValidationMessageFor(model => model.nombre_grupo, "", new { @class = "text-danger small" })
             </div>
         </div>
@@ -29,12 +32,14 @@
                         </span>
                     </div>
                     @Html.TextAreaFor(model => model.descripcion, new
-                    {
-                        @class = "form-control",
-                        rows = 4,
-                        placeholder = "Detalles del grupo..."
-                    })
-                </div>           
+               {
+                   @class = "form-control",
+                   rows = 4,
+                   placeholder = "Detalles del grupo...",
+                   required = "required"
+
+               })
+                </div>
                 @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger small" })
             </div>
         </div>
@@ -48,4 +53,7 @@
             </button>
         </div>
     </div>
+}
+@section Scripts {
+@Scripts.Render("~/bundles/jqueryval")
 }
