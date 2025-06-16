@@ -18,7 +18,8 @@ namespace Campus.AccesoDatos
         public DbSet<AnunciosAD> Anuncios { get; set; }
         public DbSet<TareasAD> Tareas { get; set; }
         public DbSet<GruposAD> Grupos { get; set; }
-        public DbSet<EstudianteGrupoAD> EstudianteGrupos { get; set; }
+
+        public DbSet<MateriasAD> Materias { get; set; }
 
 
     }

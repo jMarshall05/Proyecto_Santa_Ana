@@ -52,6 +52,10 @@
     <Compile Include="Grupos\AgregarGrupo\AgregarGrupoLN.cs" />
     <Compile Include="Grupos\EditarGrupo\EditarGrupoLN.cs" />
     <Compile Include="Grupos\ListarGrupos\ListarGruposLN.cs" />
+    <Compile Include="materias\AgregarMaterias\AgregarMateriasLN.cs" />
+    <Compile Include="materias\EditarMaterias\EditarMateriasLN.cs" />
+    <Compile Include="materias\EliminarMaterias\EliminarMateriasLN.cs" />
+    <Compile Include="materias\ListarMaterias\ListarMateriasLN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="tareas\agregarTarea\AgregarTareaLN.cs" />
     <Compile Include="tareas\editarTarea\EditarTareaLN.cs" />
