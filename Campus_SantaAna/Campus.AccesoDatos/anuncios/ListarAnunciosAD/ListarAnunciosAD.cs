@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;                       //  👈 asegúrate de tenerlo
+using System.Linq;                       
 using Campus.Abstracciones.AccesoDatos.Anuncios.ListarAnunciosAD;
 using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.ModelosAD;

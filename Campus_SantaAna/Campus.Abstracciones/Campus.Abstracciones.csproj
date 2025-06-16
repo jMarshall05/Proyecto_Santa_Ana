@@ -51,6 +51,10 @@
     <Compile Include="AccesoDatos\Grupos\AgregarGrupo\IAgregarGrupoAD.cs" />
     <Compile Include="AccesoDatos\Grupos\EditarGrupo\IEditarGrupoAD.cs" />
     <Compile Include="AccesoDatos\Grupos\ListarGrupos\IListarGruposAD.cs" />
+    <Compile Include="AccesoDatos\materias\AgregarMateriasAD\IAgregarMateriasAD.cs" />
+    <Compile Include="AccesoDatos\materias\EditarMateriasAD\IEditarMateriasAD.cs" />
+    <Compile Include="AccesoDatos\materias\EliminarMateriasAD\IEliminarMateriasAD.cs" />
+    <Compile Include="AccesoDatos\materias\ListarMateriasAD\IListarMateriasAD.cs" />
     <Compile Include="AccesoDatos\tareas\agregarTareaAD\IAgregarTarea.cs" />
     <Compile Include="AccesoDatos\tareas\editarTareaAD\IEditarTarea.cs" />
     <Compile Include="AccesoDatos\tareas\eliminarTareaAD\IEliminarTarea.cs" />
@@ -67,6 +71,10 @@
     <Compile Include="LogicaDeNegocio\Grupos\AgregarGrupo\IAgregarGrupoLN.cs" />
     <Compile Include="LogicaDeNegocio\Grupos\EditarGrupo\IEditarGrupoLN.cs" />
     <Compile Include="LogicaDeNegocio\Grupos\ListarGrupos\IListarGruposLN.cs" />
+    <Compile Include="LogicaDeNegocio\Materias\AgregarMateriasLN\IAgregarMateriasLN.cs" />
+    <Compile Include="LogicaDeNegocio\Materias\EditarMateriasLN\IEditarMateriasLN.cs" />
+    <Compile Include="LogicaDeNegocio\Materias\EliminarMateriasLN\IEliminarMateriasLN.cs" />
+    <Compile Include="LogicaDeNegocio\Materias\ListarMateriasLN\IListarAnunciosLN.cs" />
     <Compile Include="LogicaDeNegocio\tareas\agregarTareaLN\IAgregarTareaLN.cs" />
     <Compile Include="LogicaDeNegocio\tareas\editarTareaLN\IEditarTareaLN.cs" />
     <Compile Include="LogicaDeNegocio\tareas\eliminarTareaLN\IEliminarTareaLN.cs" />
