@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ActualizarEstudianteGrupoLN;
@@ -75,7 +76,8 @@ namespace Campus.UI.Controllers
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
             var grupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
             if(grupo !=null)
-            {var NombreGrupo = _listarGrupos.BuscarGruposPorId((int)grupo.GrupoId);
+            {
+                var NombreGrupo = _listarGrupos.BuscarGruposPorId((int)grupo.GrupoId);
                 ViewBag.Grupo = NombreGrupo.nombre_grupo;
             }
             return PartialView("_DetallesDeUsuarioParcial", usuario);
@@ -99,11 +101,15 @@ namespace Campus.UI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    await _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
-                    var result = await UserManager.SetEmailAsync(id, usuario.Email);
-                    if (result.Succeeded)
+                    var rol =await UserManager.GetRolesAsync(id);
+                    if(rol.FirstOrDefault() != usuario.Rol)
                     {
-                        if (Idgrupo != null)
+                        await UserManager.RemoveFromRoleAsync(id, rol.FirstOrDefault());
+                        await UserManager.AddToRoleAsync(id, usuario.Rol);
+                    }
+                    await _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
+                    await UserManager.SetEmailAsync(id, usuario.Email);
+                    if (Idgrupo != null)
                         {
                             var estudianteGrupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
                             var estudiante = new EstudianteGrupoDto { EstudianteId = id, GrupoId = Idgrupo };
@@ -114,7 +120,6 @@ namespace Campus.UI.Controllers
                             }
                             await _actualizarEstudianteGrupoLN.ActualizarEstudianteGrupo(estudiante);
                         }
-                    }
                     return RedirectToAction("ListarUsuarios");
                 }
                 else
