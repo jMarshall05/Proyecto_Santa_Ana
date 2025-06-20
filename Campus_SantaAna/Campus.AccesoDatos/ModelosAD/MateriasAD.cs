@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Campus.AccesoDatos.ModelosAD
 {
-    [Table("materia")]
-    public class MateriaAD
+    [Table("materias")]
+    public class MateriasAD
     {
         [Key]
         [Column("id_materia")]
@@ -15,8 +15,6 @@ namespace Campus.AccesoDatos.ModelosAD
         [StringLength(100)]
         public string Nombre { get; set; }
 
-        [Column("descripcion")]
-        [Required]
-        public string Descripcion { get; set; }
+        
     }
 }

@@ -4,17 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorILN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.AgregarGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
-using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListaDeUsuariosPorGrupoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
+using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
 using Campus.LogicaDeNegocio.Grupos.AgregarGrupo;
 using Campus.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
-using Campus.LogicaDeNegocio.Usuarios.ListaDeUsuariosPorGrupo;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
@@ -27,14 +26,14 @@ namespace Campus.UI.Controllers
         private IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
         private IAgregarGrupoLN _agregarGrupoLN;
         private IEditarGrupoLN _editarGrupoLN;
-        private IListaDeUsuariosPorGrupoLN _usuariosPorGrupo;
+        private IBuscarEstudianteGrupoPorIdLN _buscarEstudianteGrupoPorIdLN;
         public GruposController()
         {
             _listarGrupos = new ListarGruposLN();
             _obtenerUsuariosPorIdLN = new ObtenerUsuariosPorIdLN();
             _agregarGrupoLN = new AgregarGrupoLN();
             _editarGrupoLN = new EditarGrupoLN();
-            _usuariosPorGrupo = new ListaDeUsuariosPorGrupoLN();
+            _buscarEstudianteGrupoPorIdLN = new BuscarEstudianteGrupoPorIdLN();
         }
         // GET: Grupos
         public ActionResult ListarGrupos()
@@ -49,21 +48,27 @@ namespace Campus.UI.Controllers
             string id = User.Identity.GetUserId();
             var Usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
 
-            var grupo = _listarGrupos.BuscarGruposPorId((int)Usuario.Id_grupo);
-            return View(grupo);
+            //var grupo = _listarGrupos.BuscarGruposPorId((int)Usuario.Id_grupo);
+            return View(/*grupo*/);
         }
 
-        // GET: Grupos/Details/5
+        //GET: Grupos/Details/5
         public ActionResult DetallesDeGrupoParcial(int id)
         {
-            var grupo = _listarGrupos.BuscarGruposPorId(id); 
-            var usuariosEnGrupo = _usuariosPorGrupo.ObtenerUsuariosPorGrupo(id);
+            var grupo = _listarGrupos.BuscarGruposPorId(id);
+            var usuarios = new List<UsuariosDto>();
+            var usuariosEnGrupo =  _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorGrupoId(id);
+            foreach (var usuariosEG in usuariosEnGrupo)
+            {
+                var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(usuariosEG.EstudianteId);
+                usuarios.Add(usuario);
+            }
             var UsuariosGruposDto = new UsuariosGruposDto
             {
                 grupo = grupo,
-               usuarios = usuariosEnGrupo
+                usuarios = usuarios
             };
-                       return PartialView("_DetallesDeGrupoParcial", UsuariosGruposDto);
+            return PartialView("_DetallesDeGrupoParcial", UsuariosGruposDto);
         }
 
         // GET: Grupos/Create
@@ -111,7 +116,7 @@ namespace Campus.UI.Controllers
 
         // POST: Grupos/Edit/5
         [HttpPost]
-        public async Task<ActionResult> EditarGrupoParcial(int id, GruposDto grupo)
+        public async Task<ActionResult> EditarGrupoParcial(int id_grupo, GruposDto grupo)
         {
             try
             {
@@ -120,7 +125,7 @@ namespace Campus.UI.Controllers
                     ModelState.AddModelError("", "Por favor, complete todos los campos requeridos.");
                     return PartialView("_EditarGrupoParcial", grupo);
                 }
-                int resultado = await _editarGrupoLN.EditarGrupo(id, grupo);
+                int resultado = await _editarGrupoLN.EditarGrupo(id_grupo, grupo);
                 if (resultado == 1)
                 {
                     return RedirectToAction("ListarGrupos");
