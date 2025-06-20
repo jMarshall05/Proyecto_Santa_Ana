@@ -62,9 +62,13 @@
     <Compile Include="Grupos\AgregarGrupo\AgregarGrupoAD.cs" />
     <Compile Include="Grupos\EditarGrupo\EditarGrupoAD.cs" />
     <Compile Include="Grupos\ListarGrupos\ListarGruposAD.cs" />
+    <Compile Include="materias\AgregarMateriasAD\AgregarMateriasAD.cs" />
+    <Compile Include="materias\EditarMateriasAD\EditarMateriasAD.cs" />
+    <Compile Include="materias\EliminarMateriasAD\EliminarMateriasAD.cs" />
+    <Compile Include="materias\ListarMateriasAD\ListarMateriasAD.cs" />
     <Compile Include="ModelosAD\AnunciosAD.cs" />
     <Compile Include="ModelosAD\GruposAD.cs" />
-    <Compile Include="ModelosAD\materiaAD.cs" />
+    <Compile Include="ModelosAD\MateriasAD.cs" />
     <Compile Include="ModelosAD\TareasAD.cs" />
     <Compile Include="ModelosAD\EstudianteGrupoAD.cs" />
     <Compile Include="ModelosAD\UsuariosAD.cs" />
