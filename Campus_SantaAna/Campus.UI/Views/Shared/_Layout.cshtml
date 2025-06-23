@@ -7,6 +7,8 @@
     <title>@ViewBag.Title - Santa Ana a un Click</title>
     <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+    <link href="~/Content/styles.css" rel="stylesheet" />
     @Styles.Render("~/Content/css")
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
@@ -34,7 +36,7 @@
             {*@
                     <li>@Html.ActionLink("Tareas", "ListarTareas", "Tareas", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
                     <li>@Html.ActionLink("Administrar Anuncios", "ListarAnuncios", "Anuncios", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
-                   
+
                     @*}
         @if (User.IsInRole("Estudiantes") || User.IsInRole("Profesores") || User.IsInRole("Administradores"))
             {*@
@@ -42,6 +44,7 @@
                     @*}*@
 
                     <li>@Html.ActionLink("Documentos", "Documentos", "Home", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
+                    <li>@Html.ActionLink("Contactos", "VerDocentesAdministrativos", "Usuarios", new { area = "" }, new { @class = "nav-link", style = "color: white;" })</li>
 
                     <li><a href="https://santaana.ed.cr/" class="nav-link" style="color: white;" target="_blank">Sobre Nosotros</a></li>
 

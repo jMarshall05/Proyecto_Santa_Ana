@@ -179,5 +179,12 @@ namespace Campus.UI.Controllers
                 return View();
             }
         }
+        public ActionResult VerDocentesAdministrativos()
+        {
+            var usuarios = _listarUsuariosLN.ListarUsuarios()
+                             .Where(u => u.Rol == "Profesores" || u.Rol == "Administradores")
+                             .ToList();
+            return View(usuarios);
+        }
     }
 }

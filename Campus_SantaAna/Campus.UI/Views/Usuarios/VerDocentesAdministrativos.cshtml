@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.UsuariosDto>
+
+@{
+    ViewBag.Title = "Buscar Docentes y Administrativos";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4 text-center text-dark">Contactar Docentes y Administrativos</h2>
+
+    <div class="mb-5 d-flex justify-content-center">
+        <div class="input-group shadow-sm buscador-wrapper w-75">
+            <span class="input-group-text bg-light border-0" id="iconoBuscar">
+                <i class="fas fa-search text-dark"></i>
+            </span>
+            <input type="text" id="buscador" class="form-control border-0 buscador-input" placeholder="Buscar por nombre, rol o correo...">
+        </div>
+    </div>
+
+    <div class="row" id="contenedorUsuarios">
+        @foreach (var usuario in Model)
+        {
+            var inicial = usuario.Nombre?.FirstOrDefault().ToString().ToUpper();
+            <div class="col-md-6 col-lg-4 mb-4 usuario-card" data-busqueda="@($"{usuario.Nombre} {usuario.Apellido} {usuario.Rol} {usuario.Email}".ToLower())">
+                <div class="card h-100 shadow-sm border-0 perfil-card">
+                    <div class="card-body text-center">
+                        <div class="avatar bg-danger-subtle text-dark rounded-circle mx-auto mb-3 shadow-sm" style="width:70px;height:70px;font-size:30px;line-height:70px;">
+                            @inicial
+                        </div>
+                        <h5 class="card-title">@usuario.Nombre @usuario.Apellido</h5>
+                        <p class="text-muted small">@usuario.Rol</p>
+                        <p>
+                            <a href="mailto:@usuario.Email" class="text-decoration-none text-dark">
+                                <i class="fas fa-envelope me-1 text-dark"></i>@usuario.Email
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+           
+            $('.usuario-card').hide().each(function (index) {
+                $(this).delay(100 * index).fadeIn(300);
+            });
+
+           
+            $('#buscador').on('keyup', function () {
+                var filtro = $(this).val().toLowerCase();
+                $('.usuario-card').each(function () {
+                    var texto = $(this).data('busqueda');
+                    $(this).toggle(texto.includes(filtro));
+                });
+            });
+        });
+    </script>
+}
