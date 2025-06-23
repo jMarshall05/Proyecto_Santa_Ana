@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Web;
 using System;
+using System.Reflection;
+using System.Linq;
 
 namespace Campus.UI.Controllers
 {
@@ -56,9 +58,34 @@ namespace Campus.UI.Controllers
             {
                 try
                 {
+                    if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
+                    {
+                        var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".pdf", ".docx", ".pptx", ".xlsx", ".txt" };
+                        var extensionArchivo = Path.GetExtension(tarea.Archivo.FileName).ToLower();
+
+                        if (!extensionesPermitidas.Contains(extensionArchivo))
+                        {
+                            ModelState.AddModelError("", "Tipo de archivo no permitido.");
+                            return View(tarea);
+                        }
+                        // Ruta del servidor donde se guardará el archivo
+                        var nombreArchivo = Path.GetFileName(tarea.Archivo.FileName);
+                        var rutaCarpeta = Server.MapPath("~/Uploads/");
+                        var rutaCompleta = Path.Combine(rutaCarpeta, nombreArchivo);
+
+                        // Crear carpeta si no existe
+                        if (!Directory.Exists(rutaCarpeta))
+                            Directory.CreateDirectory(rutaCarpeta);
+
+                        // Guardar archivo
+                        tarea.Archivo.SaveAs(rutaCompleta);
+
+                        // Guardar solo la ruta relativa en la base de datos
+                        tarea.ArchivoAdjunto = "~/Uploads/" + nombreArchivo;
+                    }
+
                     // Fechas automáticas
                     tarea.FechaCreacion = DateTime.Now;
-                    tarea.FechaModificacion = DateTime.Now;
 
                     await _agregarTareaLN.AgregarTarea(tarea);
                     return RedirectToAction("ListarTareas");
@@ -105,10 +132,31 @@ namespace Campus.UI.Controllers
             {
                 try
                 {
-                    // Mantenemos la fecha original de creación
-                    var tareaOriginal = await _listarTareaLN.ObtenerPorIdAsync(id);
-                    tarea.FechaCreacion = tareaOriginal.FechaCreacion;
+                    if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
+                    {
+                        var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".pdf", ".docx", ".pptx", ".xlsx",".txt" };
+                        var extensionArchivo = Path.GetExtension(tarea.Archivo.FileName).ToLower();
 
+                        if (!extensionesPermitidas.Contains(extensionArchivo))
+                        {
+                            ModelState.AddModelError("", "No se permiten archvos "+ extensionArchivo+".");
+                            return View(tarea);
+                        }
+                        // Ruta del servidor donde se guardará el archivo
+                        var nombreArchivo = Path.GetFileName(tarea.Archivo.FileName);
+                        var rutaCarpeta = Server.MapPath("~/Uploads/");
+                        var rutaCompleta = Path.Combine(rutaCarpeta, nombreArchivo);
+
+                        // Crear carpeta si no existe
+                        if (!Directory.Exists(rutaCarpeta))
+                            Directory.CreateDirectory(rutaCarpeta);
+
+                        // Guardar archivo
+                        tarea.Archivo.SaveAs(rutaCompleta);
+
+                        // Guardar solo la ruta relativa en la base de datos
+                        tarea.ArchivoAdjunto = "~/Uploads/" + nombreArchivo;
+                    }
                     // Actualizamos la fecha de modificación
                     tarea.FechaModificacion = DateTime.Now;
 

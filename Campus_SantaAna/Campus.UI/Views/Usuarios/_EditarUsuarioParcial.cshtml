@@ -1,5 +1,4 @@
 ﻿@model Campus.Abstracciones.ModelosUI.UsuariosDto
-
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -40,11 +39,27 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    @Html.LabelFor(model => model.FechaDeNacimiento, htmlAttributes: new { @class = "form-label fw-bold" })
-                    @Html.TextBoxFor(model => model.FechaDeNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-                    @Html.ValidationMessageFor(model => model.FechaDeNacimiento, "", new { @class = "text-danger" })
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(model => model.FechaDeNacimiento, htmlAttributes: new { @class = "form-label fw-bold" })
+                        @Html.TextBoxFor(model => model.FechaDeNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                        @Html.ValidationMessageFor(model => model.FechaDeNacimiento, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.Label("IdGrupo", "Grupo", new { @class = "form-label fw-bold" })
+
+                        @Html.DropDownList(
+                            "IdGrupo",
+                            (IEnumerable<SelectListItem>)ViewBag.ListaDeGrupos,
+                            "Agregue el usuario a un grupo",
+                            new { @class = "form-control" }
+                        )
+
+                        @Html.ValidationMessage("IdGrupo", "", new { @class = "text-danger" })
+                    </div>
                 </div>
+
+
 
                 <div class="mb-3">
                     @Html.LabelFor(m => m.Rol, htmlAttributes: new { @class = "form-label fw-bold" })
@@ -56,9 +71,9 @@
                     }, "Seleccione un tipo", new { @class = "form-select", id = "Rol" })
                 </div>
 
-                <div class="form-check mb-3">
-                    @Html.CheckBoxFor(model => model.Estado, new { @class = "form-check-input", id = "chkEstado" })
-                    @Html.LabelFor(model => model.Estado, new { @class = "form-check-label", @for = "chkEstado" })
+                <div class="form-check form-switch mb-3">
+                    @Html.EditorFor(model => model.Estado, new { htmlAttributes = new { @class = "form-check-input" } })
+                    @Html.LabelFor(model => model.Estado, htmlAttributes: new { @class = "form-check-label fw-bold" })
                     @Html.ValidationMessageFor(model => model.Estado, "", new { @class = "text-danger" })
                 </div>
 

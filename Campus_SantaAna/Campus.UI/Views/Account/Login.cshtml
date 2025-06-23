@@ -71,14 +71,14 @@
                                 @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                             </div>
 
-                            <div class="mb-3 row">
+                            @*<div class="mb-3 row">
 
                                 <div class="form-check">
                                     @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input" })
                                     @Html.LabelFor(m => m.RememberMe, new { @class = "form-check-label" })
                                 </div>
 
-                            </div>
+                            </div>*@
 
                             <div class="mb-3 row">
                                 <input type="submit" value="Iniciar sesión" class="btn w-100" style="background-color: #F44336; border-color: #F44336; color: white;" />
@@ -86,9 +86,9 @@
 
                             </div>
 
-                            <p class="text-center">
+                            @*<p class="text-center">
                                 @Html.ActionLink("Registrarse como usuario nuevo", "Register")
-                            </p>
+                            </p>*@
                         }
                     </section>
 

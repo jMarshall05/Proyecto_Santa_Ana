@@ -29,10 +29,10 @@ namespace Campus.AccesoDatos.ModelosAD
 
         [Column("fecha_creacion")]
         [Required]
-        public DateTime FechaCreacion { get; set; } = DateTime.Now;
+        public DateTime FechaCreacion { get; set; }
 
         [Column("fecha_modificacion")]
-        public DateTime FechaModificacion { get; set; }
+        public DateTime? FechaModificacion { get; set; }
 
         [Column("FechaPublicacion")]
         public DateTime FechaPublicacion { get; set; }

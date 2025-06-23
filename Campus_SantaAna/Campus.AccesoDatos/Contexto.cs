@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos
@@ -14,9 +15,15 @@ namespace Campus.AccesoDatos
         public Contexto() : base("name=Contexto")
         {
         }
-    public DbSet<UsuariosAD> Usuarios { get; set; }
-    public DbSet<AnunciosAD> Anuncios { get; set; }
-    public DbSet<TareasAD> Tareas { get; set; }
+        public DbSet<UsuariosAD> Usuarios { get; set; }
+        public DbSet<AnunciosAD> Anuncios { get; set; }
+        public DbSet<TareasAD> Tareas { get; set; }
+        public DbSet<GruposAD> Grupos { get; set; }
+
+        public DbSet<MateriasAD> Materias { get; set; }
+
+       
+
 
 
     }

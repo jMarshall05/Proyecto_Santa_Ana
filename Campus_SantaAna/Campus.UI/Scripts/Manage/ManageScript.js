@@ -24,7 +24,7 @@
     });
 
     // Función para guardar cambios con AJAX
-    $(document).on("click", "#btnGuardar", function () {
+   function GuardarCambios() {
         var datos = {
             Id: $("[data-id]").data("id"),
             Nombre: $("input[name='Nombre']").val(),
@@ -46,14 +46,17 @@
                 $("#filaGuardar").remove();
                 $("#btnEditar").prop("disabled", false);
 
-                // Mostrar mensaje de éxito
                 alert("Datos guardados correctamente");
+
             },
             error: function () {
                 alert("Error al guardar los datos");
             }
         });
-    });
+    };
+    $(document).on("click", "#btnGuardar", GuardarCambios) 
+
+
 
     // Función para cancelar edición
     $(document).on("click", "#btnCancelar", function () {
