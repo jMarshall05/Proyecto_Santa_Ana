@@ -16,6 +16,7 @@ namespace Campus.AccesoDatos
         public DbSet<MateriasAD> Materias { get; set; }
 
         public DbSet<EstudianteGrupoAD> EstudianteGrupos { get; set; }
+        
 
 
 
