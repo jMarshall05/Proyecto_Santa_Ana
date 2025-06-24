@@ -19,7 +19,7 @@ using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Microsoft.AspNet.Identity.Owin;
-
+using System.Linq;
 namespace Campus.UI.Controllers
 {
     public class UsuariosController : Controller
