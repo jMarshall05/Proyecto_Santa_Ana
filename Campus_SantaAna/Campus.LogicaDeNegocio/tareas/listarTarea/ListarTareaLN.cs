@@ -1,12 +1,10 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.listarTareaAD;
-using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.tareas.listarTareaAD;
-
+using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
 
 namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
 {
@@ -14,9 +12,9 @@ namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
     {
         private readonly IListarTarea _listarTareaAD;
 
-        public ListarTareaLN()
+        public ListarTareaLN(IListarTarea listarTareaAD)
         {
-            _listarTareaAD = new ListarTareaAD();
+            _listarTareaAD = listarTareaAD;
         }
 
         public async Task<IEnumerable<TareaDto>> ListarTareasAsync()
@@ -27,7 +25,23 @@ namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al listar las tareas", ex);
+                throw new Exception("Error al listar las tareas: " + ex.Message, ex);
+            }
+        }
+
+        public async Task<IEnumerable<TareaDto>> ListarTareasPorGrupoAsync(int idGrupo)
+        {
+            try
+            {
+                if (idGrupo <= 0)
+                    throw new ArgumentException("ID de grupo no válido");
+
+                var todasTareas = await _listarTareaAD.ListarTareasAsync();
+                return todasTareas.Where(t => t.id_grupo == idGrupo);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al listar tareas por grupo: " + ex.Message, ex);
             }
         }
 
@@ -35,12 +49,30 @@ namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
         {
             try
             {
+                if (idTarea <= 0)
+                    throw new ArgumentException("ID de tarea no válido");
+
                 return await _listarTareaAD.ObtenerPorIdAsync(idTarea);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener la tarea por ID", ex);
+                throw new Exception("Error al obtener la tarea por ID: " + ex.Message, ex);
             }
         }
+
+        // CAMBIO: Ahora retornamos GrupoDto
+        public async Task<IEnumerable<GruposDto>> ListarGruposAsync()
+        {
+            try
+            {
+                return await _listarTareaAD.ListarGruposAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al listar grupos: " + ex.Message, ex);
+            }
+        }
+       
+
     }
 }

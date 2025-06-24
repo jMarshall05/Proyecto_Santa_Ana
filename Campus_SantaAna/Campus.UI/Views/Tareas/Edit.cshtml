@@ -63,8 +63,27 @@
                         </div>
                     </div>
 
-                    <!-- Columna Derecha - Fechas de Entrega y Publicación -->
+                    <!-- Columna Derecha - Grupo y Fechas -->
                     <div class="col-md-6">
+                        <!-- Grupo -->
+                        <div class="form-group mb-4">
+                            @Html.LabelFor(model => model.id_grupo, "Grupo", new { @class = "font-weight-bold text-primary mb-2" })
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-light h-100">
+                                        <i class="fas fa-users text-primary"></i>
+                                    </span>
+                                </div>
+                                @Html.DropDownListFor(model => model.id_grupo, (IEnumerable<SelectListItem>)ViewBag.Grupos, "Seleccione un grupo", new { @class = "form-control" })
+
+                            </div>
+                            @Html.ValidationMessageFor(model => model.id_grupo, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <!-- Campo oculto para fecha de modificación (para que no sea null si el back lo usa directamente) -->
+                        @Html.HiddenFor(model => model.FechaModificacion, new { Value = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss") })
+
+
                         <!-- Fecha de Entrega -->
                         <div class="form-group mb-4">
                             @Html.LabelFor(model => model.FechaEntrega, new { @class = "font-weight-bold text-primary mb-2" })
@@ -109,7 +128,6 @@
                     </div>
                 </div>
 
-
                 <!-- Archivo Adjunto -->
                 <div class="form-group mb-4">
                     @Html.Label("Archivo Adjunto", new { @class = "font-weight-bold text-primary mb-2" })
@@ -123,14 +141,16 @@
                     </div>
                     @if (!string.IsNullOrEmpty(Model.ArchivoAdjunto))
                     {
-                        <a href="@Url.Content(Model.ArchivoAdjunto)"
-                           class="btn btn-outline-primary"
-                           target="_blank">
-                            <i class="bi bi-download"></i> @Path.GetFileName(Model.ArchivoAdjunto)
-                        </a>
+                        <div class="mt-2">
+                            <a href="@Url.Content(Model.ArchivoAdjunto)"
+                               class="btn btn-outline-primary"
+                               target="_blank">
+                                <i class="fas fa-download mr-1"></i> @Path.GetFileName(Model.ArchivoAdjunto)
+                            </a>
+                            <span class="text-muted small ms-2">(Archivo actual)</span>
+                        </div>
                     }
                 </div>
-
 
                 <!-- Botones -->
                 <div class="row justify-content-center mt-3">

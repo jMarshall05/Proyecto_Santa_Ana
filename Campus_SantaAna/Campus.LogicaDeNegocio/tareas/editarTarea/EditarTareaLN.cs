@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.editarTareaAD;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.editarTareaLN;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.Tareas.EditarTareaAD;
 
 namespace Campus.LogicaDeNegocio.Tareas.EditarTareaLN
 {
@@ -11,26 +10,30 @@ namespace Campus.LogicaDeNegocio.Tareas.EditarTareaLN
     {
         private readonly IEditarTarea _editarTareaAD;
 
-        public EditarTareaLN()
+        public EditarTareaLN(IEditarTarea editarTareaAD)
         {
-            _editarTareaAD = new EditarTareaAD();
+            _editarTareaAD = editarTareaAD;
         }
 
         public async Task<int> EditarTarea(int id, TareaDto tarea)
         {
             try
             {
-                // Validación adicional de fechas
-                if (tarea.FechaEntrega == DateTime.MinValue)
-                {
-                    throw new ArgumentException("La fecha de entrega no puede estar vacía");
-                }
+                // Validaciones de negocio
+                if (string.IsNullOrWhiteSpace(tarea.Titulo))
+                    throw new ArgumentException("El título de la tarea es requerido");
+
+                if (tarea.FechaEntrega < DateTime.Now)
+                    throw new ArgumentException("La fecha de entrega no puede ser en el pasado");
+
+                if (tarea.id_grupo <= 0)
+                    throw new ArgumentException("El ID de grupo no es válido");
 
                 return await _editarTareaAD.EditarTarea(id, tarea);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al editar la tarea", ex);
+                throw new Exception("Error al editar la tarea: " + ex.Message, ex);
             }
         }
     }

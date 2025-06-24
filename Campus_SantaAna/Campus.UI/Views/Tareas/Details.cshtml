@@ -7,7 +7,7 @@
 <div class="card shadow-sm">
     <div class="card-header bg-primary text-white">
         <h3 class="card-title mb-0">
-            <i class="bi bi-info-circle"></i> Detalles de Tarea
+            <i class="fas fa-info-circle mr-2"></i> Detalles de Tarea
         </h3>
     </div>
 
@@ -15,6 +15,24 @@
         <div class="row mb-4">
             <div class="col-md-6">
                 <h4 class="text-primary">@Model.Titulo</h4>
+                <!-- Grupo asignado -->
+                @if (Model.id_grupo > 0)
+                {
+                    <div class="mt-2">
+                        <span class="badge bg-success">
+                            <i class="fas fa-users mr-1"></i> Grupo: @Model.nombre_grupo
+                        </span>
+                    </div>
+                }
+                else
+                {
+                    <div class="mt-2">
+                        <span class="badge bg-secondary">
+                            <i class="fas fa-users mr-1"></i> Sin grupo asignado
+                        </span>
+                    </div>
+                }
+
             </div>
             <div class="col-md-6 text-end">
                 @if (Model.FechaCreacion > DateTime.MinValue)
@@ -33,7 +51,7 @@
                 @if (Model.FechaModificacion > DateTime.MinValue)
                 {
                     <span class="badge bg-warning ms-2">
-                        Modificada: @Model.FechaModificacion
+                        Modificada: @Model.FechaModificacion.ToString("dd/MM/yyyy")
                     </span>
                 }
             </div>
@@ -62,7 +80,7 @@
                         <a href="@Url.Content(Model.ArchivoAdjunto)"
                            class="btn btn-outline-primary"
                            target="_blank">
-                            <i class="bi bi-download"></i> @Path.GetFileName(Model.ArchivoAdjunto)
+                            <i class="fas fa-download mr-1"></i> @Path.GetFileName(Model.ArchivoAdjunto)
                         </a>
                     }
                     else
@@ -85,7 +103,7 @@
                         class="btn btn-danger"
                         data-bs-toggle="modal"
                         data-bs-target="#deleteModal">
-                    <i class="bi bi-trash"></i> Eliminar
+                    <i class="fas fa-trash mr-1"></i> Eliminar
                 </button>
             </div>
         </div>
@@ -110,7 +128,7 @@
                 {
                     @Html.AntiForgeryToken()
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash"></i> Confirmar Eliminación
+                        <i class="fas fa-trash mr-1"></i> Confirmar Eliminación
                     </button>
                 }
             </div>
@@ -130,5 +148,14 @@
             font-size: 1rem;
             margin-bottom: 0.5rem;
         }
+
+        .badge {
+            font-size: 0.85rem;
+            padding: 0.35em 0.65em;
+        }
     </style>
+}
+
+@section scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 }
