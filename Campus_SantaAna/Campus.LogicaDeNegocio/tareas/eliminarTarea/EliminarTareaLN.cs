@@ -2,16 +2,18 @@
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.eliminarTareaAD;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.eliminarTareaLN;
+using Campus.AccesoDatos.tareas.eliminarTareaAD;
+using Campus.AccesoDatos.Tareas.EditarTareaAD;
 
 namespace Campus.LogicaDeNegocio.Tareas.EliminarTareaLN
 {
     public class EliminarTareaLN : IEliminarTareaLN
     {
-        private readonly IEliminarTarea _eliminarTareaAD;
+        private readonly IEliminarTareaAD _eliminarTareaAD;
 
-        public EliminarTareaLN(IEliminarTarea eliminarTareaAD)
+        public EliminarTareaLN()
         {
-            _eliminarTareaAD = eliminarTareaAD;
+            _eliminarTareaAD = new EliminarTareaAD();
         }
 
         public async Task<int> EliminarTarea(int idTarea)

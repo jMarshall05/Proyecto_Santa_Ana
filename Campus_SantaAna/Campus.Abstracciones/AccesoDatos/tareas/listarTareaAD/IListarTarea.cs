@@ -8,6 +8,5 @@ namespace Campus.Abstracciones.AccesoDatos.tareas.listarTareaAD
     {
         Task<IEnumerable<TareaDto>> ListarTareasAsync();
         Task<TareaDto> ObtenerPorIdAsync(int idTarea);
-        Task<IEnumerable<GruposDto>> ListarGruposAsync();
     }
 }

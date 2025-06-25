@@ -6,7 +6,7 @@ using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.tareas.eliminarTareaAD
 {
-    public class EliminarTareaAD : IEliminarTarea
+    public class EliminarTareaAD : IEliminarTareaAD
     {
         private readonly Contexto _contexto;
 
