@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.editarTareaAD;
 using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.ModelosAD;
@@ -18,18 +19,29 @@ namespace Campus.AccesoDatos.Tareas.EditarTareaAD
         public async Task<int> EditarTarea(int id, TareaDto tarea)
         {
             var tareaExistente = await _elContexto.Tareas.FindAsync(id);
-            if (tareaExistente == null) return 0;
+            if (tareaExistente == null)
+                return 0;
 
-            // Actualiza todos los campos incluyendo las fechas
+            // Validar grupo si está especificado
+            if (tarea.id_grupo > 0)
+            {
+                var grupoExiste = await _elContexto.Grupos
+                    .AnyAsync(g => g.id_grupo == tarea.id_grupo);
+
+                if (!grupoExiste)
+                {
+                    throw new ArgumentException("El grupo especificado no existe");
+                }
+            }
+
+            // Actualizar campos
             tareaExistente.Titulo = tarea.Titulo;
             tareaExistente.Descripcion = tarea.Descripcion;
             tareaExistente.FechaEntrega = tarea.FechaEntrega;
             tareaExistente.ArchivoAdjunto = tarea.ArchivoAdjunto;
-            tareaExistente.FechaModificacion = tarea.FechaModificacion;
+            tareaExistente.FechaModificacion = DateTime.Now;
             tareaExistente.FechaPublicacion = tarea.FechaPublicacion;
-
-            // Mantenemos la fecha original de creación
-            // tareaExistente.FechaCreacion no se modifica
+            tareaExistente.IdGrupo = tarea.id_grupo ;
 
             _elContexto.Entry(tareaExistente).State = EntityState.Modified;
             return await _elContexto.SaveChangesAsync();
