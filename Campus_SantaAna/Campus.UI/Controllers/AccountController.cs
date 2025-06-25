@@ -169,15 +169,14 @@ namespace Campus.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                string numeroRamdon = rnd.Next(0, 100).ToString("D2");
-                var user = new ApplicationUser { UserName = model.Nombre.ToUpper().First()+ model.Apellido+ numeroRamdon, Email = model.Email };
+                ApplicationUser user = CrearUsuario(model);
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     await UserManager.AddToRoleAsync(user.Id, model.Rol);
                     var usuario = ConvertirDto(model, user);
                     await _agregarUsuariosLN.AgregarUsuario(usuario);
-                   // await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    // await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar un correo electrónico con este vínculo
@@ -192,6 +191,13 @@ namespace Campus.UI.Controllers
 
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
             return View(model);
+        }
+
+        private ApplicationUser CrearUsuario(RegisterViewModel model)
+        {
+            string numeroRamdon = rnd.Next(0, 100).ToString("D2");
+            var user = new ApplicationUser { UserName = model.Nombre.ToUpper().First() + model.Apellido + numeroRamdon, Email = model.Email };
+            return user;
         }
 
         //
