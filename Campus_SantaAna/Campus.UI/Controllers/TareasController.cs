@@ -21,6 +21,7 @@ namespace Campus.UI.Controllers
         private readonly IEditarTareaLN _editarTareaLN;
         private readonly IEliminarTareaLN _eliminarTareaLN;
 
+
         public TareasController()
         {
             _listarTareaLN = new ListarTareaLN(new Campus.AccesoDatos.tareas.listarTareaAD.ListarTareaAD());
