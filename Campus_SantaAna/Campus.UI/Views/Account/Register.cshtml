@@ -7,7 +7,6 @@
     <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />
     @Styles.Render("~/Content/css")
 }
-       
 
 <!DOCTYPE html>
 <html lang="es">
@@ -16,125 +15,224 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewBag.Title</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
     <style>
-        body {
-            background-color: #f66359; 
-            background-image: url('https://santaana.ed.cr/wp-content/uploads/csalib.png');
-            background-repeat: no-repeat;
-            background-position: left center; /*centrado de la imagen*/
-            background-size: 600px;
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
         }
 
+        .main-container {
+            display: flex;
+            height: 100vh;
+        }
 
-        .login-container {
-            margin-top: 5%;
-            margin-left: 500px;
-            background-color: whitesmoke; /* Fondo rojo translúcido */
+        .left-panel {
+            flex: 1;
+            background-color: #F44336;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .left-panel img {
+                width: 300px;
+                height: auto;
+            }
+
+        .right-panel {
+            flex: 1;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            padding: 2rem 0;
+        }
+
+        .register-box {
+            width: 90%;
+            max-width: 500px;
+            background-color: #ffffff;
             padding: 2rem;
             border-radius: 1rem;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 500px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
             color: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
+            .register-box h2 {
+                text-align: center;
+                font-weight: bold;
+                margin-bottom: 30px;
+            }
 
-        h2, h4 {
-            text-align: center;
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #1a1a40;
         }
+
+        .btn-register {
+            width: 100%;
+            background-color: #F44336;
+            border: none;
+            font-weight: bold;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+
+            .btn-register:hover {
+                background-color: #d32f2f;
+            }
 
         label {
             font-weight: bold;
         }
+
+        .text-center-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+            .text-center-link a {
+                text-decoration: none;
+                font-weight: bold;
+                color: #F44336;
+            }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="row justify-content-end">
-            <div class="col-md-5  login-container">
-                <main aria-labelledby="title">
-                    <h2 id="title">@ViewBag.Title</h2>
+    <div class="main-container">
+        <div class="left-panel">
+            <img src="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" alt="Logo Colegio Santa Ana" />
+        </div>
 
-                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
+        <div class="right-panel">
+            <div class="register-box">
+                <h2>@ViewBag.Title</h2>
 
-                        <hr />
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary("", new { @class = "text-danger" })
 
-                        @Html.ValidationSummary("", new { @class = "text-danger" })
+                    <div class="mb-3">
+                        @Html.TextBoxFor(m => m.Nombre, new
+                        {
+                            @class = "form-control",
+                            placeholder = "Nombre",
+                            pattern = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$",
+                            maxlength = "150",
+                            required = "required",
+                            oninput = "this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')"
+                        })
+                        @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                    </div>
 
-                        <div class="row mb-3">
-                            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control",
-                           placeholder = "Nombre",
-                           pattern = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$",
-                           maxlength = "150",
-                           required = "required",
-                           oninput = "this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')"
-                       })
-                        </div>
+                    <div class="mb-3">
+                        @Html.TextBoxFor(m => m.Apellido, new
+                        {
+                            @class = "form-control",
+                            placeholder = "Apellido",
+                            pattern = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$",
+                            maxlength = "150",
+                            required = "required",
+                            oninput = "this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')"
+                        })
+                        @Html.ValidationMessageFor(m => m.Apellido, "", new { @class = "text-danger" })
+                    </div>
 
-                        <div class="row mb-3">
-                            @Html.TextBoxFor(m => m.Apellido, new { @class = "form-control", placeholder = "Apellido",
-                           pattern = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$",
-                           maxlength = "150",
-                           required = "required",
-                           oninput = "this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')"
-                       })
-                        </div>
+                    <div class="mb-3">
+                        @Html.TextBoxFor(m => m.Email, new
+                        {
+                            @class = "form-control",
+                            type = "email",
+                            placeholder = "Email",
+                            maxlength = "150",
+                            required = "required"
+                        })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
 
-                        <div class="row mb-3">
-                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control"
-                           , type = "email",
-                           placeholder = "Email",
-                           maxlength = "150",
-                           required = "required"
-                       })
-                        </div>
+                    <div class="mb-3">
+                        @Html.TextBoxFor(m => m.Telefono, new
+                        {
+                            @class = "form-control",
+                            type = "tel",
+                            minlength = "8",
+                            maxlength = "8",
+                            placeholder = "Teléfono",
+                            oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                        })
+                        @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "text-danger" })
+                    </div>
 
-                        <div class="row mb-3">
-                            @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", type = "tel", minLength = "8", maxlength = "8", placeholder = "Telefono",
-                           oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
-                       })
-                        </div>
+                    <div class="mb-3">
+                        @Html.TextBoxFor(m => m.Cedula, new
+                        {
+                            @class = "form-control",
+                            minlength = "9",
+                            maxlength = "9",
+                            placeholder = "Cédula",
+                            oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                        })
+                        @Html.ValidationMessageFor(m => m.Cedula, "", new { @class = "text-danger" })
+                    </div>
 
-                        <div class="row mb-3">
-                            @Html.TextBoxFor(m => m.Cedula, new { @class = "form-control", minLength = "9", maxlength = "9", placeholder = "Cedula",
-                           oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
-                       })
-                        </div>
+                    <div class="mb-3">
+                        @Html.TextBoxFor(m => m.FechaDeNacimiento, "{0:yyyy-MM-dd}", new
+                        {
+                            @class = "form-control",
+                            type = "date",
+                            max = fechaMaxima,
+                            placeholder = "Fecha de Nacimiento"
+                        })
+                        @Html.ValidationMessageFor(m => m.FechaDeNacimiento, "", new { @class = "text-danger" })
+                    </div>
 
-                        <div class="row mb-3">
-                            @Html.TextBoxFor(m => m.FechaDeNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", max = fechaMaxima, placeholder = "Fecha de Nacimiento" })
-                        </div>
+                    <div class="mb-3">
+                        @Html.DropDownListFor(m => m.Rol, new List<SelectListItem>
+                        {
+                            new SelectListItem { Text = "Estudiante", Value = "Estudiantes" },
+                            new SelectListItem { Text = "Profesor", Value = "Profesores" },
+                            new SelectListItem { Text = "Administrador", Value = "Administradores" }
+                        }, "Seleccione un tipo de Rol", new { @class = "form-control", id = "Rol", required = "required" })
+                        @Html.ValidationMessageFor(m => m.Rol, "", new { @class = "text-danger" })
+                    </div>
 
-                        <div class="row mb-3">
+                    <div class="mb-3">
+                        @Html.PasswordFor(m => m.Password, new
+                        {
+                            @class = "form-control",
+                            placeholder = "Contraseña"
+                        })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
 
-                            @Html.DropDownListFor(m => m.Rol, new List<SelectListItem>
-            {
-                new SelectListItem { Text = "Estuadiante", Value = "Estudiantes" },
-                new SelectListItem { Text = "Profesor", Value = "Profesores" },
-                new SelectListItem { Text = "Administrador", Value = "Administradores" }
-            }, "Seleccione un tipo de Rol", new { @class = "form-control", id = "Rol" })
-                        </div>
+                    <div class="mb-3">
+                        @Html.PasswordFor(m => m.ConfirmPassword, new
+                        {
+                            @class = "form-control",
+                            placeholder = "Confirmar Contraseña"
+                        })
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                    </div>
 
-                        <div class="row mb-3">
-                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Contraseña" })
-                        </div>
+                    <div class="mb-3">
+                        <input type="submit" value="Registrarse" class="btn btn-register" />
+                    </div>
 
-                        <div class="row mb-3">
-                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirmar Contraseña" })
-                        </div>
-
-                        <div class="row">
-                            <input type="submit" value="Registrar" class="btn w-100" style="background-color: #F44336; border-color: #F44336; color: white;" />
-                        </div>
-
-                        <p class="text-center">
-                            @Html.ActionLink("Volver", "ListarUsuarios", "Usuarios")
-                        </p>
-                    }
-                </main>
+                    <div class="text-center-link">
+                        @Html.ActionLink("¿Ya tienes una cuenta? Inicia sesión", "Login", "Account")
+                    </div>
+                }
             </div>
         </div>
     </div>

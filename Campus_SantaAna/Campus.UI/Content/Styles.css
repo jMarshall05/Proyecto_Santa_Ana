@@ -92,3 +92,71 @@ body {
 .btn-volver {
     margin-top: 20px;
 }
+/* ==== Estilos para docentes y administrativos modernos ==== */
+.perfil-card {
+    background-color: #ffffff; 
+    border-left: 6px solid #3b82f6; 
+    transition: all 0.3s ease;
+    border-radius: 16px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+}
+
+    .perfil-card:hover {
+        transform: scale(1.04);
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+    }
+
+.avatar {
+    font-weight: bold;
+    background-color: #3b82f6; 
+    color: #ffffff !important; 
+    width: 75px;
+    height: 75px;
+    font-size: 32px;
+    line-height: 75px;
+    text-align: center;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.buscador-wrapper {
+    max-width: 1200px; 
+    width: 100%;
+    transition: box-shadow 0.3s ease;
+}
+
+    .buscador-wrapper:focus-within {
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+    }
+
+.buscador-input {
+    background-color: #ffffff; 
+    border-radius: 0 16px 16px 0;
+    padding-left: 20px;
+    font-size: 1.1rem;
+    height: 55px;
+    border: 2px solid #3b82f6; 
+    border-left: none;
+    width: 100%;
+}
+
+.buscador-wrapper .input-group-text {
+    border-radius: 16px 0 0 16px;
+    background-color: #ffffff;
+    color: #3b82f6;
+    height: 55px;
+    font-size: 1.3rem;
+    border: 2px solid #3b82f6; 
+    border-right: none;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    color: #111827;
+}
+
+.card-body p {
+    font-size: 0.95rem;
+    color: #374151;
+}

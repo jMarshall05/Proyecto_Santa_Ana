@@ -34,13 +34,24 @@ namespace Campus.Abstracciones.ModelosUI
         public DateTime FechaCreacion { get; set; }
 
         [DisplayName("Fecha de Modificación")]
-        public DateTime? FechaModificacion { get; set; }
+        public DateTime FechaModificacion { get; set; }
 
         [DisplayName("Fecha de Publicación")]
         public DateTime FechaPublicacion { get; set; }
 
+        // CAMBIO: Ajustamos el nombre para coincidir con GruposDto
+        [Required(ErrorMessage = "Debe seleccionar un grupo.")]
+        [DisplayName("Grupo")]
+        public int id_grupo { get; set; } // Cambiado de IdGrupo a id_grupo
+
+        [ForeignKey("id_grupo")]
+        public virtual GruposDto Grupo { get; set; } // Cambiado de IdGrupo a id_grupo
+
         [NotMapped]
         public HttpPostedFileBase Archivo { get; set; }
 
+        [NotMapped]
+        [DisplayName("Grupo Asignado")]
+        public string nombre_grupo { get; set; } // Cambiado de NombreGrupo a nombre_grupo
     }
 }
