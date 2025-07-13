@@ -402,6 +402,7 @@
     <Content Include="Views\Grupos\_EditarGrupoParcial.cshtml" />
     <Content Include="Views\Grupos\_DetallesDeGrupoParcial.cshtml" />
     <Content Include="Views\Usuarios\VerDocentesAdministrativos.cshtml" />
+    <Content Include="Views\Account\ResetPasswordEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

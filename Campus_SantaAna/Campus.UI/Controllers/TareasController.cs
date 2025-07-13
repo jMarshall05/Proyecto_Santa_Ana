@@ -56,7 +56,7 @@ namespace Campus.UI.Controllers
         // GET: Tareas/Create
         public async Task<ActionResult> Create()
         {
-            var grupos = _listarGruposLN.ListarGrupos();
+            var grupos =  _listarGruposLN.ListarGrupos();
             ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
             return View();
         }
@@ -214,8 +214,10 @@ namespace Campus.UI.Controllers
             if (!Directory.Exists(rutaCarpeta))
                 Directory.CreateDirectory(rutaCarpeta);
 
-            // Guardar archivo
-            tarea.Archivo.SaveAs(rutaCompleta);
+            using (var fileStream = new FileStream(rutaCompleta, FileMode.Create))
+            {
+                tarea.Archivo.InputStream.CopyTo(fileStream);
+            }
 
             // Guardar solo la ruta relativa en la base de datos
             tarea.ArchivoAdjunto = "~/Uploads/" + nombreArchivo;
