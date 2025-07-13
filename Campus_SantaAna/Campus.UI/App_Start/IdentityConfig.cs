@@ -33,10 +33,13 @@ namespace Campus.UI
 
             // Extraer la URL del mensaje original
             string resetUrl = ExtractUrlFromMessage(message.Body);
+            string id = ExtractId(resetUrl);
 
             // Reemplazar placeholders
             emailTemplate = emailTemplate.Replace("{RESET_URL}", resetUrl);
             emailTemplate = emailTemplate.Replace("{APP_NAME}", "Santa Ana a Un Click");
+            emailTemplate = emailTemplate.Replace("{USER_ID}", id);
+
 
             // Crear el mensaje
             var mailMessage = new MailMessage
@@ -78,6 +81,21 @@ namespace Campus.UI
                 return "#"; // URL por defecto si hay error
             }
         }
+        private string ExtractId(string resetUrl)
+        {
+            try
+            {
+                int startIndex = resetUrl.IndexOf("userId=") + 7;
+                int endIndex = resetUrl.IndexOf("&code", startIndex);
+                return resetUrl.Substring(startIndex, endIndex - startIndex);
+
+            }
+
+            catch
+            {
+                return "#"; // URL por defecto si hay error
+            }
+        }
     }
 
 
@@ -98,7 +116,7 @@ namespace Campus.UI
         {
         }
 
-        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
+        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
             var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
             // Configure la lógica de validación de nombres de usuario
@@ -139,7 +157,7 @@ namespace Campus.UI
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
-                manager.UserTokenProvider = 
+                manager.UserTokenProvider =
                     new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
             }
             return manager;

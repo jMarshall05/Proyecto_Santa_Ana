@@ -196,7 +196,7 @@ namespace Campus.UI.Controllers
         private ApplicationUser CrearUsuario(RegisterViewModel model)
         {
             string numeroRamdon = rnd.Next(0, 100).ToString("D2");
-            var user = new ApplicationUser { UserName = model.Nombre.ToUpper().First() + model.Apellido + numeroRamdon, Email = model.Email };
+            var user = new ApplicationUser { UserName = model.Nombre.ToUpper().First() + model.Apellido.Trim() + numeroRamdon, Email = model.Email };
             return user;
         }
 
@@ -231,7 +231,7 @@ namespace Campus.UI.Controllers
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindByEmailAsync(model.Email);
-                if (user == null/* || !(await UserManager.IsEmailConfirmedAsync(user.Id))*/)
+                if (user == null)
                 {
                     // No revelar que el usuario no existe o que no está confirmado
                     return View("ForgotPasswordConfirmation");
@@ -260,9 +260,19 @@ namespace Campus.UI.Controllers
         //
         // GET: /Account/ResetPassword
         [AllowAnonymous]
-        public ActionResult ResetPassword(string code)
+        public async Task<ActionResult> ResetPassword(string userId,string code)
         {
-            return code == null ? View("Error") : View();
+            if (code == null || userId == null)
+                return View("Error");
+
+            // Crear el modelo con los datos necesarios
+            var model = new ResetPasswordViewModel
+            {
+                Code = code,
+                Id = userId,
+            };
+
+            return View(model);
         }
 
         //
@@ -276,7 +286,7 @@ namespace Campus.UI.Controllers
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
+            var user = await UserManager.FindByIdAsync(model.Id);
             if (user == null)
             {
                 // No revelar que el usuario no existe
