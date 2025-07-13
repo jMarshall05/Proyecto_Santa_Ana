@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.editarTareaAD;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.editarTareaLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.AccesoDatos.Tareas.EditarTareaAD;
 
 namespace Campus.LogicaDeNegocio.Tareas.EditarTareaLN
 {
@@ -10,9 +11,9 @@ namespace Campus.LogicaDeNegocio.Tareas.EditarTareaLN
     {
         private readonly IEditarTarea _editarTareaAD;
 
-        public EditarTareaLN(IEditarTarea editarTareaAD)
+        public EditarTareaLN()
         {
-            _editarTareaAD = editarTareaAD;
+            _editarTareaAD = new EditarTareaAD();
         }
 
         public async Task<int> EditarTarea(int id, TareaDto tarea)

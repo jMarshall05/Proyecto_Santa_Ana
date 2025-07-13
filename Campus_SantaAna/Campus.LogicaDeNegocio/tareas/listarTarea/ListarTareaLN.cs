@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.listarTareaAD;
 using Campus.Abstracciones.ModelosUI;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
+using Campus.AccesoDatos.tareas.listarTareaAD;
 
 namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
 {
@@ -12,9 +13,9 @@ namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
     {
         private readonly IListarTarea _listarTareaAD;
 
-        public ListarTareaLN(IListarTarea listarTareaAD)
+        public ListarTareaLN()
         {
-            _listarTareaAD = listarTareaAD;
+            _listarTareaAD = new ListarTareaAD();
         }
 
         public async Task<IEnumerable<TareaDto>> ListarTareasAsync()
@@ -60,18 +61,7 @@ namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
             }
         }
 
-        // CAMBIO: Ahora retornamos GrupoDto
-        public async Task<IEnumerable<GruposDto>> ListarGruposAsync()
-        {
-            try
-            {
-                return await _listarTareaAD.ListarGruposAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al listar grupos: " + ex.Message, ex);
-            }
-        }
+    
        
 
     }
