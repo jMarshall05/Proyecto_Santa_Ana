@@ -403,6 +403,7 @@
     <Content Include="Views\Grupos\_EditarGrupoParcial.cshtml" />
     <Content Include="Views\Grupos\_DetallesDeGrupoParcial.cshtml" />
     <Content Include="Views\Usuarios\VerDocentesAdministrativos.cshtml" />
+    <Content Include="Views\Account\ResetPasswordEmail.cshtml" />
     <Content Include="Views\Entregas\Entregas.cshtml" />
     <Content Include="Views\Entregas\Index.cshtml" />
     <Content Include="Views\Entregas\TareasAsignadas.cshtml" />

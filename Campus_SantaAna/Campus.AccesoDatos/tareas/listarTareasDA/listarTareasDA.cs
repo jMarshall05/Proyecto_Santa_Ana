@@ -29,8 +29,7 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                     FechaEntrega = t.FechaEntrega,
                     FechaPublicacion = t.FechaPublicacion,
                     ArchivoAdjunto = t.ArchivoAdjunto,
-                    id_grupo = t.IdGrupo, // ← si lo tenés en el DTO
-                    nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo"
+                    id_grupo = t.IdGrupo
                 })
 
                 .ToListAsync();
@@ -51,24 +50,8 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                 Descripcion = tarea.Descripcion,
                 FechaEntrega = tarea.FechaEntrega,
                 FechaPublicacion = tarea.FechaPublicacion,
-                ArchivoAdjunto = tarea.ArchivoAdjunto,
-                nombre_grupo = tarea.Grupo != null ? tarea.Grupo.nombre_grupo : "Sin grupo"
+                ArchivoAdjunto = tarea.ArchivoAdjunto
             };
-        }
-
-
-
-        // Implementación para listar grupos
-        // NUEVO MÉTODO para traer solo los grupos directamente de la tabla Grupos
-        public async Task<IEnumerable<GruposDto>> ListarGruposAsync()
-        {
-            return await _contexto.Grupos
-                .Select(g => new GruposDto
-                {
-                    id_grupo = g.id_grupo,
-                    nombre_grupo = g.nombre_grupo
-                })
-                .ToListAsync();
         }
 
         public async Task<IEnumerable<TareaDto>> ListarTareasPorGrupoAsync(int idGrupo)
@@ -83,8 +66,7 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                     Descripcion = t.Descripcion,
                     FechaEntrega = t.FechaEntrega,
                     FechaPublicacion = t.FechaPublicacion,
-                    ArchivoAdjunto = t.ArchivoAdjunto,
-                    nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo"
+                    ArchivoAdjunto = t.ArchivoAdjunto
                 })
                 .ToListAsync();
         }

@@ -11,17 +11,93 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Campus.UI.Models;
+using System.Net.Mail;
+using System.Net;
 
 namespace Campus.UI
 {
     public class EmailService : IIdentityMessageService
     {
-        public Task SendAsync(IdentityMessage message)
+        public async Task SendAsync(IdentityMessage message)
         {
-            // Conecte el servicio de correo electrónico aquí para enviar un correo electrónico.
-            return Task.FromResult(0);
+            var smtpClient = new SmtpClient("smtp.gmail.com", 587)
+            {
+                Credentials = new NetworkCredential("proyecto.santaana123@gmail.com", "qrws xtjf nziv mdoa"),
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network
+            };
+
+            // Leer el template HTML
+            string templatePath = HttpContext.Current.Server.MapPath("~/Views/Account/ResetPasswordEmail.cshtml");
+            string emailTemplate = System.IO.File.ReadAllText(templatePath);
+
+            // Extraer la URL del mensaje original
+            string resetUrl = ExtractUrlFromMessage(message.Body);
+            string id = ExtractId(resetUrl);
+
+            // Reemplazar placeholders
+            emailTemplate = emailTemplate.Replace("{RESET_URL}", resetUrl);
+            emailTemplate = emailTemplate.Replace("{APP_NAME}", "Santa Ana a Un Click");
+            emailTemplate = emailTemplate.Replace("{USER_ID}", id);
+
+
+            // Crear el mensaje
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress("proyecto.santaana123@gmail.com", "✏️ Santa Ana a Un Click"),
+                Subject = "🔑 Restablecimiento de Contraseña - Acción Requerida",
+                Body = emailTemplate,
+                IsBodyHtml = true
+            };
+
+            mailMessage.To.Add(message.Destination);
+
+            try
+            {
+                await smtpClient.SendMailAsync(mailMessage);
+            }
+            catch (Exception ex)
+            {
+                // Log del error
+                System.Diagnostics.Debug.WriteLine($"Error enviando email: {ex.Message}");
+                throw; // Re-lanzar para que Identity maneje el error
+            }
+            finally
+            {
+                mailMessage.Dispose();
+                smtpClient.Dispose();
+            }
+        }
+        private string ExtractUrlFromMessage(string originalMessage)
+        {
+            try
+            {
+                int startIndex = originalMessage.IndexOf("href=\"") + 6;
+                int endIndex = originalMessage.IndexOf("\"", startIndex);
+                return originalMessage.Substring(startIndex, endIndex - startIndex);
+            }
+            catch
+            {
+                return "#"; // URL por defecto si hay error
+            }
+        }
+        private string ExtractId(string resetUrl)
+        {
+            try
+            {
+                int startIndex = resetUrl.IndexOf("userId=") + 7;
+                int endIndex = resetUrl.IndexOf("&code", startIndex);
+                return resetUrl.Substring(startIndex, endIndex - startIndex);
+
+            }
+
+            catch
+            {
+                return "#"; // URL por defecto si hay error
+            }
         }
     }
+
 
     public class SmsService : IIdentityMessageService
     {
@@ -40,7 +116,7 @@ namespace Campus.UI
         {
         }
 
-        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
+        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
             var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
             // Configure la lógica de validación de nombres de usuario
@@ -81,7 +157,7 @@ namespace Campus.UI
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
-                manager.UserTokenProvider = 
+                manager.UserTokenProvider =
                     new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
             }
             return manager;

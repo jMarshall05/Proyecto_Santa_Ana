@@ -61,18 +61,7 @@ namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
             }
         }
 
-        // CAMBIO: Ahora retornamos GrupoDto
-        public async Task<IEnumerable<GruposDto>> ListarGruposAsync()
-        {
-            try
-            {
-                return await _listarTareaAD.ListarGruposAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al listar grupos: " + ex.Message, ex);
-            }
-        }
+    
        
         
         
