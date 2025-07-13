@@ -88,6 +88,36 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                 })
                 .ToListAsync();
         }
+        
+        public async Task<List<TareaDto>> ListarTareasPorEstudiante(string idEstudiante)
+        {
+            var gruposEstudiante = await _contexto.EstudianteGrupos
+                .Where(eg => eg.EstudianteId == idEstudiante)
+                .Select(eg => eg.GrupoId)
+                .ToListAsync();
+
+            if (gruposEstudiante == null || !gruposEstudiante.Any())
+                return new List<TareaDto>();
+
+            var tareas = await _contexto.Tareas
+                .Include(t => t.Grupo)
+                .Where(t => gruposEstudiante.Contains(t.IdGrupo))
+                .Select(t => new TareaDto
+                {
+                    IdTarea = t.IdTarea,
+                    Titulo = t.Titulo,
+                    Descripcion = t.Descripcion,
+                    FechaEntrega = t.FechaEntrega,
+                    FechaPublicacion = t.FechaPublicacion,
+                    ArchivoAdjunto = t.ArchivoAdjunto,
+                    id_grupo = t.IdGrupo,
+                    nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo"
+                })
+                .ToListAsync();
+
+            return tareas;
+        }
+
 
 
     }

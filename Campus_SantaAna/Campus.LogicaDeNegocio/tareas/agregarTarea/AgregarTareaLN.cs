@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.agregarTareaAD;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.agregarTareaLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.AccesoDatos.tareas.listarTareaAD;
+using Campus.AccesoDatos.Tareas.AgregarTareaAD;
 
 namespace Campus.LogicaDeNegocio.tareas.agregarTareaLN
 {
@@ -10,9 +12,9 @@ namespace Campus.LogicaDeNegocio.tareas.agregarTareaLN
     {
         private readonly IAgregarTarea _agregarTarea;
 
-        public AgregarTareaLN(IAgregarTarea agregarTarea)
+        public AgregarTareaLN()
         {
-            _agregarTarea = agregarTarea;
+            _agregarTarea = new AgregarTareaAD();
         }
 
         public async Task<int> AgregarTarea(TareaDto tarea)

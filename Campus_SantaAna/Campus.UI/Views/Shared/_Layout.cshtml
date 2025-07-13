@@ -64,20 +64,45 @@
             </button>
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Gestion de Usuarios", "ListarUsuarios", "Usuarios", null, new { @class = "nav-link", style = "color: white;" })</li>
-                    <li>@Html.ActionLink("Gestion de Grupos", "ListarGrupos", "Grupos", null, new { @class = "nav-link", style = "color: white;" })</li>
-                    <li>@Html.ActionLink("Tareas", "ListarTareas", "Tareas", null, new { @class = "nav-link", style = "color: white;" })</li>
-                    <li>@Html.ActionLink("Administrar Anuncios", "ListarAnuncios", "Anuncios", null, new { @class = "nav-link", style = "color: white;" })</li>
-                </ul>
+                    <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
 
-                @* Login parcial *@
-                @Html.Partial("_LoginPartial")
+                            @* Solo para Administradores *@
+                            @if (User.IsInRole("Administradores"))
+                            {
+                                <li>@Html.ActionLink("Gestion de Usuarios", "ListarUsuarios", "Usuarios", null, new { @class = "nav-link", style = "color: white;" })</li>
+                                <li>@Html.ActionLink("Gestion de Grupos", "ListarGrupos", "Grupos", null, new { @class = "nav-link", style = "color: white;" })</li>
+                                <li>@Html.ActionLink("Administrar Anuncios", "ListarAnuncios", "Anuncios", null, new { @class = "nav-link", style = "color: white;" })</li>
+                            }
 
-                @* Botón para abrir el sidebar *@
-                <div style="color: white; cursor: pointer; margin-left: 15px;" onclick="toggleSidebar()">
-                    <i class="fa-solid fa-bars fa-lg"></i>
-                </div>
-            </div>
+                            @* Para Profesores y Admins *@
+                            @if (User.IsInRole("Profesores") || User.IsInRole("Administradores"))
+                            {
+                                <li>@Html.ActionLink("Asignar Tarea", "ListarTareas", "Tareas", null, new { @class = "nav-link", style = "color: white;" })</li>
+                                <li>@Html.ActionLink("Tareas recibidas", "Index", "Entregas", null, new { @class = "nav-link", style = "color: white;" })</li>
+
+                            }
+
+                            @* Para Estudiantes *@
+                            @if (User.IsInRole("Estudiantes"))
+                            {
+                                <li>@Html.ActionLink("Mis Tareas", "MisTareas", "Tareas", null, new { @class = "nav-link", style = "color: white;" })</li>
+
+                            }
+
+                            
+                        </ul>
+                    </div>
+
+
+                    @* Login parcial *@
+                    @Html.Partial("_LoginPartial")
+
+                    @* Botón para abrir el sidebar *@
+                    <div style="color: white; cursor: pointer; margin-left: 15px;" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars fa-lg"></i>
+                    </div>
+</div>
         </div>
     </nav>
 

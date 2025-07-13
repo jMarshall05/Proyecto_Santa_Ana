@@ -11,6 +11,9 @@ using Campus.LogicaDeNegocio.Tareas.EliminarTareaLN;
 using Campus.LogicaDeNegocio.Tareas.ListarTareaLN;
 using System.Web.Mvc.Html;
 using System.Linq;
+using System.IO;
+using System;
+using Microsoft.AspNet.Identity;
 
 namespace Campus.UI.Controllers
 {
@@ -23,10 +26,10 @@ namespace Campus.UI.Controllers
 
         public TareasController()
         {
-            _listarTareaLN = new ListarTareaLN(new Campus.AccesoDatos.tareas.listarTareaAD.ListarTareaAD());
-            _agregarTareaLN = new AgregarTareaLN(new Campus.AccesoDatos.Tareas.AgregarTareaAD.AgregarTareaAD());
-            _editarTareaLN = new EditarTareaLN(new Campus.AccesoDatos.Tareas.EditarTareaAD.EditarTareaAD());
-            _eliminarTareaLN = new EliminarTareaLN(new Campus.AccesoDatos.tareas.eliminarTareaAD.EliminarTareaAD());
+            _listarTareaLN = new ListarTareaLN();
+            _agregarTareaLN = new AgregarTareaLN();
+            _editarTareaLN = new EditarTareaLN();
+            _eliminarTareaLN = new EliminarTareaLN();
         }
 
         // GET: Tareas/ListarTareas
@@ -62,6 +65,44 @@ namespace Campus.UI.Controllers
         {
             if (ModelState.IsValid)
             {
+                try
+                {
+                    if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
+                    {
+                        var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".pdf", ".docx", ".pptx", ".xlsx", ".txt" };
+                        var extensionArchivo = Path.GetExtension(tarea.Archivo.FileName).ToLower();
+
+                        if (!extensionesPermitidas.Contains(extensionArchivo))
+                        {
+                            ModelState.AddModelError("", "Tipo de archivo no permitido.");
+                            return View(tarea);
+                        }
+                        // Ruta del servidor donde se guardará el archivo
+                        var nombreArchivo = Path.GetFileName(tarea.Archivo.FileName);
+                        var rutaCarpeta = Server.MapPath("~/Uploads/");
+                        var rutaCompleta = Path.Combine(rutaCarpeta, nombreArchivo);
+
+                        // Crear carpeta si no existe
+                        if (!Directory.Exists(rutaCarpeta))
+                            Directory.CreateDirectory(rutaCarpeta);
+
+                        // Guardar archivo
+                        tarea.Archivo.SaveAs(rutaCompleta);
+
+                        // Guardar solo la ruta relativa en la base de datos
+                        tarea.ArchivoAdjunto = "~/Uploads/" + nombreArchivo;
+                    }
+
+                    // Fechas automáticas
+                    tarea.FechaCreacion = DateTime.Now;
+
+                    await _agregarTareaLN.AgregarTarea(tarea);
+                    return RedirectToAction("ListarTareas");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Error al crear la tarea: " + ex.Message);
+                }
                 await _agregarTareaLN.AgregarTarea(tarea);
                 return RedirectToAction("ListarTareas");
             }
@@ -128,7 +169,29 @@ namespace Campus.UI.Controllers
 
             return View(tarea);
         }
-       
+        // GET: Tareas/MisTareas
+        public async Task<ActionResult> MisTareas()
+        {
+            try
+            {
+                string idUsuario = User.Identity.GetUserId();
+
+
+                if (string.IsNullOrWhiteSpace(idUsuario))
+                    return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "Usuario no identificado");
+
+                var tareas = await _listarTareaLN.ListarTareasPorEstudiante(idUsuario);
+
+                return View(tareas);
+            }
+            catch (Exception ex)
+            {
+                // Podés loguear el error acá si querés
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError, "Error al obtener tareas: " + ex.Message);
+            }
+        }
+
+
 
 
 

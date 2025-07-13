@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.listarTareaAD;
 using Campus.Abstracciones.ModelosUI;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
+using Campus.AccesoDatos.tareas.listarTareaAD;
 
 namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
 {
@@ -12,9 +13,9 @@ namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
     {
         private readonly IListarTarea _listarTareaAD;
 
-        public ListarTareaLN(IListarTarea listarTareaAD)
+        public ListarTareaLN()
         {
-            _listarTareaAD = listarTareaAD;
+            _listarTareaAD = new ListarTareaAD();
         }
 
         public async Task<IEnumerable<TareaDto>> ListarTareasAsync()
@@ -73,6 +74,24 @@ namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
             }
         }
        
+        
+        
+        public async Task<List<TareaDto>> ListarTareasPorEstudiante(string idEstudiante)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(idEstudiante))
+                    throw new ArgumentException("El ID del estudiante no puede ser vacío");
+
+                return await _listarTareaAD.ListarTareasPorEstudiante(idEstudiante);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al listar tareas por estudiante: " + ex.Message, ex);
+            }
+        }
+
+
 
     }
 }

@@ -290,6 +290,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\EntregasController.cs" />
     <Compile Include="Controllers\MateriasController.cs" />
     <Compile Include="Controllers\AnunciosController.cs" />
     <Compile Include="Controllers\GruposController.cs" />
@@ -402,6 +403,14 @@
     <Content Include="Views\Grupos\_EditarGrupoParcial.cshtml" />
     <Content Include="Views\Grupos\_DetallesDeGrupoParcial.cshtml" />
     <Content Include="Views\Usuarios\VerDocentesAdministrativos.cshtml" />
+    <Content Include="Views\Entregas\Entregas.cshtml" />
+    <Content Include="Views\Entregas\Index.cshtml" />
+    <Content Include="Views\Entregas\TareasAsignadas.cshtml" />
+    <Content Include="Views\Entregas\ObtenerEntregaPorId.cshtml" />
+    <Content Include="Views\Entregas\Edit.cshtml" />
+    <Content Include="Views\Entregas\MisEntregas.cshtml" />
+    <Content Include="Views\Tareas\MisTareas.cshtml" />
+    <Content Include="Views\Entregas\SubirEntrega.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
