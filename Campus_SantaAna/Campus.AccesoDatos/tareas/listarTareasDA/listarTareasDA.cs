@@ -60,7 +60,11 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                 Descripcion = tarea.Descripcion,
                 FechaEntrega = tarea.FechaEntrega,
                 FechaPublicacion = tarea.FechaPublicacion,
-                ArchivoAdjunto = tarea.ArchivoAdjunto
+                FechaCreacion = tarea.FechaCreacion,
+                FechaModificacion = tarea.FechaModificacion,
+                ArchivoAdjunto = tarea.ArchivoAdjunto,
+                id_grupo = tarea.IdGrupo,
+                nombre_grupo = tarea.Grupo.nombre_grupo
             };
         }
 
