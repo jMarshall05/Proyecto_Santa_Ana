@@ -1,0 +1,36 @@
+﻿@model Campus.Abstracciones.ModelosUI.EntregasDto
+
+@{
+    ViewBag.Title = "Entregar Tarea";
+}
+
+<h2>Entregar Tarea</h2>
+
+@using (Html.BeginForm("Entregar", "Entregas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.id_tarea)
+    @Html.HiddenFor(m => m.id_estudiante)
+    @Html.HiddenFor(m => m.fecha_entrega)
+
+    <div class="form-group">
+        <label for="archivo">Seleccione archivo para entregar:</label>
+        <input type="file" name="archivo" id="archivo" class="form-control" required />
+        @Html.ValidationMessageFor(model => model.archivo_entregado, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enviar entrega</button>
+    <a href="@Url.Action("Index", "Tareas")" class="btn btn-secondary">Cancelar</a>
+}
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success mt-3">
+        @TempData["Mensaje"]
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
