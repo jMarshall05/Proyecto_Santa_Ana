@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.agregarTareaAD;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.agregarTareaLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.AccesoDatos.tareas.listarTareaAD;
 using Campus.AccesoDatos.Tareas.AgregarTareaAD;
 
 namespace Campus.LogicaDeNegocio.tareas.agregarTareaLN

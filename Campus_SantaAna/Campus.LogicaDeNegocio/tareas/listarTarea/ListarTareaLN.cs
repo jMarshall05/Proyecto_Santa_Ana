@@ -45,6 +45,17 @@ namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
                 throw new Exception("Error al listar tareas por grupo: " + ex.Message, ex);
             }
         }
+        public async Task<IEnumerable<GruposDto>> ListarGruposAsync()
+        {
+            try
+            {
+                return await _listarTareaAD.ListarGruposAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al listar grupos: " + ex.Message, ex);
+            }
+        }
 
         public async Task<TareaDto> ObtenerPorIdAsync(int idTarea)
         {
@@ -63,6 +74,24 @@ namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
 
     
        
+        
+        
+        public async Task<List<TareaDto>> ListarTareasPorEstudiante(string idEstudiante)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(idEstudiante))
+                    throw new ArgumentException("El ID del estudiante no puede ser vacío");
+
+                return await _listarTareaAD.ListarTareasPorEstudiante(idEstudiante);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al listar tareas por estudiante: " + ex.Message, ex);
+            }
+        }
+
+
 
     }
 }
