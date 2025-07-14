@@ -1,7 +1,7 @@
 @using Campus.UI.Models
 @model LoginViewModel
 @{
-    ViewBag.Title = "Iniciar sesión";
+    ViewBag.Title = "Iniciar sesion";
     Layout = null;
     <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />
     @Styles.Render("~/Content/css")
@@ -117,7 +117,7 @@
 
         <div class="right-panel">
             <div class="login-box">
-                <h2>¡Bienvenido a Santa Ana a un Click!</h2>
+                <h2>Bienvenido a Santa Ana a un Click</h2>
 
                 @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
                 {
@@ -125,11 +125,11 @@
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                     <div class="mb-3">
-                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Correo electrónico" })
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Correo electronico" })
                         @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                     </div>
                     <div class="mb-3 password-container">
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Contraseña", id = "password" })
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Contrasena", id = "password" })
                         @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                     </div>
 

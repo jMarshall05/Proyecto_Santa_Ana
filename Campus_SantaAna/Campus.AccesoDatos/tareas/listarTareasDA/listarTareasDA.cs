@@ -29,12 +29,22 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                     FechaEntrega = t.FechaEntrega,
                     FechaPublicacion = t.FechaPublicacion,
                     ArchivoAdjunto = t.ArchivoAdjunto,
-                    id_grupo = t.IdGrupo
+                    id_grupo = t.IdGrupo,
+                    nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo"
                 })
-
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<GruposDto>> ListarGruposAsync()
+        {
+            return await _contexto.Grupos
+                .Select(g => new GruposDto
+                {
+                    id_grupo = g.id_grupo,
+                    nombre_grupo = g.nombre_grupo
+                })
+                .ToListAsync();
+        }
         public async Task<TareaDto> ObtenerPorIdAsync(int idTarea)
         {
             var tarea = await _contexto.Tareas
