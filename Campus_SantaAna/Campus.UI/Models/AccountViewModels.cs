@@ -107,10 +107,10 @@ namespace Campus.UI.Models
 
     public class ResetPasswordViewModel
     {
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Correo electrónico")]
-        public string Email { get; set; }
+        //[Required]
+        //[EmailAddress]
+        //[Display(Name = "Correo electrónico")]
+        //public string Email { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 6)]
@@ -124,6 +124,7 @@ namespace Campus.UI.Models
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
+        public string Id { get; set; }
     }
 
     public class ForgotPasswordViewModel

@@ -1,8 +1,9 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.agregarTareaAD;
 using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.ModelosAD;
+using System.Data.Entity;
+using System;
 
 namespace Campus.AccesoDatos.Tareas.AgregarTareaAD
 {
@@ -17,6 +18,18 @@ namespace Campus.AccesoDatos.Tareas.AgregarTareaAD
 
         public async Task<int> AgregarTarea(TareaDto tarea)
         {
+            // Validar que el grupo exista si está especificado
+            if (tarea.id_grupo > 0)
+            {
+                var grupoExiste = await _elContexto.Grupos
+                    .AnyAsync(g => g.id_grupo == tarea.id_grupo);
+
+                if (!grupoExiste)
+                {
+                    throw new ArgumentException("El grupo especificado no existe");
+                }
+            }
+
             var tareaTransformada = ConvertirAD(tarea);
             _elContexto.Tareas.Add(tareaTransformada);
             _elContexto.Entry(tareaTransformada).State = System.Data.Entity.EntityState.Added;
@@ -31,11 +44,15 @@ namespace Campus.AccesoDatos.Tareas.AgregarTareaAD
                 Titulo = tarea.Titulo,
                 Descripcion = tarea.Descripcion,
                 ArchivoAdjunto = tarea.ArchivoAdjunto,
-                FechaEntrega = tarea.FechaEntrega,
-                FechaCreacion = tarea.FechaCreacion,
-                FechaPublicacion = tarea.FechaPublicacion
-
+                FechaEntrega = tarea.FechaEntrega < new DateTime(1753, 1, 1) ? DateTime.Now.AddDays(1) : tarea.FechaEntrega,
+                FechaCreacion = tarea.FechaCreacion < new DateTime(1753, 1, 1) ? DateTime.Now : tarea.FechaCreacion,
+                FechaPublicacion = tarea.FechaPublicacion < new DateTime(1753, 1, 1) ? DateTime.Now : tarea.FechaPublicacion,
+                FechaModificacion = DateTime.Now, // ← aquí lo agregás para evitar nulls
+                IdGrupo = tarea.id_grupo
             };
         }
+
+
+
     }
 }

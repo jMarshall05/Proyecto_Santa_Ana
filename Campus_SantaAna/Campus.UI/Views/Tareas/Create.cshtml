@@ -34,12 +34,31 @@
                                 {
                                     htmlAttributes = new
                                     {
-                                    @class = "form-control",
-                                    placeholder = "Ej: Presentación final del proyecto"
+                                        @class = "form-control",
+                                        placeholder = "Ej: Presentación final del proyecto"
                                     }
                                 })
                             </div>
                             @Html.ValidationMessageFor(model => model.Titulo, "", new { @class = "text-danger small" })
+                        </div>
+                    </div>
+
+                    <!-- Grupo -->
+                    <div class="col-md-6">
+                        <div class="form-group mb-4">
+                            @Html.LabelFor(model => model.id_grupo, "Grupo", new { @class = "font-weight-bold text-primary mb-2" })
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-light h-100">
+                                        <i class="fas fa-users text-primary"></i>
+                                    </span>
+                                </div>
+                                @Html.DropDownListFor(model => model.id_grupo,
+                                    (SelectList)ViewBag.Grupos,
+                                    "Seleccione un grupo",
+                                    new { @class = "form-control" })
+                            </div>
+                            @Html.ValidationMessageFor(model => model.id_grupo, "", new { @class = "text-danger small" })
                         </div>
                     </div>
                 </div>
@@ -111,7 +130,6 @@
                         </div>
                     </div>
                 </div>
-
 
                 <!-- Archivo Adjunto -->
                 <div class="form-group mb-4">

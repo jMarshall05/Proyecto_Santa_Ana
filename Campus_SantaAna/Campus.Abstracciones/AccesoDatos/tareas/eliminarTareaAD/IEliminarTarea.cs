@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Campus.Abstracciones.AccesoDatos.tareas.eliminarTareaAD
 {
-    public interface IEliminarTarea
+    public interface IEliminarTareaAD
     {
         Task<int> EliminarTarea(int idTarea);
     }

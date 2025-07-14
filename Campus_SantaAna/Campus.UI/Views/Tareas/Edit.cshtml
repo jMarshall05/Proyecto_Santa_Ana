@@ -1,5 +1,4 @@
 ﻿@model Campus.Abstracciones.ModelosUI.TareaDto
-
 @{
     ViewBag.Title = "Editar Tarea";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -63,8 +62,27 @@
                         </div>
                     </div>
 
-                    <!-- Columna Derecha - Fechas de Entrega y Publicación -->
+                    <!-- Columna Derecha - Grupo y Fechas -->
                     <div class="col-md-6">
+                        <!-- Grupo -->
+                        <div class="form-group mb-4">
+                            @Html.LabelFor(model => model.id_grupo, "Grupo", new { @class = "font-weight-bold text-primary mb-2" })
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-light h-100">
+                                        <i class="fas fa-users text-primary"></i>
+                                    </span>
+                                </div>
+                                @Html.DropDownListFor(model => model.id_grupo, (IEnumerable<SelectListItem>)ViewBag.Grupos, "Seleccione un grupo", new { @class = "form-control" })
+
+                            </div>
+                            @Html.ValidationMessageFor(model => model.id_grupo, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <!-- Campo oculto para fecha de modificación (para que no sea null si el back lo usa directamente) -->
+                        @Html.HiddenFor(model => model.FechaModificacion, new { Value = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss") })
+
+
                         <!-- Fecha de Entrega -->
                         <div class="form-group mb-4">
                             @Html.LabelFor(model => model.FechaEntrega, new { @class = "font-weight-bold text-primary mb-2" })
@@ -109,28 +127,37 @@
                     </div>
                 </div>
 
-
                 <!-- Archivo Adjunto -->
                 <div class="form-group mb-4">
                     @Html.Label("Archivo Adjunto", new { @class = "font-weight-bold text-primary mb-2" })
+
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-light h-100">
                                 <i class="fas fa-paperclip text-primary"></i>
                             </span>
                         </div>
-                        <input type="file" name="Archivo" class="form-control" />
+                        <input type="file" name="Archivo" class="form-control" id="archivoInput" />
                     </div>
-                    @if (!string.IsNullOrEmpty(Model.ArchivoAdjunto))
+
+                    @if (Model != null && !string.IsNullOrEmpty(Model.ArchivoAdjunto))
                     {
-                        <a href="@Url.Content(Model.ArchivoAdjunto)"
-                           class="btn btn-outline-primary"
-                           target="_blank">
-                            <i class="bi bi-download"></i> @Path.GetFileName(Model.ArchivoAdjunto)
-                        </a>
+                        <div id="archivoActual" class="mt-2 d-flex align-items-center">
+                            <a href="@Url.Content(Model.ArchivoAdjunto)"
+                               class="btn btn-outline-primary btn-sm"
+                               target="_blank">
+                                <i class="fas fa-download mr-1"></i> @Path.GetFileName(Model.ArchivoAdjunto)
+                            </a>
+
+                            <button type="button" class="btn btn-sm btn-danger ms-2" id="quitarArchivo">
+                                <i class="fas fa-times"></i> Quitar
+                            </button>
+                        </div>
+
+                        <input type="hidden" name="ArchivoAdjuntoActual" value="@Model.ArchivoAdjunto" />
+                        <input type="hidden" name="EliminarArchivo" id="EliminarArchivo" value="false" />
                     }
                 </div>
-
 
                 <!-- Botones -->
                 <div class="row justify-content-center mt-3">
@@ -234,7 +261,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Formatear fechas para datetime-local
             function formatDateForInput(date) {
                 if (!date) return '';
@@ -242,9 +269,43 @@
                 return d.toISOString().slice(0, 16);
             }
 
-            // Establecer valores iniciales para los campos datetime-local
-            $('#FechaEntrega').val(formatDateForInput('@Model.FechaEntrega'));
-            $('#FechaPublicacion').val(formatDateForInput('@Model.FechaPublicacion'));
+            // Evento para ocultar el archivo y marcar eliminación
+            $('#quitarArchivo').on('click', function () {
+                $('#archivoActual').hide().css('display', 'none');
+                $('#EliminarArchivo').val("true");
+
+                // Opcional: Limpiar el input de archivo
+                $('#archivoInput').val('');
+
+                // Mostrar mensaje de confirmación
+                $(this).closest('.form-group').append(
+                    '<div class="alert alert-info mt-2" id="mensajeArchivo">' +
+                    '<i class="fas fa-info-circle mr-2"></i>El archivo será eliminado al guardar los cambios.' +
+                    '</div>'
+                );
+            });
+
+            // Evento para cuando se selecciona un nuevo archivo
+            $('#archivoInput').on('change', function () {
+                if (this.files && this.files.length > 0) {
+                    // Si hay un archivo actual, ocultarlo
+                    $('#archivoActual').hide().css('display', 'none');
+                    $('#EliminarArchivo').val("true");
+
+                    // Remover mensaje anterior si existe
+                    $('#mensajeArchivo').remove();
+
+                    // Mostrar información del nuevo archivo
+                    var fileName = this.files[0].name;
+                    var fileSize = (this.files[0].size / 1024 / 1024).toFixed(2);
+
+                    $(this).closest('.form-group').append(
+                        '<div class="alert alert-success mt-2" id="mensajeArchivo">' +
+                        '<i class="fas fa-check-circle mr-2"></i>Nuevo archivo seleccionado: ' + fileName + ' (' + fileSize + ' MB)' +
+                        '</div>'
+                    );
+                }
+            });
         });
     </script>
 }
