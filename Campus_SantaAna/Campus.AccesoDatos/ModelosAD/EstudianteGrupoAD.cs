@@ -16,8 +16,7 @@ namespace Campus.AccesoDatos.ModelosAD
         [Column("GrupoId")]
         public int GrupoId { get; set; }
 
-        // Propiedad de navegación corregida
         [ForeignKey("GrupoId")]
-        public virtual GruposAD Grupo { get; set; } // Cambiado de GrupoAD a GruposAD
+        public virtual GruposAD Grupo { get; set; } 
     }
 }
