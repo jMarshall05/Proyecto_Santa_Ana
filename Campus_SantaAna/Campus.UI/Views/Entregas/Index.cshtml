@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.EntregasDto>
+
+<h2>Lista de Entregas</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID Entrega</th>
+            <th>ID Estudiante</th>
+            <th>ID Tarea</th>
+            <th>Fecha de Entrega</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var entrega in Model)
+        {
+            <tr>
+                <td>@entrega.id_entrega</td>
+                <td>@entrega.id_estudiante</td>
+                <td>@entrega.id_tarea</td>
+                <td>@entrega.fecha_entrega.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    @Html.ActionLink("Ver Detalles", "ObtenerEntregaPorID", "Entregas", new { id = entrega.id_entrega }, new { @class = "btn btn-info" })
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", "Entregas", new { id = entrega.id_entrega }, new { @class = "btn btn-warning" })
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

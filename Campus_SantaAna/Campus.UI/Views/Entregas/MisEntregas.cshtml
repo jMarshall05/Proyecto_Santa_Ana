@@ -1,0 +1,36 @@
+﻿
+@model List<Campus.Abstracciones.ModelosUI.EntregasDto>
+
+@{
+    ViewBag.Title = "Mis Entregas";
+}
+
+<h2>Mis Entregas</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Tarea</th>
+        <th>Archivo Entregado</th>
+        <th>Fecha Entrega</th>
+        <th>Estado</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Tarea?.Titulo</td>
+            <td>
+                @if (!string.IsNullOrEmpty(item.archivo_entregado))
+                {
+                    <a href="@Url.Content("~/Archivos/" + item.archivo_entregado)" target="_blank">Ver Archivo</a>
+                }
+                else
+                {
+                    <span>No entregado</span>
+                }
+            </td>
+            <td>@item.fecha_entrega.ToShortDateString()</td>
+            <td>@(item.estado ? "Entregado" : "Pendiente")</td>
+        </tr>
+    }
+</table>
