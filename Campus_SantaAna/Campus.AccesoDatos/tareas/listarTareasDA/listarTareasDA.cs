@@ -29,12 +29,22 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                     FechaEntrega = t.FechaEntrega,
                     FechaPublicacion = t.FechaPublicacion,
                     ArchivoAdjunto = t.ArchivoAdjunto,
-                    id_grupo = t.IdGrupo
+                    id_grupo = t.IdGrupo,
+                    nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo"
                 })
-
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<GruposDto>> ListarGruposAsync()
+        {
+            return await _contexto.Grupos
+                .Select(g => new GruposDto
+                {
+                    id_grupo = g.id_grupo,
+                    nombre_grupo = g.nombre_grupo
+                })
+                .ToListAsync();
+        }
         public async Task<TareaDto> ObtenerPorIdAsync(int idTarea)
         {
             var tarea = await _contexto.Tareas
@@ -70,6 +80,36 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                 })
                 .ToListAsync();
         }
+        
+        public async Task<List<TareaDto>> ListarTareasPorEstudiante(string idEstudiante)
+        {
+            var gruposEstudiante = await _contexto.EstudianteGrupos
+                .Where(eg => eg.EstudianteId == idEstudiante)
+                .Select(eg => eg.GrupoId)
+                .ToListAsync();
+
+            if (gruposEstudiante == null || !gruposEstudiante.Any())
+                return new List<TareaDto>();
+
+            var tareas = await _contexto.Tareas
+                .Include(t => t.Grupo)
+                .Where(t => gruposEstudiante.Contains(t.IdGrupo))
+                .Select(t => new TareaDto
+                {
+                    IdTarea = t.IdTarea,
+                    Titulo = t.Titulo,
+                    Descripcion = t.Descripcion,
+                    FechaEntrega = t.FechaEntrega,
+                    FechaPublicacion = t.FechaPublicacion,
+                    ArchivoAdjunto = t.ArchivoAdjunto,
+                    id_grupo = t.IdGrupo,
+                    nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo"
+                })
+                .ToListAsync();
+
+            return tareas;
+        }
+
 
 
     }
