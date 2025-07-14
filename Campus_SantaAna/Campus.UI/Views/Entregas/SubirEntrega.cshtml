@@ -1,0 +1,23 @@
+﻿@model Campus.Abstracciones.ModelosUI.EntregasDto
+
+@{
+    ViewBag.Title = "Entregar Tarea";
+}
+
+<h2>Entregar Tarea</h2>
+
+@using (Html.BeginForm("SubirEntrega", "Entregas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken() <!-- ¡IMPORTANTE! -->
+
+    @Html.HiddenFor(m => m.id_tarea)
+    @Html.HiddenFor(m => m.id_estudiante)
+    @Html.HiddenFor(m => m.fecha_entrega)
+
+    <div class="form-group">
+        <label for="archivo">Archivo de la entrega</label>
+        <input type="file" name="archivo" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Entregar</button>
+}

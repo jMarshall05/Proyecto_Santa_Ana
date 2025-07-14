@@ -1,0 +1,41 @@
+﻿@model Campus.Abstracciones.ModelosUI.EntregasDto
+
+<h2>Detalle de Entrega</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>ID Entrega</th>
+        <td>@Model.id_entrega</td>
+    </tr>
+    <tr>
+        <th>Estudiante</th>
+        <td>@(Model.Estudiante != null ? Model.Estudiante.Nombre + " " + Model.Estudiante.Apellido : Model.id_estudiante)</td>
+    </tr>
+    <tr>
+        <th>Tarea</th>
+        <td>@(Model.Tarea != null ? Model.Tarea.Titulo : "Sin Título")</td>
+    </tr>
+    <tr>
+        <th>Archivo Entregado</th>
+        <td>
+            @if (!string.IsNullOrEmpty(Model.archivo_entregado))
+            {
+                <a href="@Url.Content(Model.archivo_entregado)" target="_blank">Ver archivo</a>
+            }
+            else
+            {
+                <span>No hay archivo</span>
+            }
+        </td>
+    </tr>
+    <tr>
+        <th>Fecha de Entrega</th>
+        <td>@Model.fecha_entrega.ToString("dd/MM/yyyy HH:mm")</td>
+    </tr>
+    <tr>
+        <th>Estado</th>
+        <td>@(Model.estado ? "Entregado" : "Pendiente")</td>
+    </tr>
+</table>
+
+<a href="@Url.Action("Index", "Entregas")" class="btn btn-secondary">Volver</a>
