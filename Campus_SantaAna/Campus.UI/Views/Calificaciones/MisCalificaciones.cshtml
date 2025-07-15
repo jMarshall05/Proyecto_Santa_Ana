@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.CalificacionesDto>
+
+<h2>Mis Calificaciones</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tarea</th>
+            <th>Calificación</th>
+            <th>Comentario</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cal in Model)
+        {
+            <tr>
+                <td>@cal.Entrega?.Tarea?.Titulo</td>
+                <td>@cal.calificacion</td>
+                <td>@cal.comentario</td>
+                <td>@cal.fecha_calificacion.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
