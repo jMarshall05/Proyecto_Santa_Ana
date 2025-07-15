@@ -1,0 +1,64 @@
+﻿@model Campus.Abstracciones.ModelosUI.CalificacionesDto
+
+@{
+    ViewBag.Title = "Añadir Calificación";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h3 class="card-title mb-0">
+            <i class="fas fa-plus-circle mr-2"></i> Añadir Calificación
+        </h3>
+    </div>
+    @using (Html.BeginForm("Create", "Calificaciones", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        @Html.HiddenFor(m => m.id_entrega) <!--  campo oculto necesario -->
+
+        <div class="card-body">
+
+            <div class="mb-3">
+                @Html.LabelFor(m => m.calificacion, new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.calificacion, new { @class = "form-control", type = "number", min = "0", max = "100", required = "required" })
+            </div>
+
+            <div class="mb-3">
+                @Html.LabelFor(m => m.comentario, new { @class = "form-label" })
+                @Html.TextAreaFor(m => m.comentario, new { @class = "form-control", rows = "3" })
+            </div>
+
+        </div>
+
+        <div class="card-footer bg-light d-flex justify-content-between">
+            @Html.ActionLink("Volver al listado", "Index", "Entregas", null, new { @class = "btn btn-secondary" })
+
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save me-1"></i> Guardar Calificación
+            </button>
+        </div>
+    }
+
+
+    @section styles {
+        <style>
+            .card {
+                border: none;
+                border-radius: 10px;
+            }
+
+            h3 {
+                font-size: 1.3rem;
+            }
+
+            .form-label {
+                font-weight: bold;
+            }
+        </style>
+    }
+
+    @section scripts {
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    }
