@@ -18,5 +18,7 @@ namespace Campus.Abstracciones.ModelosUI
 
         public EntregasDto Entrega { get; set; }
 
+        //xxxxxxx
+        ///random
     }
 }
