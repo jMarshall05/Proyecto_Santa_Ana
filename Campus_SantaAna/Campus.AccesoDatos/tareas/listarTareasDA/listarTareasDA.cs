@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Campus.Abstracciones.AccesoDatos.tareas.listarTareaAD;
+using Campus.Abstracciones.ModelosUI;
+using Campus.AccesoDatos.ModelosAD;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using Campus.Abstracciones.AccesoDatos.tareas.listarTareaAD;
-using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.tareas.listarTareaAD
 {
@@ -20,6 +20,59 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
         public async Task<IEnumerable<TareaDto>> ListarTareasAsync()
         {
             return await _contexto.Tareas
+                .Include(t => t.Grupo)
+                .Select(t => new TareaDto
+                {
+                    IdTarea = t.IdTarea,
+                    Titulo = t.Titulo,
+                    Descripcion = t.Descripcion,
+                    FechaEntrega = t.FechaEntrega,
+                    FechaPublicacion = t.FechaPublicacion,
+                    ArchivoAdjunto = t.ArchivoAdjunto,
+                    id_grupo = t.IdGrupo,
+                    nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo"
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<GruposDto>> ListarGruposAsync()
+        {
+            return await _contexto.Grupos
+                .Select(g => new GruposDto
+                {
+                    id_grupo = g.id_grupo,
+                    nombre_grupo = g.nombre_grupo
+                })
+                .ToListAsync();
+        }
+        public async Task<TareaDto> ObtenerPorIdAsync(int idTarea)
+        {
+            var tarea = await _contexto.Tareas
+                .Include(t => t.Grupo)
+                .FirstOrDefaultAsync(t => t.IdTarea == idTarea);
+
+            if (tarea == null) return null;
+
+            return new TareaDto
+            {
+                IdTarea = tarea.IdTarea,
+                Titulo = tarea.Titulo,
+                Descripcion = tarea.Descripcion,
+                FechaEntrega = tarea.FechaEntrega,
+                FechaPublicacion = tarea.FechaPublicacion,
+                FechaCreacion = tarea.FechaCreacion,
+                FechaModificacion = tarea.FechaModificacion,
+                ArchivoAdjunto = tarea.ArchivoAdjunto,
+                id_grupo = tarea.IdGrupo,
+                nombre_grupo = tarea.Grupo.nombre_grupo
+            };
+        }
+
+        public async Task<IEnumerable<TareaDto>> ListarTareasPorGrupoAsync(int idGrupo)
+        {
+            return await _contexto.Tareas
+                .Include(t => t.Grupo)
+                .Where(t => t.IdGrupo == idGrupo)
                 .Select(t => new TareaDto
                 {
                     IdTarea = t.IdTarea,
@@ -31,23 +84,37 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                 })
                 .ToListAsync();
         }
-
-        public async Task<TareaDto> ObtenerPorIdAsync(int idTarea)
+        
+        public async Task<List<TareaDto>> ListarTareasPorEstudiante(string idEstudiante)
         {
-            var tarea = await _contexto.Tareas.FirstOrDefaultAsync(t => t.IdTarea == idTarea);
+            var gruposEstudiante = await _contexto.EstudianteGrupos
+                .Where(eg => eg.EstudianteId == idEstudiante)
+                .Select(eg => eg.GrupoId)
+                .ToListAsync();
 
-            if (tarea == null)
-                return null;
+            if (gruposEstudiante == null || !gruposEstudiante.Any())
+                return new List<TareaDto>();
 
-            return new TareaDto
-            {
-                IdTarea = tarea.IdTarea,
-                Titulo = tarea.Titulo,
-                Descripcion = tarea.Descripcion,
-                FechaEntrega = tarea.FechaEntrega,
-                FechaPublicacion = tarea.FechaPublicacion,
-                ArchivoAdjunto = tarea.ArchivoAdjunto
-            };
+            var tareas = await _contexto.Tareas
+                .Include(t => t.Grupo)
+                .Where(t => gruposEstudiante.Contains(t.IdGrupo))
+                .Select(t => new TareaDto
+                {
+                    IdTarea = t.IdTarea,
+                    Titulo = t.Titulo,
+                    Descripcion = t.Descripcion,
+                    FechaEntrega = t.FechaEntrega,
+                    FechaPublicacion = t.FechaPublicacion,
+                    ArchivoAdjunto = t.ArchivoAdjunto,
+                    id_grupo = t.IdGrupo,
+                    nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo"
+                })
+                .ToListAsync();
+
+            return tareas;
         }
+
+
+
     }
 }

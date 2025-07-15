@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ActualizarEstudianteGrupoLN;
@@ -19,7 +20,7 @@ using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Microsoft.AspNet.Identity.Owin;
-
+using System.Linq;
 namespace Campus.UI.Controllers
 {
     public class UsuariosController : Controller
@@ -74,8 +75,11 @@ namespace Campus.UI.Controllers
         {
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
             var grupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
-            var NombreGrupo = _listarGrupos.BuscarGruposPorId(grupo.GrupoId);
-            ViewBag.Grupo = NombreGrupo.nombre_grupo;
+            if(grupo !=null)
+            {
+                var NombreGrupo = _listarGrupos.BuscarGruposPorId((int)grupo.GrupoId);
+                ViewBag.Grupo = NombreGrupo.nombre_grupo;
+            }
             return PartialView("_DetallesDeUsuarioParcial", usuario);
         }
 
@@ -86,31 +90,37 @@ namespace Campus.UI.Controllers
             var listaDeGrupos = _listarGrupos.ListarGrupos();
             ViewBag.ListaDeGrupos = new SelectList(listaDeGrupos, "id_grupo", "nombre_grupo");
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
-            var ListaDe = _listarGrupos.ListarGrupos();
             return PartialView("_EditarUsuarioParcial", usuario);
         }
 
         // POST: Usuarios/Edit/5
         [HttpPost]
-        public ActionResult EditarUsuarioParcial(string id, UsuariosDto usuario, int Idgrupo)
+        public async Task<ActionResult> EditarUsuarioParcial(string id, UsuariosDto usuario, int? Idgrupo)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
-                    var estudianteGrupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
-                    var estudiante = new EstudianteGrupoDto { EstudianteId = id, GrupoId = Idgrupo };
-                    if (estudianteGrupo == null)
+                    var rol =await UserManager.GetRolesAsync(id);
+                    if(rol.FirstOrDefault() != usuario.Rol)
                     {
-                        _agregarEstudianteGrupoLN.AgregarEstudianteGrupo(estudiante);
-                        return RedirectToAction("ListarUsuarios");
+                        await UserManager.RemoveFromRoleAsync(id, rol.FirstOrDefault());
+                        await UserManager.AddToRoleAsync(id, usuario.Rol);
                     }
-                    _actualizarEstudianteGrupoLN.ActualizarEstudianteGrupo(estudiante);
+                    await _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
+                    await UserManager.SetEmailAsync(id, usuario.Email);
+                    if (Idgrupo != null)
+                        {
+                            var estudianteGrupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
+                            var estudiante = new EstudianteGrupoDto { EstudianteId = id, GrupoId = Idgrupo };
+                            if (estudianteGrupo == null)
+                            {
+                                await _agregarEstudianteGrupoLN.AgregarEstudianteGrupo(estudiante);
+                                return RedirectToAction("ListarUsuarios");
+                            }
+                            await _actualizarEstudianteGrupoLN.ActualizarEstudianteGrupo(estudiante);
+                        }
                     return RedirectToAction("ListarUsuarios");
-
-
-
                 }
                 else
                 {

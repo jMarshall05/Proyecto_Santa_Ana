@@ -20,17 +20,21 @@ namespace Campus.LogicaDeNegocio.Tareas.EditarTareaLN
         {
             try
             {
-                // Validación adicional de fechas
-                if (tarea.FechaEntrega == DateTime.MinValue)
-                {
-                    throw new ArgumentException("La fecha de entrega no puede estar vacía");
-                }
+                // Validaciones de negocio
+                if (string.IsNullOrWhiteSpace(tarea.Titulo))
+                    throw new ArgumentException("El título de la tarea es requerido");
+
+                if (tarea.FechaEntrega < DateTime.Now)
+                    throw new ArgumentException("La fecha de entrega no puede ser en el pasado");
+
+                if (tarea.id_grupo <= 0)
+                    throw new ArgumentException("El ID de grupo no es válido");
 
                 return await _editarTareaAD.EditarTarea(id, tarea);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al editar la tarea", ex);
+                throw new Exception("Error al editar la tarea: " + ex.Message, ex);
             }
         }
     }

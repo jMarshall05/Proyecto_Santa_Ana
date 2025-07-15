@@ -32,10 +32,15 @@ namespace Campus.AccesoDatos.ModelosAD
         public DateTime FechaCreacion { get; set; }
 
         [Column("fecha_modificacion")]
-        public DateTime? FechaModificacion { get; set; }
+        public DateTime FechaModificacion { get; set; }
 
         [Column("FechaPublicacion")]
         public DateTime FechaPublicacion { get; set; }
+
+        public int IdGrupo { get; set; }
+
+        [ForeignKey("IdGrupo")]
+        public virtual GruposAD Grupo { get; set; }
 
     }
 }

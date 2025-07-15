@@ -56,7 +56,15 @@
     <Compile Include="anuncios\EditarAnunciosAD\EditarAnunciosAD.cs" />
     <Compile Include="anuncios\EliminarAnunciosAD\EliminarAnunciosAD.cs" />
     <Compile Include="anuncios\ListarAnunciosAD\ListarAnunciosAD.cs" />
+    <Compile Include="calificaciones\agregarCalificacionAD\agregarCalificacionAD.cs" />
+    <Compile Include="calificaciones\editarCalificacionAD\editarCalificacionAD.cs" />
+    <Compile Include="calificaciones\eliminarCalificacionAD\eliminarCalificacionAD.cs" />
+    <Compile Include="calificaciones\listarCalificacionAD\listarCalificacionesAD.cs" />
     <Compile Include="Contexto.cs" />
+    <Compile Include="entregas\agregarEntregaAD\agregarEntregaAD.cs" />
+    <Compile Include="entregas\editarEntregaAD\editarEntregaAD.cs" />
+    <Compile Include="entregas\eliminarEntregaAD\eliminarEntregaAD.cs" />
+    <Compile Include="entregas\listarEntregaAD\listarEntregasAD.cs" />
     <Compile Include="EstudianteGrupo\ActualizarEstudianteGrupoAD\ActualizarEstudianteGrupoAD.cs" />
     <Compile Include="EstudianteGrupo\ListarEstudianteGrupoAD\ListarEstudianteGrupoAD.cs" />
     <Compile Include="Grupos\AgregarGrupo\AgregarGrupoAD.cs" />
@@ -66,6 +74,8 @@
     <Compile Include="materias\EditarMateriasAD\EditarMateriasAD.cs" />
     <Compile Include="materias\EliminarMateriasAD\EliminarMateriasAD.cs" />
     <Compile Include="materias\ListarMateriasAD\ListarMateriasAD.cs" />
+    <Compile Include="ModelosAD\CalificacionesAD.cs" />
+    <Compile Include="ModelosAD\EntregasAD.cs" />
     <Compile Include="ModelosAD\AnunciosAD.cs" />
     <Compile Include="ModelosAD\GruposAD.cs" />
     <Compile Include="ModelosAD\MateriasAD.cs" />

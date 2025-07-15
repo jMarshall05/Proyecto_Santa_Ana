@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Campus.Abstracciones.ModelosUI;
+﻿using System.Data.Entity;
 using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos
@@ -19,12 +12,11 @@ namespace Campus.AccesoDatos
         public DbSet<AnunciosAD> Anuncios { get; set; }
         public DbSet<TareasAD> Tareas { get; set; }
         public DbSet<GruposAD> Grupos { get; set; }
-
+        public DbSet<EntregasAD> Entregas { get; set; }
         public DbSet<MateriasAD> Materias { get; set; }
-
+        public DbSet<EstudianteGrupoAD> EstudianteGrupos { get; set; }
+        public DbSet<CalificacionesAD> Calificaciones { get; set; }
        
-
-
 
     }
 }

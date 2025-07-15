@@ -1,0 +1,26 @@
+﻿@using Campus.Abstracciones.ModelosUI
+@model IEnumerable<TareaDto>
+
+<h2>Tareas Asignadas</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Fecha de Entrega</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tarea in Model)
+        {
+            <tr>
+                <td>@tarea.Titulo</td>
+                <td>@tarea.FechaEntrega.ToShortDateString()</td>
+                <td>
+                    @Html.ActionLink("Añadir entrega", "EntregarTarea", "Entregas", new { idTarea = tarea.IdTarea, idEstudiante = User.Identity.Name }, new { @class = "btn btn-primary" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

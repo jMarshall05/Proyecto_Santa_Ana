@@ -1,0 +1,46 @@
+﻿@model Campus.Abstracciones.ModelosUI.EntregasDto
+
+@{
+    ViewBag.Title = "Editar Entrega";
+}
+
+<h2>Calificar Tarea</h2>
+
+@using (Html.BeginForm("Edit", "Entregas", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.id_entrega)
+    @Html.HiddenFor(m => m.id_tarea)
+    @Html.HiddenFor(m => m.id_estudiante)
+
+    <div class="form-group">
+        <label>Estudiante</label>
+        <p class="form-control-static">@Model.Estudiante?.Nombre @Model.Estudiante?.Apellido (@Model.id_estudiante)</p>
+    </div>
+
+    <div class="form-group">
+        <label>Tarea</label>
+        <p class="form-control-static">@Model.Tarea?.Titulo</p>
+    </div>
+
+    <div class="form-group">
+        <label>Archivo Entregado</label>
+        @if (!string.IsNullOrEmpty(Model.archivo_entregado))
+        {
+            <p><a href="@Url.Content(Model.archivo_entregado)" target="_blank" class="btn btn-link">Descargar</a></p>
+        }
+        else
+        {
+            <p class="text-muted">No se ha subido archivo</p>
+        }
+    </div>
+
+    @Html.ActionLink("Añadir calificación", "Create", "Calificaciones", new { id = Model.id_entrega }, new { @class = "btn btn-primary" })
+
+
+
+
+    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+    <a href="@Url.Action("Index", "Entregas")" class="btn btn-secondary">Cancelar</a>
+}
+
