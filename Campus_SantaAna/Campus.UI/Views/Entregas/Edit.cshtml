@@ -4,7 +4,7 @@
     ViewBag.Title = "Editar Entrega";
 }
 
-<h2>Editar Calificación</h2>
+<h2>Calificar Tarea</h2>
 
 @using (Html.BeginForm("Edit", "Entregas", FormMethod.Post))
 {
@@ -35,10 +35,10 @@
         }
     </div>
 
-    <div class="form-group">
-        <label for="calificacion">Calificación</label>
-        <input type="number" name="calificacion" id="calificacion" class="form-control" min="0" max="100" required value="@ViewBag.Calificacion" />
-    </div>
+    @Html.ActionLink("Añadir calificación", "Create", "Calificaciones", new { id = Model.id_entrega }, new { @class = "btn btn-primary" })
+
+
+
 
     <button type="submit" class="btn btn-success">Guardar Cambios</button>
     <a href="@Url.Action("Index", "Entregas")" class="btn btn-secondary">Cancelar</a>

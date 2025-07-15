@@ -46,6 +46,10 @@
     <Compile Include="anuncios\EditarAnuncios\EditarAnunciosLN.cs" />
     <Compile Include="anuncios\EliminarAnuncios\EliminarAnunciosLN.cs" />
     <Compile Include="anuncios\ListarAnuncios\ListarAnunciosLN.cs" />
+    <Compile Include="calificaciones\agregarCalificacionLN\agregarCalificacionLN.cs" />
+    <Compile Include="calificaciones\editarCalificacionLN\editarCalificacionLN.cs" />
+    <Compile Include="calificaciones\eliminarCalificacionLN\eliminarCalificacionLN.cs" />
+    <Compile Include="calificaciones\listarCalificacionesLN\listarCalificacionesLN.cs" />
     <Compile Include="entregas\agregarEntregaLN\agregarEntregaLN.cs" />
     <Compile Include="entregas\editarEntregaLN\editarEntregaLN.cs" />
     <Compile Include="entregas\eliminarEntregaLN\eliminarEntregaLN.cs" />
