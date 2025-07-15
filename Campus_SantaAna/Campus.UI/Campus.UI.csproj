@@ -290,6 +290,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CalificacionesController.cs" />
     <Compile Include="Controllers\EntregasController.cs" />
     <Compile Include="Controllers\MateriasController.cs" />
     <Compile Include="Controllers\AnunciosController.cs" />
@@ -410,8 +411,10 @@
     <Content Include="Views\Entregas\ObtenerEntregaPorId.cshtml" />
     <Content Include="Views\Entregas\Edit.cshtml" />
     <Content Include="Views\Entregas\MisEntregas.cshtml" />
-    <Content Include="Views\Tareas\MisTareas.cshtml" />
     <Content Include="Views\Entregas\SubirEntrega.cshtml" />
+    <Content Include="Views\Calificaciones\Create.cshtml" />
+    <Content Include="Views\Tareas\MisTareas.cshtml" />
+    <Content Include="Views\Calificaciones\MisCalificaciones.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
