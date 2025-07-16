@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using Campus.Abstracciones.AccesoDatos.Eventos;
 using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos
@@ -15,7 +16,9 @@ namespace Campus.AccesoDatos
         public DbSet<EntregasAD> Entregas { get; set; }
         public DbSet<MateriasAD> Materias { get; set; }
         public DbSet<EstudianteGrupoAD> EstudianteGrupos { get; set; }
-       
+        public DbSet<CalificacionesAD> Calificaciones { get; set; }
+        public DbSet<EventoAD> Eventos { get; set; }
+
 
     }
 }

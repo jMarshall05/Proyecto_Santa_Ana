@@ -9,7 +9,6 @@ namespace Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN
         Task<IEnumerable<TareaDto>> ListarTareasAsync();
         Task<IEnumerable<TareaDto>> ListarTareasPorGrupoAsync(int idGrupo);
         Task<TareaDto> ObtenerPorIdAsync(int idTarea);
-        Task<IEnumerable<GruposDto>> ListarGruposAsync();
         Task<List<TareaDto>> ListarTareasPorEstudiante(string idEstudiante);
 
 
