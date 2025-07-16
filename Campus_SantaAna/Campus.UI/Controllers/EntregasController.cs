@@ -32,18 +32,6 @@ namespace Campus.Web.Controllers
             _listarEntregasLN = new ListarEntregasLN();
         }
 
-        public EntregasController(
-            IAgregarEntregaLN agregarEntregaLN,
-            IEditarEntregaLN editarEntregaLN,
-            IEliminarEntregaLN eliminarEntregaLN,
-            IListarEntregasLN listarEntregasLN)
-        {
-            _agregarEntregaLN = agregarEntregaLN;
-            _editarEntregaLN = editarEntregaLN;
-            _eliminarEntregaLN = eliminarEntregaLN;
-            _listarEntregasLN = listarEntregasLN;
-        }
-
         public async Task<ActionResult> Index(int? idGrupo)
         {
             if (idGrupo == null)
