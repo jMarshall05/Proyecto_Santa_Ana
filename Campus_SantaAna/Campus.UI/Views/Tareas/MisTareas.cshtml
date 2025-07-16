@@ -1,0 +1,52 @@
+﻿
+@model IEnumerable<Campus.Abstracciones.ModelosUI.TareaDto>
+
+@{
+    ViewBag.Title = "Mis Tareas";
+}
+
+<h2>Mis Tareas Asignadas</h2>
+
+@if (!Model.Any())
+{
+    <p>No tienes tareas asignadas.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>Fecha Entrega</th>
+                <th>Archivo Adjunto</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tarea in Model)
+            {
+                <tr>
+                    <td>@tarea.Titulo</td>
+                    <td>@tarea.Descripcion</td>
+                    <td>@tarea.FechaEntrega.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(tarea.ArchivoAdjunto))
+                        {
+                            <a href="@Url.Content(tarea.ArchivoAdjunto)" target="_blank">Ver archivo</a>
+                        }
+                        else
+                        {
+                            <span>No disponible</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("Detalles", "Details", "Tareas", new { id = tarea.IdTarea }, new { @class = "btn btn-info btn-sm", style = "margin-right:5px;" })
+                        @Html.ActionLink("Entregar", "SubirEntrega", "Entregas", new { idTarea = tarea.IdTarea }, new { @class = "btn btn-success btn-sm" })
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
