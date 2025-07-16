@@ -67,6 +67,7 @@
     <Compile Include="entregas\listarEntregaAD\listarEntregasAD.cs" />
     <Compile Include="EstudianteGrupo\ActualizarEstudianteGrupoAD\ActualizarEstudianteGrupoAD.cs" />
     <Compile Include="EstudianteGrupo\ListarEstudianteGrupoAD\ListarEstudianteGrupoAD.cs" />
+    <Compile Include="eventos\EventoAccesoDatos.cs" />
     <Compile Include="Grupos\AgregarGrupo\AgregarGrupoAD.cs" />
     <Compile Include="Grupos\EditarGrupo\EditarGrupoAD.cs" />
     <Compile Include="Grupos\ListarGrupos\ListarGruposAD.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="ModelosAD\CalificacionesAD.cs" />
     <Compile Include="ModelosAD\EntregasAD.cs" />
     <Compile Include="ModelosAD\AnunciosAD.cs" />
+    <Compile Include="ModelosAD\EventoAD.cs" />
     <Compile Include="ModelosAD\GruposAD.cs" />
     <Compile Include="ModelosAD\MateriasAD.cs" />
     <Compile Include="ModelosAD\TareasAD.cs" />

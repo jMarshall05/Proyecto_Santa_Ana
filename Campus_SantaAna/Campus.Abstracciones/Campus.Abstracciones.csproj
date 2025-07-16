@@ -58,6 +58,7 @@
     <Compile Include="AccesoDatos\entregas\listarEntregaDA\IListarEntregaDA.cs" />
     <Compile Include="AccesoDatos\EstudianteGrupo\ActualizarEstudianteGrupoAD\IActualizarEstudianteGrupoAD.cs" />
     <Compile Include="AccesoDatos\EstudianteGrupo\ListarEstudiantesGrupos\IListarEstudiantesGruposAD.cs" />
+    <Compile Include="AccesoDatos\eventos\IEventoAD.cs" />
     <Compile Include="AccesoDatos\Grupos\AgregarGrupo\IAgregarGrupoAD.cs" />
     <Compile Include="AccesoDatos\Grupos\EditarGrupo\IEditarGrupoAD.cs" />
     <Compile Include="AccesoDatos\Grupos\ListarGrupos\IListarGruposAD.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="LogicaDeNegocio\entregas\listarEntregaLN\IListarEntregasLN.cs" />
     <Compile Include="LogicaDeNegocio\EstudianteGrupo\ActualizarEstudianteGrupoLN\IActualizarEstudianteGrupoLN.cs" />
     <Compile Include="LogicaDeNegocio\EstudianteGrupo\ListarEstudianteGrupoLN\IListarEstudianteGrupoLN.cs" />
+    <Compile Include="LogicaDeNegocio\eventos\IEventoLN.cs" />
     <Compile Include="LogicaDeNegocio\Grupos\AgregarGrupo\IAgregarGrupoLN.cs" />
     <Compile Include="LogicaDeNegocio\Grupos\EditarGrupo\IEditarGrupoLN.cs" />
     <Compile Include="LogicaDeNegocio\Grupos\ListarGrupos\IListarGruposLN.cs" />
@@ -110,6 +112,7 @@
     <Compile Include="ModelosUI\CalificacionesDto.cs" />
     <Compile Include="ModelosUI\EntregasDto.cs" />
     <Compile Include="ModelosUI\EstudianteGrupoDto.cs" />
+    <Compile Include="ModelosUI\EventoDto.cs" />
     <Compile Include="ModelosUI\GruposDto.cs" />
     <Compile Include="ModelosUI\MateriaDto.cs" />
     <Compile Include="ModelosUI\TareasDto.cs" />
