@@ -68,12 +68,12 @@
                         <ul class="navbar-nav flex-grow-1">
 
                             @* Solo para Administradores *@
-                            @if (User.IsInRole("Administradores"))
-                            {
+                            @*@if (User.IsInRole("Administradores"))
+                            {*@
                                 <li>@Html.ActionLink("Gestion de Usuarios", "ListarUsuarios", "Usuarios", null, new { @class = "nav-link", style = "color: white;" })</li>
                                 <li>@Html.ActionLink("Gestion de Grupos", "ListarGrupos", "Grupos", null, new { @class = "nav-link", style = "color: white;" })</li>
                                 <li>@Html.ActionLink("Administrar Anuncios", "ListarAnuncios", "Anuncios", null, new { @class = "nav-link", style = "color: white;" })</li>
-                            }
+                            @*}*@
 
                             @* Para Profesores y Admins *@
                             @if (User.IsInRole("Profesores") || User.IsInRole("Administradores"))
