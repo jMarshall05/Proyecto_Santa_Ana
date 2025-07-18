@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using Campus.UI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
-using Campus.UI.Models;
-using System.Net.Mail;
-using System.Net;
 
 namespace Campus.UI
 {
@@ -20,9 +21,16 @@ namespace Campus.UI
     {
         public async Task SendAsync(IdentityMessage message)
         {
-            var smtpClient = new SmtpClient("smtp.gmail.com", 587)
+            string smtpServer = ConfigurationManager.AppSettings["SmtpServer"];
+            int smtpPort = int.Parse(ConfigurationManager.AppSettings["SmtpPort"]);
+            string smtpUser = ConfigurationManager.AppSettings["SmtpUser"];
+            string smtpPassword = ConfigurationManager.AppSettings["SmtpPassword"];
+            string fromEmail = ConfigurationManager.AppSettings["FromEmail"];
+            string fromName = ConfigurationManager.AppSettings["FromName"];
+
+            var smtpClient = new SmtpClient(smtpServer, smtpPort)
             {
-                Credentials = new NetworkCredential("proyecto.santaana123@gmail.com", "qrws xtjf nziv mdoa"),
+                Credentials = new NetworkCredential(smtpUser, smtpPassword),
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network
             };
@@ -31,7 +39,7 @@ namespace Campus.UI
             string templatePath = HttpContext.Current.Server.MapPath("~/Views/Account/ResetPasswordEmail.cshtml");
             string emailTemplate = System.IO.File.ReadAllText(templatePath);
 
-            // Extraer la URL del mensaje original
+            // Extraer la URL del mensaje original y id del usuario
             string resetUrl = ExtractUrlFromMessage(message.Body);
             string id = ExtractId(resetUrl);
 
@@ -44,7 +52,7 @@ namespace Campus.UI
             // Crear el mensaje
             var mailMessage = new MailMessage
             {
-                From = new MailAddress("proyecto.santaana123@gmail.com", "✏️ Santa Ana a Un Click"),
+                From = new MailAddress(fromEmail, fromName),
                 Subject = "🔑 Restablecimiento de Contraseña - Acción Requerida",
                 Body = emailTemplate,
                 IsBodyHtml = true
@@ -93,7 +101,7 @@ namespace Campus.UI
 
             catch
             {
-                return "#"; // URL por defecto si hay error
+                return "#"; // Sin id si hay error
             }
         }
     }
@@ -157,8 +165,10 @@ namespace Campus.UI
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
-                manager.UserTokenProvider =
+                var TokenProvider =
                     new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
+                TokenProvider.TokenLifespan= TimeSpan.FromHours(2);
+                manager.UserTokenProvider = TokenProvider;
             }
             return manager;
         }
