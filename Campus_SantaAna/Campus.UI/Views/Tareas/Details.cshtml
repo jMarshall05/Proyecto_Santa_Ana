@@ -95,17 +95,20 @@
     <div class="card-footer bg-light">
         <div class="d-flex justify-content-between">
             @Html.ActionLink("Volver al listado", "ListarTareas", null, new { @class = "btn btn-secondary" })
+            @if (User.IsInRole("Administradores") || User.IsInRole("Profesores"))
+            {
+                <div>
+                    @Html.ActionLink("Editar", "Edit", new { id = Model.IdTarea }, new { @class = "btn btn-warning me-2" })
 
-            <div>
-                @Html.ActionLink("Editar", "Edit", new { id = Model.IdTarea }, new { @class = "btn btn-warning me-2" })
+                    <button type="button"
+                            class="btn btn-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">
+                        <i class="fas fa-trash mr-1"></i> Eliminar
+                    </button>
 
-                <button type="button"
-                        class="btn btn-danger"
-                        data-bs-toggle="modal"
-                        data-bs-target="#deleteModal">
-                    <i class="fas fa-trash mr-1"></i> Eliminar
-                </button>
-            </div>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -122,6 +125,7 @@
                 <p>¿Estás seguro de eliminar la tarea <strong>@Model.Titulo</strong>?</p>
                 <p class="text-muted">Esta acción no se puede deshacer.</p>
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 @using (Html.BeginForm("Delete", "Tareas", new { id = Model.IdTarea }, FormMethod.Post))
@@ -132,6 +136,7 @@
                     </button>
                 }
             </div>
+
         </div>
     </div>
 </div>
