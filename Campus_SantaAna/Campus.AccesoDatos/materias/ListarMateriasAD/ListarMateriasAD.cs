@@ -20,7 +20,7 @@ namespace Campus.AccesoDatos.Materias.ListarMateriasAD
             return (from materia in _elContexto.Materias
                     select new MateriaDto
                     {
-                        IdMateria = materia.IdMateria,
+                        Id_Materia = materia.IdMateria,
                         Nombre = materia.Nombre
                     }).ToList();
         }
@@ -33,7 +33,7 @@ namespace Campus.AccesoDatos.Materias.ListarMateriasAD
 
             return new MateriaDto
             {
-                IdMateria = materia.IdMateria,
+                Id_Materia = materia.IdMateria,
                 Nombre = materia.Nombre
             };
         }

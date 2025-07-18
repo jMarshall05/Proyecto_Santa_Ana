@@ -22,8 +22,8 @@ namespace Campus.UI.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        private IAgregarUsuariosLN _agregarUsuariosLN;
-        private Random rnd;
+        private readonly IAgregarUsuariosLN _agregarUsuariosLN;
+        private readonly Random rnd;
 
         public AccountController()
         {
@@ -95,7 +95,7 @@ namespace Campus.UI.Controllers
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, model.RememberMe });
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Intento de inicio de sesión a fallado.");
@@ -240,7 +240,7 @@ namespace Campus.UI.Controllers
                 // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                 // Enviar un correo electrónico con este vínculo
                  string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
+                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code }, protocol: Request.Url.Scheme);		
                  await UserManager.SendEmailAsync(user.Id, "Restablecer contraseña", "Para restablecer la contraseña, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
                     return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
@@ -260,7 +260,7 @@ namespace Campus.UI.Controllers
         //
         // GET: /Account/ResetPassword
         [AllowAnonymous]
-        public async Task<ActionResult> ResetPassword(string userId,string code)
+        public ActionResult ResetPassword(string userId, string code)
         {
             if (code == null || userId == null)
                 return View("Error");
@@ -352,7 +352,7 @@ namespace Campus.UI.Controllers
             {
                 return View("Error");
             }
-            return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+            return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, model.ReturnUrl, model.RememberMe });
         }
 
         //

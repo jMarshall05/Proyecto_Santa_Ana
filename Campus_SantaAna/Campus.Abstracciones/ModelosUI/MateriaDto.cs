@@ -7,7 +7,7 @@ namespace Campus.Abstracciones.ModelosUI
     {
         [Key]
         [DisplayName("ID de Materia")]
-        public int IdMateria { get; set; }
+        public int Id_Materia { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [DisplayName("Nombre")]
