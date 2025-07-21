@@ -50,6 +50,7 @@
     <Compile Include="calificaciones\editarCalificacionLN\editarCalificacionLN.cs" />
     <Compile Include="calificaciones\eliminarCalificacionLN\eliminarCalificacionLN.cs" />
     <Compile Include="calificaciones\listarCalificacionesLN\listarCalificacionesLN.cs" />
+    <Compile Include="Cursos\AgregarCursoLN\AgregarCursoLN.cs" />
     <Compile Include="Cursos\ListarCursosLN\ListarCursosLN.cs" />
     <Compile Include="entregas\agregarEntregaLN\agregarEntregaLN.cs" />
     <Compile Include="entregas\editarEntregaLN\editarEntregaLN.cs" />

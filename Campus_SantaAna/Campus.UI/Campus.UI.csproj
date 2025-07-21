@@ -339,6 +339,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Properties\PublishProfiles\SantaAna - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
+    <Content Include="Scripts\Cursos\ScriptDeCursos.js" />
     <Content Include="Scripts\datatable\dataTables.js" />
     <Content Include="Scripts\Grupos\ScriptDeGrupos.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
@@ -419,6 +420,7 @@
     <Content Include="Views\Calificaciones\MisCalificaciones.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Cursos\ListarCursos.cshtml" />
+    <Content Include="Views\Cursos\_AgregarCursoParcial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

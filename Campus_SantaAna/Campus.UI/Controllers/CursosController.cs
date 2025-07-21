@@ -1,19 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.AccesoDatos.Cursos.AgregarCursoLN;
 using Campus.Abstracciones.AccesoDatos.Cursos.ListarCursosLN;
+using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
+using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Cursos.AgregarCursoLN;
 using Campus.LogicaDeNegocio.Cursos.ListarCursosLN;
+using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.LogicaDeNegocio.Materias.ListarMaterias;
+using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 
 namespace Campus.UI.Controllers
 {
     public class CursosController : Controller
     {
         private readonly IListarCursoLN _listarCursoLN;
+        private readonly IAgregarCursoLN _agregarCursoLN;
+        private readonly IListarGruposLN _listarGruposLN;
+        private readonly IListarMateriasLN _listarMateriasLN;
+        private readonly IListarUsuariosLN _listarUsuariosLN;
         public CursosController()
         {
             _listarCursoLN = new ListarCursosLN();
+            _agregarCursoLN = new AgregarCursoLN();
+            _listarGruposLN = new ListarGruposLN();
+            _listarMateriasLN = new ListarMateriasLN();
+            _listarUsuariosLN = new ListarUsuariosLN();
         }
         // GET: Cursos
         public ActionResult ListarCursos()
@@ -29,25 +47,45 @@ namespace Campus.UI.Controllers
         }
 
         // GET: Cursos/Create
-        public ActionResult Create()
+        public ActionResult AgregarCursoParcial()
         {
-            return View();
+            CargarViewBags();
+            return PartialView("_AgregarCursoParcial");
+        }
+
+        private void CargarViewBags()
+        {
+            var Profesores = _listarUsuariosLN.ListarUsuarios().Where(Usuario => Usuario.Rol == "Profesores").Select(Usuario => new
+            {
+                IdUsuario = Usuario.IdUsuario,
+                NombreCompleto = Usuario.Nombre + " " + Usuario.Apellido
+            });
+            var Materias = _listarMateriasLN.ListarMaterias();
+            var Grupos = _listarGruposLN.ListarGrupos();
+            ViewBag.Profesores = new SelectList(Profesores, "IdUsuario", "NombreCompleto");
+            ViewBag.Materias = new SelectList(Materias, "Id_Materia", "Nombre");
+            ViewBag.Grupos = new SelectList(Grupos, "id_grupo", "nombre_grupo");
         }
 
         // POST: Cursos/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public async Task<ActionResult> AgregarCursoParcial(CursoDto Curso)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
+                try
+                {
+                   await _agregarCursoLN.AgregarCurso(Curso);
+                    return RedirectToAction("ListarCursos");
+                }
+                catch
+                {
+                    CargarViewBags();
+                    return PartialView("_AgregarCursoParcial", Curso);
+                }
             }
-            catch
-            {
-                return View();
-            }
+            CargarViewBags();
+            return PartialView("_AgregarCursoParcial", Curso);
         }
 
         // GET: Cursos/Edit/5
