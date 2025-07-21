@@ -74,9 +74,8 @@
     <Build Include="dbo\Tables\entregas.sql" />
     <Build Include="dbo\Tables\calificaciones.sql" />
     <Build Include="dbo\Tables\anuncios.sql" />
-    <Build Include="dbo\Tables\ProfesorCurso.sql" />
     <Build Include="dbo\Tables\EstudianteGrupo.sql" />
-    <Build Include="dbo\Tables\Curso.sql" />
+    <Build Include="dbo\Tables\Cursos.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="BD.refactorlog" />

@@ -291,6 +291,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CalificacionesController.cs" />
+    <Compile Include="Controllers\CursosController.cs" />
     <Compile Include="Controllers\EntregasController.cs" />
     <Compile Include="Controllers\EventosController.cs" />
     <Compile Include="Controllers\MateriasController.cs" />
@@ -417,6 +418,7 @@
     <Content Include="Views\Tareas\MisTareas.cshtml" />
     <Content Include="Views\Calificaciones\MisCalificaciones.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Cursos\ListarCursos.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
