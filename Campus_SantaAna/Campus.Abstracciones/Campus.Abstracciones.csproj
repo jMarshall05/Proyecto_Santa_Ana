@@ -53,7 +53,7 @@
     <Compile Include="AccesoDatos\calificaciones\eliminarCalificacionDA\IEliminarCalificacionDA.cs" />
     <Compile Include="AccesoDatos\calificaciones\listarCalificacionDA\IListarCalificacionDA.cs" />
     <Compile Include="AccesoDatos\Cursos\AgregarCursoAD\IAgregarCursoAD.cs" />
-    <Compile Include="AccesoDatos\Cursos\EditarCursoAD\IEditarCursoAD.cs" />
+    <Compile Include="AccesoDatos\Cursos\EliminarCursoAD\IEliminarCursoAD.cs" />
     <Compile Include="AccesoDatos\Cursos\ListarCursosAD\IListarCursoAD.cs" />
     <Compile Include="AccesoDatos\entregas\agregarEntregaAD\IAgregarEntregaDA.cs" />
     <Compile Include="AccesoDatos\entregas\editarEntregaDA\IEditarEntregaDA.cs" />
@@ -88,7 +88,7 @@
     <Compile Include="LogicaDeNegocio\calificaciones\eliminarCalificacionLN\IEliminarCalificacionLN.cs" />
     <Compile Include="LogicaDeNegocio\calificaciones\listarCalificacionLN\IListarCalificacionesLN.cs" />
     <Compile Include="LogicaDeNegocio\Cursos\AgregarCursoLN\IAgregarCursoLN.cs" />
-    <Compile Include="LogicaDeNegocio\Cursos\EditarCursoLN\IEditarCursoLN.cs" />
+    <Compile Include="LogicaDeNegocio\Cursos\EliminarCursoLN\IEliminarCursoLN.cs" />
     <Compile Include="LogicaDeNegocio\Cursos\ListarCursosLN\IListarCursoLN.cs" />
     <Compile Include="LogicaDeNegocio\entregas\agregarEntregaLN\IAgregarEntregaLN.cs" />
     <Compile Include="LogicaDeNegocio\entregas\editarEntregaLN\IEditarEntregaLN.cs" />
@@ -117,6 +117,7 @@
     <Compile Include="ModelosUI\AnuncioDto.cs" />
     <Compile Include="ModelosUI\CalificacionesDto.cs" />
     <Compile Include="ModelosUI\CursoDto.cs" />
+    <Compile Include="ModelosUI\CursoViewModel.cs" />
     <Compile Include="ModelosUI\EntregasDto.cs" />
     <Compile Include="ModelosUI\EstudianteGrupoDto.cs" />
     <Compile Include="ModelosUI\EventoDto.cs" />

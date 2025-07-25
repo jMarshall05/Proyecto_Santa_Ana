@@ -1,0 +1,42 @@
+﻿@model Campus.Abstracciones.ModelosUI.CursoDto
+
+<div>
+    <h4>CursoDto</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MateriaId)
+        </dt>
+
+        <dd>
+            @ViewBag.Materia
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GrupoId)
+        </dt>
+
+        <dd>
+            @ViewBag.Grupo
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProfesorId)
+        </dt>
+
+        <dd>
+            @ViewBag.Profesor
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @using (Html.BeginForm("EliminarCurso", "Cursos", new { id = Model.IdCurso }, FormMethod.Post, new { style = "display:inline;" }))
+    {
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro que desea eliminar este curso?')">
+            <i class="fas fa-trash me-1"></i> Borrar
+        </button>
+    }
+</p>

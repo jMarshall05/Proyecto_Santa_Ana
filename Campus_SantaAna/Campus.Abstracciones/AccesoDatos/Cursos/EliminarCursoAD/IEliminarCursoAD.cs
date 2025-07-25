@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Campus.Abstracciones.ModelosUI;
 
-namespace Campus.Abstracciones.AccesoDatos.Cursos.EditarCursoAD
+namespace Campus.Abstracciones.AccesoDatos.Cursos.EliminarCursoAD
 {
-    public interface IEditarCursoAD
+    public interface IEliminarCursoAD
     {
-        Task<int> EditarCurso(Guid idCurso,CursoDto curso);
+        Task<bool> EliminarCursoAD(int idCurso);
     }
 }
