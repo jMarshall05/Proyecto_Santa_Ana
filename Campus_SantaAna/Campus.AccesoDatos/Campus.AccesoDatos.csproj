@@ -61,6 +61,9 @@
     <Compile Include="calificaciones\eliminarCalificacionAD\eliminarCalificacionAD.cs" />
     <Compile Include="calificaciones\listarCalificacionAD\listarCalificacionesAD.cs" />
     <Compile Include="Contexto.cs" />
+    <Compile Include="Cursos\AgregarCursoAD\AgregarCursoAD.cs" />
+    <Compile Include="Cursos\EliminarCursoAD\EliminarCursoAD.cs" />
+    <Compile Include="Cursos\ListarCursosAD\ListarCursosAD.cs" />
     <Compile Include="entregas\agregarEntregaAD\agregarEntregaAD.cs" />
     <Compile Include="entregas\editarEntregaAD\editarEntregaAD.cs" />
     <Compile Include="entregas\eliminarEntregaAD\eliminarEntregaAD.cs" />
@@ -76,6 +79,7 @@
     <Compile Include="materias\EliminarMateriasAD\EliminarMateriasAD.cs" />
     <Compile Include="materias\ListarMateriasAD\ListarMateriasAD.cs" />
     <Compile Include="ModelosAD\CalificacionesAD.cs" />
+    <Compile Include="ModelosAD\CursosAD.cs" />
     <Compile Include="ModelosAD\EntregasAD.cs" />
     <Compile Include="ModelosAD\AnunciosAD.cs" />
     <Compile Include="ModelosAD\EventoAD.cs" />

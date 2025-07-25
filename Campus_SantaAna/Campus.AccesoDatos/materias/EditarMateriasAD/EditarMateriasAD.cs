@@ -16,7 +16,7 @@ namespace Campus.AccesoDatos.Materias.EditarMateriasAD
 
         public async Task<bool> EditarMateria(MateriaDto materia)
         {
-            var materiaExistente = await _elContexto.Materias.FindAsync(materia.IdMateria);
+            var materiaExistente = await _elContexto.Materias.FindAsync(materia.Id_Materia);
             if (materiaExistente == null)
                 return false;
 

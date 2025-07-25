@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.CursoDto>
+
+<button class="btn btn-sm btn-secondary btn-Agregar-Curso mx-1" data-bs-toggle="tooltip">
+    <i class="fas fa-users me-1"></i> Agregar Curso
+</button>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.IdCurso)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MateriaId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GrupoId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProfesorId)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdCurso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreMateria)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreGrupo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreProfesor)
+            </td>
+            <td>
+          
+                @using (Html.BeginForm("EliminarCurso", "Cursos", new { id = item.IdCurso }, FormMethod.Post, new { style = "display:inline;" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro que desea eliminar este curso?')">
+                        <i class="fas fa-trash me-1"></i> Borrar
+                    </button>
+                }
+            </td>
+
+        </tr>
+    }
+
+</table>
+
+<div class="modal fade" id="CursosModal" tabindex="-1" aria-labelledby="CursosModalTittleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header bg-primary text-white">
+                <h1 class="modal-title fs-5" id="UCursosModalTittleLabel">Agregar</h1>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/Cursos/ScriptDeCursos.js"></script>
+
+}

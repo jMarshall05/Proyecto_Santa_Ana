@@ -20,20 +20,19 @@ using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Microsoft.AspNet.Identity.Owin;
-using System.Linq;
 namespace Campus.UI.Controllers
 {
     public class UsuariosController : Controller
     {
-        private IListarUsuariosLN _listarUsuariosLN;
-        private IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
-        private IEditarUsuarioLN _editarUsuarioLN;
+        private readonly IListarUsuariosLN _listarUsuariosLN;
+        private readonly IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
+        private readonly IEditarUsuarioLN _editarUsuarioLN;
         private ApplicationUserManager _userManager;
-        private IListarGruposLN _listarGrupos;
-        private IAgregarEstudianteGrupoLN _agregarEstudianteGrupoLN;
-        private IListarEstudianteGrupoLN _listarEstudianteGrupoLN;
-        private IBuscarEstudianteGrupoPorIdLN _buscarEstudianteGrupoPorIdLN;
-        private IActualizarEstudianteGrupoLN _actualizarEstudianteGrupoLN;
+        private readonly IListarGruposLN _listarGrupos;
+        private readonly IAgregarEstudianteGrupoLN _agregarEstudianteGrupoLN;
+        private readonly IListarEstudianteGrupoLN _listarEstudianteGrupoLN;
+        private readonly IBuscarEstudianteGrupoPorIdLN _buscarEstudianteGrupoPorIdLN;
+        private readonly IActualizarEstudianteGrupoLN _actualizarEstudianteGrupoLN;
 
         public UsuariosController()
         {
@@ -75,7 +74,7 @@ namespace Campus.UI.Controllers
         {
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
             var grupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
-            if(grupo !=null)
+            if (grupo != null)
             {
                 var NombreGrupo = _listarGrupos.BuscarGruposPorId((int)grupo.GrupoId);
                 ViewBag.Grupo = NombreGrupo.nombre_grupo;
@@ -101,8 +100,8 @@ namespace Campus.UI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var rol =await UserManager.GetRolesAsync(id);
-                    if(rol.FirstOrDefault() != usuario.Rol)
+                    var rol = await UserManager.GetRolesAsync(id);
+                    if (rol.FirstOrDefault() != usuario.Rol)
                     {
                         await UserManager.RemoveFromRoleAsync(id, rol.FirstOrDefault());
                         await UserManager.AddToRoleAsync(id, usuario.Rol);
@@ -110,16 +109,16 @@ namespace Campus.UI.Controllers
                     await _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
                     await UserManager.SetEmailAsync(id, usuario.Email);
                     if (Idgrupo != null)
+                    {
+                        var estudianteGrupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
+                        var estudiante = new EstudianteGrupoDto { EstudianteId = id, GrupoId = Idgrupo };
+                        if (estudianteGrupo == null)
                         {
-                            var estudianteGrupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
-                            var estudiante = new EstudianteGrupoDto { EstudianteId = id, GrupoId = Idgrupo };
-                            if (estudianteGrupo == null)
-                            {
-                                await _agregarEstudianteGrupoLN.AgregarEstudianteGrupo(estudiante);
-                                return RedirectToAction("ListarUsuarios");
-                            }
-                            await _actualizarEstudianteGrupoLN.ActualizarEstudianteGrupo(estudiante);
+                            await _agregarEstudianteGrupoLN.AgregarEstudianteGrupo(estudiante);
+                            return RedirectToAction("ListarUsuarios");
                         }
+                        await _actualizarEstudianteGrupoLN.ActualizarEstudianteGrupo(estudiante);
+                    }
                     return RedirectToAction("ListarUsuarios");
                 }
                 else
@@ -160,29 +159,6 @@ namespace Campus.UI.Controllers
 
 
                 return RedirectToAction("ListarUsuarios");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-
-        // GET: Usuarios/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Usuarios/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
             }
             catch
             {
