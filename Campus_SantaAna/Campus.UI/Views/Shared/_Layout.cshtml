@@ -55,18 +55,10 @@
 <body>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm" style="background-color: #F44336; border-color: #F44336; color: white;">
         <div class="container">
-            @if (User.Identity.IsAuthenticated)
-            {
-                <a class="navbar-brand" href="@Url.Action("Index", "Home", new { username = User.Identity.Name })">
-                    <img src="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" alt="Logo" style="height: 65px;" />
-                </a>
-            }
-            else
-            {
                 <a class="navbar-brand" href="@Url.Action("Index", "Home")">
                     <img src="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" alt="Logo" style="height: 65px;" />
                 </a>
-            }
+
 
             <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Alternar navegación" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
