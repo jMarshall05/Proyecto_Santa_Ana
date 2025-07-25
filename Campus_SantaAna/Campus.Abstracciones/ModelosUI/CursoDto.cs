@@ -18,5 +18,9 @@ namespace Campus.Abstracciones.ModelosUI
         public int GrupoId { get; set; }
         [DisplayName("Profesor")]
         public string ProfesorId { get; set; }
+
+        public string NombreProfesor { get; set; }
+        public string NombreGrupo { get; set; }
+        public string NombreMateria { get; set; }
     }
 }

@@ -91,7 +91,7 @@ namespace Campus.UI.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                        return RedirectToAction("Index", "Home", user);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -184,7 +184,7 @@ namespace Campus.UI.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirmar la cuenta", "Para confirmar su cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("ListarUsuarios", "Usuarios");
                 }
                 AddErrors(result);
             }

@@ -117,7 +117,6 @@
     <Compile Include="ModelosUI\AnuncioDto.cs" />
     <Compile Include="ModelosUI\CalificacionesDto.cs" />
     <Compile Include="ModelosUI\CursoDto.cs" />
-    <Compile Include="ModelosUI\CursoViewModel.cs" />
     <Compile Include="ModelosUI\EntregasDto.cs" />
     <Compile Include="ModelosUI\EstudianteGrupoDto.cs" />
     <Compile Include="ModelosUI\EventoDto.cs" />

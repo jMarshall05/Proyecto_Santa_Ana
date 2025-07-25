@@ -27,19 +27,16 @@
                 @Html.DisplayFor(modelItem => item.IdCurso)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MateriaId)
+                @Html.DisplayFor(modelItem => item.NombreMateria)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.GrupoId)
+                @Html.DisplayFor(modelItem => item.NombreGrupo)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ProfesorId)
+                @Html.DisplayFor(modelItem => item.NombreProfesor)
             </td>
             <td>
-                <button class="btn btn-sm btn-primary btn-Detalles-Curso mx-1" data-bs-toggle="tooltip" data-id="@item.IdCurso">
-                    <i class="fas fa-eye me-1"></i> Detalles Curso
-                </button>
-
+          
                 @using (Html.BeginForm("EliminarCurso", "Cursos", new { id = item.IdCurso }, FormMethod.Post, new { style = "display:inline;" }))
                 {
                     @Html.AntiForgeryToken()

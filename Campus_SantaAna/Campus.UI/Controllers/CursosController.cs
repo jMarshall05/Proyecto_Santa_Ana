@@ -44,7 +44,15 @@ namespace Campus.UI.Controllers
         // GET: Cursos
         public ActionResult ListarCursos()
         {
+
             var listaDeCursos = _listarCursoLN.ListarCursos();
+            foreach (var item in listaDeCursos)
+            {
+                var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(item.ProfesorId);
+                item.NombreMateria = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId).Nombre;
+                item.NombreGrupo = _listarGruposLN.BuscarGruposPorId(item.GrupoId).nombre_grupo;
+                item.NombreProfesor = usuario.Nombre + " " + usuario.Apellido;
+            }
 
             return View(listaDeCursos);
         }
@@ -52,15 +60,7 @@ namespace Campus.UI.Controllers
         // GET: Cursos/Details/5
         public ActionResult DetallesDeCursoParcial(int id)
         {
-            var Curso = _listarCursoLN.ObtenerPorId(id);   
-            var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(Curso.ProfesorId);
-            var materia = _listarMateriasLN.ObtenerMateriaPorId(Curso.MateriaId).Nombre;
-            var grupo = _listarGruposLN.BuscarGruposPorId(Curso.GrupoId).nombre_grupo;
-            ViewBag.Profesor = usuario.Nombre + " " + usuario.Apellido;
-            ViewBag.Materia = materia;
-            ViewBag.Grupo = grupo;
-
-            return PartialView("_DetallesDeCursoParcial", Curso);
+            return View();
         }
 
         // GET: Cursos/Create
