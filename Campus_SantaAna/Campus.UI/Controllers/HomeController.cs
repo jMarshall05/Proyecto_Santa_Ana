@@ -64,7 +64,6 @@ namespace Campus.UI.Controllers
             if (User.IsInRole("Profesores"))
             {
                 var listaDeCursos = _listarCursos.ListarCursos().Where(u => u.ProfesorId == id);
-                var materias = _listarMateriasLN.ObtenerMateriaPorId(listaDeCursos.FirstOrDefault().MateriaId);
                 foreach (var item in listaDeCursos)
                 {
                     var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(item.ProfesorId);
