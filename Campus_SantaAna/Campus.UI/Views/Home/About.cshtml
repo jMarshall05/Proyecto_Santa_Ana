@@ -91,7 +91,7 @@
             const modalConfirmarEliminar = new bootstrap.Modal(document.getElementById('modalConfirmarEliminar'));
             const formCrear = document.getElementById('formCrearEvento');
 
-            let eventoSeleccionado = null; // Referencia temporal
+            let eventoSeleccionado = null; 
 
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
@@ -123,9 +123,7 @@
 
                 fetch('/Eventos/EditarEvento', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: eventoSeleccionado.id, titulo: nuevoTitulo, fecha: eventoSeleccionado.startStr })
                 })
                     .then(res => res.json())
@@ -142,14 +140,12 @@
                 modalConfirmarEliminar.show();
             };
 
-            // Confirmar eliminación
+            // Confirmar eliminación 
             document.getElementById('btnConfirmarEliminar').onclick = function () {
                 fetch('/Eventos/EliminarEvento', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: eventoSeleccionado.id })
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'id=' + encodeURIComponent(eventoSeleccionado.id)
                 })
                     .then(res => res.json())
                     .then(data => {
@@ -157,6 +153,8 @@
                             eventoSeleccionado.remove();
                             modalConfirmarEliminar.hide();
                             modalEditarEliminar.hide();
+                        } else {
+                            alert('Error al eliminar evento.');
                         }
                     });
             };
@@ -169,24 +167,18 @@
 
                 fetch('/Eventos/AgregarEvento', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ titulo: titulo, fecha: fecha })
                 })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            calendar.addEvent({
-                                id: data.id,
-                                title: titulo,
-                                start: fecha,
-                                end: fecha
-                            });
                             modalCrear.hide();
+                            calendar.refetchEvents(); 
                         }
                     });
             });
+
 
             calendar.render();
         });

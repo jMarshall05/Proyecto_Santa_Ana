@@ -70,7 +70,10 @@
     <Compile Include="entregas\listarEntregaAD\listarEntregasAD.cs" />
     <Compile Include="EstudianteGrupo\ActualizarEstudianteGrupoAD\ActualizarEstudianteGrupoAD.cs" />
     <Compile Include="EstudianteGrupo\ListarEstudianteGrupoAD\ListarEstudianteGrupoAD.cs" />
-    <Compile Include="eventos\EventoAccesoDatos.cs" />
+    <Compile Include="eventos\AgregarEventoAD\AgregarEventoAD.cs" />
+    <Compile Include="eventos\EditarEventosAD\EditarEventoAD.cs" />
+    <Compile Include="eventos\EliminarEventoAD\EliminarEventoAD.cs" />
+    <Compile Include="eventos\ListarEventosAD\ListarEventosAD.cs" />
     <Compile Include="Grupos\AgregarGrupo\AgregarGrupoAD.cs" />
     <Compile Include="Grupos\EditarGrupo\EditarGrupoAD.cs" />
     <Compile Include="Grupos\ListarGrupos\ListarGruposAD.cs" />
