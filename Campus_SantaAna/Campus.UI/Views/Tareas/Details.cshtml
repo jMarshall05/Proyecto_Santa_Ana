@@ -16,11 +16,11 @@
             <div class="col-md-6">
                 <h4 class="text-primary">@Model.Titulo</h4>
                 <!-- Grupo asignado -->
-                @if (Model.id_grupo > 0)
+                @if (Model.Id_grupo > 0)
                 {
                     <div class="mt-2">
                         <span class="badge bg-success">
-                            <i class="fas fa-users mr-1"></i> Grupo: @Model.nombre_grupo
+                            <i class="fas fa-users mr-1"></i> Grupo: @Model.Nombre_grupo
                         </span>
                     </div>
                 }
@@ -32,13 +32,18 @@
                         </span>
                     </div>
                 }
+            <div class="mt-2">
+                <span class="badge bg-secondary">
+                    <i class="fas fa-users mr-1"></i> Materia : @ViewBag.Materia
+                </span>
+            </div>
 
             </div>
             <div class="col-md-6 text-end">
-                @if (Model.FechaCreacion > DateTime.MinValue)
+                @if (Model.FechaPublicacion > DateTime.MinValue)
                 {
                     <span class="badge bg-info">
-                        Creada: @Model.FechaCreacion.ToString("dd/MM/yyyy")
+                        Creada: @Model.FechaPublicacion.ToString("dd/MM/yyyy")
                     </span>
                 }
                 else
@@ -51,7 +56,7 @@
                 @if (Model.FechaModificacion > DateTime.MinValue)
                 {
                     <span class="badge bg-warning ms-2">
-                        Modificada: @Model.FechaModificacion.ToString("dd/MM/yyyy")
+                        Modificada: @Model.FechaModificacion
                     </span>
                 }
             </div>
@@ -95,17 +100,20 @@
     <div class="card-footer bg-light">
         <div class="d-flex justify-content-between">
             @Html.ActionLink("Volver al listado", "ListarTareas", null, new { @class = "btn btn-secondary" })
+            @if (User.IsInRole("Administradores") || User.IsInRole("Profesores"))
+            {
+                <div>
+                    @Html.ActionLink("Editar", "Edit", new { id = Model.IdTarea }, new { @class = "btn btn-warning me-2" })
 
-            <div>
-                @Html.ActionLink("Editar", "Edit", new { id = Model.IdTarea }, new { @class = "btn btn-warning me-2" })
+                    <button type="button"
+                            class="btn btn-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">
+                        <i class="fas fa-trash mr-1"></i> Eliminar
+                    </button>
 
-                <button type="button"
-                        class="btn btn-danger"
-                        data-bs-toggle="modal"
-                        data-bs-target="#deleteModal">
-                    <i class="fas fa-trash mr-1"></i> Eliminar
-                </button>
-            </div>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -122,6 +130,7 @@
                 <p>¿Estás seguro de eliminar la tarea <strong>@Model.Titulo</strong>?</p>
                 <p class="text-muted">Esta acción no se puede deshacer.</p>
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 @using (Html.BeginForm("Delete", "Tareas", new { id = Model.IdTarea }, FormMethod.Post))
@@ -132,6 +141,7 @@
                     </button>
                 }
             </div>
+
         </div>
     </div>
 </div>

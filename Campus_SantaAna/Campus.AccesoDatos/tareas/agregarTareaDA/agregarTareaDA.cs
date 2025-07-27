@@ -19,10 +19,10 @@ namespace Campus.AccesoDatos.Tareas.AgregarTareaAD
         public async Task<int> AgregarTarea(TareaDto tarea)
         {
             // Validar que el grupo exista si está especificado
-            if (tarea.id_grupo > 0)
+            if (tarea.Id_grupo > 0)
             {
                 var grupoExiste = await _elContexto.Grupos
-                    .AnyAsync(g => g.id_grupo == tarea.id_grupo);
+                    .AnyAsync(g => g.id_grupo == tarea.Id_grupo);
 
                 if (!grupoExiste)
                 {
@@ -42,13 +42,12 @@ namespace Campus.AccesoDatos.Tareas.AgregarTareaAD
             return new TareasAD
             {
                 Titulo = tarea.Titulo,
+                id_materia = tarea.IdMateria,
                 Descripcion = tarea.Descripcion,
                 ArchivoAdjunto = tarea.ArchivoAdjunto,
                 FechaEntrega = tarea.FechaEntrega < new DateTime(1753, 1, 1) ? DateTime.Now.AddDays(1) : tarea.FechaEntrega,
-                FechaCreacion = tarea.FechaCreacion < new DateTime(1753, 1, 1) ? DateTime.Now : tarea.FechaCreacion,
                 FechaPublicacion = tarea.FechaPublicacion < new DateTime(1753, 1, 1) ? DateTime.Now : tarea.FechaPublicacion,
-                FechaModificacion = DateTime.Now, // ← aquí lo agregás para evitar nulls
-                IdGrupo = tarea.id_grupo
+                IdGrupo = tarea.Id_grupo
             };
         }
 

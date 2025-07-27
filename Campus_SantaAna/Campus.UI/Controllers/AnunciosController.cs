@@ -116,6 +116,16 @@ namespace Campus.UI.Controllers
 
             return View(anuncio);
         }
+        public ActionResult DetailsParcial(int id)
+        {
+            var anuncio = _listarAnunciosLN.ObtenerAnuncioPorId(id);
+            if (anuncio == null)
+            {
+                return HttpNotFound();
+            }
+
+            return PartialView("_DetailsParcial",anuncio);
+        }
 
     }
 }
