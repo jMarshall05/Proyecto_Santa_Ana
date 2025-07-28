@@ -29,8 +29,8 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                     FechaEntrega = t.FechaEntrega,
                     FechaPublicacion = t.FechaPublicacion,
                     ArchivoAdjunto = t.ArchivoAdjunto,
-                    id_grupo = t.IdGrupo,
-                    nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo"
+                    Id_grupo = t.IdGrupo,
+                    Nombre_grupo = t.Grupo.nombre_grupo
                 })
                 .ToListAsync();
         }
@@ -58,13 +58,13 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                 IdTarea = tarea.IdTarea,
                 Titulo = tarea.Titulo,
                 Descripcion = tarea.Descripcion,
+                IdMateria = tarea.id_materia,
                 FechaEntrega = tarea.FechaEntrega,
                 FechaPublicacion = tarea.FechaPublicacion,
-                FechaCreacion = tarea.FechaCreacion,
                 FechaModificacion = tarea.FechaModificacion,
                 ArchivoAdjunto = tarea.ArchivoAdjunto,
-                id_grupo = tarea.IdGrupo,
-                nombre_grupo = tarea.Grupo.nombre_grupo
+                Id_grupo = tarea.IdGrupo,
+                Nombre_grupo = tarea.Grupo.nombre_grupo
             };
         }
 
@@ -106,8 +106,8 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                     FechaEntrega = t.FechaEntrega,
                     FechaPublicacion = t.FechaPublicacion,
                     ArchivoAdjunto = t.ArchivoAdjunto,
-                    id_grupo = t.IdGrupo,
-                    nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo"
+                    Id_grupo = t.IdGrupo,
+                    Nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo"
                 })
                 .ToListAsync();
 

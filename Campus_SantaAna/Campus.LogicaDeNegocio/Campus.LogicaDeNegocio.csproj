@@ -50,6 +50,9 @@
     <Compile Include="calificaciones\editarCalificacionLN\editarCalificacionLN.cs" />
     <Compile Include="calificaciones\eliminarCalificacionLN\eliminarCalificacionLN.cs" />
     <Compile Include="calificaciones\listarCalificacionesLN\listarCalificacionesLN.cs" />
+    <Compile Include="Cursos\AgregarCursoLN\AgregarCursoLN.cs" />
+    <Compile Include="Cursos\EliminarCursosLN\EliminarCursosLN.cs" />
+    <Compile Include="Cursos\ListarCursosLN\ListarCursosLN.cs" />
     <Compile Include="entregas\agregarEntregaLN\agregarEntregaLN.cs" />
     <Compile Include="entregas\editarEntregaLN\editarEntregaLN.cs" />
     <Compile Include="entregas\eliminarEntregaLN\eliminarEntregaLN.cs" />
@@ -57,7 +60,10 @@
     <Compile Include="EstudianteGrupo\ActualizarEstudianteGrupoLN\ActualizarEstudianteGrupoLN.cs" />
     <Compile Include="EstudianteGrupo\BuscarEstudianteGrupoPorIdLN\BuscarEstudianteGrupoPorIdLN.cs" />
     <Compile Include="EstudianteGrupo\ListarEstudianteGrupo\ListarEstudianteGrupoLN.cs" />
-    <Compile Include="eventos\EventoLN .cs" />
+    <Compile Include="eventos\EditarEventoLN\EditarEventoLN.cs" />
+    <Compile Include="eventos\ListarEventosLN\ListarEventosLN.cs" />
+    <Compile Include="eventos\EliminarEventoLN\EliminarEventoLN.cs" />
+    <Compile Include="eventos\AgregarEventoLN\AgregarEventosLN.cs" />
     <Compile Include="Grupos\AgregarGrupo\AgregarGrupoLN.cs" />
     <Compile Include="Grupos\EditarGrupo\EditarGrupoLN.cs" />
     <Compile Include="Grupos\ListarGrupos\ListarGruposLN.cs" />

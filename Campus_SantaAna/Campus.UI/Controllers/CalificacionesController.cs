@@ -32,18 +32,6 @@ namespace Campus.Web.Controllers
             _listarCalificacionesLN = new ListarCalificacionesLN();
         }
 
-        public CalificacionesController(
-            IAgregarCalificacionLN agregarCalificacionLN,
-            IEditarCalificacionLN editarCalificacionLN,
-            IEliminarCalificacionLN eliminarCalificacionLN,
-            IListarCalificacionesLN listarCalificacionesLN)
-        {
-            _agregarCalificacionLN = agregarCalificacionLN;
-            _editarCalificacionLN = editarCalificacionLN;
-            _eliminarCalificacionLN = eliminarCalificacionLN;
-            _listarCalificacionesLN = listarCalificacionesLN;
-        }
-
         public async Task<ActionResult> Index(int? idGrupo)
         {
             if (idGrupo == null)
