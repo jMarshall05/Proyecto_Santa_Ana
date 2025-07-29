@@ -16,5 +16,7 @@ namespace Campus.Abstracciones.ModelosUI
         public bool estado { get; set; }
         public TareaDto Tarea { get; set; }
         public UsuariosDto Estudiante { get; set; }
+
+        public CalificacionesDto Calificacion { get; set; } // para la calificación de la entrega
     }
 }
