@@ -10,6 +10,7 @@ using Campus.Abstracciones.LogicaNegocio.entregas.editarEntregaLN;
 using Campus.Abstracciones.LogicaNegocio.entregas.eliminarEntregaLN;
 using Campus.Abstracciones.LogicaNegocio.entregas.listarEntregaLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.calificaciones.listarCalificacionesLN;
 using Campus.LogicaNegocio.Entregas.EditarEntregaLN;
 using Campus.LogicaNegocio.Entregas.EliminarEntregaLN;
 using Campus.LogicaNegocio.Entregas.ListarEntregaLN;
@@ -71,6 +72,12 @@ namespace Campus.Web.Controllers
 
             if (entrega == null)
                 return HttpNotFound();
+
+            //calificacion 
+            var calificaciones = await new ListarCalificacionesLN().ListarCalificaciones();
+            var calificacion = calificaciones.FirstOrDefault(c => c.id_entrega == entrega.id_entrega);
+
+            entrega.Calificacion = calificacion;
 
             return View(entrega);
         }

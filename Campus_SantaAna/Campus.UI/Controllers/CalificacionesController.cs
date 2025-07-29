@@ -108,6 +108,8 @@ namespace Campus.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(CalificacionesDto calificacion)
         {
+            System.Diagnostics.Debug.WriteLine($"EDIT: {calificacion.id_calificacion} - {calificacion.calificacion} - {calificacion}");
+
             if (ModelState.IsValid)
             {
                 await _editarCalificacionLN.EditarCalificacion(calificacion);
