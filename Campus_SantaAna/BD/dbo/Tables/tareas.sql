@@ -5,13 +5,11 @@
     [fecha_entrega]      DATETIME      NULL,
     [id_materia]         INT           NULL,
     [archivo_adjunto]    VARCHAR (255) NULL,
-    [fecha_creacion]     DATETIME      NOT NULL,
     [fecha_modificacion] DATETIME      NULL,
     [FechaPublicacion]   DATETIME      NULL,
     [IdGrupo]            INT           NULL,
-    [IdEstudianteGrupo]  INT           NULL,
     PRIMARY KEY CLUSTERED ([id_tarea] ASC),
-    CONSTRAINT [FK_tareas_EstudianteGrupo] FOREIGN KEY ([IdEstudianteGrupo]) REFERENCES [dbo].[EstudianteGrupo] ([IdEstudianteGrupo]),
+    CONSTRAINT [FK_tareas_grupos] FOREIGN KEY ([IdGrupo]) REFERENCES [dbo].[grupos] ([id_grupo]),
     CONSTRAINT [FK_tareas_materias] FOREIGN KEY ([id_materia]) REFERENCES [dbo].[materias] ([id_materia])
 );
 

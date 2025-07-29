@@ -27,7 +27,7 @@ namespace Campus.LogicaDeNegocio.Tareas.EditarTareaLN
                 if (tarea.FechaEntrega < DateTime.Now)
                     throw new ArgumentException("La fecha de entrega no puede ser en el pasado");
 
-                if (tarea.id_grupo <= 0)
+                if (tarea.Id_grupo <= 0)
                     throw new ArgumentException("El ID de grupo no es válido");
 
                 return await _editarTareaAD.EditarTarea(id, tarea);

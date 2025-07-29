@@ -38,7 +38,7 @@ namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
                     throw new ArgumentException("ID de grupo no válido");
 
                 var todasTareas = await _listarTareaAD.ListarTareasAsync();
-                return todasTareas.Where(t => t.id_grupo == idGrupo);
+                return todasTareas.Where(t => t.Id_grupo == idGrupo);
             }
             catch (Exception ex)
             {

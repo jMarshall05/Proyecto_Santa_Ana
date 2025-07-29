@@ -23,10 +23,10 @@ namespace Campus.AccesoDatos.Tareas.EditarTareaAD
                 return 0;
 
             // Validar grupo si está especificado
-            if (tarea.id_grupo > 0)
+            if (tarea.Id_grupo > 0)
             {
                 var grupoExiste = await _elContexto.Grupos
-                    .AnyAsync(g => g.id_grupo == tarea.id_grupo);
+                    .AnyAsync(g => g.id_grupo == tarea.Id_grupo);
 
                 if (!grupoExiste)
                 {
@@ -41,7 +41,7 @@ namespace Campus.AccesoDatos.Tareas.EditarTareaAD
             tareaExistente.ArchivoAdjunto = tarea.ArchivoAdjunto;
             tareaExistente.FechaModificacion = DateTime.Now;
             tareaExistente.FechaPublicacion = tarea.FechaPublicacion;
-            tareaExistente.IdGrupo = tarea.id_grupo ;
+            tareaExistente.IdGrupo = tarea.Id_grupo ;
 
             _elContexto.Entry(tareaExistente).State = EntityState.Modified;
             return await _elContexto.SaveChangesAsync();

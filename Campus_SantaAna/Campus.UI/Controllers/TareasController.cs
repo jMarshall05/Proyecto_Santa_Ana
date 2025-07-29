@@ -16,6 +16,8 @@ using System;
 using Microsoft.AspNet.Identity;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
+using Campus.LogicaDeNegocio.Materias.ListarMaterias;
 
 namespace Campus.UI.Controllers
 {
@@ -26,6 +28,7 @@ namespace Campus.UI.Controllers
         private readonly IEditarTareaLN _editarTareaLN;
         private readonly IEliminarTareaLN _eliminarTareaLN;
         private readonly IListarGruposLN _listarGruposLN;
+        private readonly IListarMateriasLN _listarMateriasLN;
 
         public TareasController()
         {
@@ -34,6 +37,7 @@ namespace Campus.UI.Controllers
             _editarTareaLN = new EditarTareaLN();
             _eliminarTareaLN = new EliminarTareaLN();
             _listarGruposLN = new ListarGruposLN();
+            _listarMateriasLN = new ListarMateriasLN();
 
         }
 
@@ -45,7 +49,7 @@ namespace Campus.UI.Controllers
             // Filtrar si se pasó grupoId
             if (grupoId.HasValue && grupoId.Value > 0)
             {
-                tareas = tareas.Where(t => t.id_grupo == grupoId.Value);
+                tareas = tareas.Where(t => t.Id_grupo == grupoId.Value);
             }
 
             var grupos = _listarGruposLN.ListarGrupos();
@@ -55,10 +59,12 @@ namespace Campus.UI.Controllers
         }
 
         // GET: Tareas/Create
-        public async Task<ActionResult> Create()
+        public ActionResult Create()
         {
             var grupos = _listarGruposLN.ListarGrupos();
+            var materias = _listarMateriasLN.ListarMaterias();
             ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
+            ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
             return View();
         }
 
@@ -68,7 +74,9 @@ namespace Campus.UI.Controllers
         public async Task<ActionResult> Create(TareaDto tarea)
         {
             var grupos = _listarGruposLN.ListarGrupos();
+            var materias = _listarMateriasLN.ListarMaterias();
             ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
+            ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
             if (ModelState.IsValid)
             {
                 try
@@ -76,9 +84,7 @@ namespace Campus.UI.Controllers
 
                     if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
                     {
-                        string[] extensionesPermitidas;
-                        string extensionArchivo;
-                        ComprobarTipodeArchivo(tarea, out extensionesPermitidas, out extensionArchivo);
+                        ComprobarTipodeArchivo(tarea, out string[] extensionesPermitidas, out string extensionArchivo);
                         if (!extensionesPermitidas.Contains(extensionArchivo))
                         {
                             ModelState.AddModelError("", "Tipo de archivo no permitido.");
@@ -87,8 +93,7 @@ namespace Campus.UI.Controllers
                         GuardarArchivo(tarea);
                     }
 
-                    // Fechas automáticas
-                    tarea.FechaCreacion = DateTime.Now;
+                    tarea.FechaModificacion = DateTime.Now;
 
                     await _agregarTareaLN.AgregarTarea(tarea);
                     return RedirectToAction("ListarTareas");
@@ -111,7 +116,9 @@ namespace Campus.UI.Controllers
                 return HttpNotFound();
 
             var grupos = _listarGruposLN.ListarGrupos();
+            var materias = _listarMateriasLN.ListarMaterias();
             ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
+            ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
             return View(tarea);
         }
 
@@ -123,7 +130,9 @@ namespace Campus.UI.Controllers
         public async Task<ActionResult> Edit(int id, TareaDto tarea)
         {
             var grupos = _listarGruposLN.ListarGrupos();
+            var materias = _listarMateriasLN.ListarMaterias();
             ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
+            ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
 
             if (!ModelState.IsValid)
                 return View(tarea);
@@ -143,14 +152,13 @@ namespace Campus.UI.Controllers
                 }
                 else if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
                 {
-                    if (archivoAnterior != null) {  
+                    if (archivoAnterior != null)
+                    {
                         string rutaCompleta = Server.MapPath(archivoAnterior);
                         System.IO.File.Delete(rutaCompleta);
                     }
-                        
-                    string[] extensionesPermitidas;
-                    string extensionArchivo;
-                    ComprobarTipodeArchivo(tarea, out extensionesPermitidas, out extensionArchivo);
+
+                    ComprobarTipodeArchivo(tarea, out string[] extensionesPermitidas, out string extensionArchivo);
 
                     if (!extensionesPermitidas.Contains(extensionArchivo))
                     {
@@ -168,9 +176,9 @@ namespace Campus.UI.Controllers
                 // 5. Validación de fechas
                 tarea.FechaModificacion = DateTime.Now;
 
-                if (tarea.FechaPublicacion < tarea.FechaCreacion)
+                if (tarea.FechaEntrega < tarea.FechaPublicacion)
                 {
-                    ModelState.AddModelError("FechaPublicacion", "La fecha de publicación no puede ser anterior a la fecha de creación");
+                    ModelState.AddModelError("FechaEntrega", "La fecha de entrega no puede ser anterior a la fecha de publicacion");
                     return View(tarea);
                 }
 
@@ -210,6 +218,7 @@ namespace Campus.UI.Controllers
         public async Task<ActionResult> Details(int id)
         {
             var tarea = await _listarTareaLN.ObtenerPorIdAsync(id);
+            ViewBag.Materia = _listarMateriasLN.ObtenerMateriaPorId(tarea.IdMateria).Nombre;
             if (tarea == null)
                 return HttpNotFound();
 
