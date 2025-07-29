@@ -291,6 +291,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CalificacionesController.cs" />
+    <Compile Include="Controllers\CursosController.cs" />
     <Compile Include="Controllers\EntregasController.cs" />
     <Compile Include="Controllers\EventosController.cs" />
     <Compile Include="Controllers\MateriasController.cs" />
@@ -306,6 +307,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Modelos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -336,7 +338,9 @@
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\SantaAna - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
+    <Content Include="Scripts\Cursos\ScriptDeCursos.js" />
     <Content Include="Scripts\datatable\dataTables.js" />
     <Content Include="Scripts\Grupos\ScriptDeGrupos.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
@@ -416,6 +420,9 @@
     <Content Include="Views\Tareas\MisTareas.cshtml" />
     <Content Include="Views\Calificaciones\MisCalificaciones.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Cursos\_AgregarCursoParcial.cshtml" />
+    <Content Include="Views\Cursos\ListarCursos.cshtml" />
+    <Content Include="Views\anuncios\_DetailsParcial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

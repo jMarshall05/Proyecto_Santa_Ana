@@ -29,20 +29,15 @@ namespace Campus.Abstracciones.ModelosUI
         [DisplayName("Archivo Adjunto")]
         public string ArchivoAdjunto { get; set; }
 
-        [Required]
-        [DisplayName("Fecha de Creación")]
-        public DateTime FechaCreacion { get; set; }
-
         [DisplayName("Fecha de Modificación")]
-        public DateTime FechaModificacion { get; set; }
+        public DateTime? FechaModificacion { get; set; }
 
         [DisplayName("Fecha de Publicación")]
         public DateTime FechaPublicacion { get; set; }
 
-        // CAMBIO: Ajustamos el nombre para coincidir con GruposDto
         [Required(ErrorMessage = "Debe seleccionar un grupo.")]
         [DisplayName("Grupo")]
-        public int id_grupo { get; set; } // Cambiado de IdGrupo a id_grupo
+        public int Id_grupo { get; set; }
 
         [ForeignKey("id_grupo")]
         public virtual GruposDto Grupo { get; set; } // Cambiado de IdGrupo a id_grupo
@@ -52,6 +47,6 @@ namespace Campus.Abstracciones.ModelosUI
 
         [NotMapped]
         [DisplayName("Grupo Asignado")]
-        public string nombre_grupo { get; set; } // Cambiado de NombreGrupo a nombre_grupo
+        public string Nombre_grupo { get; set; } // Cambiado de NombreGrupo a nombre_grupo
     }
 }

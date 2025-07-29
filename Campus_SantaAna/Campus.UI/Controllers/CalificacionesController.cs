@@ -32,18 +32,6 @@ namespace Campus.Web.Controllers
             _listarCalificacionesLN = new ListarCalificacionesLN();
         }
 
-        public CalificacionesController(
-            IAgregarCalificacionLN agregarCalificacionLN,
-            IEditarCalificacionLN editarCalificacionLN,
-            IEliminarCalificacionLN eliminarCalificacionLN,
-            IListarCalificacionesLN listarCalificacionesLN)
-        {
-            _agregarCalificacionLN = agregarCalificacionLN;
-            _editarCalificacionLN = editarCalificacionLN;
-            _eliminarCalificacionLN = eliminarCalificacionLN;
-            _listarCalificacionesLN = listarCalificacionesLN;
-        }
-
         public async Task<ActionResult> Index(int? idGrupo)
         {
             if (idGrupo == null)
@@ -75,16 +63,30 @@ namespace Campus.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(CalificacionesDto calificacion)
+        public async Task<ActionResult> Create(FormCollection form)
         {
+            var calificacion = new CalificacionesDto();
+
+            if (int.TryParse(form["id_entrega"], out int idEntrega))
+                calificacion.id_entrega = idEntrega;
+
+            if (decimal.TryParse(form["calificacion"], out decimal nota))
+                calificacion.calificacion = nota;
+
+            calificacion.comentario = form["comentario"];
+            calificacion.fecha_calificacion = DateTime.Now;
+
+            System.Diagnostics.Debug.WriteLine($"Manual POST: id_entrega={calificacion.id_entrega}, calificacion={calificacion.calificacion}, comentario={calificacion.comentario}");
+
             if (ModelState.IsValid)
             {
                 await _agregarCalificacionLN.AgregarCalificacion(calificacion);
-                return RedirectToAction("Index", "Entregas"); 
+                return RedirectToAction("Index", "Entregas");
             }
 
             return View(calificacion);
         }
+
 
 
 
@@ -151,7 +153,7 @@ namespace Campus.Web.Controllers
         [Authorize(Roles = "Estudiantes")]
         public async Task<ActionResult> MisCalificaciones()
         {
-            var idEstudiante = User.Identity.Name;
+            var idEstudiante = User.Identity.GetUserId();
             var lista = await _listarCalificacionesLN.ListarCalificacionesPorEstudianteAsync(idEstudiante);
             return View(lista);
         }

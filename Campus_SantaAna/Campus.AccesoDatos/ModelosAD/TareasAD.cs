@@ -11,6 +11,10 @@ namespace Campus.AccesoDatos.ModelosAD
         [Column("id_tarea")]
         public int IdTarea { get; set; }
 
+        [Column("id_materia")]
+        [Required]
+        public int id_materia { get; set; }
+
         [Column("titulo")]
         [Required]
         [StringLength(150)]
@@ -27,12 +31,8 @@ namespace Campus.AccesoDatos.ModelosAD
         [Column("archivo_adjunto")]
         public string ArchivoAdjunto { get; set; }
 
-        [Column("fecha_creacion")]
-        [Required]
-        public DateTime FechaCreacion { get; set; }
-
         [Column("fecha_modificacion")]
-        public DateTime FechaModificacion { get; set; }
+        public DateTime? FechaModificacion { get; set; }
 
         [Column("FechaPublicacion")]
         public DateTime FechaPublicacion { get; set; }

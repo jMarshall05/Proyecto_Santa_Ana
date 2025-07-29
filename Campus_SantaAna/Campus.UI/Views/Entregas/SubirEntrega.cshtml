@@ -8,7 +8,7 @@
 
 @using (Html.BeginForm("SubirEntrega", "Entregas", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    @Html.AntiForgeryToken() <!-- ¡IMPORTANTE! -->
+    @Html.AntiForgeryToken()
 
     @Html.HiddenFor(m => m.id_tarea)
     @Html.HiddenFor(m => m.id_estudiante)
