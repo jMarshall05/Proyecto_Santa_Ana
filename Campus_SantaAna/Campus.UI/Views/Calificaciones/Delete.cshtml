@@ -1,0 +1,42 @@
+﻿@model Campus.Abstracciones.ModelosUI.CalificacionesDto
+
+@{
+    ViewBag.Title = "Eliminar Calificación";
+}
+
+<h2>Eliminar Calificación</h2>
+
+<div class="alert alert-danger">
+    <p>¿Está seguro que desea eliminar la siguiente calificación?</p>
+
+    <dl class="row">
+        <dt class="col-sm-3">ID Calificación</dt>
+        <dd class="col-sm-9">@Model.id_calificacion</dd>
+
+        <dt class="col-sm-3">ID Entrega</dt>
+        <dd class="col-sm-9">@Model.id_entrega</dd>
+
+        <dt class="col-sm-3">Calificación</dt>
+        <dd class="col-sm-9">@Model.calificacion</dd>
+
+        <dt class="col-sm-3">Comentario</dt>
+        <dd class="col-sm-9">@Model.comentario</dd>
+    </dl>
+
+    @using (Html.BeginForm("Delete", "Calificaciones", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.id_calificacion)
+
+        <button type="submit" class="btn btn-danger">
+            <i class="fas fa-trash-alt me-1"></i> Eliminar
+        </button>
+
+        @Html.ActionLink("Cancelar", "Index", "Entregas", null, new { @class = "btn btn-secondary ms-2" })
+    }
+</div>
+
+@section scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+}
+
