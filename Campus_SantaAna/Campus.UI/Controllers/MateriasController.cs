@@ -11,6 +11,7 @@ using Campus.LogicaDeNegocio.Materias.EditarMaterias;
 
 namespace Campus.UI.Controllers
 {
+    // [Authorize]
     public class MateriasController : Controller
     {
         private readonly IListarMateriasLN _listarMateriasLN;

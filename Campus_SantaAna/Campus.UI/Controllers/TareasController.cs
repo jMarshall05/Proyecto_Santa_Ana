@@ -21,6 +21,7 @@ using Campus.LogicaDeNegocio.Materias.ListarMaterias;
 
 namespace Campus.UI.Controllers
 {
+     //[Authorize]
     public class TareasController : Controller
     {
         private readonly IListarTareaLN _listarTareaLN;

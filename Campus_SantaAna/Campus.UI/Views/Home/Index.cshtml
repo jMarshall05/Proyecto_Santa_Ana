@@ -20,11 +20,11 @@
     @if (User.Identity.IsAuthenticated)
     {
         if (User.IsInRole("Profesores") || User.IsInRole("Estudiantes"))
-        {
+        {<p class="lead">Mis Cursos</p>
             <div class="row">
                 @foreach (var item in Model)
                 {
-                    <p class="lead">Mis Cursos</p>
+
                     <section class="col-md-4 mb-4" aria-labelledby="gettingStartedTitle">
                         <div class="card text-center">
                             <img src="@(imageMap.ContainsKey(item.NombreMateria) ? imageMap[item.NombreMateria] : defaultImage)"

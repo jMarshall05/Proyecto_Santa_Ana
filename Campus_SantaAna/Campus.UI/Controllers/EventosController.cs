@@ -14,6 +14,7 @@ using Campus.Abstracciones.LogicaDeNegocio.Eventos.ListarEventosLN;
 
 namespace Campus.UI.Controllers
 {
+    // [Authorize]
     public class EventosController : Controller
     {
         private readonly IAgregarEventoLN _agregarEventoLN;

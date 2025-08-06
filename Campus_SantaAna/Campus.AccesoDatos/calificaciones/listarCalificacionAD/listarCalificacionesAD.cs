@@ -25,6 +25,7 @@ namespace Campus.AccesoDatos.calificaciones.listarCalificacionAD
                 {
                     id_entrega = e.IdEntrega,
                     calificacion = e.Calificacion,
+                    comentario = e.Comentario,
                     fecha_calificacion = e.FechaCalificacion,
                 })
                 .ToListAsync();
