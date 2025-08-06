@@ -56,8 +56,8 @@ namespace Campus.UI.Controllers
         {
 
             var id = User.Identity.GetUserId();
-            if (id == null)
-                return RedirectToAction("login", "Account");
+            //if (id == null)
+            //    return RedirectToAction("login", "Account");
 
             if (User.IsInRole("Profesores"))
             {
