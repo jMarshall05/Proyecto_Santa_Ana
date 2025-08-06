@@ -20,6 +20,7 @@ using Microsoft.AspNet.Identity;
 // using Campus.Abstracciones.ModelosUI.Grupos;
 namespace Campus.UI.Controllers
 {
+    // [Authorize]
     public class GruposController : Controller
     {
         private IListarGruposLN _listarGrupos;

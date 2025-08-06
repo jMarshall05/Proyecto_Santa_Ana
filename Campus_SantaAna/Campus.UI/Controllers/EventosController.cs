@@ -10,6 +10,7 @@ using System.Web.Mvc;
 
 namespace Campus.UI.Controllers
 {
+    // [Authorize]
     public class EventosController : Controller
     {
         private readonly IEventoLN _eventoLN;
