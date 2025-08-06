@@ -10,6 +10,7 @@
             <i class="fas fa-edit mr-2"></i> Editar Calificación
         </h3>
     </div>
+
     @using (Html.BeginForm("Edit", "Calificaciones", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
@@ -17,13 +18,19 @@
 
         @Html.HiddenFor(m => m.id_calificacion)
         @Html.HiddenFor(m => m.id_entrega)
-        @Html.HiddenFor(m => m.fecha_calificacion)
-
+        @Html.HiddenFor(m => m.fecha_calificacion) 
         <div class="card-body">
 
             <div class="mb-3">
                 @Html.LabelFor(m => m.calificacion, new { @class = "form-label" })
-                @Html.TextBoxFor(m => m.calificacion, new { @class = "form-control", type = "number", min = "0", max = "100", required = "required" })
+                @Html.EditorFor(m => m.calificacion, new
+                {
+                    @class = "form-control",
+                    type = "number",
+                    min = "0",
+                    max = "100",
+                    required = "required"
+                })
             </div>
 
             <div class="mb-3">
@@ -40,26 +47,5 @@
                 <i class="fas fa-save me-1"></i> Guardar Cambios
             </button>
         </div>
-    }
-
-    @section styles {
-        <style>
-            .card {
-                border: none;
-                border-radius: 10px;
-            }
-
-            h3 {
-                font-size: 1.3rem;
-            }
-
-            .form-label {
-                font-weight: bold;
-            }
-        </style>
-    }
-
-    @section scripts {
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     }
 </div>
