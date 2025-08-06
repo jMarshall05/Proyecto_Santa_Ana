@@ -16,8 +16,8 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
 
-        @Html.HiddenFor(m => m.id_entrega) <!--  campo oculto necesario -->
-        @Html.HiddenFor(m => m.fecha_calificacion) <!-- NECESARIO -->
+        @Html.HiddenFor(m => m.id_entrega) 
+        @Html.HiddenFor(m => m.fecha_calificacion) 
 
         <div class="card-body">
 
@@ -42,6 +42,7 @@
         </div>
     }
 
+    </div>
 
     @section styles {
         <style>
