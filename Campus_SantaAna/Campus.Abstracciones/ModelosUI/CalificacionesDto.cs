@@ -14,11 +14,8 @@ namespace Campus.Abstracciones.ModelosUI
         public decimal calificacion { get; set; }
         public string comentario { get; set; }
         public DateTime fecha_calificacion { get; set; }
-
-
         public EntregasDto Entrega { get; set; }
 
-        //xxxxxxx
-        ///random
+       
     }
 }

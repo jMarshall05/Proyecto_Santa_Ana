@@ -86,7 +86,7 @@ namespace Campus.UI.Controllers
                 }
                 return View(listaDeCursos);
             }
-
+            
 
 
             return View();
