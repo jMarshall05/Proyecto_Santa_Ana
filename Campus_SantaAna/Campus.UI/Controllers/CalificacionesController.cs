@@ -106,18 +106,29 @@ namespace Campus.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(CalificacionesDto calificacion)
+        public async Task<ActionResult> Edit(int id, CalificacionesDto calificacion)
         {
-            System.Diagnostics.Debug.WriteLine($"EDIT: {calificacion.id_calificacion} - {calificacion.calificacion} - {calificacion}");
-
             if (ModelState.IsValid)
             {
-                await _editarCalificacionLN.EditarCalificacion(calificacion);
-                return RedirectToAction("Index");
+                var calificacionOriginal = (await _listarCalificacionesLN.ListarCalificaciones())
+                                            .FirstOrDefault(c => c.id_calificacion == calificacion.id_calificacion);
+
+                if (calificacionOriginal != null)
+                {
+                    calificacion.fecha_calificacion = calificacionOriginal.fecha_calificacion;
+                    await _editarCalificacionLN.EditarCalificacion(id, calificacion);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return HttpNotFound();
+                }
             }
 
             return View(calificacion);
         }
+
+
 
         public async Task<ActionResult> Delete(int id)
         {

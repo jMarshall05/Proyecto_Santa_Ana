@@ -43,7 +43,7 @@
         else
         {
             <p><strong>Calificación actual:</strong> @Model.Calificacion.calificacion</p>
-            <p><strong>Comentario:</strong> @Model.Calificacion.comentario</p>
+            <p><strong>Comentario:</strong> @(Model.Calificacion?.comentario ?? "No hay comentario")</p>
 
             <div class="btn-group" role="group">
                 @Html.ActionLink("Editar calificación", "Edit", "Calificaciones", new { id = Model.Calificacion.id_calificacion }, new { @class = "btn btn-warning" })
