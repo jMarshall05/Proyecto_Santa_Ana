@@ -17,7 +17,7 @@ namespace Campus.AccesoDatos.calificaciones.editarCalificacionAD
             _elContexto = new Contexto();
         }
 
-        public async Task<int> EditarCalificacion(CalificacionesDto calificacion)
+        public async Task<int> EditarCalificacion(int id, CalificacionesDto calificacion)
         {
             var calificacionExistente = await _elContexto.Calificaciones
                 .FindAsync(calificacion.id_calificacion);
@@ -47,7 +47,7 @@ namespace Campus.AccesoDatos.calificaciones.editarCalificacionAD
             _elContexto.Entry(calificacionExistente).State = EntityState.Modified;
             int resultado = await _elContexto.SaveChangesAsync();
 
-            return resultado; // filas afectadas
+            return resultado; 
         }
 
     }

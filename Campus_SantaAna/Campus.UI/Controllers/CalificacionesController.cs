@@ -63,16 +63,30 @@ namespace Campus.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(CalificacionesDto calificacion)
+        public async Task<ActionResult> Create(FormCollection form)
         {
+            var calificacion = new CalificacionesDto();
+
+            if (int.TryParse(form["id_entrega"], out int idEntrega))
+                calificacion.id_entrega = idEntrega;
+
+            if (decimal.TryParse(form["calificacion"], out decimal nota))
+                calificacion.calificacion = nota;
+
+            calificacion.comentario = form["comentario"];
+            calificacion.fecha_calificacion = DateTime.Now;
+
+            System.Diagnostics.Debug.WriteLine($"Manual POST: id_entrega={calificacion.id_entrega}, calificacion={calificacion.calificacion}, comentario={calificacion.comentario}");
+
             if (ModelState.IsValid)
             {
                 await _agregarCalificacionLN.AgregarCalificacion(calificacion);
-                return RedirectToAction("Index", "Entregas"); 
+                return RedirectToAction("Index", "Entregas");
             }
 
             return View(calificacion);
         }
+
 
 
 
@@ -92,16 +106,29 @@ namespace Campus.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(CalificacionesDto calificacion)
+        public async Task<ActionResult> Edit(int id, CalificacionesDto calificacion)
         {
             if (ModelState.IsValid)
             {
-                await _editarCalificacionLN.EditarCalificacion(calificacion);
-                return RedirectToAction("Index");
+                var calificacionOriginal = (await _listarCalificacionesLN.ListarCalificaciones())
+                                            .FirstOrDefault(c => c.id_calificacion == calificacion.id_calificacion);
+
+                if (calificacionOriginal != null)
+                {
+                    calificacion.fecha_calificacion = calificacionOriginal.fecha_calificacion;
+                    await _editarCalificacionLN.EditarCalificacion(id, calificacion);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return HttpNotFound();
+                }
             }
 
             return View(calificacion);
         }
+
+
 
         public async Task<ActionResult> Delete(int id)
         {
@@ -139,7 +166,7 @@ namespace Campus.Web.Controllers
         [Authorize(Roles = "Estudiantes")]
         public async Task<ActionResult> MisCalificaciones()
         {
-            var idEstudiante = User.Identity.Name;
+            var idEstudiante = User.Identity.GetUserId();
             var lista = await _listarCalificacionesLN.ListarCalificacionesPorEstudianteAsync(idEstudiante);
             return View(lista);
         }
