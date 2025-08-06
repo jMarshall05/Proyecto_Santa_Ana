@@ -22,6 +22,7 @@ using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Microsoft.AspNet.Identity.Owin;
 namespace Campus.UI.Controllers
 {
+    // [Authorize]
     public class UsuariosController : Controller
     {
         private readonly IListarUsuariosLN _listarUsuariosLN;

@@ -17,6 +17,7 @@ using Microsoft.AspNet.Identity;
 
 namespace Campus.Web.Controllers
 {
+    // [Authorize]
     public class CalificacionesController : Controller
     {
         private readonly IAgregarCalificacionLN _agregarCalificacionLN;
