@@ -11,6 +11,7 @@ using Campus.LogicaDeNegocio.Anuncios.EditarAnuncios;
 
 namespace Campus.UI.Controllers
 {
+    // [Authorize]
     public class AnunciosController : Controller
     {
         private readonly IListarAnunciosLN _listarAnunciosLN;
