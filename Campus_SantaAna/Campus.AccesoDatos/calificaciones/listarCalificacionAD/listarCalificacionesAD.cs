@@ -24,6 +24,7 @@ namespace Campus.AccesoDatos.calificaciones.listarCalificacionAD
                 .Select(e => new CalificacionesDto
                 {
                     id_entrega = e.IdEntrega,
+                    id_calificacion=e.IdCalificacion,
                     calificacion = e.Calificacion,
                     comentario = e.Comentario,
                     fecha_calificacion = e.FechaCalificacion,
