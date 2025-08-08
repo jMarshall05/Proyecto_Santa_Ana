@@ -1,5 +1,4 @@
 ﻿@model Campus.Abstracciones.ModelosUI.CalificacionesDto
-
 @{
     ViewBag.Title = "Editar Calificación";
 }
@@ -11,38 +10,34 @@
         </h3>
     </div>
 
-    @using (Html.BeginForm("Edit", "Calificaciones", FormMethod.Post))
+    @using (Html.BeginForm("Edit", "Calificaciones", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        @Html.HiddenFor(m => m.id_calificacion)
-        @Html.HiddenFor(m => m.id_entrega)
-        @Html.HiddenFor(m => m.fecha_calificacion) 
-        <div class="card-body">
+        <!-- Campos ocultos -->
+        <input type="hidden" name="id_calificacion" value="@Model.id_calificacion" />
+        <input type="hidden" name="id_entrega" value="@Model.id_entrega" />
+        <input type="hidden" name="fecha_calificacion" value="@(Model.fecha_calificacion.ToString("yyyy-MM-ddTHH:mm:ss"))" />
 
+        <div class="card-body">
             <div class="mb-3">
                 @Html.LabelFor(m => m.calificacion, new { @class = "form-label" })
-                @Html.EditorFor(m => m.calificacion, new
-                {
-                    @class = "form-control",
-                    type = "number",
-                    min = "0",
-                    max = "100",
-                    required = "required"
-                })
+                <input type="number" name="calificacion" value="@Model.calificacion.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)"
+                       class="form-control" min="0" max="100" step="0.01" required />
+                @Html.ValidationMessageFor(m => m.calificacion, "", new { @class = "text-danger" })
             </div>
 
             <div class="mb-3">
                 @Html.LabelFor(m => m.comentario, new { @class = "form-label" })
-                @Html.TextAreaFor(m => m.comentario, new { @class = "form-control", rows = "3" })
+                <textarea name="comentario" class="form-control" rows="3"
+                          placeholder="Ingrese comentarios adicionales">@Model.comentario</textarea>
+                @Html.ValidationMessageFor(m => m.comentario, "", new { @class = "text-danger" })
             </div>
-
         </div>
 
         <div class="card-footer bg-light d-flex justify-content-between">
             @Html.ActionLink("Volver al listado", "Index", "Entregas", null, new { @class = "btn btn-secondary" })
-
             <button type="submit" class="btn btn-success">
                 <i class="fas fa-save me-1"></i> Guardar Cambios
             </button>
