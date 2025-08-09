@@ -2,12 +2,11 @@
 
 <h2 class="container-title">Lista de Entregas</h2>
 
-
 <table class="table table-striped table-bordered">
     <thead class="table-danger">
         <tr>
             <th>ID Entrega</th>
-            <th>ID Estudiante</th>
+            <th>Estudiante</th>
             <th>ID Tarea</th>
             <th>Fecha de Entrega</th>
             <th>Acciones</th>
@@ -18,26 +17,19 @@
         {
             <tr>
                 <td>@entrega.id_entrega</td>
-                <td>@entrega.id_estudiante</td>
+                <td>@entrega.Estudiante.Nombre @entrega.Estudiante.Apellido</td>
                 <td>@entrega.id_tarea</td>
                 <td>@entrega.fecha_entrega.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>
                     <div class="btn-group" role="group">
-
                         <a href="@Url.Action("ObtenerEntregaPorID", "Entregas", new { id = entrega.id_entrega })" class="btn btn-sm btn-warning">
                             <i class="fas fa-info-circle me-1"></i> Ver Detalles
                         </a>
-              
-                    <a href="@Url.Action("Edit", "Entregas", new { id = entrega.id_entrega })" class="btn btn-primary">
-                        <i class="fas fa-edit me-1"></i> Calificar
-                    </a>
-                </div>
+                        <a href="@Url.Action("Edit", "Entregas", new { id = entrega.id_entrega })" class="btn btn-primary">
+                            <i class="fas fa-edit me-1"></i> Calificar
+                        </a>
+                    </div>
                 </td>
-
-
-
-
-
             </tr>
         }
     </tbody>

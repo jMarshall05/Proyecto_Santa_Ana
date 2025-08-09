@@ -1,6 +1,6 @@
 ﻿@model Campus.Abstracciones.ModelosUI.EntregasDto
 
-<h2>Detalle de Entrega</h2>
+<h2 class="container-title">Detalle de Entrega</h2>
 
 <table class="table table-bordered">
     <tr>
@@ -9,7 +9,11 @@
     </tr>
     <tr>
         <th>Estudiante</th>
-        <td>@(Model.Estudiante != null ? Model.Estudiante.Nombre + " " + Model.Estudiante.Apellido : Model.id_estudiante)</td>
+        <td>
+            @(Model.Estudiante != null
+                ? Model.Estudiante.Nombre + " " + Model.Estudiante.Apellido
+                : Model.id_estudiante)
+        </td>
     </tr>
     <tr>
         <th>Tarea</th>
@@ -20,11 +24,13 @@
         <td>
             @if (!string.IsNullOrEmpty(Model.archivo_entregado))
             {
-                <a href="@Url.Content(Model.archivo_entregado)" target="_blank">Ver archivo</a>
+                <a href="@Url.Content(Model.archivo_entregado)" target="_blank" class="btn btn-link">
+                    Ver archivo
+                </a>
             }
             else
             {
-                <span>No hay archivo</span>
+                <span class="text-muted">No hay archivo</span>
             }
         </td>
     </tr>
@@ -38,4 +44,8 @@
     </tr>
 </table>
 
-<a href="@Url.Action("Index", "Entregas")" class="btn btn-secondary">Volver</a>
+<div class="mt-3">
+    <a href="@Url.Action("Index", "Entregas")" class="btn btn-secondary">
+        Volver
+    </a>
+</div>

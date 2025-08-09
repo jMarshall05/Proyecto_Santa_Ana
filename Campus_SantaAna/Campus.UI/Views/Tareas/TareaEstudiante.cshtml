@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.TareaDto>
+
+@{
+    ViewBag.Title = "Mis Tareas";
+}
+
+<h2 class="text-primary">Tareas de mi grupo</h2>
+
+@if (!Model.Any())
+{
+    <p>No tenés tareas asignadas.</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var tarea in Model)
+        {
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title">@tarea.Titulo</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"><strong>Descripción:</strong> @tarea.Descripcion</p>
+                        <p class="card-text"><strong>Entrega:</strong> @tarea.FechaEntrega.ToShortDateString()</p>
+                        @if (!string.IsNullOrEmpty(tarea.ArchivoAdjunto))
+                        {
+                            <a href="@Url.Content(tarea.ArchivoAdjunto)" class="btn btn-outline-info" target="_blank">
+                                Ver archivo
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
