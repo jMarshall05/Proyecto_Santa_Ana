@@ -2,6 +2,7 @@
 using Campus.Abstracciones.LogicaNegocio.entregas.editarEntregaLN;
 using Campus.Abstracciones.AccesoDatos.entregas.editarEntregaAD;
 using Campus.Abstracciones.ModelosUI;
+using Campus.AccesoDatos.Entregas.EditarEntregaAD;
 
 namespace Campus.LogicaNegocio.Entregas.EditarEntregaLN
 {
@@ -11,6 +12,7 @@ namespace Campus.LogicaNegocio.Entregas.EditarEntregaLN
 
         public EditarEntregaLN()
         {
+            _editarEntrega = new EditarEntregaAD();  // inicializar aquí
         }
 
         public EditarEntregaLN(IEditarEntrega editarEntrega)
@@ -24,3 +26,4 @@ namespace Campus.LogicaNegocio.Entregas.EditarEntregaLN
         }
     }
 }
+

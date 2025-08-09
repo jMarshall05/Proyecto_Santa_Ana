@@ -84,7 +84,7 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                 })
                 .ToListAsync();
         }
-        
+
         public async Task<List<TareaDto>> ListarTareasPorEstudiante(string idEstudiante)
         {
             var gruposEstudiante = await _contexto.EstudianteGrupos
@@ -107,7 +107,19 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                     FechaPublicacion = t.FechaPublicacion,
                     ArchivoAdjunto = t.ArchivoAdjunto,
                     Id_grupo = t.IdGrupo,
-                    Nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo"
+                    Nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo",
+                    Calificacion = _contexto.Entregas
+                        .Where(e => e.IdTarea == t.IdTarea && e.IdEstudiante == idEstudiante)
+                        .SelectMany(e => _contexto.Calificaciones
+                            .Where(c => c.IdEntrega == e.IdEntrega) // Usando IdEntrega en lugar de id_entrega
+                            .Select(c => new CalificacionesDto
+                            {
+                                id_calificacion = c.IdCalificacion, // Mapeo correcto de propiedades
+                                calificacion = c.Calificacion,
+                                comentario = c.Comentario,
+                                fecha_calificacion = c.FechaCalificacion
+                            }))
+                        .FirstOrDefault()
                 })
                 .ToListAsync();
 
