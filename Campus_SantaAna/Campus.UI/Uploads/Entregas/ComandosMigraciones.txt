@@ -1,9 +1,0 @@
-
-COMANDOS PARA MIGRACIONES
-
-PM> enable-migrations
-
-PM> add-migration Identity
-
-PM> update-database
-

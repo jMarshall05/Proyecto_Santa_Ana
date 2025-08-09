@@ -37,7 +37,6 @@ namespace Campus.AccesoDatos.calificaciones.editarCalificacionAD
 
           
             // Actualizar campos
-            calificacionExistente.IdEntrega = calificacion.id_entrega;
             calificacionExistente.Calificacion = calificacion.calificacion;
             calificacionExistente.Comentario = calificacion.comentario;
             calificacionExistente.FechaCalificacion = calificacion.fecha_calificacion < new DateTime(1753, 1, 1)
