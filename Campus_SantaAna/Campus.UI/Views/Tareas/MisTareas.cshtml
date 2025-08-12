@@ -1,5 +1,4 @@
-﻿
-@model IEnumerable<Campus.Abstracciones.ModelosUI.TareaDto>
+﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.TareaDto>
 
 @{
     ViewBag.Title = "Mis Tareas";
@@ -20,6 +19,7 @@ else
                 <th>Descripción</th>
                 <th>Fecha Entrega</th>
                 <th>Archivo Adjunto</th>
+                <th>Calificación</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -41,10 +41,26 @@ else
                         }
                     </td>
                     <td>
+                        @if (tarea.Calificacion != null)
+                        {
+                            <span class="badge @(tarea.Calificacion.calificacion >= 3.0m ? "bg-success" : "bg-danger")">
+                                @tarea.Calificacion.calificacion.ToString("0.0")
+                            </span>
+                            if (!string.IsNullOrEmpty(tarea.Calificacion.comentario))
+                            {
+                                <br />
+                                <small class="text-muted">@tarea.Calificacion.comentario</small>
+                            }
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Pendiente</span>
+                        }
+                    </td>
+                    <td>
                         @Html.ActionLink("Detalles", "Details", "Tareas", new { id = tarea.IdTarea }, new { @class = "btn btn-info btn-sm", style = "margin-right:5px;" })
                         @Html.ActionLink("Entregar", "SubirEntrega", "Entregas", new { idTarea = tarea.IdTarea }, new { @class = "btn btn-success btn-sm" })
                     </td>
-
                 </tr>
             }
         </tbody>

@@ -53,6 +53,16 @@ namespace Campus.UI.Controllers
                 tareas = tareas.Where(t => t.Id_grupo == grupoId.Value);
             }
 
+            // Cargar calificaciones para cada tarea
+            foreach (var tarea in tareas)
+            {
+                if (tarea.Calificacion == null)
+                {
+                    // Aquí necesitarías implementar un método para obtener la calificación por tarea
+                    // tarea.Calificacion = await _obtenerCalificacionPorTarea(tarea.IdTarea);
+                }
+            }
+
             var grupos = _listarGruposLN.ListarGrupos();
             ViewBag.IdGrupo = new SelectList(grupos, "id_grupo", "nombre_grupo", grupoId ?? 0);
 

@@ -49,17 +49,22 @@ namespace Campus.Web.Controllers
 
         public async Task<ActionResult> Index(int? idGrupo)
         {
+            List<EntregasDto> lista;
+
             if (idGrupo == null)
-            {
-                var lista = await _listarEntregasLN.ListarEntregas();
-                return View(lista);
-            }
+                lista = (await _listarEntregasLN.ListarEntregas()).ToList();
             else
+                lista = (await _listarEntregasLN.ListarEntregasPorGrupoAsync(idGrupo.Value)).ToList();
+
+            // Llenar el Estudiante para evitar null en la vista
+            foreach (var entrega in lista)
             {
-                var lista = await _listarEntregasLN.ListarEntregasPorGrupoAsync(idGrupo.Value);
-                return View(lista);
+                entrega.Estudiante = _obtenerUsuariosPorId.ObtenerUsuarioPorId(entrega.id_estudiante);
             }
+
+            return View(lista);
         }
+
 
         public ActionResult Create()
         {
@@ -149,8 +154,13 @@ namespace Campus.Web.Controllers
             if (entrega == null)
                 return HttpNotFound();
 
+            // 🔹 Cargar estudiante y tarea para que la vista no dé NullReference
+            entrega.Estudiante = _obtenerUsuariosPorId.ObtenerUsuarioPorId(entrega.id_estudiante);
+            entrega.Tarea = await _listarTareas.ObtenerPorIdAsync(entrega.id_tarea);
+
             return View(entrega);
         }
+
 
         [Authorize(Roles = "Estudiantes")]
         public async Task<ActionResult> MisEntregas()
@@ -197,6 +207,7 @@ namespace Campus.Web.Controllers
 
             entrega.fecha_entrega = DateTime.Now;
             entrega.id_estudiante = User.Identity.GetUserId();
+            entrega.estado = true; // ← ESTA ES LA LÍNEA CLAVE QUE FALTABA
 
             await _agregarEntregaLN.AgregarEntrega(entrega);
             return RedirectToAction("MisEntregas");
