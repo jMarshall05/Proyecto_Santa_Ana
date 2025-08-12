@@ -67,25 +67,25 @@
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
 
-                    @*@if (User.IsInRole("Administradores"))
-                        {*@
+                   *@if (User.IsInRole("Administradores"))
+                        {
                     <li class="nav-item">@Html.ActionLink("Gestion de Usuarios", "ListarUsuarios", "Usuarios", null, new { @class = "nav-link", style = "color: white;" })</li>
                     <li class="nav-item">@Html.ActionLink("Gestion de Grupos", "ListarGrupos", "Grupos", null, new { @class = "nav-link", style = "color: white;" })</li>
                     <li class="nav-item">@Html.ActionLink("Administrar Anuncios", "ListarAnuncios", "Anuncios", null, new { @class = "nav-link", style = "color: white;" })</li>
                     <li class="nav-item">@Html.ActionLink("Administrar Cursos", "ListarCursos", "Cursos", null, new { @class = "nav-link", style = "color: white;" })</li>
 
-                    @*}*@
+                    }
 
-                    @*@if (User.IsInRole("Profesores") || User.IsInRole("Administradores"))
-                        {*@
+                    @if (User.IsInRole("Profesores") || User.IsInRole("Administradores"))
+                        {
                     <li class="nav-item">@Html.ActionLink("Asignar Tarea", "ListarTareas", "Tareas", null, new { @class = "nav-link", style = "color: white;" })</li>
                     <li class="nav-item">@Html.ActionLink("Tareas recibidas", "Index", "Entregas", null, new { @class = "nav-link", style = "color: white;" })</li>
-                    @*}*@
+                    }
 
-                    @*@if (User.IsInRole("Estudiantes"))
-                    {*@
+                    @if (User.IsInRole("Estudiantes"))
+                    {
                         <li class="nav-item">@Html.ActionLink("Mis Tareas", "MisTareas", "Tareas", null, new { @class = "nav-link", style = "color: white;" })</li>
-                    @*}*@
+                    }
                 </ul>
 
                 <div class="d-flex align-items-center">
