@@ -18,7 +18,7 @@ using Microsoft.AspNet.Identity.Owin;
 
 namespace Campus.UI.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly IListarCursoLN _listarCursos;
@@ -56,8 +56,8 @@ namespace Campus.UI.Controllers
         {
 
             var id = User.Identity.GetUserId();
-            //if (id == null)
-            //    return RedirectToAction("login", "Account");
+            if (id == null)
+              return RedirectToAction("login", "Account");
 
             if (User.IsInRole("Profesores"))
             {
