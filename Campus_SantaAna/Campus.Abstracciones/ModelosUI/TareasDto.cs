@@ -48,5 +48,7 @@ namespace Campus.Abstracciones.ModelosUI
         [NotMapped]
         [DisplayName("Grupo Asignado")]
         public string Nombre_grupo { get; set; } // Cambiado de NombreGrupo a nombre_grupo
+
+        public CalificacionesDto Calificacion { get; set; }
     }
 }

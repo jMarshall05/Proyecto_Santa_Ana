@@ -4,54 +4,57 @@
     ViewBag.Title = "Editar Entrega";
 }
 
-<h2>Calificar Tarea</h2>
+<h2 class="container-title">Estado de la Entrega</h2>
 
 @using (Html.BeginForm("Edit", "Entregas", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-group">
-        <label>Estudiante</label>
-        <p class="form-control-static">@Model.Estudiante.Nombre @Model.Estudiante.Apellido (@Model.id_estudiante)</p>
-    </div>
-
-    <div class="form-group">
-        <label>Tarea</label>
-        <p class="form-control-static">@Model.Tarea.Titulo</p>
-    </div>
-
-    <div class="form-group">
-        <label>Archivo Entregado</label>
-        @if (!string.IsNullOrEmpty(Model.archivo_entregado))
-        {
-            <p><a href="@Url.Content(Model.archivo_entregado)" target="_blank" class="btn btn-link">Descargar</a></p>
-        }
-        else
-        {
-            <p class="text-muted">No se ha subido archivo</p>
-        }
-    </div>
-
-    <div class="mb-3">
-        @if (Model.Calificacion == null)
-        {
-            @Html.ActionLink("Añadir calificación", "Create", "Calificaciones", new { id = Model.id_entrega }, new { @class = "btn btn-primary" })
-        }
-        else
-        {
-            <p><strong>Calificación actual:</strong> @Model.Calificacion.calificacion</p>
-            <p><strong>Comentario:</strong> @(Model.Calificacion?.comentario ?? "No hay comentario")</p>
-
-            <div class="btn-group" role="group">
-                @Html.ActionLink("Editar calificación", "Edit", "Calificaciones", new { id = Model.Calificacion.id_calificacion }, new { @class = "btn btn-warning" })
-                @Html.ActionLink("Eliminar calificación", "Delete", "Calificaciones", new { id = Model.Calificacion.id_calificacion }, new { @class = "btn btn-danger", onclick = "return confirm('¿Está seguro que desea eliminar esta calificación?');" })
+    <div class="d-flex justify-content-center">
+        <div class="card shadow" style="max-width: 800px; width: 100%;">
+            <div class="card-header bg-primary text-white">
+                Información de la Entrega
             </div>
-        }
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Estudiante:</strong> @Model.Estudiante.Nombre @Model.Estudiante.Apellido (@Model.id_estudiante)
+                </li>
+                <li class="list-group-item">
+                    <strong>Tarea:</strong> @Model.Tarea.Titulo
+                </li>
+                <li class="list-group-item">
+                    <strong>Archivo Entregado:</strong>
+                    @if (!string.IsNullOrEmpty(Model.archivo_entregado))
+                    {
+                        <a href="@Url.Content(Model.archivo_entregado)" target="_blank" class="btn btn-link">Descargar</a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No se ha subido archivo</span>
+                    }
+                </li>
+                <li class="list-group-item">
+                    @if (Model.Calificacion == null)
+                    {
+                        @Html.ActionLink("Añadir calificación", "Create", "Calificaciones", new { id = Model.id_entrega }, new { @class = "btn btn-primary" })
+                    }
+                    else
+                    {
+                        <div><strong>Calificación:</strong> @Model.Calificacion.calificacion</div>
+                        <div><strong>Comentario:</strong> @(Model.Calificacion?.comentario ?? "No hay comentario")</div>
+
+                        <div class="btn-group mt-2" role="group">
+                            @Html.ActionLink("Editar calificación", "Edit", "Calificaciones", new { id = Model.Calificacion.id_calificacion }, new { @class = "btn btn-warning" })
+                            @Html.ActionLink("Eliminar calificación", "Delete", "Calificaciones", new { id = Model.Calificacion.id_calificacion }, new { @class = "btn btn-danger", onclick = "return confirm('¿Está seguro que desea eliminar esta calificación?');" })
+                        </div>
+                    }
+                </li>
+            </ul>
+        </div>
     </div>
 
-
-
-    <button type="submit" class="btn btn-success">Guardar Cambios</button>
-    <a href="@Url.Action("Index", "Entregas")" class="btn btn-secondary">Cancelar</a>
+    <div class="mt-3 text-center">
+        <button type="submit" class="btn btn-success">Guardar Cambios</button>
+        <a href="@Url.Action("Index", "Entregas")" class="btn btn-secondary">Cancelar</a>
+    </div>
 }
-
