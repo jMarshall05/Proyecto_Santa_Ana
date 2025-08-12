@@ -22,7 +22,7 @@ using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 
 namespace Campus.UI.Controllers
 {
-    // [Authorize]
+    [Authorize(Roles = "Administradores")]
     public class CursosController : Controller
     {
         private readonly IListarCursoLN _listarCursoLN;
