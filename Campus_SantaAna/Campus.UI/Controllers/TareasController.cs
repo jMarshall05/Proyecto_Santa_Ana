@@ -42,9 +42,7 @@ namespace Campus.UI.Controllers
 
         }
 
-        [Authorize(Roles = "Administradores")]
-        [Authorize(Roles = "Profesores")]
-
+        [Authorize(Roles = "Administradores,Profesores")]
         public async Task<ActionResult> ListarTareas(int? grupoId)
         {
             var tareas = await _listarTareaLN.ListarTareasAsync();
@@ -71,8 +69,7 @@ namespace Campus.UI.Controllers
             return View(tareas);
         }
 
-        [Authorize(Roles = "Administradores")]
-        [Authorize(Roles = "Profesores")]
+        [Authorize(Roles = "Administradores,Profesores")]
         public ActionResult Create()
         {
             var grupos = _listarGruposLN.ListarGrupos();
@@ -82,8 +79,7 @@ namespace Campus.UI.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Administradores")]
-        [Authorize(Roles = "Profesores")]
+        [Authorize(Roles = "Administradores,Profesores")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(TareaDto tarea)
@@ -123,8 +119,7 @@ namespace Campus.UI.Controllers
             return View(tarea);
         }
 
-        [Authorize(Roles = "Administradores")]
-        [Authorize(Roles = "Profesores")]
+        [Authorize(Roles = "Administradores,Profesores")]
         public async Task<ActionResult> Edit(int id)
         {
             var tarea = await _listarTareaLN.ObtenerPorIdAsync(id);
@@ -140,8 +135,7 @@ namespace Campus.UI.Controllers
 
 
 
-        [Authorize(Roles = "Administradores")]
-        [Authorize(Roles = "Profesores")]
+        [Authorize(Roles = "Administradores,Profesores")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, TareaDto tarea)
@@ -212,8 +206,7 @@ namespace Campus.UI.Controllers
         }
 
 
-        [Authorize(Roles = "Administradores")]
-        [Authorize(Roles = "Profesores")]
+        [Authorize(Roles = "Administradores,Profesores")]
         public async Task<ActionResult> Delete(int id)
         {
             var tarea = await _listarTareaLN.ObtenerPorIdAsync(id);
@@ -223,8 +216,7 @@ namespace Campus.UI.Controllers
             return View(tarea);
         }
 
-        [Authorize(Roles = "Administradores")]
-        [Authorize(Roles = "Profesores")]
+        [Authorize(Roles = "Administradores,Profesores")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
@@ -233,8 +225,7 @@ namespace Campus.UI.Controllers
             return RedirectToAction("ListarTareas");
         }
 
-        [Authorize(Roles = "Administradores")]
-        [Authorize(Roles = "Profesores")]
+        [Authorize(Roles = "Administradores,Profesores")]
         public async Task<ActionResult> Details(int id)
         {
             var tarea = await _listarTareaLN.ObtenerPorIdAsync(id);
