@@ -67,7 +67,7 @@
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
 
-                   *@if (User.IsInRole("Administradores"))
+                   @if (User.IsInRole("Administradores"))
                         {
                     <li class="nav-item">@Html.ActionLink("Gestion de Usuarios", "ListarUsuarios", "Usuarios", null, new { @class = "nav-link", style = "color: white;" })</li>
                     <li class="nav-item">@Html.ActionLink("Gestion de Grupos", "ListarGrupos", "Grupos", null, new { @class = "nav-link", style = "color: white;" })</li>
