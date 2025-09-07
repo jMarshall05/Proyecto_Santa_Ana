@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.UsuariosDto>
 
 @{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewBag.Title = "Usuarios";
 }
 
@@ -11,43 +12,47 @@
                 <h4 class="m-0 text-danger">
                     <i class="fas fa-users me-2"></i>@ViewBag.Title
                 </h4>
-                <a href="@Url.Action("Register", "Account")" class="btn btn-secondary btn-sm">
-                    <i class="fas fa-user-plus me-1"></i> Registrar Usuario
+                <a href="@Url.Action("Register", "Account")" class="btn btn-primary btn-sm rounded-pill px-3">
+                    Registrar Nuevo Usuario
                 </a>
             </div>
         </div>
 
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0 table-bordered" id="TablaDeUsuarios">
-                    <thead class="table-danger">
+                <table class="table table-striped align-middle mb-0 table-bordered text-center" id="TablaDeUsuarios">
+                    <thead class="table-light">
                         <tr>
                             <th>@Html.DisplayNameFor(model => model.Nombre)</th>
                             <th>@Html.DisplayNameFor(model => model.Apellido)</th>
                             <th>@Html.DisplayNameFor(model => model.Email)</th>
                             <th>@Html.DisplayNameFor(model => model.Telefono)</th>
                             <th>@Html.DisplayNameFor(model => model.Cedula)</th>
-                            <th class="text-center">Acciones</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model)
                         {
-                            <tr class="hover-shadow">
-                                <td class="fw-semibold">@Html.DisplayFor(modelItem => item.Nombre)</td>
-                                <td class="fw-semibold">@Html.DisplayFor(modelItem => item.Apellido)</td>
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Apellido)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Email)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Telefono)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Cedula)</td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center">
-                                        <button class="btn btn-sm btn-primary btn-Editar mx-1" data-id="@item.IdUsuario" data-bs-toggle="tooltip" 
->
-                                            <i class="fas fa-edit me-1"></i> Editar
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <!-- Botón Detalles -->
+                                        <button class="btn btn-outline-dark btn-sm btn-Detalles" data-id="@item.IdUsuario" data-bs-toggle="tooltip" title="Ver Detalles">
+                                            <i class="fas fa-eye"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-warning btn-Detalles mx-1" data-id="@item.IdUsuario" data-bs-toggle="tooltip" 
->
-                                            <i class="fas fa-info-circle me-1"></i> Detalles
+                                        <!-- Botón Editar -->
+                                        <button class="btn btn-outline-primary btn-sm btn-Editar" data-id="@item.IdUsuario" data-bs-toggle="tooltip" title="Editar">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                        <!-- Botón Eliminar -->
+                                        <button class="btn btn-outline-danger btn-sm btn-Eliminar" data-id="@item.IdUsuario" data-bs-toggle="tooltip" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -68,16 +73,63 @@
                 <h1 class="modal-title fs-5" id="UsuariosModalTittleLabel">Agregar</h1>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <div class="modal-body">
-            </div>
-            <div class="modal-footer">
-            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
         </div>
     </div>
 </div>
 
-
-@section scripts{
+@section scripts {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        /* 🔍 Estilo barra de búsqueda */
+        div.dataTables_filter {
+            text-align: left !important;
+            margin: 10px 0;
+        }
+        div.dataTables_filter input {
+            border: 2px solid #000;
+            border-radius: 30px;
+            padding: 8px 35px 8px 15px;
+            outline: none;
+            font-size: 14px;
+            background: url("https://cdn-icons-png.flaticon.com/512/622/622669.png") no-repeat right 10px center;
+            background-size: 18px;
+        }
+
+        /* 🔘 Botones de paginación */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 50%;
+            border: none;
+            background: #0014a8 !important;
+            color: #fff !important;
+            margin: 0 3px;
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #0056b3 !important;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #003399 !important;
+        }
+
+        /* 🔹 Contenedor tabla */
+        table.dataTable {
+            border-collapse: separate !important;
+            border-spacing: 0;
+        }
+        table.dataTable thead th {
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+
+        /* 🔹 Botones de acción */
+        .btn-sm i {
+            font-size: 16px;
+        }
+    </style>
+
     <script src="~/Scripts/Usuarios/ScriptDeUsuarios.js"></script>
 }

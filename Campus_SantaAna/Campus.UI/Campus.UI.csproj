@@ -425,6 +425,7 @@
     <Content Include="Views\anuncios\_DetailsParcial.cshtml" />
     <Content Include="Views\Calificaciones\Delete.cshtml" />
     <Content Include="Views\Calificaciones\Edit.cshtml" />
+    <Content Include="Views\Shared\_AdminLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
