@@ -1,6 +1,17 @@
 ﻿@{
+    if (User.Identity.IsAuthenticated)
+    {
+        if (User.IsInRole("Administradores"))
+        {
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        }
+        else
+        {
+            Layout = "~/Views/Shared/_Layout.cshtml";
+        }
+    }
     ViewBag.Title = "Calendario";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
 <main aria-labelledby="title" class="container py-4">
