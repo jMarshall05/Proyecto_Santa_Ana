@@ -5,14 +5,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.AccesoDatos.tareas.listarTareaAD;
 using Campus.Abstracciones.LogicaDeNegocio.calificaciones.agregarCalificacionLN;
 using Campus.Abstracciones.LogicaDeNegocio.calificaciones.editarCalificacionLN;
 using Campus.Abstracciones.LogicaDeNegocio.calificaciones.eliminarCalificacionLN;
 using Campus.Abstracciones.LogicaDeNegocio.calificaciones.listarCalificacionLN;
+using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
+using Campus.Abstracciones.LogicaNegocio.entregas.listarEntregaLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.AccesoDatos.ModelosAD;
 using Campus.LogicaDeNegocio.calificaciones;
 using Campus.LogicaDeNegocio.calificaciones.eliminarCalificacionLN;
 using Campus.LogicaDeNegocio.calificaciones.listarCalificacionesLN;
+using Campus.LogicaDeNegocio.Tareas.ListarTareaLN;
+using Campus.LogicaNegocio.Entregas.ListarEntregaLN;
 using Microsoft.AspNet.Identity;
 
 namespace Campus.Web.Controllers
@@ -24,6 +30,8 @@ namespace Campus.Web.Controllers
         private readonly IEditarCalificacionLN _editarCalificacionLN;
         private readonly IEliminarCalificacionLN _eliminarCalificacionLN;
         private readonly IListarCalificacionesLN _listarCalificacionesLN;
+        private readonly IListarEntregasLN _listarEntregasLN;
+        private readonly IListarTareaLN _listarTareas;
 
         public CalificacionesController()
         {
@@ -31,6 +39,8 @@ namespace Campus.Web.Controllers
             _editarCalificacionLN = new EditarCalificacionLN();
             _eliminarCalificacionLN = new EliminarCalificacionLN();
             _listarCalificacionesLN = new ListarCalificacionesLN();
+            _listarEntregasLN = new ListarEntregasLN();
+            _listarTareas = new ListarTareaLN();
         }
 
         public async Task<ActionResult> Index(int? idGrupo)
@@ -192,6 +202,13 @@ namespace Campus.Web.Controllers
         {
             var idEstudiante = User.Identity.GetUserId();
             var lista = await _listarCalificacionesLN.ListarCalificacionesPorEstudianteAsync(idEstudiante);
+            var entregas = await _listarEntregasLN.ListarEntregas();
+            foreach (var calificacion in lista){
+                var entrega = entregas.Where(e => e.id_entrega == calificacion.id_entrega).FirstOrDefault();
+                var tarea = await _listarTareas.ObtenerPorIdAsync(entrega.id_tarea);
+                entrega.Tarea = tarea;
+                calificacion.Entrega = entrega;
+            }
             return View(lista);
         }
     }
