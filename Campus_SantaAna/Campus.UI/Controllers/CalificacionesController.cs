@@ -23,7 +23,7 @@ using Microsoft.AspNet.Identity;
 
 namespace Campus.Web.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class CalificacionesController : Controller
     {
         private readonly IAgregarCalificacionLN _agregarCalificacionLN;

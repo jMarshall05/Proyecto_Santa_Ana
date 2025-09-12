@@ -11,7 +11,7 @@ using Campus.LogicaDeNegocio.Anuncios.EditarAnuncios;
 
 namespace Campus.UI.Controllers
 {
-     [Authorize]
+     //[Authorize]
     public class AnunciosController : Controller
     {
         private readonly IListarAnunciosLN _listarAnunciosLN;
@@ -27,20 +27,20 @@ namespace Campus.UI.Controllers
             _editarAnunciosLN = new EditarAnunciosLN();
         }
 
-        [Authorize(Roles = "Administradores")]
+        //[Authorize(Roles = "Administradores")]
         public ActionResult ListarAnuncios()
         {
             var listaDeAnuncios = _listarAnunciosLN.ListarAnuncios();
             return View(listaDeAnuncios);
         }
 
-        [Authorize(Roles = "Administradores")]
+        //[Authorize(Roles = "Administradores")]
         public ActionResult Create()
         {
             return View();
         }
 
-        [Authorize(Roles = "Administradores")]
+        //[Authorize(Roles = "Administradores")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(AnuncioDto anuncio)
@@ -54,7 +54,7 @@ namespace Campus.UI.Controllers
             return View(anuncio);
         }
 
-        [Authorize(Roles = "Administradores")]
+        //[Authorize(Roles = "Administradores")]
         public ActionResult Edit(int id)
         {
             var anuncio = _listarAnunciosLN.ObtenerAnuncioPorId(id);
@@ -65,7 +65,7 @@ namespace Campus.UI.Controllers
 
             return View(anuncio);
         }
-        [Authorize(Roles = "Administradores")]
+        //[Authorize(Roles = "Administradores")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(AnuncioDto anuncio)
@@ -79,13 +79,13 @@ namespace Campus.UI.Controllers
             return View(anuncio);
         }
 
-        [Authorize(Roles = "Administradores")]
+        //[Authorize(Roles = "Administradores")]
         public ActionResult Delete(int id)
         {
             ViewBag.AnuncioId = id;
             return View();
         }
-        [Authorize(Roles = "Administradores")]
+        //[Authorize(Roles = "Administradores")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
