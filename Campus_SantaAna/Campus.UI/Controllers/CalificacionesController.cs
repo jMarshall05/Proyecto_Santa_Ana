@@ -201,14 +201,24 @@ namespace Campus.Web.Controllers
         public async Task<ActionResult> MisCalificaciones()
         {
             var idEstudiante = User.Identity.GetUserId();
+
             var lista = await _listarCalificacionesLN.ListarCalificacionesPorEstudianteAsync(idEstudiante);
             var entregas = await _listarEntregasLN.ListarEntregas();
-            foreach (var calificacion in lista){
-                var entrega = entregas.Where(e => e.id_entrega == calificacion.id_entrega).FirstOrDefault();
-                var tarea = await _listarTareas.ObtenerPorIdAsync(entrega.id_tarea);
-                entrega.Tarea = tarea;
-                calificacion.Entrega = entrega;
+
+            foreach (var calificacion in lista)
+            {
+                var entrega = entregas.FirstOrDefault(e => e.id_entrega == calificacion.id_entrega);
+                if (entrega != null)
+                {
+                    var tarea = await _listarTareas.ObtenerPorIdAsync(entrega.id_tarea);
+                    if (tarea != null)
+                    {
+                        entrega.Tarea = tarea;
+                    }
+                    calificacion.Entrega = entrega;
+                }
             }
+
             return View(lista);
         }
     }
