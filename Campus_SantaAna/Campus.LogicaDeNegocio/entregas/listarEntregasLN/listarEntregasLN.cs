@@ -47,5 +47,6 @@ namespace Campus.LogicaNegocio.Entregas.ListarEntregaLN
             return await _listarEntregas.ListarEntregasPorEstudiante(idEstudiante);
         }
 
+
     }
 }

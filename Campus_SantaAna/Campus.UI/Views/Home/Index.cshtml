@@ -1,7 +1,26 @@
 ﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.CursoDto>
 @{
+    if (User.Identity.IsAuthenticated)
+    {
+        if (User.IsInRole("Administradores"))
+        {
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        }
+        else
+        {
+            Layout = "~/Views/Shared/_Layout.cshtml"; // tu layout normal
+        }
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml"; // si no está logueado
+    }
+
     ViewBag.Title = "Bienvenidos a Santa Ana a un Click";
 }
+
+
+@* Diccionario de imágenes de materias *@
 @{
     var imageMap = new Dictionary<string, string>
 {
@@ -14,31 +33,30 @@
     };
     string defaultImage = "https://cdn-icons-png.freepik.com/256/13576/13576532.png";
 }
+
 <main>
-    <section class="row" aria-labelledby="aspnetTitle">
-    </section>
     @if (User.Identity.IsAuthenticated)
     {
         if (User.IsInRole("Profesores") || User.IsInRole("Estudiantes"))
         {
+            <p class="lead">Mis Cursos</p>
             <div class="row">
                 @foreach (var item in Model)
                 {
-                    <p class="lead">Mis Cursos</p>
-                    <section class="col-md-4 mb-4" aria-labelledby="gettingStartedTitle">
+                    <section class="col-md-4 mb-4">
                         <div class="card text-center">
                             <img src="@(imageMap.ContainsKey(item.NombreMateria) ? imageMap[item.NombreMateria] : defaultImage)"
                                  class="card-img-top mx-auto mt-3"
-                                 alt="..."
+                                 alt="@item.NombreMateria"
                                  style="width: 120px; height: 120px; object-fit: contain;" />
                             <div class="card-body">
                                 <h5 class="card-title">@item.NombreMateria | @item.NombreGrupo</h5>
-                                <p class="card-text">Profesor: @item.NombreProfesor  </p>
+                                <p class="card-text">Profesor: @item.NombreProfesor</p>
                                 @if (User.IsInRole("Profesores"))
                                 {
                                     <a href="@Url.Action("ListarTareas", "Tareas", new { grupoId = item.GrupoId })" class="btn btn-primary">Ver Curso</a>
                                 }
-                                else if (User.IsInRole("Estudiantes"))
+                                else
                                 {
                                     <a href="@Url.Action("MisTareas", "Tareas")" class="btn btn-primary">Ver Curso</a>
                                 }
@@ -50,39 +68,70 @@
         }
         else if (User.IsInRole("Administradores"))
         {
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <div class="mb-4">
-                                <i class="fas fa-user-shield fa-5x text-primary"></i>
-                            </div>
-                            <h2 class="card-title">Panel de Administración</h2>
-                            <p class="card-text lead">
-                                Como administrador, tienes acceso a funciones especiales de gestión del sistema.
-                            </p>
-                            <p class="card-text">
-                                Los cursos son gestionados por profesores . Utiliza el panel de administración
-                                para gestionar usuarios, configuraciones del sistema y supervisar la plataforma.
-                            </p>
-                            <div class="row justify-content-center">
-                                <a href="@Url.Action("ListarUsuarios", "Usuarios")" class="btn btn-primary btn-lg">
-                                    <i class="fas fa-user"></i> Gestionar Usuarios
-                                </a>
-                                <a href="@Url.Action("ListarCursos", "Cursos")" class="btn btn-outline-secondary btn-lg me-3">
-                                    <i class="fas fa-graduation-cap"></i> Administrar Cursos
-                                </a>
-                                <a href="@Url.Action("ListarGrupos", "Grupos")" class="btn btn-primary btn-lg">
-                                    <i class="fas fa-users"></i> Administrar Grupos
-                                </a>
-                                <a href="@Url.Action("ListarAnuncios", "Anuncios")" class="btn btn-outline-secondary btn-lg">
-                                    <i class="fas fa-bell"></i> Administrar Anuncios
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+            <section class="cards cards-top">
+                <div class="card-info">
+                    <h3>Total de Estudiantes</h3>
+                    <p>150</p> @* Se puede pasar dinámicamente desde el controlador *@
                 </div>
-            </div>
+                <div class="card-info">
+                    <h3>Total de Profesores</h3>
+                    <p>25</p> @* Se puede pasar dinámicamente desde el controlador *@
+                </div>
+            </section>
+
+            <br /><br />
+
+            <section class="cards cards-bottom">
+                <a href="@Url.Action("ListarTareas", "Tareas")" class="card-info card-link">
+                    <h3>Asignar Tarea</h3>
+                </a>
+                <a href="@Url.Action("Index", "Entregas")" class="card-info card-link">
+                    <h3>Tareas Recibidas</h3>
+                </a>
+            </section>
         }
     }
 </main>
+
+@section scripts{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+}
+
+
+<style>
+    /* Contenido principal */ .content-admin {
+        margin-left: 220px; /* espacio para el sidebar */
+        flex: 1;
+        padding: 30px;
+        min-height: 100vh;
+        background: #f5f5f5;
+    }
+        /* Header contenido */
+
+        .content-admin header {
+            text-align: right;
+            margin-bottom: 30px;
+            font-size: 20px;
+        }
+    /* Cards */
+
+    .cards {
+        display: flex;
+        gap: 20px;
+        justify-content: flex-start;
+    }
+
+    .card-info {
+        flex: 1;
+        background: #0D126E;
+        color: white;
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+        font-size: 18px;
+    }
+
+        .card-info h3 {
+            margin-bottom: 10px;
+        }
+</style>

@@ -17,6 +17,7 @@ using Microsoft.AspNet.Identity;
 
 namespace Campus.Web.Controllers
 {
+    [Authorize]
     public class CalificacionesController : Controller
     {
         private readonly IAgregarCalificacionLN _agregarCalificacionLN;
@@ -106,18 +107,39 @@ namespace Campus.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, CalificacionesDto calificacion)
+        public async Task<ActionResult> Edit(FormCollection form)
         {
+            var calificacion = new CalificacionesDto();
+
+            // Binding manual con validación de tipos
+            int.TryParse(form["id_calificacion"], out int idCalificacion);
+            int.TryParse(form["id_entrega"], out int idEntrega);
+            DateTime.TryParse(form["fecha_calificacion"], out DateTime fechaCalificacion);
+            decimal.TryParse(form["calificacion"], System.Globalization.NumberStyles.Float,
+                            System.Globalization.CultureInfo.InvariantCulture, out decimal calificacionValor);
+
+            calificacion.id_calificacion = idCalificacion;
+            calificacion.id_entrega = idEntrega;
+            calificacion.fecha_calificacion = fechaCalificacion;
+            calificacion.calificacion = calificacionValor;
+            calificacion.comentario = form["comentario"];
+
+            // Validaciones
+            if (calificacion.id_calificacion <= 0)
+                ModelState.AddModelError("id_calificacion", "ID de calificación requerido");
+            if (calificacion.calificacion < 0 || calificacion.calificacion > 100)
+                ModelState.AddModelError("calificacion", "La calificación debe estar entre 0 y 100");
+            if (string.IsNullOrEmpty(calificacion.comentario))
+                ModelState.AddModelError("comentario", "El comentario es requerido");
+
             if (ModelState.IsValid)
             {
                 var calificacionOriginal = (await _listarCalificacionesLN.ListarCalificaciones())
                                             .FirstOrDefault(c => c.id_calificacion == calificacion.id_calificacion);
-
                 if (calificacionOriginal != null)
                 {
-                    calificacion.fecha_calificacion = calificacionOriginal.fecha_calificacion;
-                    await _editarCalificacionLN.EditarCalificacion(id, calificacion);
-                    return RedirectToAction("Index");
+                    await _editarCalificacionLN.EditarCalificacion(calificacion.id_calificacion, calificacion);
+                    return RedirectToAction("Index", "Entregas");
                 }
                 else
                 {
@@ -127,6 +149,8 @@ namespace Campus.Web.Controllers
 
             return View(calificacion);
         }
+
+
 
 
 

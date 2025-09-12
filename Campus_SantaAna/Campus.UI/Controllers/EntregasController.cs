@@ -5,12 +5,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio.calificaciones.listarCalificacionLN;
+using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.LogicaNegocio.entregas.agregarEntregaLN;
 using Campus.Abstracciones.LogicaNegocio.entregas.editarEntregaLN;
 using Campus.Abstracciones.LogicaNegocio.entregas.eliminarEntregaLN;
 using Campus.Abstracciones.LogicaNegocio.entregas.listarEntregaLN;
 using Campus.Abstracciones.ModelosUI;
 using Campus.LogicaDeNegocio.calificaciones.listarCalificacionesLN;
+using Campus.LogicaDeNegocio.Tareas.ListarTareaLN;
+using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
+using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Campus.LogicaNegocio.Entregas.EditarEntregaLN;
 using Campus.LogicaNegocio.Entregas.EliminarEntregaLN;
 using Campus.LogicaNegocio.Entregas.ListarEntregaLN;
@@ -18,12 +25,16 @@ using Microsoft.AspNet.Identity;
 
 namespace Campus.Web.Controllers
 {
+    [Authorize]
     public class EntregasController : Controller
     {
         private readonly IAgregarEntregaLN _agregarEntregaLN;
         private readonly IEditarEntregaLN _editarEntregaLN;
         private readonly IEliminarEntregaLN _eliminarEntregaLN;
         private readonly IListarEntregasLN _listarEntregasLN;
+        private readonly IListarCalificacionesLN _listarCalificacionesLN; 
+        private readonly IObtenerUsuariosPorIdLN _obtenerUsuariosPorId;
+        private readonly IListarTareaLN _listarTareas;
 
         public EntregasController()
         {
@@ -31,21 +42,29 @@ namespace Campus.Web.Controllers
             _editarEntregaLN = new EditarEntregaLN();
             _eliminarEntregaLN = new EliminarEntregaLN();
             _listarEntregasLN = new ListarEntregasLN();
+            _listarCalificacionesLN = new ListarCalificacionesLN();
+            _obtenerUsuariosPorId = new ObtenerUsuariosPorIdLN();
+            _listarTareas = new ListarTareaLN();
         }
 
         public async Task<ActionResult> Index(int? idGrupo)
         {
+            List<EntregasDto> lista;
+
             if (idGrupo == null)
-            {
-                var lista = await _listarEntregasLN.ListarEntregas();
-                return View(lista);
-            }
+                lista = (await _listarEntregasLN.ListarEntregas()).ToList();
             else
+                lista = (await _listarEntregasLN.ListarEntregasPorGrupoAsync(idGrupo.Value)).ToList();
+
+            // Llenar el Estudiante para evitar null en la vista
+            foreach (var entrega in lista)
             {
-                var lista = await _listarEntregasLN.ListarEntregasPorGrupoAsync(idGrupo.Value);
-                return View(lista);
+                entrega.Estudiante = _obtenerUsuariosPorId.ObtenerUsuarioPorId(entrega.id_estudiante);
             }
+
+            return View(lista);
         }
+
 
         public ActionResult Create()
         {
@@ -72,13 +91,12 @@ namespace Campus.Web.Controllers
 
             if (entrega == null)
                 return HttpNotFound();
-
-            //calificacion 
-            var calificaciones = await new ListarCalificacionesLN().ListarCalificaciones();
-            var calificacion = calificaciones.FirstOrDefault(c => c.id_entrega == entrega.id_entrega);
-
+            var calificacion = (await _listarCalificacionesLN.ListarCalificacionesPorEstudianteAsync(entrega.id_estudiante)).Where(c=>c.id_entrega.Equals(id)).FirstOrDefault();
+            var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(entrega.id_estudiante);
+            var tarea = await _listarTareas.ObtenerPorIdAsync(entrega.id_tarea);
+            entrega.Estudiante = usuario;
+            entrega.Tarea = tarea;
             entrega.Calificacion = calificacion;
-
             return View(entrega);
         }
 
@@ -136,8 +154,13 @@ namespace Campus.Web.Controllers
             if (entrega == null)
                 return HttpNotFound();
 
+            // 🔹 Cargar estudiante y tarea para que la vista no dé NullReference
+            entrega.Estudiante = _obtenerUsuariosPorId.ObtenerUsuarioPorId(entrega.id_estudiante);
+            entrega.Tarea = await _listarTareas.ObtenerPorIdAsync(entrega.id_tarea);
+
             return View(entrega);
         }
+
 
         [Authorize(Roles = "Estudiantes")]
         public async Task<ActionResult> MisEntregas()
@@ -184,6 +207,7 @@ namespace Campus.Web.Controllers
 
             entrega.fecha_entrega = DateTime.Now;
             entrega.id_estudiante = User.Identity.GetUserId();
+            entrega.estado = true; // ← ESTA ES LA LÍNEA CLAVE QUE FALTABA
 
             await _agregarEntregaLN.AgregarEntrega(entrega);
             return RedirectToAction("MisEntregas");

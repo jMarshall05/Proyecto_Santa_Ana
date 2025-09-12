@@ -1,4 +1,15 @@
 ﻿@{
+    if (User.Identity.IsAuthenticated)
+    {
+        if (User.IsInRole("Administradores"))
+        {
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        }
+        else
+        {
+            Layout = "~/Views/Shared/_Layout.cshtml"; 
+        }
+    }
     ViewBag.Title = "Documentos";
 }
 

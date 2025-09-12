@@ -4,20 +4,100 @@
     ViewBag.Title = "Entregar Tarea";
 }
 
-<h2>Entregar Tarea</h2>
+<div class="container mt-4">
+    <div class="card shadow-lg" style="max-width: 600px; margin: 0 auto;">
+        <div class="card-header bg-primary text-white">
+            <h2 class="h4 mb-0"><i class="fas fa-file-upload me-2"></i>Entregar Tarea</h2>
+        </div>
 
-@using (Html.BeginForm("SubirEntrega", "Entregas", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    @Html.AntiForgeryToken()
+        <div class="card-body">
+            @using (Html.BeginForm("SubirEntrega", "Entregas", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.id_tarea)
+                @Html.HiddenFor(m => m.id_estudiante)
+                @Html.HiddenFor(m => m.fecha_entrega)
 
-    @Html.HiddenFor(m => m.id_tarea)
-    @Html.HiddenFor(m => m.id_estudiante)
-    @Html.HiddenFor(m => m.fecha_entrega)
+                <div class="mb-4">
+                    <label for="archivo" class="form-label fw-bold text-primary">
+                        <i class="fas fa-cloud-upload-alt me-2"></i>Selecciona tu archivo
+                    </label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" name="archivo" class="form-control file-upload-input" id="archivo" required
+                               onchange="document.getElementById('file-name').textContent = this.files[0]?.name || 'Ningún archivo seleccionado'">
+                        <div class="file-upload-info mt-2">
+                            <span id="file-name" class="text-muted small">Ningún archivo seleccionado</span>
+                        </div>
+                    </div>
+                    <div class="invalid-feedback">Por favor selecciona un archivo para entregar.</div>
+                </div>
 
-    <div class="form-group">
-        <label for="archivo">Archivo de la entrega</label>
-        <input type="file" name="archivo" class="form-control" required />
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-paper-plane me-2"></i>Enviar Entrega
+                    </button>
+                </div>
+            }
+        </div>
+
+        <div class="card-footer bg-light">
+            <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Formatos aceptados: PDF, DOCX, PPTX, XLSX, ZIP</small>
+        </div>
     </div>
+</div>
 
-    <button type="submit" class="btn btn-primary">Entregar</button>
+<style>
+    .file-upload-wrapper {
+        position: relative;
+        margin-bottom: 1rem;
+    }
+
+    .file-upload-input {
+        padding: 0.5rem;
+        border: 2px dashed #0d6efd;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .file-upload-input:hover {
+            background-color: #f8f9fa;
+            border-color: #0b5ed7;
+        }
+
+    .file-upload-info {
+        padding: 0.5rem;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        border-radius: 12px 12px 0 0 !important;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Validación del formulario
+        (function() {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
 }
