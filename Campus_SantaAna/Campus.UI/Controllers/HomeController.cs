@@ -18,7 +18,7 @@ using Microsoft.AspNet.Identity.Owin;
 
 namespace Campus.UI.Controllers
 {
-    [Authorize]
+    ////[Authorize]
     public class HomeController : Controller
     {
         private readonly IListarCursoLN _listarCursos;
