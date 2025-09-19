@@ -1,5 +1,11 @@
 ﻿@model Campus.Abstracciones.ModelosUI.UsuariosDto
-
+<style>
+    .qr-code {
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+    }
+</style>
 <div class="container mt-4">
     <div class="card shadow rounded-4">
         <div class="card-header bg-danger text-white rounded-top-4">
@@ -45,6 +51,7 @@
                         <th>@Html.DisplayNameFor(model => model.Rol)</th>
                         <td>@Html.DisplayFor(model => model.Rol)</td>
                     </tr>
+
                     @if (Model.Rol == "Estudiantes")
                     {
                         <tr>
@@ -65,6 +72,14 @@
                                 <span class="badge bg-danger">Inactivo</span>
                             }
                         </td>
+                    </tr>
+                    <tr>
+                        <th>Descargar Reporte</th>
+                        <th>
+                            <a href="@Url.Action("GenerarReportePDF", "Usuarios", new { id = Model.IdUsuario }, Request.Url.Scheme)">
+                                <img src="/Usuarios/GenerarReporteQR?id=@Model.IdUsuario" alt="QR Code" class="qr-code img-fluid">
+                            </a>
+                        </th>
                     </tr>
                 </tbody>
             </table>

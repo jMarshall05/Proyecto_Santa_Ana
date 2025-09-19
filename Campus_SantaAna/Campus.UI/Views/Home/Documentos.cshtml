@@ -7,32 +7,51 @@
         }
         else
         {
-            Layout = "~/Views/Shared/_Layout.cshtml"; 
+            Layout = "~/Views/Shared/_Layout.cshtml";
         }
     }
     ViewBag.Title = "Documentos";
 }
-
+<style>
+    .qr-code {
+        width: 200px;
+        height: 200px;
+        object-fit: contain; /* mantiene proporción */
+    }
+</style>
 <main aria-labelledby="title" class="container mt-5">
     <h2 id="title" class="container-title">📄 Normativas y Reglamentos Estudiantiles</h2>
     <p class="lead text-center">Aquí puedes consultar la normativa y reglamentos actualizados del centro educativo.</p>
 
     <div class="card mb-4 shadow-sm" data-aos="fade-up">
-        <div class="card-body">
-            <h5 class="card-title"><i class="fas fa-file-contract"></i> Normativa Interna</h5>
-            <p class="card-text">Consulta las reglas y lineamientos internos para el año 2025</p>
+        <div class="card-body row">
+            <div class="col-md-8">
+                <h5 class="card-title"><i class="fas fa-file-contract"></i> Normativa Interna</h5>
+                <p class="card-text">Consulta las reglas y lineamientos internos para el año 2025</p>
 
-            <a href="https://santaana.ed.cr/wp-content/uploads/C.S.A.-NORMATIVA-INTERNA-2024-.pdf"
-               class="btn custom-btn" target="_blank">Ver Documento</a>
+                <a href="https://santaana.ed.cr/wp-content/uploads/C.S.A.-NORMATIVA-INTERNA-2024-.pdf"
+                   class="btn custom-btn" target="_blank">Ver Documento</a>
+            </div>
+
+            <div class="col-md-4 d-flex justify-content-end align-items-center">
+                <img src="/Home/GenerarQR?url=https://santaana.ed.cr/wp-content/uploads/C.S.A.-NORMATIVA-INTERNA-2024-.pdf"
+                     alt="QR Code" class="qr-code img-fluid">
+            </div>
         </div>
     </div>
 
     <div class="card mb-4 shadow-sm" data-aos="fade-up" data-aos-delay="100">
-        <div class="card-body">
-            <h5 class="card-title"><i class="fas fa-clipboard-check"></i> Reglamento de Evaluación</h5>
-            <p class="card-text">Revisa los criterios y procesos de evaluación vigentes para este año.</p>
-            <a href="https://santaana.ed.cr/wp-content/uploads/REGLAMENTO-DE-EVALUACION-2024.pdf"
-               class="btn custom-btn" target="_blank">Ver Documento</a>
+        <div class="card-body row">
+            <div class="col-md-8">
+                <h5 class="card-title"><i class="fas fa-clipboard-check"></i> Reglamento de Evaluación</h5>
+                <p class="card-text">Revisa los criterios y procesos de evaluación vigentes para este año.</p>
+                <a href="https://santaana.ed.cr/wp-content/uploads/REGLAMENTO-DE-EVALUACION-2024.pdf"
+                   class="btn custom-btn" target="_blank">Ver Documento</a>
+            </div>
+
+            <div class="col-md-4 d-flex justify-content-end align-items-center">
+                <img src="/Home/GenerarQR?url=https://santaana.ed.cr/wp-content/uploads/REGLAMENTO-DE-EVALUACION-2024.pdf" alt="QR Code" class="qr-code img-fluid">
+            </div>
         </div>
     </div>
 </main>
