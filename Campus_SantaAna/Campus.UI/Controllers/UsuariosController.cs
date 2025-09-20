@@ -200,11 +200,9 @@ namespace Campus.UI.Controllers
 
                 try
                 {
-                    string urlLogo = "https://santaana.ed.cr/wp-content/uploads/LOGO-1.png";
-
                     using (HttpClient client = new HttpClient())
                     {
-                        byte[] imageBytes = client.GetByteArrayAsync(urlLogo).Result;
+                        byte[] imageBytes = client.GetByteArrayAsync("https://santaana.ed.cr/wp-content/uploads/LOGO-1.png").Result;
                         Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
                         logo.ScaleToFit(100, 100);
                         logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
@@ -223,7 +221,7 @@ namespace Campus.UI.Controllers
                     .SetMarginBottom(20);
                 document.Add(titulo);
 
-                Table table = new Table(2, true); 
+                Table table = new Table(2, false);
                 table.SetWidth(UnitValue.CreatePercentValue(100));
 
                 void AddRow(string label, string value)
@@ -243,19 +241,14 @@ namespace Campus.UI.Controllers
                 AddRow("Estado", datos.Estado ? "Activo" : "Inactivo");
 
                 document.Add(table);
-
-                // Separador final
-                document.Add(new Paragraph("\n"));
-                LineSeparator separator = new LineSeparator(new SolidLine());
-                document.Add(separator);
-
+             
                 document.Close();
-                return File(ms.ToArray(), "application/pdf", "reporte_usuario.pdf");
+                return File(ms.ToArray(), "application/pdf", $"reporte_usuario_{id}.pdf");
             }
         }
         public ActionResult GenerarReporteQR(string id)
         {
-          string urlPdf= Url.Action("GenerarReportePDF", "Usuarios", new { id = id }, Request.Url.Scheme);
+            string urlPdf = Url.Action("GenerarReportePDF", "Usuarios", new { id = id }, Request.Url.Scheme);
             using (var qrGenerator = new QRCodeGenerator())
             {
                 var qrCodeData = qrGenerator.CreateQrCode(urlPdf, QRCodeGenerator.ECCLevel.Q);

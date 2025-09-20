@@ -5,62 +5,78 @@
         <h5 class="mb-0"><i class="fas fa-users me-2"></i>Detalles del Grupo</h5>
     </div>
     <div class="card-body">
-        <div class="row mb-3">
-            <div class="col-md-4 fw-bold text-muted">
-                @Html.DisplayNameFor(model => model.grupo.nombre_grupo)
-            </div>
+        <div class="row">
+            <!-- Columna izquierda con datos -->
             <div class="col-md-8">
-                @Html.DisplayFor(model => model.grupo.nombre_grupo)
-            </div>
-        </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold text-muted">
+                        @Html.DisplayNameFor(model => model.grupo.nombre_grupo)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DisplayFor(model => model.grupo.nombre_grupo)
+                    </div>
+                </div>
 
-        <div class="row mb-3">
-            <div class="col-md-4 fw-bold text-muted">
-                @Html.DisplayNameFor(model => model.grupo.descripcion)
-            </div>
-            <div class="col-md-8">
-                @Html.DisplayFor(model => model.grupo.descripcion)
-            </div>
-        </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold text-muted">
+                        @Html.DisplayNameFor(model => model.grupo.descripcion)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DisplayFor(model => model.grupo.descripcion)
+                    </div>
+                </div>
 
-        <div class="row mb-3">
-            <div class="col-md-4 fw-bold text-muted">
-                @Html.DisplayNameFor(model => model.grupo.creado_por)
-            </div>
-            <div class="col-md-8">
-                @Html.DisplayFor(model => model.grupo.creado_por)
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-4 fw-bold text-muted">
-                @Html.DisplayNameFor(model => model.grupo.FechaDeCreacion)
-            </div>
-            <div class="col-md-8">
-                @Html.DisplayFor(model => model.grupo.FechaDeCreacion)
-            </div>
-        </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold text-muted">
+                        @Html.DisplayNameFor(model => model.grupo.creado_por)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DisplayFor(model => model.grupo.creado_por)
+                    </div>
+                </div>
 
-        <div class="row mb-3">
-            <div class="col-md-4 fw-bold text-muted">
-                @Html.DisplayNameFor(model => model.grupo.FechaDeModificacion)
-            </div>
-            <div class="col-md-8">
-                @Html.DisplayFor(model => model.grupo.FechaDeModificacion)
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-4 fw-bold text-muted">
-                @Html.DisplayNameFor(model => model.grupo.estado)
-            </div>
-            <div class="col-md-8">
-                @if (Model.grupo.estado)
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold text-muted">
+                        @Html.DisplayNameFor(model => model.grupo.FechaDeCreacion)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DisplayFor(model => model.grupo.FechaDeCreacion)
+                    </div>
+                </div>
+                @if (Model.grupo.FechaDeModificacion != null)
                 {
-                    <span class="badge bg-success">Activo</span>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold text-muted">
+                            @Html.DisplayNameFor(model => model.grupo.FechaDeModificacion)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.DisplayFor(model => model.grupo.FechaDeModificacion)
+                        </div>
+                    </div>
                 }
-                else
-                {
-                    <span class="badge bg-danger">Inactivo</span>
-                }
+
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold text-muted">
+                        @Html.DisplayNameFor(model => model.grupo.estado)
+                    </div>
+                    <div class="col-md-8">
+                        @if (Model.grupo.estado)
+                        {
+                            <span class="badge bg-success">Activo</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Inactivo</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 text-center">
+                <a href="/Grupos/GenerarReportePDF?id=@Model.grupo.id_grupo">
+                    <img src="/Grupos/GenerarReporteQR?id=@Model.grupo.id_grupo" class="img-fluid rounded" alt="Qr code" />
+                </a>
+               <p> Haz click en el qr o escanealo para descargar el reporte</p>
             </div>
         </div>
     </div>
