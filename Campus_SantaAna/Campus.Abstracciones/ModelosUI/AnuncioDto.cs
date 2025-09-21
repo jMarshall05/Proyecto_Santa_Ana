@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Web;
 
 namespace Campus.Abstracciones.ModelosUI
 {
@@ -26,5 +28,12 @@ namespace Campus.Abstracciones.ModelosUI
         [DisplayName("Fecha de Publicación")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public DateTime FechaPublicacion { get; set; }
+       
+        [DisplayName("Imagen del Anuncio")]
+        public string ImagenRuta { get; set; }
+
+        [NotMapped]
+        [DisplayName("Subir Imagen")]
+        public HttpPostedFileBase Imagen { get; set; } 
     }
 }
