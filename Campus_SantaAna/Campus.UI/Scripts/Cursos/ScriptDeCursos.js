@@ -1,7 +1,7 @@
 ﻿function AgregarCurso(event) {
     $.ajax({
         url: "/Cursos/AgregarCursoParcial",
-        data: { },
+        data: {},
         type: "GET",
         success: function (data) {
             $(".modal-body").html(data);
@@ -13,15 +13,28 @@
         }
     });
 };
-function DetallesCurso(event) {
-    var id = $(this).data('id');
+
+$(document).on('click', '.btn-Agregar-Curso', AgregarCurso)
+
+function GenerarReporte(event) {
     $.ajax({
-        url: "/Cursos/DetallesDeCursoParcial",
-        data: {id:id},
         type: "GET",
         success: function (data) {
-            $(".modal-body").html(data);
-            $(".modal-title").html("Detalles Curso");
+            let modalDialog = $("#CursosModal .modal-dialog");
+            modalDialog.removeClass("modal-xl"); 
+            modalDialog.addClass("modal-sm"); // agrega el que quieras (sm, lg, xl)
+
+            $(".modal-body").html(`
+                <div class="text-center">
+                    <a href="/Cursos/GenerarReportePDF">
+                        <img src="/Cursos/GenerarReporteQR" class="img-fluid rounded shadow" alt="Código QR del reporte" style="width:150px; height: 150px; object-fit: contain;" />
+                        
+                    </a>
+                    <p >Haz clic en el QR o escanealo descargar el reporte</p>
+                </div>
+            `);
+            $(".modal-title").html("Generar Reporte");
+            $(".modal-footer").html();
             $("#CursosModal").modal("show");
         },
         error: function (error) {
@@ -30,5 +43,5 @@ function DetallesCurso(event) {
     });
 };
 
-$(document).on('click', '.btn-Agregar-Curso', AgregarCurso)
-$(document).on('click', '.btn-Detalles-Curso', DetallesCurso)
+$(document).on('click', '.btn-GenerarReporte', GenerarReporte)
+
