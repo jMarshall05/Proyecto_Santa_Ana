@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />
     <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
     <style>
         html, body {
@@ -112,9 +113,7 @@
                 <li><a href="@Url.Action("Documentos", "Home")"><i class="fas fa-file-alt"></i> Documentos</a></li>
                 <li><a href="@Url.Action("VerDocentesAdministrativos", "Usuarios")"><i class="fas fa-phone"></i> Contactos</a></li>
                 <li><a href="@Url.Action("About", "Home")"><i class="fas fa-calendar"></i> Calendario</a></li>
-                <br />
-                <br />
-                <br />
+           
                 @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
                 {
                     @Html.AntiForgeryToken()

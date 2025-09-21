@@ -1,0 +1,321 @@
+﻿/* ========================================
+   RESPONSIVE GLOBAL PARA TODO EL PROYECTO
+   ======================================== */
+
+/* Variables CSS para consistencia */
+:root {
+    --mobile-breakpoint: 768px;
+    --small-mobile: 480px;
+    --tablet-breakpoint: 1024px;
+}
+
+/* ==========================================
+   CONTENEDORES Y LAYOUT GENERAL
+   ========================================== */
+
+/* Contenedores principales */
+@media (max-width: 768px) {
+    .container, .container-fluid {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    /* Cards responsive */
+    .card {
+        margin-bottom: 15px;
+    }
+
+    .card-body {
+        padding: 15px !important;
+    }
+
+    .card-header h1, .card-header h2, .card-header h3, .card-header h4 {
+        font-size: 1.1rem !important;
+    }
+}
+
+/* ==========================================
+   TABLAS RESPONSIVE GLOBAL
+   ========================================== */
+
+@media (max-width: 768px) {
+    /* Hacer todas las tablas responsive automáticamente */
+    .table:not(.table-keep-desktop) {
+        border: none;
+    }
+
+        .table:not(.table-keep-desktop) thead {
+            display: none;
+        }
+
+        .table:not(.table-keep-desktop) tr {
+            display: block;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .table:not(.table-keep-desktop) td,
+        .table:not(.table-keep-desktop) th {
+            display: block;
+            text-align: left !important;
+            border: none;
+            padding: 8px 15px;
+            position: relative;
+        }
+
+            /* Agregar etiquetas automáticamente */
+            .table:not(.table-keep-desktop) td:before {
+                content: attr(data-label) ": ";
+                font-weight: bold;
+                color: #495057;
+                display: inline-block;
+                width: 100px;
+                margin-right: 10px;
+            }
+
+        /* Para tablas que usan th como labels */
+        .table:not(.table-keep-desktop) tr td:first-child {
+            background: #e9ecef;
+            font-weight: bold;
+            color: #495057;
+        }
+}
+
+/* ==========================================
+   FORMULARIOS RESPONSIVE
+   ========================================== */
+
+@media (max-width: 768px) {
+    /* Formularios en una columna */
+    .row .col-md-6,
+    .row .col-lg-6,
+    .row .col-xl-6 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 15px;
+    }
+
+    .row .col-md-4,
+    .row .col-lg-4,
+    .row .col-xl-4 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 15px;
+    }
+
+    .row .col-md-3,
+    .row .col-lg-3,
+    .row .col-xl-3 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 15px;
+    }
+
+    /* Labels más pequeños */
+    .form-label {
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+
+    /* Inputs más cómodos para móvil */
+    .form-control, .form-select {
+        font-size: 16px; /* Previene zoom en iOS */
+        padding: 12px;
+    }
+}
+
+/* ==========================================
+   BOTONES RESPONSIVE
+   ========================================== */
+
+@media (max-width: 768px) {
+    /* Botones en footer de cards */
+    .card-footer {
+        text-align: center !important;
+    }
+
+        .card-footer .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+            .card-footer .btn:last-child {
+                margin-bottom: 0;
+            }
+
+    /* Grupos de botones */
+    .btn-group {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+        .btn-group .btn {
+            margin-bottom: 5px;
+            border-radius: 4px !important;
+        }
+
+    /* Botones de acción */
+    .btn-sm {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+/* ==========================================
+   NAVEGACIÓN Y MENÚS
+   ========================================== */
+
+@media (max-width: 768px) {
+    /* Sidebar collapse por defecto */
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+        .sidebar.show {
+            transform: translateX(0);
+        }
+
+    /* Navbar ajustes */
+    .navbar-nav {
+        text-align: center;
+    }
+
+        .navbar-nav .nav-link {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+        }
+}
+
+/* ==========================================
+   MODALES RESPONSIVE
+   ========================================== */
+
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 10px !important;
+        max-width: calc(100% - 20px) !important;
+    }
+
+    .modal-header h4, .modal-header h5 {
+        font-size: 1.1rem;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+    }
+
+        .modal-footer .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+            .modal-footer .btn:last-child {
+                margin-bottom: 0;
+            }
+}
+
+/* ==========================================
+   IMÁGENES Y MEDIA RESPONSIVE
+   ========================================== */
+
+@media (max-width: 768px) {
+    /* QR Codes y imágenes */
+    .qr-code, .img-qr {
+        width: 120px !important;
+        height: 120px !important;
+        display: block;
+        margin: 0 auto;
+    }
+
+    /* Imágenes en general */
+    img:not(.icon):not(.avatar-sm) {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+}
+
+/* ==========================================
+   DATATABLES RESPONSIVE
+   ========================================== */
+
+@media (max-width: 768px) {
+    /* Si usas DataTables */
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_length {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+        .dataTables_wrapper .dataTables_filter input,
+        .dataTables_wrapper .dataTables_length select {
+            width: 100% !important;
+            margin-left: 0 !important;
+        }
+
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: center !important;
+        margin-top: 15px;
+    }
+}
+
+/* ==========================================
+   UTILITIES RESPONSIVE
+   ========================================== */
+
+@media (max-width: 768px) {
+    /* Text utilities */
+    .text-end {
+        text-align: center !important;
+    }
+
+    /* Hide elements on mobile */
+    .d-none-mobile {
+        display: none !important;
+    }
+
+    /* Show only on mobile */
+    .d-mobile-only {
+        display: block !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .d-mobile-only {
+        display: none !important;
+    }
+}
+
+/* ==========================================
+   MOBILE FIRST OVERRIDES
+   ========================================== */
+
+@media (max-width: 480px) {
+    /* Para pantallas muy pequeñas */
+    .container {
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+
+    .card-body {
+        padding: 10px !important;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+        padding: 10px 15px;
+    }
+
+    .table td, .table th {
+        padding: 6px 10px !important;
+        font-size: 0.85rem;
+    }
+}
