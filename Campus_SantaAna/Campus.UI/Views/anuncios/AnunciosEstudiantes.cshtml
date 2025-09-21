@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.AnuncioDto>
+﻿
+@model IEnumerable<Campus.Abstracciones.ModelosUI.AnuncioDto>
 
 @{
     ViewBag.Title = "Lista de Anuncios";
@@ -18,27 +19,43 @@
             {
                 <div class="col-md-6 col-lg-4">
                     <div class="event-card">
+
+                        @* 🔹 Mostrar imagen si existe *@
+                        @if (!string.IsNullOrEmpty(anuncio.ImagenRuta))
+                        {
+                            <div class="event-image text-center mb-2">
+                                <img src="@Url.Content(anuncio.ImagenRuta)"
+                                     alt="Imagen de @anuncio.Titulo"
+                                     class="img-fluid rounded"
+                                     style="max-height:200px; object-fit:cover;" />
+                            </div>
+                        }
+
                         <div class="event-title">@anuncio.Titulo</div>
+
                         <div class="event-date">
                             <strong>Evento:</strong> @anuncio.FechaEvento.ToString("dd MMM yyyy")<br />
                             <strong>Publicado:</strong> @anuncio.FechaPublicacion.ToString("dd MMM yyyy")
                         </div>
+
                         <div class="event-description">@anuncio.Descripcion</div>
-                        @* Link a detalles del evento *@
-                        <a href="@Url.Action("Details", "Anuncios", new { id = anuncio.IdAnuncio })" class="btn btn-details">Ver Detalles</a>
+
+                        <a href="@Url.Action("Details", "Anuncios", new { id = anuncio.IdAnuncio })" class="btn btn-details">
+                            Ver Detalles
+                        </a>
                     </div>
                 </div>
             }
         </div>
     }
 </div>
+
 @section scripts{
-<script>
-    $(document).ready(function () {
-      
-        $('.event-card').hide().each(function (index) {
-            $(this).delay(150 * index).fadeIn(600);
+    <script>
+        $(document).ready(function () {
+            $('.event-card').hide().each(function (index) {
+                $(this).delay(150 * index).fadeIn(600);
+            });
         });
-    });
-</script>
-    }
+    </script>
+}
