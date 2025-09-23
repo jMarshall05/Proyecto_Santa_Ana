@@ -165,8 +165,12 @@ namespace Campus.Web.Controllers
         [Authorize(Roles = "Estudiantes")]
         public async Task<ActionResult> MisEntregas()
         {
-            var idEstudiante = User.Identity.Name;
+            var idEstudiante = User.Identity.GetUserId();
             var lista = await _listarEntregasLN.ListarEntregasPorEstudianteAsync(idEstudiante);
+            foreach(var tarea in lista)
+            {
+                tarea.Tarea = await _listarTareas.ObtenerPorIdAsync(tarea.id_tarea);
+            }
             return View(lista);
         }
 
@@ -193,22 +197,21 @@ namespace Campus.Web.Controllers
         {
             if (archivo != null && archivo.ContentLength > 0)
             {
-                var nombreArchivo = Path.GetFileName(archivo.FileName);
+                var nombreArchivo = Path.GetFileNameWithoutExtension(archivo.FileName);
+                var extension= Path.GetExtension(archivo.FileName);
                 var rutaCarpeta = Server.MapPath("~/Uploads/Entregas");
-                var rutaCompleta = Path.Combine(rutaCarpeta, nombreArchivo);
+                var rutaCompleta = Path.Combine(rutaCarpeta, $"{nombreArchivo}_{Guid.NewGuid()}{extension}");
 
                 if (!Directory.Exists(rutaCarpeta))
                     Directory.CreateDirectory(rutaCarpeta);
 
                 archivo.SaveAs(rutaCompleta);
 
-                entrega.archivo_entregado = "~/Uploads/Entregas/" + nombreArchivo;
+                entrega.archivo_entregado = "~/Uploads/Entregas/" + Path.GetFileName(rutaCompleta);
             }
 
-            entrega.fecha_entrega = DateTime.Now;
             entrega.id_estudiante = User.Identity.GetUserId();
-            entrega.estado = true; // ← ESTA ES LA LÍNEA CLAVE QUE FALTABA
-
+        
             await _agregarEntregaLN.AgregarEntrega(entrega);
             return RedirectToAction("MisEntregas");
         }

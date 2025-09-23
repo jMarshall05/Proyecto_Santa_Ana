@@ -54,11 +54,11 @@
                                 <p class="card-text">Profesor: @item.NombreProfesor</p>
                                 @if (User.IsInRole("Profesores"))
                                 {
-                                    <a href="@Url.Action("ListarTareas", "Tareas", new { grupoId = item.GrupoId })" class="btn btn-primary">Ver Curso</a>
+                                    <a href="@Url.Action("ListarTareas", "Tareas", new { materiaId = item.MateriaId, grupoId = item.GrupoId })" class="btn btn-primary">Ver Curso</a>
                                 }
                                 else
                                 {
-                                    <a href="@Url.Action("MisTareas", "Tareas")" class="btn btn-primary">Ver Curso</a>
+                                    <a href="@Url.Action("MisTareas", "Tareas", new { materiaId = item.MateriaId, grupoId = item.GrupoId })" class="btn btn-primary">Ver Curso</a>
                                 }
                             </div>
                         </div>

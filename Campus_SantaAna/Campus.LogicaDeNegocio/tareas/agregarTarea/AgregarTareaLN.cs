@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.agregarTareaAD;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.agregarTareaLN;
@@ -27,6 +28,8 @@ namespace Campus.LogicaDeNegocio.tareas.agregarTareaLN
 
                 if (tarea.FechaEntrega < DateTime.Now)
                     throw new ArgumentException("La fecha de entrega no puede ser en el pasado");
+
+                tarea.FechaModificacion = DateTime.Now;
 
                 return await _agregarTarea.AgregarTarea(tarea);
             }

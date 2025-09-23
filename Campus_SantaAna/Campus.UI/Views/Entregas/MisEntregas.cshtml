@@ -18,7 +18,7 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>@item.Tarea?.Titulo</td>
+            <td>@item.Tarea.Titulo</td>
             <td>
                 @if (!string.IsNullOrEmpty(item.archivo_entregado))
                 {
