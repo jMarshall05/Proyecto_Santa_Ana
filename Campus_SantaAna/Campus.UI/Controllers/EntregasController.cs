@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Campus.Abstracciones.LogicaDeNegocio.calificaciones.listarCalificacionLN;
+using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
@@ -15,6 +16,7 @@ using Campus.Abstracciones.LogicaNegocio.entregas.eliminarEntregaLN;
 using Campus.Abstracciones.LogicaNegocio.entregas.listarEntregaLN;
 using Campus.Abstracciones.ModelosUI;
 using Campus.LogicaDeNegocio.calificaciones.listarCalificacionesLN;
+using Campus.LogicaDeNegocio.Materias.ListarMaterias;
 using Campus.LogicaDeNegocio.Tareas.ListarTareaLN;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
@@ -35,6 +37,7 @@ namespace Campus.Web.Controllers
         private readonly IListarCalificacionesLN _listarCalificacionesLN; 
         private readonly IObtenerUsuariosPorIdLN _obtenerUsuariosPorId;
         private readonly IListarTareaLN _listarTareas;
+        private readonly IListarMateriasLN _listarMaterias;
 
         public EntregasController()
         {
@@ -45,6 +48,7 @@ namespace Campus.Web.Controllers
             _listarCalificacionesLN = new ListarCalificacionesLN();
             _obtenerUsuariosPorId = new ObtenerUsuariosPorIdLN();
             _listarTareas = new ListarTareaLN();
+            _listarMaterias = new ListarMateriasLN();
         }
 
         public async Task<ActionResult> Index(int? idGrupo)
@@ -167,6 +171,7 @@ namespace Campus.Web.Controllers
         {
             var idEstudiante = User.Identity.GetUserId();
             var lista = await _listarEntregasLN.ListarEntregasPorEstudianteAsync(idEstudiante);
+            ViewBag.Materias = _listarMaterias.ListarMaterias();
             foreach(var tarea in lista)
             {
                 tarea.Tarea = await _listarTareas.ObtenerPorIdAsync(tarea.id_tarea);
