@@ -1,8 +1,9 @@
-﻿using Campus.Abstracciones.AccesoDatos.entregas.agregarEntregaAD;
+﻿using System;
+using System.Threading.Tasks;
+using Campus.Abstracciones.AccesoDatos.entregas.agregarEntregaAD;
 using Campus.Abstracciones.LogicaNegocio.entregas.agregarEntregaLN;
 using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.Entregas.AgregarEntregaAD;
-using System.Threading.Tasks;
 
 public class AgregarEntregaLN : IAgregarEntregaLN
 {
@@ -21,6 +22,8 @@ public class AgregarEntregaLN : IAgregarEntregaLN
 
     public async Task<int> AgregarEntrega(EntregasDto entrega)
     {
+        entrega.fecha_entrega = DateTime.Now;
+        entrega.estado = true;
         return await _agregarEntrega.AgregarEntrega(entrega);
     }
 }

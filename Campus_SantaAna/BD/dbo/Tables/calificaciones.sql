@@ -5,6 +5,6 @@
     [comentario]         TEXT           NULL,
     [fecha_calificacion] DATETIME       NULL,
     PRIMARY KEY CLUSTERED ([id_calificacion] ASC),
-    CONSTRAINT [FK_calificaciones_entregas] FOREIGN KEY ([id_entrega]) REFERENCES [dbo].[entregas] ([id_entrega])
+    CONSTRAINT [FK_calificaciones_entrega] FOREIGN KEY ([id_entrega]) REFERENCES [dbo].[entregas] ([id_entrega]) ON DELETE CASCADE
 );
 
