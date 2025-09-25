@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -15,10 +17,11 @@ using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Campus.UI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using QRCoder;
 
 namespace Campus.UI.Controllers
 {
-    //[Authorize]
+    ////[Authorize]
     public class HomeController : Controller
     {
         private readonly IListarCursoLN _listarCursos;
@@ -56,8 +59,8 @@ namespace Campus.UI.Controllers
         {
 
             var id = User.Identity.GetUserId();
-            //if (id == null)
-            //    return RedirectToAction("login", "Account");
+            if (id == null)
+              return RedirectToAction("login", "Account");
 
             if (User.IsInRole("Profesores"))
             {
@@ -90,6 +93,23 @@ namespace Campus.UI.Controllers
 
 
             return View();
+        }
+        public ActionResult GenerarQR(string url)
+        {
+            using (var qrGenerator = new QRCodeGenerator())
+            {
+                var qrCodeData = qrGenerator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);
+                var qrCode = new QRCode(qrCodeData);
+
+                using (var qrImage = qrCode.GetGraphic(20))
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        qrImage.Save(ms, ImageFormat.Png);
+                        return File(ms.ToArray(), "image/png");
+                    }
+                }
+            }
         }
 
         public ActionResult About()

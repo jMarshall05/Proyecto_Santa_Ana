@@ -25,7 +25,7 @@ using Microsoft.AspNet.Identity;
 
 namespace Campus.Web.Controllers
 {
-    // [Authorize]
+    //[Authorize]
     public class EntregasController : Controller
     {
         private readonly IAgregarEntregaLN _agregarEntregaLN;

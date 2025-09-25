@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.AnuncioDto>
 
 @{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewBag.Title = "Lista de Anuncios";
 }
 
@@ -35,15 +36,15 @@
                 <td>@Html.DisplayFor(modelItem => anuncio.FechaPublicacion)</td>
                 <td>
                     <div class="btn-group" role="group">
-                        <button class="btn btn-sm btn-primary btn-Detalles-Anuncio" data-id="@anuncio.IdAnuncio">
-                            <i class="fas fa-edit me-1"></i> Editar
-                        </button>
+                        <a href="@Url.Action("Edit", "Anuncios", new { id = anuncio.IdAnuncio })" class="btn btn-sm btn-warning">
+                            <i class="fas fa-trash me-1"></i> Editar
+                        </a>
                         <a href="@Url.Action("Delete", "Anuncios", new { id = anuncio.IdAnuncio })" class="btn btn-sm btn-danger">
                             <i class="fas fa-trash me-1"></i> Eliminar
                         </a>
-                        <a href="@Url.Action("Details", "Anuncios", new { id = anuncio.IdAnuncio })" class="btn btn-sm btn-warning">
-                            <i class="fas fa-info-circle me-1"></i> Detalle
-                        </a>
+                        <button class="btn btn-sm btn-primary btn-Detalles-Anuncio" data-id="@anuncio.IdAnuncio">
+                            <i class="fas fa-edit me-1"></i> Detalles
+                        </button>
                     </div>
                 </td>
 

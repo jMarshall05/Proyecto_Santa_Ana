@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Windows.Documents;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ActualizarEstudianteGrupoLN;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorILN;
@@ -19,10 +22,19 @@ using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
+using iText.Kernel.Font;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Draw;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.Layout.Properties;
 using Microsoft.AspNet.Identity.Owin;
+using QRCoder;
+using Paragraph = iText.Layout.Element.Paragraph;
+using Table = iText.Layout.Element.Table;
 namespace Campus.UI.Controllers
 {
-    // [Authorize]
+    //[Authorize(Roles = "Administradores")]
     public class UsuariosController : Controller
     {
         private readonly IListarUsuariosLN _listarUsuariosLN;
@@ -74,6 +86,7 @@ namespace Campus.UI.Controllers
         public ActionResult DetallesDeUsuarioParcial(string id)
         {
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
+            usuario.IdUsuario = id;
             var grupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
             if (grupo != null)
             {
@@ -172,6 +185,84 @@ namespace Campus.UI.Controllers
                              .Where(u => u.Rol == "Profesores" || u.Rol == "Administradores")
                              .ToList();
             return View(usuarios);
+        }
+
+        public ActionResult GenerarReportePDF(string id)
+        {
+            var datos = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
+
+            using (var ms = new MemoryStream())
+            {
+                PdfWriter writer = new PdfWriter(ms);
+                PdfDocument pdf = new PdfDocument(writer);
+                Document document = new Document(pdf, iText.Kernel.Geom.PageSize.A4);
+                document.SetMargins(40, 40, 40, 40);
+
+                try
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        byte[] imageBytes = client.GetByteArrayAsync("https://santaana.ed.cr/wp-content/uploads/LOGO-1.png").Result;
+                        Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
+                        logo.ScaleToFit(100, 100);
+                        logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                        document.Add(logo);
+                    }
+                }
+                catch { }
+
+                // Título
+                PdfFont bold = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA_BOLD);
+                Paragraph titulo = new Paragraph("Reporte del Usuario")
+                    .SetFont(bold)
+                    .SetFontSize(20)
+                    .SetFontColor(iText.Kernel.Colors.ColorConstants.BLUE)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetMarginBottom(20);
+                document.Add(titulo);
+
+                Table table = new Table(2, false);
+                table.SetWidth(UnitValue.CreatePercentValue(100));
+
+                void AddRow(string label, string value)
+                {
+                    table.AddCell(new Cell().Add(new Paragraph(label)).SetBackgroundColor(iText.Kernel.Colors.ColorConstants.LIGHT_GRAY));
+                    table.AddCell(new Cell().Add(new Paragraph(value)));
+                }
+
+                AddRow("ID", id);
+                AddRow("Nombre", datos.Nombre);
+                AddRow("Apellido", datos.Apellido);
+                AddRow("Email", datos.Email);
+                AddRow("Teléfono", datos.Telefono.ToString());
+                AddRow("Fecha de Nacimiento", datos.FechaDeNacimiento.ToShortDateString());
+                AddRow("Cédula", datos.Cedula.ToString());
+                AddRow("Rol", datos.Rol);
+                AddRow("Estado", datos.Estado ? "Activo" : "Inactivo");
+
+                document.Add(table);
+             
+                document.Close();
+                return File(ms.ToArray(), "application/pdf", $"reporte_usuario_{id}.pdf");
+            }
+        }
+        public ActionResult GenerarReporteQR(string id)
+        {
+            string urlPdf = Url.Action("GenerarReportePDF", "Usuarios", new { id = id }, Request.Url.Scheme);
+            using (var qrGenerator = new QRCodeGenerator())
+            {
+                var qrCodeData = qrGenerator.CreateQrCode(urlPdf, QRCodeGenerator.ECCLevel.Q);
+                var qrCode = new QRCode(qrCodeData);
+
+                using (var qrImage = qrCode.GetGraphic(20))
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        qrImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                        return File(ms.ToArray(), "image/png");
+                    }
+                }
+            }
         }
     }
 }

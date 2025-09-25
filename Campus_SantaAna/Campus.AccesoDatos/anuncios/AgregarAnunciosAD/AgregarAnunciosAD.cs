@@ -8,7 +8,7 @@ namespace Campus.AccesoDatos.Anuncios.AgregarAnunciosAD
 {
     public class AgregarAnunciosAD : IAgregarAnunciosAD
     {
-        private Contexto _elContexto;
+        private readonly Contexto _elContexto;
 
         public AgregarAnunciosAD()
         {
@@ -31,8 +31,12 @@ namespace Campus.AccesoDatos.Anuncios.AgregarAnunciosAD
                 Titulo = anuncio.Titulo,
                 Descripcion = anuncio.Descripcion,
                 FechaEvento = anuncio.FechaEvento,
-                FechaPublicacion = anuncio.FechaPublicacion
+                FechaPublicacion = anuncio.FechaPublicacion,
+
+              
+                ImagenRuta = anuncio.ImagenRuta
             };
         }
     }
 }
+

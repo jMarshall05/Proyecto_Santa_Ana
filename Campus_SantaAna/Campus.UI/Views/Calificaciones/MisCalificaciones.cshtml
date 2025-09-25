@@ -15,7 +15,7 @@
         @foreach (var cal in Model)
         {
             <tr>
-                <td>@cal.Entrega?.Tarea?.Titulo</td>
+                <td>@cal.Entrega.Tarea.Titulo</td>
                 <td>@cal.calificacion</td>
                 <td>@cal.comentario</td>
                 <td>@cal.fecha_calificacion.ToShortDateString()</td>
