@@ -6,6 +6,6 @@ namespace Campus.Abstracciones.LogicaDeNegocio.Eventos.ListarEventosLN
 {
     public interface IListarEventosLN
     {
-        Task<List<EventoDto>> ListarEventos();
+        Task<List<EventoDto>> ListarEventos(string idUsuario);
     }
 }
