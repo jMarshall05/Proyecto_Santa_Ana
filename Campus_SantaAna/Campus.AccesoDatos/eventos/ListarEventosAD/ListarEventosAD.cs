@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity; // EF6
 using System.Linq;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Eventos.ListarEventosad;
 using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.ModelosAD;
-using System.Data.Entity;
 
 namespace Campus.AccesoDatos.Eventos.ListarEventosAD
 {
@@ -12,20 +12,22 @@ namespace Campus.AccesoDatos.Eventos.ListarEventosAD
     {
         private readonly Contexto _contexto;
 
-        public ListarEventosAD()
+        public ListarEventosAD(Contexto contexto)
         {
-            _contexto = new Contexto();
+            _contexto = contexto;
         }
 
-        public async Task<List<EventoDto>> ListarEventos()
+        public async Task<List<EventoDto>> ListarEventos(string idUsuario)
         {
             return await _contexto.Eventos
+                .Where(e => e.IdUsuario == idUsuario)
                 .Select(e => new EventoDto
                 {
                     Id = e.Id,
                     Titulo = e.Titulo,
                     FechaInicio = e.FechaInicio,
-                    FechaFin = e.FechaFin
+                    FechaFin = e.FechaFin,
+                    IdUsuario = e.IdUsuario
                 })
                 .ToListAsync();
         }

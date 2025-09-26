@@ -6,6 +6,6 @@ namespace Campus.Abstracciones.AccesoDatos.Eventos.ListarEventosad
 {
     public interface IListarEventosAD
     {
-        Task<List<EventoDto>> ListarEventos();
+        Task<List<EventoDto>> ListarEventos(string idUsuario);
     }
 }
