@@ -6,7 +6,7 @@
     [fecha_entrega]     DATETIME       NULL,
     [estado]            BIT            NOT NULL,
     PRIMARY KEY CLUSTERED ([id_entrega] ASC),
-    CONSTRAINT [FK_entregas_tareas] FOREIGN KEY ([id_tarea]) REFERENCES [dbo].[tareas] ([id_tarea]),
-    CONSTRAINT [FK_entregas_usuarios] FOREIGN KEY ([id_estudiante]) REFERENCES [dbo].[Usuarios_tb] ([IdUsuario])
+    CONSTRAINT [FK_entregas_estudiante] FOREIGN KEY ([id_estudiante]) REFERENCES [dbo].[Usuarios_tb] ([IdUsuario]) ON DELETE CASCADE,
+    CONSTRAINT [FK_entregas_tarea] FOREIGN KEY ([id_tarea]) REFERENCES [dbo].[tareas] ([id_tarea]) ON DELETE CASCADE
 );
 

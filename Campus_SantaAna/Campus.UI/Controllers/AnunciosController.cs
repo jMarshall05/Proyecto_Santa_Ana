@@ -150,7 +150,7 @@ public class AnunciosController : Controller
             {
                 return HttpNotFound();
             }
-            return View(anuncio); // Vista de confirmación
+            return View(anuncio); 
         }
         catch (Exception ex)
         {
@@ -194,7 +194,7 @@ public class AnunciosController : Controller
     {
         try
         {
-            var anuncios = _listarAnunciosLN.ListarAnuncios(); // Puedes filtrar si solo quieres ciertos eventos
+            var anuncios = _listarAnunciosLN.ListarAnuncios(); 
             return View(anuncios);
         }
         catch (Exception ex)
@@ -204,7 +204,7 @@ public class AnunciosController : Controller
         }
     }
     // GET: Anuncios/Details/5
-    public ActionResult Details(int id)
+    public ActionResult DetailsParcial(int id)
     {
         try
         {
@@ -213,7 +213,7 @@ public class AnunciosController : Controller
             {
                 return HttpNotFound();
             }
-            return View(anuncio);
+            return PartialView("_DetailsParcial",anuncio);
         }
         catch (Exception ex)
         {

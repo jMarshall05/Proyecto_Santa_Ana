@@ -30,6 +30,8 @@ namespace Campus.LogicaDeNegocio.Tareas.EditarTareaLN
                 if (tarea.Id_grupo <= 0)
                     throw new ArgumentException("El ID de grupo no es válido");
 
+                tarea.FechaModificacion = DateTime.Now;
+
                 return await _editarTareaAD.EditarTarea(id, tarea);
             }
             catch (Exception ex)

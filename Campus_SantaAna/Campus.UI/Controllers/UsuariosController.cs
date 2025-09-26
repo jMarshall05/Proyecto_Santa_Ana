@@ -100,7 +100,7 @@ namespace Campus.UI.Controllers
         // GET: Usuarios/Edit/5
         public ActionResult EditarUsuarioParcial(string id)
         {
-            var listaDeGrupos = _listarGrupos.ListarGrupos();
+            var listaDeGrupos = _listarGrupos.ListarGrupos().Where(u=>u.estado==true);
             ViewBag.ListaDeGrupos = new SelectList(listaDeGrupos, "id_grupo", "nombre_grupo");
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
             return PartialView("_EditarUsuarioParcial", usuario);
