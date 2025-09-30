@@ -8,12 +8,15 @@ using Campus.Abstracciones.AccesoDatos.Cursos.ListarCursosLN;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorILN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.LogicaDeNegocio.Cursos.ListarCursosLN;
 using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Materias.ListarMaterias;
+using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
+using Campus.UI.Filtros;
 using Campus.UI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -21,13 +24,15 @@ using QRCoder;
 
 namespace Campus.UI.Controllers
 {
-    ////[Authorize]
+    ////[Authorize] 
+    [Filtro2FA]
     public class HomeController : Controller
     {
         private readonly IListarCursoLN _listarCursos;
         private readonly IObtenerUsuariosPorIdLN _obtenerUsuariosPorId;
         private readonly IListarMateriasLN _listarMateriasLN;
         private readonly IListarGruposLN _listarGruposLN;
+        private readonly IListarUsuariosLN _listarUsuariosLN;
         private ApplicationUserManager _userManager;
         private readonly IBuscarEstudianteGrupoPorIdLN _estudianteGrupoLN;
 
@@ -38,6 +43,7 @@ namespace Campus.UI.Controllers
             _listarMateriasLN = new ListarMateriasLN();
             _listarGruposLN = new ListarGruposLN();
             _estudianteGrupoLN = new BuscarEstudianteGrupoPorIdLN();
+            _listarUsuariosLN = new ListarUsuariosLN();
 
         }
         public HomeController(ApplicationUserManager userManager)
@@ -55,12 +61,13 @@ namespace Campus.UI.Controllers
                 _userManager = value;
             }
         }
+
         public ActionResult Index()
         {
 
             var id = User.Identity.GetUserId();
             if (id == null)
-              return RedirectToAction("login", "Account");
+                return RedirectToAction("login", "Account");
 
             if (User.IsInRole("Profesores"))
             {
@@ -89,7 +96,15 @@ namespace Campus.UI.Controllers
                 }
                 return View(listaDeCursos);
             }
-            
+            else if (User.IsInRole("Administradores"))
+            {
+                var Usuarios = _listarUsuariosLN.ListarUsuarios();
+                ViewBag.Estudiantes = Usuarios.Where(u => u.Rol == "Estudiantes").Count();
+                ViewBag.Profesores = Usuarios.Where(u => u.Rol == "Profesores").Count();
+                return View();
+
+            }
+
 
 
             return View();

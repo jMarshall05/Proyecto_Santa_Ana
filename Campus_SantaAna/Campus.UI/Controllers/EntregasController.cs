@@ -23,6 +23,7 @@ using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Campus.LogicaNegocio.Entregas.EditarEntregaLN;
 using Campus.LogicaNegocio.Entregas.EliminarEntregaLN;
 using Campus.LogicaNegocio.Entregas.ListarEntregaLN;
+using Campus.UI.Filtros;
 using Microsoft.AspNet.Identity;
 
 namespace Campus.Web.Controllers

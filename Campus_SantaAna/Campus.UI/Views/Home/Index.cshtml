@@ -71,18 +71,18 @@
             <section class="cards cards-top">
                 <div class="card-info">
                     <h3>Total de Estudiantes</h3>
-                    <p>150</p> @* Se puede pasar dinámicamente desde el controlador *@
+                    <p>@ViewBag.Estudiantes</p>
                 </div>
                 <div class="card-info">
                     <h3>Total de Profesores</h3>
-                    <p>25</p> @* Se puede pasar dinámicamente desde el controlador *@
+                    <p>@ViewBag.Profesores</p>
                 </div>
             </section>
 
             <br /><br />
 
             <section class="cards cards-bottom">
-                <a href="@Url.Action("ListarTareas", "Tareas")" class="card-info card-link">
+                <a href="@Url.Action("ListarTareas", "Tareas", new {Profesor = User.Identity.Name })" class="card-info card-link">
                     <h3>Asignar Tarea</h3>
                 </a>
                 <a href="@Url.Action("Index", "Entregas")" class="card-info card-link">

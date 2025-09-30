@@ -42,5 +42,8 @@ namespace Campus.AccesoDatos.ModelosAD
         [ForeignKey("IdGrupo")]
         public virtual GruposAD Grupo { get; set; }
 
+        [Column("asignado_por")]
+        public string asignado_por { get; set; }
+
     }
 }

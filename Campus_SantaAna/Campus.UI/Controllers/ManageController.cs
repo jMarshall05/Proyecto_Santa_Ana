@@ -3,16 +3,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
+using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
+using Campus.UI.Filtros;
+using Campus.UI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Campus.UI.Models;
-using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
-using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 
 namespace Campus.UI.Controllers
 {
-    //[Authorize]
+    [Authorize]
+    [Filtro2FA]
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;
