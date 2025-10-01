@@ -25,7 +25,7 @@ using QRCoder;
 namespace Campus.UI.Controllers
 {
     ////[Authorize] 
-    [Filtro2FA]
+    
     public class HomeController : Controller
     {
         private readonly IListarCursoLN _listarCursos;

@@ -14,7 +14,7 @@ using Microsoft.Owin.Security;
 namespace Campus.UI.Controllers
 {
     [Authorize]
-    [Filtro2FA]
+    
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;
