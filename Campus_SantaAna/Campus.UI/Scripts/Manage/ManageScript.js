@@ -29,7 +29,6 @@
             Id: $("[data-id]").data("id"),
             Nombre: $("input[name='Nombre']").val(),
             Apellido: $("input[name='Apellido']").val(),
-            Email: $("input[name='Email']").val()
         };
 
         $.ajax({
@@ -40,7 +39,6 @@
                 // Actualizar las celdas con los nuevos valores
                 $("input[name='Nombre']").parent().text(datos.Nombre);
                 $("input[name='Apellido']").parent().text(datos.Apellido);
-                $("input[name='Email']").parent().text(datos.Email);
 
                 // Remover fila de botones y reactivar editar
                 $("#filaGuardar").remove();

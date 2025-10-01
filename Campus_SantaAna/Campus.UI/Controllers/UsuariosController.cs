@@ -101,7 +101,7 @@ namespace Campus.UI.Controllers
         // GET: Usuarios/Edit/5
         public ActionResult EditarUsuarioParcial(string id)
         {
-            var listaDeGrupos = _listarGrupos.ListarGrupos().Where(u=>u.estado==true);
+            var listaDeGrupos = _listarGrupos.ListarGrupos().Where(u => u.estado == true);
             ViewBag.ListaDeGrupos = new SelectList(listaDeGrupos, "id_grupo", "nombre_grupo");
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
             return PartialView("_EditarUsuarioParcial", usuario);
@@ -148,7 +148,7 @@ namespace Campus.UI.Controllers
             }
         }
 
-        public async Task<ActionResult> EditarUsuario(string id, UsuariosDto usuario)
+        public async Task<ActionResult> EditarUsuario(string id, EditarUsuario usuarioModel)
         {
             try
             {
@@ -157,18 +157,21 @@ namespace Campus.UI.Controllers
                     var user = await UserManager.FindByIdAsync(id);
                     if (user != null)
                     {
-                        var result = await UserManager.SetEmailAsync(id, usuario.Email);
-                        if (result.Succeeded)
+                        var usuario = new UsuariosDto
                         {
-                            await _editarUsuarioLN.EditarUsuario(id, usuario);
-                        }
+                            Nombre = usuarioModel.Nombre,
+                            Apellido = usuarioModel.Apellido,
+                          
+                        };
+                        await _editarUsuarioLN.EditarUsuario(id, usuario);
+
                     }
 
                 }
                 else
                 {
                     ModelState.AddModelError("", "Por favor, corrija los errores en el formulario.");
-                    return PartialView("_EditarUsuarioParcial", usuario);
+                    return View();
                 }
 
 
@@ -242,7 +245,7 @@ namespace Campus.UI.Controllers
                 AddRow("Estado", datos.Estado ? "Activo" : "Inactivo");
 
                 document.Add(table);
-             
+
                 document.Close();
                 return File(ms.ToArray(), "application/pdf", $"reporte_usuario_{id}.pdf");
             }

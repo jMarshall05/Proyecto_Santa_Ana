@@ -91,7 +91,7 @@ namespace Campus.UI.Models
 
 
         [Required]
-        [StringLength(100, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 6)]
+        [StringLength(18, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 12)]
         [DataType(DataType.Password)]
         [Display(Name = "Contraseña")]
         public string Password { get; set; }

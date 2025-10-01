@@ -46,7 +46,6 @@ namespace Campus.AccesoDatos.Usuarios.EditarUsuariosAD
             {
                 usuarioExistente.Nombre = usuario.Nombre;
                 usuarioExistente.Apellido = usuario.Apellido;
-                usuarioExistente.Email = usuario.Email;
                 usuarioExistente.FechaDeModificacion = DateTime.Now;
 
                 EntityState estado = _elContexto.Entry(usuarioExistente).State = EntityState.Modified;
