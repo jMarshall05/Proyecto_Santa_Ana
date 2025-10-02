@@ -77,6 +77,7 @@
     <Build Include="dbo\Tables\EstudianteGrupo.sql" />
     <Build Include="dbo\Tables\Cursos.sql" />
     <Build Include="dbo\Tables\Eventos.sql" />
+    <Build Include="dbo\Tables\Telefonos.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="BD.refactorlog" />

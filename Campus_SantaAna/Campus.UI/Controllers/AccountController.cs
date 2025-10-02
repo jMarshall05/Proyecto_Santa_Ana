@@ -235,7 +235,7 @@ namespace Campus.UI.Controllers
         private ApplicationUser CrearUsuario(RegisterViewModel model)
         {
             string numeroRamdon = rnd.Next(0, 100).ToString("D2");
-            var user = new ApplicationUser { UserName = model.Nombre.ToUpper().First() + model.Apellido.Trim() + numeroRamdon, Email = model.Email };
+            var user = new ApplicationUser { UserName = model.Nombre.ToUpper().First() + model.Apellido.Trim() + numeroRamdon, Email = model.Email};
             return user;
         }
 

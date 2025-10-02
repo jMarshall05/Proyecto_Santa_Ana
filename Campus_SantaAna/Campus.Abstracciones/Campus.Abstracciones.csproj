@@ -77,6 +77,9 @@
     <Compile Include="AccesoDatos\tareas\eliminarTareaAD\IEliminarTarea.cs" />
     <Compile Include="AccesoDatos\tareas\listarTareaAD\IListarTarea.cs" />
     <Compile Include="AccesoDatos\EstudianteGrupo\AgregarEstudianteGrupo\IAgregarEstudianteGrupoAD.cs" />
+    <Compile Include="AccesoDatos\Telefonos\AgregarTelefono\IAgregarTelefonoAD.cs" />
+    <Compile Include="AccesoDatos\Telefonos\EditarTelefono\IEditarTelefonoAD.cs" />
+    <Compile Include="AccesoDatos\Telefonos\ListarTelefonos\IListarTelefonosAD.cs" />
     <Compile Include="AccesoDatos\Usuarios\AgregarUsuariosAD\IAgregarUsuariosAD.cs" />
     <Compile Include="AccesoDatos\EstudianteGrupo\BuscarEstudianteGrupoPorIdAD\IBuscarEstudianteGrupoPorIdAD.cs" />
     <Compile Include="AccesoDatos\Usuarios\EditarUsuariosAD\IEditarUsuarioAD.cs" />
@@ -115,6 +118,9 @@
     <Compile Include="LogicaDeNegocio\tareas\eliminarTareaLN\IEliminarTareaLN.cs" />
     <Compile Include="LogicaDeNegocio\tareas\listarTareasLN\IListarTareasLN.cs" />
     <Compile Include="LogicaDeNegocio\EstudianteGrupo\AgregarEstudianteGrupoLN\IAgregarUsuarioGrupoLN.cs" />
+    <Compile Include="LogicaDeNegocio\Telefonos\AgregarTelefono\IAgregarTelefonoLN.cs" />
+    <Compile Include="LogicaDeNegocio\Telefonos\EditarTelefono\IEditarTelefonoLN.cs" />
+    <Compile Include="LogicaDeNegocio\Telefonos\ListarTelefonos\IListarTelefonosLN.cs" />
     <Compile Include="LogicaDeNegocio\Usuarios\AgregarUsuariosLN\IAgregarUsuariosLN.cs" />
     <Compile Include="LogicaDeNegocio\EstudianteGrupo\BuscarEstudianteGrupoPorILN\IBuscarEstudianteGrupoPorILN.cs" />
     <Compile Include="LogicaDeNegocio\Usuarios\EditarUsuariosLN\IEditarUsuarioLN.cs" />
@@ -129,6 +135,7 @@
     <Compile Include="ModelosUI\GruposDto.cs" />
     <Compile Include="ModelosUI\MateriaDto.cs" />
     <Compile Include="ModelosUI\TareasDto.cs" />
+    <Compile Include="ModelosUI\TelefonoDto.cs" />
     <Compile Include="ModelosUI\UsuariosDto.cs" />
     <Compile Include="ModelosUI\UsuariosGruposDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

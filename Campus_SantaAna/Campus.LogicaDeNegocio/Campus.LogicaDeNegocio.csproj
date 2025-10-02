@@ -78,6 +78,9 @@
     <Compile Include="tareas\eliminarTarea\EliminarTareaLN.cs" />
     <Compile Include="tareas\listarTarea\ListarTareaLN.cs" />
     <Compile Include="EstudianteGrupo\AgregarEstudianteGrupo\AgregarEstudianteGrupoLN.cs" />
+    <Compile Include="Telefonos\AgregarTelefonoLN\AgregarTelefonoLN.cs" />
+    <Compile Include="Telefonos\EditarTelefonoLN\EditarTelefonoLN.cs" />
+    <Compile Include="Telefonos\ListarTelefonosLN\ListarTelefonosLN.cs" />
     <Compile Include="Usuarios\AgregarUsuarios\AgregarUsuariosLN.cs" />
     <Compile Include="Usuarios\EditarUsuarios\EditarUsuariosLN.cs" />
     <Compile Include="Usuarios\ListarUsuarios\ListarUsuariosLN.cs" />

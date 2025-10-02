@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -10,6 +11,7 @@ namespace Campus.UI.Models
     public class ApplicationUser : IdentityUser
     {
         public string GoogleAuthenticatorSecretKey { get; set; }
+        public DateTime? FechaDeRegistro { get; set; } = DateTime.Now;
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Tenga en cuenta que authenticationType debe coincidir con el valor definido en CookieAuthenticationOptions.AuthenticationType
