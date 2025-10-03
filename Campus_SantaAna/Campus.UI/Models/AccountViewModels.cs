@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Campus.Abstracciones.ModelosUI;
 
 namespace Campus.UI.Models
 {
@@ -80,7 +81,8 @@ namespace Campus.UI.Models
         [Required]
         [Display(Name = "Numero de Telefono")]
         [DataType(DataType.PhoneNumber)]
-        public int Telefono { get; set; }
+        public TelefonoDto Telefono { get; set; }
+
         [Required]
         [Display(Name = "Fecha de Nacimiento")]
         [DataType(DataType.Date)]

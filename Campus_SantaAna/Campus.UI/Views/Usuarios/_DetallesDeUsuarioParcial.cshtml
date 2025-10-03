@@ -29,7 +29,23 @@
                     </tr>
                     <tr>
                         <th>@Html.DisplayNameFor(model => model.Telefono)</th>
-                        <td>@Html.DisplayFor(model => model.Telefono)</td>
+                        <td>
+                            @foreach (var telefono in ViewBag.Telefonos)
+                            {
+                                <div class="justify-content-center">
+                                    (+@telefono.Codigo) @(telefono.Telefono.ToString().Insert(4, "-")): @telefono.Tipo
+                                    @if (@telefono.Estado)
+                                    {
+                                        <span class="badge bg-success">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Inactivo</span>
+
+                                    }
+                                </div>
+                            }
+                        </td>
                     </tr>
                     <tr>
                         <th>@Html.DisplayNameFor(model => model.FechaDeNacimiento)</th>

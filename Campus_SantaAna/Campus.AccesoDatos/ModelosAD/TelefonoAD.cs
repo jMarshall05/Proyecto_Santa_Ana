@@ -15,12 +15,12 @@ namespace Campus.AccesoDatos.ModelosAD
         [Key]
         [Column("Id")]
         public int Id { get; set; }
-        [ForeignKey("Id_Usuario")]
+        [Column("Id_Usuario")]
         public string IdUsuario { get; set; }
         [Column("Codigo_area")]
-        public string Codigo { get; set; }
+        public int Codigo { get; set; }
         [Column("Telefono")]
-        public string Telefono { get; set; }
+        public int Telefono { get; set; }
         [Column("Tipo")]
         public string Tipo { get; set; }
         [Column("Estado")]

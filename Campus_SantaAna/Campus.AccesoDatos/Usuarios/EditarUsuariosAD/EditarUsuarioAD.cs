@@ -12,7 +12,7 @@ namespace Campus.AccesoDatos.Usuarios.EditarUsuariosAD
 {
     public class EditarUsuarioAD : IEditarUsuarioAD
     {
-        private Contexto _elContexto;
+        private readonly Contexto _elContexto;
         public EditarUsuarioAD()
         {
             _elContexto = new Contexto();
@@ -25,7 +25,6 @@ namespace Campus.AccesoDatos.Usuarios.EditarUsuariosAD
                 usuarioExistente.Nombre = usuario.Nombre;
                 usuarioExistente.Apellido = usuario.Apellido;
                 usuarioExistente.Email = usuario.Email;
-                usuarioExistente.Telefono = usuario.Telefono;
                 usuarioExistente.FechaDeNacimiento = usuario.FechaDeNacimiento;
                 usuarioExistente.FechaDeModificacion = DateTime.Now;
                 usuarioExistente.Rol = usuario.Rol;

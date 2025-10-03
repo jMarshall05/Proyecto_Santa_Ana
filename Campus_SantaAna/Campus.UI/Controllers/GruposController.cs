@@ -91,7 +91,7 @@ namespace Campus.UI.Controllers
         }
 
         // GET: Grupos/Create
-        public ActionResult AgregarGrupoParcial(string id)
+        public ActionResult AgregarGrupoParcial()
         {
             return PartialView("_AgregarGrupoParcial");
         }

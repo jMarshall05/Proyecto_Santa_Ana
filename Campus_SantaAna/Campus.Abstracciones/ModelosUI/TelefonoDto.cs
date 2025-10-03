@@ -12,20 +12,19 @@ namespace Campus.Abstracciones.ModelosUI
     {
         [DisplayName("Id")]
         public int Id { get; set; }
-        [Required]
         [DisplayName("IdUsuario")]
         public string IdUsuario { get; set; }
         [Required]
         [DisplayName("Código")]
-        public string Codigo { get; set; }
+        public int Codigo { get; set; }
         [Required]
         [DisplayName("Telefono")]
-        public string Telefono { get; set; }
+        public int Telefono { get; set; }
         [Required]
         [DisplayName("Tipo")]
         public string Tipo { get; set; }
         [Required]
-        [DisplayName("Tipo")]
+        [DisplayName("Estado")]
         public bool Estado {  get; set; } = true;
     }
 }

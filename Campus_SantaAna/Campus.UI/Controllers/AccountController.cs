@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio.Telefonos.AgregarTelefono;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.AgregarUsuariosLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Telefonos.AgregarTelefonoLN;
 using Campus.LogicaDeNegocio.Usuarios.AgregarUsuarios;
 using Campus.UI.Filtros;
 using Campus.UI.Helpers;
@@ -25,12 +27,15 @@ namespace Campus.UI.Controllers
         private ApplicationUserManager _userManager;
         private readonly IAgregarUsuariosLN _agregarUsuariosLN;
         private readonly Random rnd;
+        private readonly IAgregarTelefonoLN _agregarTelefonoLN;
+
         private static byte[] qrCodeImage;
 
         public AccountController()
         {
             _agregarUsuariosLN = new AgregarUsuariosLN();
             rnd = new Random();
+            _agregarTelefonoLN = new AgregarTelefonoLN();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -134,8 +139,7 @@ namespace Campus.UI.Controllers
 
             var user = UserManager.FindById(userId);
             var totp = new Totp((Base32Encoding.ToBytes(Encriptacion.Desencriptar(user.GoogleAuthenticatorSecretKey))));
-
-            if (totp.VerifyTotp(code, out long timeStepMatched, VerificationWindow.RfcSpecifiedNetworkDelay))
+            if (totp.VerifyTotp(code, out _, VerificationWindow.RfcSpecifiedNetworkDelay))
             {
                 SignInManager.SignIn(user, isPersistent: rememberMe, rememberBrowser: false);
                 Session.Remove("UserIdFor2FA");
@@ -206,6 +210,7 @@ namespace Campus.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            try{
             if (ModelState.IsValid)
             {
                 ApplicationUser user = CrearUsuario(model);
@@ -215,6 +220,8 @@ namespace Campus.UI.Controllers
                     await UserManager.AddToRoleAsync(user.Id, model.Rol);
                     var usuario = ConvertirDto(model, user);
                     await _agregarUsuariosLN.AgregarUsuario(usuario);
+                    model.Telefono.IdUsuario = user.Id;
+                    await _agregarTelefonoLN.AgregarTelefono(model.Telefono);
                     // await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
@@ -228,8 +235,14 @@ namespace Campus.UI.Controllers
                 AddErrors(result);
             }
 
-            // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
-            return View(model);
+                // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
+                return View(model);
+            }
+            catch(Exception ex)
+            {
+               ModelState.AddModelError("", ex.Message);
+                return View(model);
+            }
         }
 
         private ApplicationUser CrearUsuario(RegisterViewModel model)
@@ -527,7 +540,7 @@ namespace Campus.UI.Controllers
             var user = UserManager.FindById(userId);
 
             var totp = new Totp(Base32Encoding.ToBytes(Encriptacion.Desencriptar(user.GoogleAuthenticatorSecretKey)));
-            bool isValid = totp.VerifyTotp(code, out long timeStepMatched, VerificationWindow.RfcSpecifiedNetworkDelay);
+            bool isValid = totp.VerifyTotp(code, out long _, VerificationWindow.RfcSpecifiedNetworkDelay);
 
             if (isValid)
             {
@@ -586,7 +599,6 @@ namespace Campus.UI.Controllers
                 Nombre = model.Nombre,
                 Apellido = model.Apellido,
                 Email = model.Email,
-                Telefono = model.Telefono,
                 FechaDeNacimiento = model.FechaDeNacimiento,
                 Cedula = model.Cedula,
                 FechaDeRegistro = DateTime.Now,

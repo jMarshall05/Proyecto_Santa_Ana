@@ -160,18 +160,43 @@
                         })
                         @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                     </div>
+                    <div class="mb-3">
+                        @Html.TextBoxFor(m => m.Telefono.Codigo, new
+                        {
+                            @class = "form-control",
+                            type = "text",
+                            maxlength = "4",
+                            placeholder = "Código de País (ej: +506)",
+                            required = "required",
+                            oninput = "let val = this.value.replace(/[^0-9]/g, ''); this.value = val.length > 0 ? '+' + val.substring(0, 3) : '';"
+                        })
+                        @Html.ValidationMessageFor(m => m.Telefono.Codigo, "", new { @class = "text-danger" })
+                    </div>
 
                     <div class="mb-3">
-                        @Html.TextBoxFor(m => m.Telefono, new
+                        @Html.TextBoxFor(m => m.Telefono.Telefono, new
                         {
                             @class = "form-control",
                             type = "tel",
                             minlength = "8",
                             maxlength = "8",
                             placeholder = "Teléfono",
+                            required = "required",
                             oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
                         })
-                        @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(m => m.Telefono.Telefono, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.DropDownListFor(m => m.Telefono.Tipo, new List<SelectListItem>
+                        {
+                            new SelectListItem { Text = "Personal", Value = "Personal" },
+                            new SelectListItem { Text = "Trabajo", Value = "Trabajo" },
+                            new SelectListItem { Text = "Hogar", Value = "Hogar" },
+                            new SelectListItem { Text = "Encargado", Value = "Encargado" },
+                            new SelectListItem { Text = "Otro", Value = "Otro" }
+                        }, "Seleccione un tipo de Teléfono", new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(m => m.Telefono.Tipo, "", new { @class = "text-danger" })
                     </div>
 
                     <div class="mb-3">
@@ -229,7 +254,7 @@
                         <input type="submit" value="Registrarse" class="btn btn-register" />
                     </div>
 
-                    
+
                 }
             </div>
         </div>

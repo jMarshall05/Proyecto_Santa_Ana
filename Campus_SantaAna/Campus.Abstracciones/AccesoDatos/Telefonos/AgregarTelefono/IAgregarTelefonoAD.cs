@@ -9,6 +9,6 @@ namespace Campus.Abstracciones.AccesoDatos.Telefonos.AgregarTelefono
 {
     public interface IAgregarTelefonoAD
     {
-        int AgregarTelefono(TelefonoDto telefono); 
+        Task<int> AgregarTelefono(TelefonoDto telefono); 
     }
 }

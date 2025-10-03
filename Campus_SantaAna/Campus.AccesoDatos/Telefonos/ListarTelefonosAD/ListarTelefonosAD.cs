@@ -21,45 +21,13 @@ namespace Campus.AccesoDatos.Telefonos.ListarTelefonosAD
                              select new TelefonoDto
                              {
                                  Id = Telefonos.Id,
+                                 Codigo =Telefonos.Codigo,
                                  Telefono = Telefonos.Telefono,
                                  Tipo = Telefonos.Tipo,
                                  Estado = Telefonos.Estado,
                                  IdUsuario = Telefonos.IdUsuario
                              }).ToList();
             return telefonos;
-        }
-
-        public IEnumerable<TelefonoDto> ObtenerTelefonosUsuario(bool? estado, string id)
-        {
-            if (estado.HasValue)
-            {
-                var telefonos = (from Telefonos in _elContexto.Telefonos
-                                 where Telefonos.IdUsuario == id && Telefonos.Estado == estado
-                                 select new TelefonoDto
-                                 {
-                                     Id = Telefonos.Id,
-                                     Telefono = Telefonos.Telefono,
-                                     Tipo = Telefonos.Tipo,
-                                     Estado = Telefonos.Estado,
-                                     IdUsuario = Telefonos.IdUsuario
-                                 }).ToList();
-                return telefonos;
-            }
-            else
-            {
-                var telefonos = (from Telefonos in _elContexto.Telefonos
-                                 where Telefonos.IdUsuario == id && Telefonos.Estado == estado
-                                 select new TelefonoDto
-                                 {
-                                     Id = Telefonos.Id,
-                                     Telefono = Telefonos.Telefono,
-                                     Tipo = Telefonos.Tipo,
-                                     Estado = Telefonos.Estado,
-                                     IdUsuario = Telefonos.IdUsuario
-                                 }).ToList();
-                return telefonos;
-            }
-
         }
     }
 }

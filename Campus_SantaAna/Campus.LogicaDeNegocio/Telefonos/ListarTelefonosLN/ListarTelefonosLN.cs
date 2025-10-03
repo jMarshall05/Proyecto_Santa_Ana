@@ -10,7 +10,7 @@ using Campus.AccesoDatos.Telefonos.ListarTelefonosAD;
 
 namespace Campus.LogicaDeNegocio.Telefonos.ListarTelefonosLN
 {
-    internal class ListarTelefonosLN : IListarTelefonosLN
+    public class ListarTelefonosLN : IListarTelefonosLN
     {
         private readonly IListarTelefonosAD _listarTelefonos;
         public ListarTelefonosLN()
@@ -23,9 +23,6 @@ namespace Campus.LogicaDeNegocio.Telefonos.ListarTelefonosLN
             return _listarTelefonos.ListarTelefonos();
         }
 
-        public IEnumerable<TelefonoDto> ObtenerTelefonosUsuario(bool? estado, string id)
-        {
-            return _listarTelefonos.ObtenerTelefonosUsuario(estado, id);
-        }
+   
     }
 }

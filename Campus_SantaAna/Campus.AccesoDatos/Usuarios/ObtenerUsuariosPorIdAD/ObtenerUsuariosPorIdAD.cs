@@ -10,7 +10,7 @@ namespace Campus.AccesoDatos.Usuarios.ObtenerUsuariosPorIdAD
 {
     public class ObtenerUsuariosPorIdAD : IObtenerUsuariosPorIdAD
     {
-        private Contexto _elContexto;
+        private readonly Contexto _elContexto;
         public ObtenerUsuariosPorIdAD()
         {
             _elContexto = new Contexto();
@@ -26,7 +26,6 @@ namespace Campus.AccesoDatos.Usuarios.ObtenerUsuariosPorIdAD
                     Nombre = usuario.Nombre,
                     Apellido = usuario.Apellido,
                     Email = usuario.Email,
-                    Telefono = usuario.Telefono,
                     FechaDeNacimiento = usuario.FechaDeNacimiento,
                     Cedula = usuario.Cedula,
                     FechaDeRegistro = usuario.FechaDeRegistro,

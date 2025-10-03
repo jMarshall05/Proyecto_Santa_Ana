@@ -1,31 +1,36 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Windows.Documents;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ActualizarEstudianteGrupoLN;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorILN;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ListarEstudianteGrupoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.Abstracciones.LogicaDeNegocio.Telefonos.AgregarTelefono;
+using Campus.Abstracciones.LogicaDeNegocio.Telefonos.ListarTelefonos;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.EditarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.AccesoDatos.Telefonos.AgregarTelefonoAD;
+using Campus.AccesoDatos.Telefonos.ListarTelefonosAD;
 using Campus.LogicaDeNegocio.EstudianteGrupo.ActualizarEstudianteGrupoLN;
 using Campus.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
 using Campus.LogicaDeNegocio.EstudianteGrupo.ListarEstudianteGrupo;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.LogicaDeNegocio.Telefonos.AgregarTelefonoLN;
+using Campus.LogicaDeNegocio.Telefonos.ListarTelefonosLN;
 using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
-using Campus.UI.Filtros;
 using iText.Kernel.Font;
 using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Canvas.Draw;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
@@ -47,6 +52,7 @@ namespace Campus.UI.Controllers
         private readonly IListarEstudianteGrupoLN _listarEstudianteGrupoLN;
         private readonly IBuscarEstudianteGrupoPorIdLN _buscarEstudianteGrupoPorIdLN;
         private readonly IActualizarEstudianteGrupoLN _actualizarEstudianteGrupoLN;
+        private readonly IListarTelefonosLN _listarTelefonosLN;
 
         public UsuariosController()
         {
@@ -58,6 +64,7 @@ namespace Campus.UI.Controllers
             _listarEstudianteGrupoLN = new ListarEstudianteGrupoLN();
             _buscarEstudianteGrupoPorIdLN = new BuscarEstudianteGrupoPorIdLN();
             _actualizarEstudianteGrupoLN = new ActualizarEstudianteGrupoLN();
+            _listarTelefonosLN = new ListarTelefonosLN();
 
         }
         public ApplicationUserManager UserManager
@@ -88,6 +95,8 @@ namespace Campus.UI.Controllers
         {
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
             usuario.IdUsuario = id;
+            var telefonos = _listarTelefonosLN.ListarTelefono().Where(t => t.IdUsuario == id);
+            ViewBag.Telefonos = telefonos;
             var grupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
             if (grupo != null)
             {
@@ -161,7 +170,7 @@ namespace Campus.UI.Controllers
                         {
                             Nombre = usuarioModel.Nombre,
                             Apellido = usuarioModel.Apellido,
-                          
+
                         };
                         await _editarUsuarioLN.EditarUsuario(id, usuario);
 
@@ -194,6 +203,16 @@ namespace Campus.UI.Controllers
         public ActionResult GenerarReportePDF(string id)
         {
             var datos = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
+            var telefonos = _listarTelefonosLN.ListarTelefono().Where(t => t.IdUsuario == id);
+            List<string> telefonosFormateados = new List<string>();
+
+
+            foreach (var telefono in telefonos)
+            {
+                string telefonoFormateado = $"(+{telefono.Codigo}) {telefono.Telefono.ToString().Insert(4, "-")}: {telefono.Tipo} {(telefono.Estado ? "Activo" : "Inactivo")}";
+                telefonosFormateados.Add(telefonoFormateado);
+            }
+
 
             using (var ms = new MemoryStream())
             {
@@ -238,7 +257,7 @@ namespace Campus.UI.Controllers
                 AddRow("Nombre", datos.Nombre);
                 AddRow("Apellido", datos.Apellido);
                 AddRow("Email", datos.Email);
-                AddRow("Teléfono", datos.Telefono.ToString());
+                AddRow("Teléfonos", string.Join("\n", telefonosFormateados));
                 AddRow("Fecha de Nacimiento", datos.FechaDeNacimiento.ToShortDateString());
                 AddRow("Cédula", datos.Cedula.ToString());
                 AddRow("Rol", datos.Rol);
@@ -252,7 +271,7 @@ namespace Campus.UI.Controllers
         }
         public ActionResult GenerarReporteQR(string id)
         {
-            string urlPdf = Url.Action("GenerarReportePDF", "Usuarios", new { id = id }, Request.Url.Scheme);
+            string urlPdf = Url.Action("GenerarReportePDF", "Usuarios", new { id }, Request.Url.Scheme);
             using (var qrGenerator = new QRCodeGenerator())
             {
                 var qrCodeData = qrGenerator.CreateQrCode(urlPdf, QRCodeGenerator.ECCLevel.Q);

@@ -14,7 +14,7 @@ namespace Campus.AccesoDatos.Usuarios.AgregarUsuariosAD
 {
     public class AgregarUsuariosAD : IAgregarUsuariosAD
     {
-        private Contexto _elContexto;
+        private readonly Contexto _elContexto;
         public AgregarUsuariosAD()
         {
             _elContexto = new Contexto();
@@ -24,7 +24,7 @@ namespace Campus.AccesoDatos.Usuarios.AgregarUsuariosAD
         {
             var UsuarioTranformado = ConvertirAD(usuario);
             _elContexto.Usuarios.Add(UsuarioTranformado);
-            EntityState estado = _elContexto.Entry(UsuarioTranformado).State = System.Data.Entity.EntityState.Added;
+            _ = _elContexto.Entry(UsuarioTranformado).State = System.Data.Entity.EntityState.Added;
             int Resultado = await _elContexto.SaveChangesAsync();
             return Resultado;
 
@@ -38,7 +38,6 @@ namespace Campus.AccesoDatos.Usuarios.AgregarUsuariosAD
                 Nombre = usuario.Nombre,
                 Apellido = usuario.Apellido,
                 Email = usuario.Email,
-                Telefono = usuario.Telefono,
                 FechaDeNacimiento = usuario.FechaDeNacimiento,
                 Cedula = usuario.Cedula,
                 FechaDeRegistro = usuario.FechaDeRegistro,

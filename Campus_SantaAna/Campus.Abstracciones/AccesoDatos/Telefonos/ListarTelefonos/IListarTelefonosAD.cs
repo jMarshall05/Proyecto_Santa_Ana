@@ -10,7 +10,6 @@ namespace Campus.Abstracciones.AccesoDatos.Telefonos.ListarTelefonos
     public interface IListarTelefonosAD
     {
         IEnumerable<TelefonoDto> ListarTelefonos();
-        IEnumerable<TelefonoDto> ObtenerTelefonosUsuario(bool? estado, string id);
 
     }
 }

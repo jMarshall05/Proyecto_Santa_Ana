@@ -13,11 +13,11 @@ namespace Campus.AccesoDatos.Telefonos.AgregarTelefonoAD
             _elContexto = new Contexto();
         }
 
-        public Task<int> AgregarTelefono(TelefonoDto telefono)
+        public async Task<int> AgregarTelefono(TelefonoDto telefono)
         {
             var telefonoAD = ConvertirAD(telefono);
             _elContexto.Telefonos.Add(telefonoAD);
-            var resultado = _elContexto.SaveChangesAsync();
+            var resultado =await _elContexto.SaveChangesAsync();
             return resultado;
         }
 

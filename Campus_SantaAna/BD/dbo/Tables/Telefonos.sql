@@ -6,6 +6,6 @@
     [Tipo]        NVARCHAR (15)  NOT NULL,
     [Estado]      BIT            NOT NULL,
     CONSTRAINT [PK_Telefonos] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_Telefonos_Usuarios_tb] FOREIGN KEY ([Id_Usuario]) REFERENCES [dbo].[Usuarios_tb] ([IdUsuario])
+    CONSTRAINT [FK_Telefonos_Usuarios_tb] FOREIGN KEY ([Id_Usuario]) REFERENCES [dbo].[Usuarios_tb] ([IdUsuario])ON DELETE CASCADE
 );
 

@@ -17,7 +17,7 @@ namespace Campus.AccesoDatos.Telefonos.EditarTelefonoAD
             _elContexto = new Contexto();
         }
 
-        public async Task<int> EditarTelefono(int id, TelefonoDto telefono)
+        public int EditarTelefono(int id, TelefonoDto telefono)
         {
             var telefonoExistente = _elContexto.Telefonos.FirstOrDefault(t => t.Id == id);
             if (telefonoExistente != null)
@@ -28,7 +28,7 @@ namespace Campus.AccesoDatos.Telefonos.EditarTelefonoAD
                 telefonoExistente.Estado = telefono.Estado;
 
                 EntityState estado = _elContexto.Entry(telefonoExistente).State = EntityState.Modified;
-                int resultado = await _elContexto.SaveChangesAsync();
+                int resultado =  _elContexto.SaveChanges();
                 return resultado;
             }
             else
