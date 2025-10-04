@@ -81,7 +81,7 @@ namespace Campus.UI.Models
         [Required]
         [Display(Name = "Numero de Telefono")]
         [DataType(DataType.PhoneNumber)]
-        public TelefonoDto Telefono { get; set; }
+        public List<TelefonoDto> Telefonos { get; set; }
 
         [Required]
         [Display(Name = "Fecha de Nacimiento")]

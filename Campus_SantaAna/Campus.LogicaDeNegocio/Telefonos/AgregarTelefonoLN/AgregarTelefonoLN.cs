@@ -18,15 +18,23 @@ namespace Campus.LogicaDeNegocio.Telefonos.AgregarTelefonoLN
         {
             _agregarTelefono = new AgregarTelefonoAD();
         }
-        public Task<int> AgregarTelefono(TelefonoDto telefono)
+        public Task<int> AgregarTelefono(List<TelefonoDto> telefonos)
         {
-            if (telefono.Tipo == "Hogar" || telefono.Tipo == "Personal" || telefono.Tipo == "Otro" || telefono.Tipo == "Trabajo" || telefono.Tipo == "Encargado")
+            List<TelefonoDto> telefonosValidos = new List<TelefonoDto>();
+            foreach (var telefono in telefonos)
             {
-               return _agregarTelefono.AgregarTelefono(telefono);
+                if (telefono.Tipo != "Hogar" && telefono.Tipo != "Personal" && telefono.Tipo != "Otro" && telefono.Tipo != "Trabajo" && telefono.Tipo != "Encargado")
+                {
+                    throw new Exception("El tipo de telefono no es valido");
+                }
+                else
+                {
+                    telefonosValidos.Add(telefono);
+
+                }
             }
-            else { 
-                throw new Exception("El tipo de telefono no es valido");
-            }
+            return _agregarTelefono.AgregarTelefono(telefonosValidos);
+
 
         }
     }

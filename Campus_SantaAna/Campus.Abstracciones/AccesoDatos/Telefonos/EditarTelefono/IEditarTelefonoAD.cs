@@ -9,6 +9,6 @@ namespace Campus.Abstracciones.AccesoDatos.Telefonos.EditarTelefono
 {
     public interface IEditarTelefonoAD
     {
-        int EditarTelefono(int id,TelefonoDto telefono);
+        Task <int> EditarTelefono(List<TelefonoDto> telefonos);
     }
 }

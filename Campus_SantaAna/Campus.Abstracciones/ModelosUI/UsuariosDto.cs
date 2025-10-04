@@ -25,7 +25,7 @@ namespace Campus.Abstracciones.ModelosUI
         public string Email { get; set; }
         [DisplayName("Teléfono")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public TelefonoDto Telefono { get; set; }
+        public List <TelefonoDto> Telefonos { get; set; }
         [DisplayName("Fecha de Nacimiento")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public DateTime FechaDeNacimiento { get; set; }

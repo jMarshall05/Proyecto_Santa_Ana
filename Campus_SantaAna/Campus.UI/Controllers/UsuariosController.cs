@@ -12,19 +12,20 @@ using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupo
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ListarEstudianteGrupoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Telefonos.AgregarTelefono;
+using Campus.Abstracciones.LogicaDeNegocio.Telefonos.EditarTelefono;
 using Campus.Abstracciones.LogicaDeNegocio.Telefonos.ListarTelefonos;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.EditarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.Telefonos.AgregarTelefonoAD;
-using Campus.AccesoDatos.Telefonos.ListarTelefonosAD;
+using Campus.AccesoDatos.Telefonos.EditarTelefonoAD;
 using Campus.LogicaDeNegocio.EstudianteGrupo.ActualizarEstudianteGrupoLN;
 using Campus.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
 using Campus.LogicaDeNegocio.EstudianteGrupo.ListarEstudianteGrupo;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Telefonos.AgregarTelefonoLN;
+using Campus.LogicaDeNegocio.Telefonos.EditarTelefonoLN;
 using Campus.LogicaDeNegocio.Telefonos.ListarTelefonosLN;
 using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
@@ -34,6 +35,7 @@ using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity.Owin;
 using QRCoder;
 using Paragraph = iText.Layout.Element.Paragraph;
@@ -53,6 +55,8 @@ namespace Campus.UI.Controllers
         private readonly IBuscarEstudianteGrupoPorIdLN _buscarEstudianteGrupoPorIdLN;
         private readonly IActualizarEstudianteGrupoLN _actualizarEstudianteGrupoLN;
         private readonly IListarTelefonosLN _listarTelefonosLN;
+        private readonly IEditarTelefonoLN _editarTelefonoLN;
+        private readonly IAgregarTelefonoLN _agregarTelefonoLN;
 
         public UsuariosController()
         {
@@ -65,6 +69,8 @@ namespace Campus.UI.Controllers
             _buscarEstudianteGrupoPorIdLN = new BuscarEstudianteGrupoPorIdLN();
             _actualizarEstudianteGrupoLN = new ActualizarEstudianteGrupoLN();
             _listarTelefonosLN = new ListarTelefonosLN();
+            _editarTelefonoLN = new EditarTelefonoLN();
+            _agregarTelefonoLN = new AgregarTelefonoLN();
 
         }
         public ApplicationUserManager UserManager
@@ -113,6 +119,7 @@ namespace Campus.UI.Controllers
             var listaDeGrupos = _listarGrupos.ListarGrupos().Where(u => u.estado == true);
             ViewBag.ListaDeGrupos = new SelectList(listaDeGrupos, "id_grupo", "nombre_grupo");
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
+            usuario.Telefonos = _listarTelefonosLN.ListarTelefono().Where(t => t.IdUsuario == id).ToList();
             return PartialView("_EditarUsuarioParcial", usuario);
         }
 
@@ -124,36 +131,67 @@ namespace Campus.UI.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    // Roles
                     var rol = await UserManager.GetRolesAsync(id);
                     if (rol.FirstOrDefault() != usuario.Rol)
                     {
                         await UserManager.RemoveFromRoleAsync(id, rol.FirstOrDefault());
                         await UserManager.AddToRoleAsync(id, usuario.Rol);
                     }
+
+                    // Editar datos del usuario
                     await _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
                     await UserManager.SetEmailAsync(id, usuario.Email);
+
+                    // -------------------- Teléfonos --------------------
+                    // Filtrar teléfonos con datos válidos
+                    var telefonosValidos = usuario.Telefonos
+                        .Where(t => !string.IsNullOrWhiteSpace(t.Telefono.ToString()) && !string.IsNullOrWhiteSpace(t.Tipo))
+                        .ToList();
+
+                    // Teléfonos existentes (editar)
+                    var telefonosExistentes = telefonosValidos.Where(t => t.Id > 0).ToList();
+                    if (telefonosExistentes.Any())
+                    {
+                        await _editarTelefonoLN.EditarTelefono(telefonosExistentes);
+                    }
+
+                    // Teléfonos nuevos (agregar)
+                    var telefonosNuevos = telefonosValidos.Where(t => t.Id == 0).ToList();
+                    if (telefonosNuevos.Any())
+                    {
+                        telefonosNuevos.ForEach(t => t.IdUsuario = id);
+                        await _agregarTelefonoLN.AgregarTelefono(telefonosNuevos);
+                    }
+
+                    // -------------------- Grupo --------------------
                     if (Idgrupo != null)
                     {
                         var estudianteGrupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
-                        var estudiante = new EstudianteGrupoDto { EstudianteId = id, GrupoId = Idgrupo };
+                        var estudiante = new EstudianteGrupoDto { EstudianteId = id, GrupoId = Idgrupo.Value };
+
                         if (estudianteGrupo == null)
                         {
                             await _agregarEstudianteGrupoLN.AgregarEstudianteGrupo(estudiante);
-                            return RedirectToAction("ListarUsuarios");
                         }
-                        await _actualizarEstudianteGrupoLN.ActualizarEstudianteGrupo(estudiante);
+                        else
+                        {
+                            await _actualizarEstudianteGrupoLN.ActualizarEstudianteGrupo(estudiante);
+                        }
                     }
+
                     return RedirectToAction("ListarUsuarios");
                 }
-                else
-                {
-                    ModelState.AddModelError("", "Algo fallo al editar.");
-                    return View("ListarUsuarios");
-                }
+
+                // Si falla la validación
+                ModelState.AddModelError("", "Algo falló al editar.");
+                return View("ListarUsuarios");
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                // Opcional: loguear el error
+                ModelState.AddModelError("", $"Error al editar usuario: {ex.Message}");
+                return View("ListarUsuarios");
             }
         }
 

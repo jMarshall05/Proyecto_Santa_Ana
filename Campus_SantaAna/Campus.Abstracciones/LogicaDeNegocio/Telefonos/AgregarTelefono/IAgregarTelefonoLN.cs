@@ -9,6 +9,6 @@ namespace Campus.Abstracciones.LogicaDeNegocio.Telefonos.AgregarTelefono
 {
     public interface IAgregarTelefonoLN
     {
-        Task<int> AgregarTelefono(TelefonoDto telefono);
+        Task<int> AgregarTelefono(List<TelefonoDto> telefono);
     }
 }

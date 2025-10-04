@@ -161,42 +161,41 @@
                         @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                     </div>
                     <div class="mb-3">
-                        @Html.TextBoxFor(m => m.Telefono.Codigo, new
-                        {
-                            @class = "form-control",
-                            type = "text",
-                            maxlength = "4",
-                            placeholder = "Código de País (ej: +506)",
-                            required = "required",
-                            oninput = "let val = this.value.replace(/[^0-9]/g, ''); this.value = val.length > 0 ? '+' + val.substring(0, 3) : '';"
-                        })
-                        @Html.ValidationMessageFor(m => m.Telefono.Codigo, "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="mb-3">
-                        @Html.TextBoxFor(m => m.Telefono.Telefono, new
-                        {
-                            @class = "form-control",
-                            type = "tel",
-                            minlength = "8",
-                            maxlength = "8",
-                            placeholder = "Teléfono",
-                            required = "required",
-                            oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
-                        })
-                        @Html.ValidationMessageFor(m => m.Telefono.Telefono, "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="mb-3">
-                        @Html.DropDownListFor(m => m.Telefono.Tipo, new List<SelectListItem>
-                        {
-                            new SelectListItem { Text = "Personal", Value = "Personal" },
-                            new SelectListItem { Text = "Trabajo", Value = "Trabajo" },
-                            new SelectListItem { Text = "Hogar", Value = "Hogar" },
-                            new SelectListItem { Text = "Encargado", Value = "Encargado" },
-                            new SelectListItem { Text = "Otro", Value = "Otro" }
-                        }, "Seleccione un tipo de Teléfono", new { @class = "form-control", required = "required" })
-                        @Html.ValidationMessageFor(m => m.Telefono.Tipo, "", new { @class = "text-danger" })
+                        <h5>Teléfonos</h5>
+                        <div id="telefonosContainer">
+                            @for (int i = 0; i < Model.Telefonos.Count; i++)
+                            {
+                                <div class="row mb-2">
+                                    @Html.HiddenFor(m => m.Telefonos[i].Id)
+                                    <div class="col-md-3">
+                                        @Html.TextBoxFor(m => m.Telefonos[i].Codigo, new
+                                        {
+                                            @class = "form-control",
+                                            type = "text",
+                                            maxlength = "4",
+                                            placeholder = "Código de País (ej: +506)",
+                                            required = "required",
+                                            oninput = "let val = this.value.replace(/[^0-9]/g, ''); this.value = val.length > 0 ? '+' + val.substring(0, 3) : '';"
+                                        })
+                                        @Html.ValidationMessageFor(m => m.Telefonos[i].Codigo, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col-md-5">
+                                        @Html.TextBoxFor(m => m.Telefonos[i].Telefono, new { @class = "form-control", placeholder = "Número", required = "required", oninput = "this.value = this.value.replace(/[^0-9]/g, '')" })
+                                    </div>
+                                    <div class="col-md-3">
+                                        @Html.DropDownListFor(m => m.Telefonos[i].Tipo, new List<SelectListItem>
+                                        {
+                                            new SelectListItem { Text = "Personal", Value = "Personal" },
+                                            new SelectListItem { Text = "Trabajo", Value = "Trabajo" },
+                                            new SelectListItem { Text = "Hogar", Value = "Hogar" },
+                                            new SelectListItem { Text = "Encargado", Value = "Encargado" },
+                                            new SelectListItem { Text = "Otro", Value = "Otro" }
+                                        }, "Seleccione un tipo", new { @class = "form-control", required = "required" })
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <button type="button" id="addTelefono" class="btn btn-primary mt-2">Agregar Teléfono</button>
                     </div>
 
                     <div class="mb-3">
@@ -262,6 +261,43 @@
 
     @section Scripts {
         @Scripts.Render("~/bundles/jqueryval")
+        <script>
+        let phoneIndex = @Model.Telefonos.Count;
+
+        $(document).on('click', '#addTelefono', function (e) {
+        e.preventDefault();
+        console.log("Botón Agregar Teléfono funciona!");
+
+        let html = `
+        <div class="row mb-2">
+            <input type="hidden" name="Telefonos[${phoneIndex}].Id" value="0" />
+            <div class="col-md-3">
+             <input type="text" name="Telefonos[${phoneIndex}].Codigo" class = "form-control",
+                     type = "text",
+                     maxlength = "4",
+                     placeholder = "Código de País (ej: +506)",
+                     required = "required",
+                     oninput = "let val = this.value.replace(/[^0-9]/g, ''); this.value = val.length > 0 ? '+' + val.substring(0, 3) : '';" />
+         </div>
+            <div class="col-md-5">
+                <input type="text" name="Telefonos[${phoneIndex}].Telefono" class="form-control" placeholder="Número" required oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+            </div>
+            <div class="col-md-3">
+                <select name="Telefonos[${phoneIndex}].Tipo" class="form-control" required>
+                    <option value="">Seleccione un tipo</option>
+                    <option value="Personal">Personal</option>
+                    <option value="Trabajo">Trabajo</option>
+                    <option value="Hogar">Hogar</option>
+                    <option value="Encargado">Encargado</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+        </div>`;
+
+        $('#telefonosContainer').append(html);
+        phoneIndex++;
+        });
+        </script>
     }
 </body>
 </html>

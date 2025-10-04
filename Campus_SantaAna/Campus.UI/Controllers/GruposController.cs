@@ -240,7 +240,7 @@ namespace Campus.UI.Controllers
                     cursosTable.AddCell(new Paragraph(u.Nombre));
                     cursosTable.AddCell(new Paragraph(u.Apellido));
                     cursosTable.AddCell(new Paragraph(u.Email));
-                    cursosTable.AddCell(new Paragraph(u.Telefono.ToString()));
+                    cursosTable.AddCell(new Paragraph(u.Telefonos.ToString()));
                     cursosTable.AddCell(new Paragraph(u.Cedula.ToString()));
                 }
 

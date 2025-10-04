@@ -111,11 +111,31 @@
                                     <td class="valor" data-campo="Apellido">@Model.Apellido</td>
                                 </tr>
                                 <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Telefonos)</th>
+                                    <td>
+                                        @foreach (var telefono in Model.Telefonos)
+                                        {
+                                            <div class="justify-content-center">
+                                                (+@telefono.Codigo) @(telefono.Telefono.ToString().Insert(4, "-")): @telefono.Tipo
+                                                @if (@telefono.Estado)
+                                                {
+                                                    <span class="badge bg-success">Activo</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Inactivo</span>
+
+                                                }
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th class="bg-light">
                                         <i class="bi bi-envelope me-2 text-primary"></i>
                                         @Html.DisplayNameFor(model => model.Email)
                                     </th>
-                                    <td >@Html.DisplayFor(model=>model.Email)</td>
+                                    <td>@Html.DisplayFor(model => model.Email)</td>
                                 </tr>
                                 <tr>
                                     <th class="bg-light">

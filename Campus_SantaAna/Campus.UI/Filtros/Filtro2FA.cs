@@ -19,7 +19,9 @@ namespace Campus.UI.Filtros
                 path.Contains("/account/login") ||
                 path.Contains("/account/register") ||
                 path.Contains("/account/forgotpassword") ||
-                path.Contains("/account/solicitud2fa"))
+                path.Contains("/account/solicitud2fa") ||
+                path.Contains("/account/enableauthenticator")
+             )
 
             {
                 return true;

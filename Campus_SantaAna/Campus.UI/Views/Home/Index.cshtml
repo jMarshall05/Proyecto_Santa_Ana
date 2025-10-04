@@ -11,11 +11,7 @@
             Layout = "~/Views/Shared/_Layout.cshtml"; // tu layout normal
         }
     }
-    else
-    {
-        Layout = "~/Views/Shared/_Layout.cshtml"; // si no está logueado
-    }
-
+ 
     ViewBag.Title = "Bienvenidos a Santa Ana a un Click";
 }
 
@@ -39,30 +35,34 @@
     {
         if (User.IsInRole("Profesores") || User.IsInRole("Estudiantes"))
         {
-            <p class="lead">Mis Cursos</p>
-            <div class="row">
-                @foreach (var item in Model)
+
+
+            <p class="lead">Mis Cursos</p><div class="row">
+                @if (Model != null)
                 {
-                    <section class="col-md-4 mb-4">
-                        <div class="card text-center">
-                            <img src="@(imageMap.ContainsKey(item.NombreMateria) ? imageMap[item.NombreMateria] : defaultImage)"
-                                 class="card-img-top mx-auto mt-3"
-                                 alt="@item.NombreMateria"
-                                 style="width: 120px; height: 120px; object-fit: contain;" />
-                            <div class="card-body">
-                                <h5 class="card-title">@item.NombreMateria | @item.NombreGrupo</h5>
-                                <p class="card-text">Profesor: @item.NombreProfesor</p>
-                                @if (User.IsInRole("Profesores"))
-                                {
-                                    <a href="@Url.Action("ListarTareas", "Tareas", new { materiaId = item.MateriaId, grupoId = item.GrupoId })" class="btn btn-primary">Ver Curso</a>
-                                }
-                                else
-                                {
-                                    <a href="@Url.Action("MisTareas", "Tareas", new { materiaId = item.MateriaId, grupoId = item.GrupoId })" class="btn btn-primary">Ver Curso</a>
-                                }
+                    foreach (var item in Model)
+                    {
+                        <section class="col-md-4 mb-4">
+                            <div class="card text-center">
+                                <img src="@(imageMap.ContainsKey(item.NombreMateria) ? imageMap[item.NombreMateria] : defaultImage)"
+                                     class="card-img-top mx-auto mt-3"
+                                     alt="@item.NombreMateria"
+                                     style="width: 120px; height: 120px; object-fit: contain;" />
+                                <div class="card-body">
+                                    <h5 class="card-title">@item.NombreMateria | @item.NombreGrupo</h5>
+                                    <p class="card-text">Profesor: @item.NombreProfesor</p>
+                                    @if (User.IsInRole("Profesores"))
+                                    {
+                                        <a href="@Url.Action("ListarTareas", "Tareas", new { materiaId = item.MateriaId, grupoId = item.GrupoId })" class="btn btn-primary">Ver Curso</a>
+                                    }
+                                    else if(User.IsInRole("Profesores"))
+                                    {
+                                        <a href="@Url.Action("MisTareas", "Tareas", new { materiaId = item.MateriaId, grupoId = item.GrupoId })" class="btn btn-primary">Ver Curso</a>
+                                    }
+                                </div>
                             </div>
-                        </div>
-                    </section>
+                        </section>
+                    }
                 }
             </div>
         }

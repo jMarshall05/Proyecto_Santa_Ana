@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Telefonos.EditarTelefono;
 using Campus.Abstracciones.ModelosUI;
+using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.Telefonos.EditarTelefonoAD
 {
@@ -17,25 +18,34 @@ namespace Campus.AccesoDatos.Telefonos.EditarTelefonoAD
             _elContexto = new Contexto();
         }
 
-        public int EditarTelefono(int id, TelefonoDto telefono)
+        public async Task<int> EditarTelefono(List<TelefonoDto> telefonos)
         {
-            var telefonoExistente = _elContexto.Telefonos.FirstOrDefault(t => t.Id == id);
-            if (telefonoExistente != null)
-            {
-                telefonoExistente.Telefono = telefono.Telefono;
-                telefonoExistente.Tipo = telefono.Tipo;
-                telefonoExistente.Codigo = telefono.Codigo;
-                telefonoExistente.Estado = telefono.Estado;
+            int cambios = 0;
 
-                EntityState estado = _elContexto.Entry(telefonoExistente).State = EntityState.Modified;
-                int resultado =  _elContexto.SaveChanges();
-                return resultado;
-            }
-            else
+            foreach (var telefono in telefonos)
             {
-                throw new Exception("El teléfono no existe.");
+                var telefonoExistente = await _elContexto.Telefonos
+                    .FirstOrDefaultAsync(t => t.Id == telefono.Id);
+                if (telefonoExistente != null &&
+                      telefonoExistente.Codigo == telefono.Codigo &&
+                      telefonoExistente.Telefono == telefono.Telefono &&
+                      telefonoExistente.Tipo == telefono.Tipo &&
+                      telefonoExistente.Estado == telefono.Estado)
+                {
+                }
+                else if (telefonoExistente != null)
+                {
+                    telefonoExistente.Codigo = telefono.Codigo;
+                    telefonoExistente.Telefono = telefono.Telefono;
+                    telefonoExistente.Tipo = telefono.Tipo;
+                    telefonoExistente.Estado = telefono.Estado;
+                    _elContexto.Entry(telefonoExistente).State = EntityState.Modified;
 
+                }
             }
+
+            cambios = await _elContexto.SaveChangesAsync();
+            return cambios;
         }
     }
 }

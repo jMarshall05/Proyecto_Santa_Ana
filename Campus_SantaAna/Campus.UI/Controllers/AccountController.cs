@@ -220,8 +220,8 @@ namespace Campus.UI.Controllers
                     await UserManager.AddToRoleAsync(user.Id, model.Rol);
                     var usuario = ConvertirDto(model, user);
                     await _agregarUsuariosLN.AgregarUsuario(usuario);
-                    model.Telefono.IdUsuario = user.Id;
-                    await _agregarTelefonoLN.AgregarTelefono(model.Telefono);
+                    model.Telefonos.ForEach(t => t.IdUsuario = user.Id);
+                    await _agregarTelefonoLN.AgregarTelefono(model.Telefonos);
                     // await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
