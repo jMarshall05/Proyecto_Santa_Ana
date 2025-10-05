@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
@@ -18,7 +19,6 @@ using Campus.Abstracciones.LogicaDeNegocio.Usuarios.EditarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.Telefonos.EditarTelefonoAD;
 using Campus.LogicaDeNegocio.EstudianteGrupo.ActualizarEstudianteGrupoLN;
 using Campus.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
@@ -35,7 +35,7 @@ using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
-using Microsoft.Ajax.Utilities;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using QRCoder;
 using Paragraph = iText.Layout.Element.Paragraph;
@@ -139,24 +139,20 @@ namespace Campus.UI.Controllers
                         await UserManager.AddToRoleAsync(id, usuario.Rol);
                     }
 
-                    // Editar datos del usuario
                     await _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
                     await UserManager.SetEmailAsync(id, usuario.Email);
 
-                    // -------------------- Teléfonos --------------------
-                    // Filtrar teléfonos con datos válidos
+
                     var telefonosValidos = usuario.Telefonos
                         .Where(t => !string.IsNullOrWhiteSpace(t.Telefono.ToString()) && !string.IsNullOrWhiteSpace(t.Tipo))
                         .ToList();
 
-                    // Teléfonos existentes (editar)
                     var telefonosExistentes = telefonosValidos.Where(t => t.Id > 0).ToList();
                     if (telefonosExistentes.Any())
                     {
                         await _editarTelefonoLN.EditarTelefono(telefonosExistentes);
                     }
 
-                    // Teléfonos nuevos (agregar)
                     var telefonosNuevos = telefonosValidos.Where(t => t.Id == 0).ToList();
                     if (telefonosNuevos.Any())
                     {
@@ -164,7 +160,6 @@ namespace Campus.UI.Controllers
                         await _agregarTelefonoLN.AgregarTelefono(telefonosNuevos);
                     }
 
-                    // -------------------- Grupo --------------------
                     if (Idgrupo != null)
                     {
                         var estudianteGrupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
@@ -183,24 +178,25 @@ namespace Campus.UI.Controllers
                     return RedirectToAction("ListarUsuarios");
                 }
 
-                // Si falla la validación
                 ModelState.AddModelError("", "Algo falló al editar.");
                 return View("ListarUsuarios");
             }
             catch (Exception ex)
             {
-                // Opcional: loguear el error
                 ModelState.AddModelError("", $"Error al editar usuario: {ex.Message}");
                 return View("ListarUsuarios");
             }
         }
-
-        public async Task<ActionResult> EditarUsuario(string id, EditarUsuario usuarioModel)
+      
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditarUsuario(EditarUsuario usuarioModel)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    var id = User.Identity.GetUserId();
                     var user = await UserManager.FindByIdAsync(id);
                     if (user != null)
                     {
@@ -208,26 +204,46 @@ namespace Campus.UI.Controllers
                         {
                             Nombre = usuarioModel.Nombre,
                             Apellido = usuarioModel.Apellido,
-
+                            Telefonos = usuarioModel.Telefonos
                         };
                         await _editarUsuarioLN.EditarUsuario(id, usuario);
 
-                    }
+                        // Verifica que Telefonos no sea null antes de usar
+                        if (usuario.Telefonos != null)
+                        {
+                            var telefonosValidos = usuario.Telefonos
+                                .Where(t => t.Telefono > 0 && !string.IsNullOrWhiteSpace(t.Tipo))
+                                .ToList();
 
+                            var telefonosExistentes = telefonosValidos.Where(t => t.Id > 0).ToList();
+                            if (telefonosExistentes.Any())
+                            {
+                                await _editarTelefonoLN.EditarTelefono(telefonosExistentes);
+                            }
+
+                            var telefonosNuevos = telefonosValidos.Where(t => t.Id == 0).ToList();
+                            if (telefonosNuevos.Any())
+                            {
+                                telefonosNuevos.ForEach(t => t.IdUsuario = id);
+                                await _agregarTelefonoLN.AgregarTelefono(telefonosNuevos);
+                            }
+                        }
+
+                        return Json(new { success = true, message = "Cambios guardados correctamente" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Usuario no encontrado" }, JsonRequestBehavior.AllowGet);
+                    }
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Por favor, corrija los errores en el formulario.");
-                    return View();
+                    return Json(new { success = false, message = "Datos inválidos" }, JsonRequestBehavior.AllowGet);
                 }
-
-
-
-                return RedirectToAction("ListarUsuarios");
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return Json(new { success = false, message = "Error: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
         public ActionResult VerDocentesAdministrativos()

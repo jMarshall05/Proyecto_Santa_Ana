@@ -36,7 +36,6 @@ namespace Campus.AccesoDatos.Telefonos.AgregarTelefonoAD
                 Telefono = telefono.Telefono,
                 Codigo = telefono.Codigo,
                 Tipo = telefono.Tipo,
-                Estado = telefono.Estado
             };
         }
     }

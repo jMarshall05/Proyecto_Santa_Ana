@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Campus.Abstracciones.ModelosUI;
 
 public class CursoViewModel
 {
@@ -15,5 +17,7 @@ public class EditarUsuario {
     [DisplayName("Apellido")]
     [Required(ErrorMessage = "El campo {0} es obligatorio.")]
     public string Apellido { get; set; }
+
+    public List<TelefonoDto> Telefonos { get; set; }
 
 }
