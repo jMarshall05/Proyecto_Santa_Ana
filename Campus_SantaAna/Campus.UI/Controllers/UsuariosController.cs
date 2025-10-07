@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -28,6 +29,7 @@ using iText.Kernel.Pdf.Canvas.Draw;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using QRCoder;
 using Paragraph = iText.Layout.Element.Paragraph;
@@ -98,85 +100,143 @@ namespace Campus.UI.Controllers
 
 
         // GET: Usuarios/Edit/5
+        // GET: Usuarios/Edit/5
         public ActionResult EditarUsuarioParcial(string id)
         {
-            var listaDeGrupos = _listarGrupos.ListarGrupos();
-            ViewBag.ListaDeGrupos = new SelectList(listaDeGrupos, "id_grupo", "nombre_grupo");
-            var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
-            return PartialView("_EditarUsuarioParcial", usuario);
+            try
+            {
+                // ✅ Validación del ID
+                if (string.IsNullOrEmpty(id))
+                {
+                    return Content("<div class='alert alert-danger'>Error: ID de usuario no proporcionado</div>");
+                }
+
+                // ✅ Obtener usuario
+                var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
+                if (usuario == null)
+                {
+                    return Content("<div class='alert alert-danger'>Error: Usuario no encontrado</div>");
+                }
+
+                // ✅ Verificar que el usuario existe en Identity
+                var user = UserManager.FindById(id);
+                if (user == null)
+                {
+                    return Content("<div class='alert alert-danger'>Error: Usuario no existe en el sistema de autenticación</div>");
+                }
+
+                var listaDeGrupos = _listarGrupos.ListarGrupos();
+                ViewBag.ListaDeGrupos = new SelectList(listaDeGrupos, "id_grupo", "nombre_grupo");
+
+                return PartialView("_EditarUsuarioParcial", usuario);
+            }
+            catch (Exception ex)
+            {
+                return Content($"<div class='alert alert-danger'>Error al cargar el formulario: {ex.Message}</div>");
+            }
         }
 
+        // POST: Usuarios/Edit/5
+        // POST: Usuarios/Edit/5
         // POST: Usuarios/Edit/5
         [HttpPost]
         public async Task<ActionResult> EditarUsuarioParcial(string id, UsuariosDto usuario, int? Idgrupo)
         {
             try
             {
+                // ✅ VALIDACIÓN CRÍTICA: Verificar que el ID no sea nulo
+                if (string.IsNullOrEmpty(id))
+                {
+                    TempData["ErrorMessage"] = "ID de usuario no proporcionado.";
+                    return RedirectToAction("ListarUsuarios");
+                }
+
+                // ✅ VALIDACIÓN CRÍTICA: Verificar que el usuario exista
+                var userExists = await UserManager.FindByIdAsync(id);
+                if (userExists == null)
+                {
+                    TempData["ErrorMessage"] = "Usuario no encontrado en el sistema.";
+                    return RedirectToAction("ListarUsuarios");
+                }
+
                 if (ModelState.IsValid)
                 {
-                    var rol = await UserManager.GetRolesAsync(id);
-                    if (rol.FirstOrDefault() != usuario.Rol)
+                    // ✅ Obtener roles actuales del usuario
+                    var rolesActuales = await UserManager.GetRolesAsync(id);
+                    var rolActual = rolesActuales.FirstOrDefault();
+
+                    // ✅ Cambiar rol si es necesario
+                    if (rolActual != usuario.Rol)
                     {
-                        await UserManager.RemoveFromRoleAsync(id, rol.FirstOrDefault());
+                        if (!string.IsNullOrEmpty(rolActual))
+                        {
+                            await UserManager.RemoveFromRoleAsync(id, rolActual);
+                        }
                         await UserManager.AddToRoleAsync(id, usuario.Rol);
                     }
+
+                    // ✅ Actualizar información del usuario
                     await _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
-                    await UserManager.SetEmailAsync(id, usuario.Email);
-                    if (Idgrupo != null)
+
+                    // ✅ Actualizar email
+                    var result = await UserManager.SetEmailAsync(id, usuario.Email);
+                    if (!result.Succeeded)
+                    {
+                        ModelState.AddModelError("", "Error al actualizar el email: " + string.Join(", ", result.Errors));
+                        return CargarVistaEdicion(usuario);
+                    }
+
+                    // ✅ Manejar grupo si es estudiante
+                    if (Idgrupo != null && usuario.Rol == "Estudiantes")
                     {
                         var estudianteGrupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
                         var estudiante = new EstudianteGrupoDto { EstudianteId = id, GrupoId = Idgrupo };
+
                         if (estudianteGrupo == null)
                         {
                             await _agregarEstudianteGrupoLN.AgregarEstudianteGrupo(estudiante);
-                            return RedirectToAction("ListarUsuarios");
                         }
-                        await _actualizarEstudianteGrupoLN.ActualizarEstudianteGrupo(estudiante);
+                        else
+                        {
+                            await _actualizarEstudianteGrupoLN.ActualizarEstudianteGrupo(estudiante);
+                        }
                     }
+
+                    TempData["SuccessMessage"] = "Usuario actualizado correctamente.";
                     return RedirectToAction("ListarUsuarios");
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Algo fallo al editar.");
-                    return View("ListarUsuarios");
+                    ModelState.AddModelError("", "Por favor, corrija los errores en el formulario.");
+                    return CargarVistaEdicion(usuario);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                // ✅ Manejo específico del error "UserId not found"
+                if (ex.Message.Contains("UserId not found") || ex.Message.Contains("User ID not found"))
+                {
+                    TempData["ErrorMessage"] = "El usuario no existe o el ID es inválido.";
+                    return RedirectToAction("ListarUsuarios");
+                }
+
+                ModelState.AddModelError("", "Error al editar el usuario: " + ex.Message);
+                return CargarVistaEdicion(usuario);
             }
         }
 
-        public async Task<ActionResult> EditarUsuario(string id, UsuariosDto usuario)
+        // ✅ Método helper para cargar la vista de edición
+        private ActionResult CargarVistaEdicion(UsuariosDto usuario)
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    var user = await UserManager.FindByIdAsync(id);
-                    if (user != null)
-                    {
-                        var result = await UserManager.SetEmailAsync(id, usuario.Email);
-                        if (result.Succeeded)
-                        {
-                            await _editarUsuarioLN.EditarUsuario(id, usuario);
-                        }
-                    }
-
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Por favor, corrija los errores en el formulario.");
-                    return PartialView("_EditarUsuarioParcial", usuario);
-                }
-
-
-
-                return RedirectToAction("ListarUsuarios");
+                var listaDeGrupos = _listarGrupos.ListarGrupos();
+                ViewBag.ListaDeGrupos = new SelectList(listaDeGrupos, "id_grupo", "nombre_grupo");
+                return PartialView("_EditarUsuarioParcial", usuario);
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return Content($"<div class='alert alert-danger'>Error al cargar la vista: {ex.Message}</div>");
             }
         }
         public ActionResult VerDocentesAdministrativos()
