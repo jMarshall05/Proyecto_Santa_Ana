@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Campus.Abstracciones.LogicaDeNegocio.Eventos.AgregarEventoLN;
+using Campus.Abstracciones.LogicaDeNegocio.Eventos.ListarEventosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Eventos.EditarEventoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Eventos.EliminarEventoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Eventos.ListarEventosLN;
@@ -15,7 +16,7 @@ using Campus.UI.Filtros;
 
 namespace Campus.UI.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class EventosController : Controller
     {
         private readonly IAgregarEventoLN _agregarEventoLN;
@@ -31,50 +32,78 @@ namespace Campus.UI.Controllers
             _eliminarEventoLN = new EliminarEventoLN();
         }
 
-        public ActionResult Calendario()
-        {
-            return View();
-        }
+        public ActionResult Calendario() => View();
 
         [HttpGet]
+        
         public async Task<JsonResult> ObtenerEventos()
         {
-            var eventos = await _listarEventosLN.ListarEventos();
-            return Json(eventos.Select(e => new {
-                id = e.Id,
-                title = e.Titulo,
-                start = e.FechaInicio.ToString("yyyy-MM-dd"),
-                end = e.FechaFin.ToString("yyyy-MM-dd")
-            }), JsonRequestBehavior.AllowGet);
+            try
+            {
+                var idUsuario = User.Identity.GetUserId();
+                var eventos = await _listarEventosLN.ListarEventos(idUsuario);
+
+                var eventosUsuario = eventos.Select(e => new
+                {
+                    id = e.Id,
+                    title = e.Titulo,   
+                    start = e.FechaInicio.ToString("s"),
+                    end = e.FechaFin.ToString("s")
+                });
+
+                return Json(eventosUsuario, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> AgregarEvento(string titulo, string fecha, string idUsuario)
+        {
+            try
+            {
+                var nuevoEvento = new EventoDto
+                {
+                    Titulo = titulo,
+                    FechaInicio = DateTime.Parse(fecha),
+                    FechaFin = DateTime.Parse(fecha),
+                    IdUsuario = idUsuario
+                };
+
+                var idGenerado = await _agregarEventoLN.AgregarEvento(nuevoEvento);
+                return Json(new { success = true, id = idGenerado });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         [HttpPost]
-        public async Task<JsonResult> AgregarEvento(string titulo, string fecha)
+        public async Task<JsonResult> EditarEvento(int id, string titulo, string fecha, string idUsuario)
         {
-            var nuevoEvento = new EventoDto
+            try
             {
-                Titulo = titulo,
-                FechaInicio = DateTime.Parse(fecha),
-                FechaFin = DateTime.Parse(fecha)
-            };
+                var evento = new EventoDto
+                {
+                    Id = id,
+                    Titulo = titulo,
+                    FechaInicio = DateTime.Parse(fecha),
+                    FechaFin = DateTime.Parse(fecha),
+                    IdUsuario = idUsuario
+                };
 
-            var idGenerado = await _agregarEventoLN.AgregarEvento(nuevoEvento);
-            return Json(new { success = true, id = idGenerado });
-        }
-
-
-        [HttpPost]
-        public async Task<JsonResult> EditarEvento(int id, string titulo, string fecha)
-        {
-            var evento = new EventoDto
+                await _editarEventoLN.EditarEvento(evento);
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
             {
-                Id = id,
-                Titulo = titulo,
-                FechaInicio = DateTime.Parse(fecha),
-                FechaFin = DateTime.Parse(fecha)
-            };
-            await _editarEventoLN.EditarEvento(evento);
-            return Json(new { success = true });
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         [HttpPost]
@@ -92,3 +121,4 @@ namespace Campus.UI.Controllers
         }
     }
 }
+

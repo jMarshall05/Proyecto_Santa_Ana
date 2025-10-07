@@ -114,6 +114,7 @@ namespace Campus.UI.Controllers
 
 
         // GET: Usuarios/Edit/5
+        // GET: Usuarios/Edit/5
         public ActionResult EditarUsuarioParcial(string id)
         {
             var listaDeGrupos = _listarGrupos.ListarGrupos().Where(u => u.estado == true);
@@ -124,18 +125,38 @@ namespace Campus.UI.Controllers
         }
 
         // POST: Usuarios/Edit/5
+        // POST: Usuarios/Edit/5
+        // POST: Usuarios/Edit/5
         [HttpPost]
         public async Task<ActionResult> EditarUsuarioParcial(string id, UsuariosDto usuario, int? Idgrupo)
         {
             try
             {
+                // ✅ VALIDACIÓN CRÍTICA: Verificar que el ID no sea nulo
+                if (string.IsNullOrEmpty(id))
+                {
+                    TempData["ErrorMessage"] = "ID de usuario no proporcionado.";
+                    return RedirectToAction("ListarUsuarios");
+                }
+
+                // ✅ VALIDACIÓN CRÍTICA: Verificar que el usuario exista
+                var userExists = await UserManager.FindByIdAsync(id);
+                if (userExists == null)
+                {
+                    TempData["ErrorMessage"] = "Usuario no encontrado en el sistema.";
+                    return RedirectToAction("ListarUsuarios");
+                }
+
                 if (ModelState.IsValid)
                 {
                     // Roles
                     var rol = await UserManager.GetRolesAsync(id);
                     if (rol.FirstOrDefault() != usuario.Rol)
                     {
-                        await UserManager.RemoveFromRoleAsync(id, rol.FirstOrDefault());
+                        if (!string.IsNullOrEmpty(rolActual))
+                        {
+                            await UserManager.RemoveFromRoleAsync(id, rolActual);
+                        }
                         await UserManager.AddToRoleAsync(id, usuario.Rol);
                     }
 

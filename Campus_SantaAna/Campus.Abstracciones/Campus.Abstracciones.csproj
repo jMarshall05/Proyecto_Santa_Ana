@@ -105,7 +105,7 @@
     <Compile Include="LogicaDeNegocio\eventos\EliminarEventoLN\IEliminarEventoLN.cs" />
     <Compile Include="LogicaDeNegocio\eventos\EditarEventoLN\IEditarEventoLN.cs" />
     <Compile Include="LogicaDeNegocio\eventos\AgregarEventoLN\IAgregarEventoLN.cs" />
-    <Compile Include="LogicaDeNegocio\eventos\ListarEventosLN\IListarEstudianteGrupoLN.cs" />
+    <Compile Include="LogicaDeNegocio\eventos\ListarEventosLN\IListarEventosLN.cs" />
     <Compile Include="LogicaDeNegocio\Grupos\AgregarGrupo\IAgregarGrupoLN.cs" />
     <Compile Include="LogicaDeNegocio\Grupos\EditarGrupo\IEditarGrupoLN.cs" />
     <Compile Include="LogicaDeNegocio\Grupos\ListarGrupos\IListarGruposLN.cs" />

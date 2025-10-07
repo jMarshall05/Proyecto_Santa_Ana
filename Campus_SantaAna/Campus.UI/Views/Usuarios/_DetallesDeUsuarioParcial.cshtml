@@ -1,17 +1,82 @@
 ﻿@model Campus.Abstracciones.ModelosUI.UsuariosDto
-<style>
-    .qr-code {
-        width: 150px;
-        height: 150px;
-        object-fit: contain;
-    }
-</style>
-<div class="container mt-4">
-    <div class="card shadow rounded-4">
-        <div class="card-header bg-danger text-white rounded-top-4">
-            <h4 class="mb-0"><i class="fas fa-user me-2"></i>Detalle del Usuario</h4>
-        </div>
 
+<div class="user-detail-modal">
+    <!-- Header Premium -->
+    <div class="detail-header">
+        <div class="header-content">
+            <div class="user-avatar-large">
+                <div class="avatar-placeholder-large">
+                    @{
+                        var inicialNombre = !string.IsNullOrEmpty(Model.Nombre) ? Model.Nombre[0].ToString() : "U";
+                        var inicialApellido = !string.IsNullOrEmpty(Model.Apellido) ? Model.Apellido[0].ToString() : "S";
+                    }
+                    @inicialNombre@inicialApellido
+                </div>
+            </div>
+            <div class="user-info-header">
+                <h2 class="user-name-large">@Model.Nombre @Model.Apellido</h2>
+                <p class="user-role-badge">@Model.Rol</p>
+                <span class="status-badge @(Model.Estado ? "active" : "inactive")">
+                    @(Model.Estado ? "Activo" : "Inactivo")
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="detail-content">
+        <div class="info-grid">
+            <!-- Información Personal -->
+            <div class="info-section">
+                <h3 class="section-title">
+                    <i class="fas fa-user-circle me-2"></i>Información Personal
+                </h3>
+                <div class="info-items">
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">
+                            <i class="fas fa-envelope me-2 text-primary"></i>
+                            @Model.Email
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Teléfono</span>
+                        <span class="info-value">
+                            <i class="fas fa-phone me-2 text-success"></i>
+                            @(Model.Telefono == 0 ? "No asignado" : Model.Telefono.ToString())
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Cédula</span>
+                        <span class="info-value">
+                            <i class="fas fa-id-card me-2 text-warning"></i>
+                            @Model.Cedula
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fechas -->
+            <div class="info-section">
+                <h3 class="section-title">
+                    <i class="fas fa-calendar-alt me-2"></i>Fechas Importantes
+                </h3>
+                <div class="info-items">
+                    <div class="info-item">
+                        <span class="info-label">Fecha de Nacimiento</span>
+                        <span class="info-value">
+                            <i class="fas fa-birthday-cake me-2 text-info"></i>
+                            @Model.FechaDeNacimiento.ToString("dd/MM/yyyy")
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Fecha de Registro</span>
+                        <span class="info-value">
+                            <i class="fas fa-user-plus me-2 text-success"></i>
+                            @Model.FechaDeRegistro.ToString("dd/MM/yyyy")
+                        </span>
+                    </div>
+                    @if (Model.FechaDeModificacion.HasValue)
         <div class="card-body">
             <table class="table table-bordered table-striped align-middle">
                 <tbody>
@@ -70,41 +135,336 @@
 
                     @if (Model.Rol == "Estudiantes")
                     {
-                        <tr>
-                            <th>Grupo</th>
-                            <td>@ViewBag.Grupo</td>
-                        </tr>
+                        <div class="info-item">
+                            <span class="info-label">Última Modificación</span>
+                            <span class="info-value">
+                                <i class="fas fa-edit me-2 text-warning"></i>
+                                @Model.FechaDeModificacion.Value.ToString("dd/MM/yyyy")
+                            </span>
+                        </div>
                     }
+                </div>
+            </div>
 
-                    <tr>
-                        <th>@Html.DisplayNameFor(model => model.Estado)</th>
-                        <td>
-                            @if (Model.Estado)
-                            {
-                                <span class="badge bg-success">Activo</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger">Inactivo</span>
-                            }
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Descargar Reporte</th>
-                        <th>
-                            <a href="@Url.Action("GenerarReportePDF", "Usuarios", new { id = Model.IdUsuario }, Request.Url.Scheme)">
-                                <img src="/Usuarios/GenerarReporteQR?id=@Model.IdUsuario" alt="QR Code" class="qr-code img-fluid">
-                            </a>
-                        </th>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <!-- Información Adicional -->
+            <div class="info-section">
+                <h3 class="section-title">
+                    <i class="fas fa-info-circle me-2"></i>Información Adicional
+                </h3>
+                <div class="info-items">
+                    @if (Model.Rol == "Estudiantes" && ViewBag.Grupo != null)
+                    {
+                        <div class="info-item">
+                            <span class="info-label">Grupo</span>
+                            <span class="info-value">
+                                <i class="fas fa-users me-2 text-primary"></i>
+                                @ViewBag.Grupo
+                            </span>
+                        </div>
+                    }
+                    <div class="info-item">
+                        <span class="info-label">Estado</span>
+                        <span class="info-value">
+                            <i class="fas fa-circle me-2 @(Model.Estado ? "text-success" : "text-danger")"></i>
+                            @(Model.Estado ? "Activo" : "Inactivo")
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-        <div class="card-footer text-end">
-            <a class="btn btn-secondary" data-bs-dismiss="modal">
-                <i class="fas fa-arrow-left me-1"></i> Volver a la lista
-            </a>
+            <!-- Reporte QR -->
+            <div class="info-section">
+                <h3 class="section-title">
+                    <i class="fas fa-qrcode me-2"></i>Reporte Digital
+                </h3>
+                <div class="qr-section">
+                    <a href="@Url.Action("GenerarReportePDF", "Usuarios", new { id = Model.IdUsuario })"
+                       class="qr-link" target="_blank">
+                        <div class="qr-container">
+                            <img src="/Usuarios/GenerarReporteQR?id=@Model.IdUsuario"
+                                 alt="QR Code"
+                                 class="qr-code">
+                            <div class="qr-overlay">
+                                <i class="fas fa-download"></i>
+                                <span>Descargar Reporte</span>
+                            </div>
+                        </div>
+                    </a>
+                    <p class="qr-description">Escanea el código para descargar el reporte completo</p>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <div class="detail-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-arrow-left me-2"></i>Volver a la lista
+        </button>
+    </div>
 </div>
+
+<style>
+    .user-detail-modal {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Header Styles */
+    .detail-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .avatar-placeholder-large {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .user-info-header {
+        flex: 1;
+    }
+
+    .user-name-large {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .user-role-badge {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.3rem 1rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        display: inline-block;
+        margin-bottom: 0.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .status-badge {
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+        .status-badge.active {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-badge.inactive {
+            background: #ef4444;
+            color: white;
+        }
+
+    /* Content Styles */
+    .detail-content {
+        padding: 2rem;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .info-section {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 15px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .info-items {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .info-label {
+        font-size: 0.85rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .info-value {
+        font-size: 1rem;
+        color: #1e293b;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+    }
+
+    /* QR Section */
+    .qr-section {
+        text-align: center;
+    }
+
+    .qr-link {
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .qr-container {
+        position: relative;
+        display: inline-block;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+        .qr-container:hover {
+            transform: translateY(-5px);
+        }
+
+    .qr-code {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 15px;
+    }
+
+    .qr-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(99, 102, 241, 0.9);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 15px;
+    }
+
+    .qr-container:hover .qr-overlay {
+        opacity: 1;
+    }
+
+    .qr-overlay i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .qr-description {
+        margin-top: 1rem;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    /* Footer */
+    .detail-footer {
+        padding: 1.5rem 2rem;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        text-align: center;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary {
+        background: #64748b;
+        color: white;
+        border: none;
+    }
+
+        .btn-secondary:hover {
+            background: #475569;
+            transform: translateY(-2px);
+        }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .detail-header {
+            padding: 1.5rem;
+        }
+
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .detail-content {
+            padding: 1.5rem;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .qr-code {
+            width: 150px;
+            height: 150px;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .detail-header {
+            padding: 1rem;
+        }
+
+        .detail-content {
+            padding: 1rem;
+        }
+
+        .info-section {
+            padding: 1rem;
+        }
+
+        .avatar-placeholder-large {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+        }
+
+        .user-name-large {
+            font-size: 1.5rem;
+        }
+    }
+</style>
