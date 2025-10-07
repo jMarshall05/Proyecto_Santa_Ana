@@ -46,7 +46,7 @@ namespace Campus.UI.Filtros
 
                 is2FAEnabled = appUser.TwoFactorEnabled;
 
-                cache.Add(cacheKey, is2FAEnabled, DateTimeOffset.Now.AddMinutes(15));
+                cache.Add(cacheKey, is2FAEnabled, DateTimeOffset.Now.AddDays(1));
             }
             if (!is2FAEnabled.Value)
                 return true;

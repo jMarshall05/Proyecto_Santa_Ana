@@ -42,7 +42,7 @@ using Paragraph = iText.Layout.Element.Paragraph;
 using Table = iText.Layout.Element.Table;
 namespace Campus.UI.Controllers
 {
-    //[Authorize(Roles = "Administradores")]
+    [Authorize(Roles = "Administradores")]
     public class UsuariosController : Controller
     {
         private readonly IListarUsuariosLN _listarUsuariosLN;
@@ -57,6 +57,7 @@ namespace Campus.UI.Controllers
         private readonly IListarTelefonosLN _listarTelefonosLN;
         private readonly IEditarTelefonoLN _editarTelefonoLN;
         private readonly IAgregarTelefonoLN _agregarTelefonoLN;
+        private static IEnumerable <UsuariosDto> usuarios;
 
         public UsuariosController()
         {
@@ -92,6 +93,8 @@ namespace Campus.UI.Controllers
         public ActionResult ListarUsuarios()
         {
             var listaDeUsuarios = _listarUsuariosLN.ListarUsuarios();
+            ViewBag.UsuariosInactivo = listaDeUsuarios.Where(u => u.Estado == true).Count();
+            usuarios = listaDeUsuarios;
 
             return View(listaDeUsuarios);
         }
@@ -124,39 +127,18 @@ namespace Campus.UI.Controllers
             return PartialView("_EditarUsuarioParcial", usuario);
         }
 
-        // POST: Usuarios/Edit/5
-        // POST: Usuarios/Edit/5
-        // POST: Usuarios/Edit/5
         [HttpPost]
         public async Task<ActionResult> EditarUsuarioParcial(string id, UsuariosDto usuario, int? Idgrupo)
         {
             try
             {
-                // ✅ VALIDACIÓN CRÍTICA: Verificar que el ID no sea nulo
-                if (string.IsNullOrEmpty(id))
-                {
-                    TempData["ErrorMessage"] = "ID de usuario no proporcionado.";
-                    return RedirectToAction("ListarUsuarios");
-                }
-
-                // ✅ VALIDACIÓN CRÍTICA: Verificar que el usuario exista
-                var userExists = await UserManager.FindByIdAsync(id);
-                if (userExists == null)
-                {
-                    TempData["ErrorMessage"] = "Usuario no encontrado en el sistema.";
-                    return RedirectToAction("ListarUsuarios");
-                }
-
                 if (ModelState.IsValid)
                 {
                     // Roles
                     var rol = await UserManager.GetRolesAsync(id);
                     if (rol.FirstOrDefault() != usuario.Rol)
                     {
-                        if (!string.IsNullOrEmpty(rolActual))
-                        {
-                            await UserManager.RemoveFromRoleAsync(id, rolActual);
-                        }
+                        await UserManager.RemoveFromRoleAsync(id, rol.FirstOrDefault());
                         await UserManager.AddToRoleAsync(id, usuario.Rol);
                     }
 
@@ -205,10 +187,10 @@ namespace Campus.UI.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Error al editar usuario: {ex.Message}");
-                return View("ListarUsuarios");
+                return View("ListarUsuarios",usuarios);
             }
         }
-      
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> EditarUsuario(EditarUsuario usuarioModel)

@@ -54,7 +54,7 @@
                                 {
                                     <a href="@Url.Action("ListarTareas", "Tareas", new { materiaId = item.MateriaId, grupoId = item.GrupoId })" class="btn btn-primary">Ver Curso</a>
                                 }
-                                else
+                                else if (User.IsInRole("Estudiantes"))
                                 {
                                     <a href="@Url.Action("MisTareas", "Tareas", new { materiaId = item.MateriaId, grupoId = item.GrupoId })" class="btn btn-primary">Ver Curso</a>
                                 }
@@ -72,13 +72,13 @@
                         <div class="col-12 col-md-6 col-lg-3">
                             <div class="card-info">
                                 <h3>Total de Estudiantes</h3>
-                                <p class="card-number">ViewBag.Estudiantes</p>
+                                <p class="card-number">@ViewBag.Estudiantes</p>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-3">
                             <div class="card-info">
                                 <h3>Total de Profesores</h3>
-                                <p class="card-number">ViewBag.Profesores</p>
+                                <p class="card-number">@ViewBag.Profesores</p>
                             </div>
                         </div>
                     </div>
