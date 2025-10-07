@@ -42,7 +42,7 @@ using Paragraph = iText.Layout.Element.Paragraph;
 using Table = iText.Layout.Element.Table;
 namespace Campus.UI.Controllers
 {
-    [Authorize(Roles = "Administradores")]
+    //[Authorize(Roles = "Administradores")]
     public class UsuariosController : Controller
     {
         private readonly IListarUsuariosLN _listarUsuariosLN;

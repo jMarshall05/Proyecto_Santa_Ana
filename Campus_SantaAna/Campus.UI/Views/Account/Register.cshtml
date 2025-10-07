@@ -1,12 +1,21 @@
-﻿<!DOCTYPE html>
+﻿@model Campus.UI.Models.RegisterViewModel
+
+@{
+    ViewBag.Title = "Registro de Usuarios";
+    var fechaMaxima = DateTime.Now.ToString("yyyy-MM-dd");
+    Layout = null;
+    <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />
+    @Styles.Render("~/Content/css")
+}
+
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Registro de Usuarios</title>
+    <title>@ViewBag.Title</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />
 
     <style>
         * {
@@ -121,24 +130,30 @@
             border-radius: 10px;
         }
 
-        h2 {
+        .register-box {
+            width: 100%;
+        }
+
+        .register-box h2 {
             color: #2d3748;
             font-weight: 700;
             margin-bottom: 0.5rem;
             font-size: 1.8rem;
+            text-align: center;
         }
 
         .subtitle {
             color: #718096;
             margin-bottom: 2rem;
             font-size: 0.95rem;
+            text-align: center;
         }
 
-        .form-group {
+        .mb-3 {
             margin-bottom: 1.5rem;
         }
 
-        label {
+        label, h5 {
             display: block;
             margin-bottom: 0.5rem;
             color: #4a5568;
@@ -146,7 +161,7 @@
             font-size: 0.9rem;
         }
 
-        .input-group-custom {
+        .input-wrapper {
             position: relative;
         }
 
@@ -156,15 +171,18 @@
             top: 50%;
             transform: translateY(-50%);
             color: #a0aec0;
+            pointer-events: none;
+            z-index: 1;
         }
 
         .form-control {
+            width: 100%;
             border: 2px solid #e2e8f0;
             border-radius: 12px;
             padding: 12px 15px 12px 45px;
             font-size: 0.95rem;
             transition: all 0.3s ease;
-            width: 100%;
+            background-color: white;
         }
 
         .form-control:focus {
@@ -173,13 +191,8 @@
             outline: none;
         }
 
-        .form-control.no-icon {
-            padding-left: 15px;
-        }
-
-        select.form-control {
-            padding-left: 45px;
-            cursor: pointer;
+        .form-control::placeholder {
+            color: #a0aec0;
         }
 
         .phone-section {
@@ -196,19 +209,16 @@
             font-size: 1rem;
         }
 
-        .phone-row {
-            display: flex;
-            gap: 10px;
+        .row.mb-2 {
             margin-bottom: 10px;
-            align-items: start;
         }
 
-        .phone-row input,
-        .phone-row select {
+        .col-md-3 .form-control,
+        .col-md-5 .form-control {
             padding: 10px 12px;
         }
 
-        .btn-add-phone {
+        #addTelefono {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
@@ -223,7 +233,7 @@
             gap: 8px;
         }
 
-        .btn-add-phone:hover {
+        #addTelefono:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
@@ -254,6 +264,23 @@
             display: block;
         }
 
+        .validation-summary-errors {
+            background-color: #fff5f5;
+            border: 1px solid #fc8181;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .validation-summary-errors ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .validation-summary-errors li {
+            color: #e53e3e;
+        }
+
         @@media (max-width: 968px) {
             .register-card {
                 flex-direction: column;
@@ -278,12 +305,12 @@
                 padding: 1rem;
             }
 
-            .phone-row {
-                flex-direction: column;
+            .right-panel {
+                padding: 1.5rem;
             }
 
-            .phone-row > * {
-                width: 100%;
+            .register-box h2 {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -299,142 +326,213 @@
             </div>
 
             <div class="right-panel">
-                <h2>Crear Cuenta</h2>
-                <p class="subtitle">Completa el formulario para registrarte</p>
+                <div class="register-box">
+                    <h2>@ViewBag.Title</h2>
+                    <p class="subtitle">Completa el formulario para registrarte</p>
 
-                <form role="form">
-                    <div class="form-group">
-                        <label>Nombre</label>
-                        <div class="input-group-custom">
-                            <i class="fas fa-user input-icon"></i>
-                            <input type="text" class="form-control" placeholder="Tu nombre" required
-                                   pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" maxlength="150"
-                                   oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')">
-                        </div>
-                    </div>
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary("", new { @class = "text-danger" })
 
-                    <div class="form-group">
-                        <label>Apellido</label>
-                        <div class="input-group-custom">
-                            <i class="fas fa-user input-icon"></i>
-                            <input type="text" class="form-control" placeholder="Tu apellido" required
-                                   pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" maxlength="150"
-                                   oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Correo Electrónico</label>
-                        <div class="input-group-custom">
-                            <i class="fas fa-envelope input-icon"></i>
-                            <input type="email" class="form-control" placeholder="tu@email.com" required maxlength="150">
-                        </div>
-                    </div>
-
-                    <div class="phone-section">
-                        <h5><i class="fas fa-phone"></i> Teléfonos</h5>
-                        <div id="telefonosContainer">
-                            <div class="phone-row">
-                                <input type="text" class="form-control no-icon" placeholder="+506" maxlength="4"
-                                       style="flex: 0 0 100px;" required
-                                       oninput="let val=this.value.replace(/[^0-9]/g,''); this.value=val.length>0? '+'+val.substring(0,3):'';">
-                                <input type="text" class="form-control no-icon" placeholder="Número" required
-                                       style="flex: 1;" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-                                <select class="form-control no-icon" required style="flex: 0 0 140px;">
-                                    <option value="">Tipo</option>
-                                    <option value="Personal">Personal</option>
-                                    <option value="Trabajo">Trabajo</option>
-                                    <option value="Hogar">Hogar</option>
-                                    <option value="Encargado">Encargado</option>
-                                    <option value="Otro">Otro</option>
-                                </select>
+                        <div class="mb-3">
+                            <label>Nombre</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user input-icon"></i>
+                                @Html.TextBoxFor(m => m.Nombre, new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Tu nombre",
+                                    pattern = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$",
+                                    maxlength = "150",
+                                    required = "required",
+                                    oninput = "this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')"
+                                })
                             </div>
+                            @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
                         </div>
-                        <button type="button" id="addTelefono" class="btn-add-phone">
-                            <i class="fas fa-plus"></i> Agregar Teléfono
-                        </button>
-                    </div>
 
-                    <div class="form-group">
-                        <label>Cédula</label>
-                        <div class="input-group-custom">
-                            <i class="fas fa-id-card input-icon"></i>
-                            <input type="text" class="form-control" placeholder="Número de cédula"
-                                   minlength="9" maxlength="9"
-                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        <div class="mb-3">
+                            <label>Apellido</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user input-icon"></i>
+                                @Html.TextBoxFor(m => m.Apellido, new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Tu apellido",
+                                    pattern = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$",
+                                    maxlength = "150",
+                                    required = "required",
+                                    oninput = "this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')"
+                                })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Apellido, "", new { @class = "text-danger" })
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label>Fecha de Nacimiento</label>
-                        <div class="input-group-custom">
-                            <i class="fas fa-calendar input-icon"></i>
-                            <input type="date" class="form-control" id="fechaNacimiento">
+                        <div class="mb-3">
+                            <label>Correo Electrónico</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope input-icon"></i>
+                                @Html.TextBoxFor(m => m.Email, new
+                                {
+                                    @class = "form-control",
+                                    type = "email",
+                                    placeholder = "tu@email.com",
+                                    maxlength = "150",
+                                    required = "required"
+                                })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label>Rol</label>
-                        <div class="input-group-custom">
-                            <i class="fas fa-user-tag input-icon"></i>
-                            <select class="form-control" required>
-                                <option value="">Seleccione un tipo de Rol</option>
-                                <option value="Estudiantes">Estudiante</option>
-                                <option value="Profesores">Profesor</option>
-                                <option value="Administradores">Administrador</option>
-                            </select>
+                        <div class="phone-section">
+                            <h5><i class="fas fa-phone"></i> Teléfonos</h5>
+                            <div id="telefonosContainer">
+                                <div class="row mb-2">
+                                    <input type="hidden" name="Telefonos[0].Id" value="0" />
+                                    <div class="col-md-3">
+                                        <input type="text" name="Telefonos[0].Codigo" class="form-control"
+                                               maxlength="4" placeholder="Código País (ej: +506)"
+                                               required oninput="let val=this.value.replace(/[^0-9]/g,''); this.value=val.length>0? '+'+val.substring(0,3):'';" />
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" name="Telefonos[0].Telefono" class="form-control"
+                                               placeholder="Número" required
+                                               oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                                               minlenght="8"
+                                               maxlength="8"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select name="Telefonos[0].Tipo" class="form-control" required>
+                                            <option value="">Seleccione un tipo</option>
+                                            <option value="Personal">Personal</option>
+                                            <option value="Trabajo">Trabajo</option>
+                                            <option value="Hogar">Hogar</option>
+                                            <option value="Encargado">Encargado</option>
+                                            <option value="Otro">Otro</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" id="addTelefono" class="btn btn-primary mt-2">
+                                <i class="fas fa-plus"></i> Agregar Teléfono
+                            </button>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label>Contraseña</label>
-                        <div class="input-group-custom">
-                            <i class="fas fa-lock input-icon"></i>
-                            <input type="password" class="form-control" placeholder="Crea una contraseña segura" required>
+                        <div class="mb-3">
+                            <label>Cédula</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-id-card input-icon"></i>
+                                @Html.TextBoxFor(m => m.Cedula, new
+                                {
+                                    @class = "form-control",
+                                    minlength = "9",
+                                    maxlength = "9",
+                                    placeholder = "Número de cédula",
+                                    oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                                })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Cedula, "", new { @class = "text-danger" })
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label>Confirmar Contraseña</label>
-                        <div class="input-group-custom">
-                            <i class="fas fa-lock input-icon"></i>
-                            <input type="password" class="form-control" placeholder="Confirma tu contraseña" required>
+                        <div class="mb-3">
+                            <label>Fecha de Nacimiento</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-calendar input-icon"></i>
+                                @Html.TextBoxFor(m => m.FechaDeNacimiento, "{0:yyyy-MM-dd}", new
+                                {
+                                    @class = "form-control",
+                                    type = "date",
+                                    max = fechaMaxima,
+                                    placeholder = "Fecha de Nacimiento"
+                                })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.FechaDeNacimiento, "", new { @class = "text-danger" })
                         </div>
-                    </div>
 
-                    <button type="submit" class="btn-register">
-                        Registrar <i class="fas fa-arrow-right"></i>
-                    </button>
-                </form>
+                        <div class="mb-3">
+                            <label>Rol</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user-tag input-icon"></i>
+                                @Html.DropDownListFor(m => m.Rol, new List<SelectListItem>
+                                {
+                                    new SelectListItem { Text = "Estudiante", Value = "Estudiantes" },
+                                    new SelectListItem { Text = "Profesor", Value = "Profesores" },
+                                    new SelectListItem { Text = "Administrador", Value = "Administradores" }
+                                }, "Seleccione un tipo de Rol", new { @class = "form-control", id = "Rol", required = "required" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Rol, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Contraseña</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock input-icon"></i>
+                                @Html.PasswordFor(m => m.Password, new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Crea una contraseña segura"
+                                })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Confirmar Contraseña</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock input-icon"></i>
+                                @Html.PasswordFor(m => m.ConfirmPassword, new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Confirma tu contraseña"
+                                })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="submit" value="Registrarse" class="btn btn-register" />
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Establecer fecha máxima para fecha de nacimiento
-        document.getElementById('fechaNacimiento').max = new Date().toISOString().split('T')[0];
+        let phoneIndex = 1; // ya tenemos un teléfono inicial
 
-        // Funcionalidad para agregar teléfonos
-        let phoneIndex = 1;
         document.getElementById('addTelefono').addEventListener('click', function () {
             const container = document.getElementById('telefonosContainer');
+
             const div = document.createElement('div');
-            div.className = 'phone-row';
+            div.className = 'row mb-2';
             div.innerHTML = `
-                    <input type="text" class="form-control no-icon" placeholder="+506" maxlength="4"
-                           style="flex: 0 0 100px;" required
-                           oninput="let val=this.value.replace(/[^0-9]/g,''); this.value=val.length>0? '+'+val.substring(0,3):'';">
-                    <input type="text" class="form-control no-icon" placeholder="Número" required
-                           style="flex: 1;" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-                    <select class="form-control no-icon" required style="flex: 0 0 140px;">
-                        <option value="">Tipo</option>
-                        <option value="Personal">Personal</option>
-                        <option value="Trabajo">Trabajo</option>
-                        <option value="Hogar">Hogar</option>
-                        <option value="Encargado">Encargado</option>
-                        <option value="Otro">Otro</option>
-                    </select>
+                    <input type="hidden" name="Telefonos[${phoneIndex}].Id" value="0" />
+                    <div class="col-md-3">
+                        <input type="text" name="Telefonos[${phoneIndex}].Codigo" class="form-control"
+                               maxlength="4" placeholder="Código País (ej: +506)"
+                               required oninput="let val=this.value.replace(/[^0-9]/g,''); this.value=val.length>0? '+'+val.substring(0,3):'';" />
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" name="Telefonos[${phoneIndex}].Telefono" class="form-control"
+                               placeholder="Número" required
+                               oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                               minlenght="8"
+                                maxlength="8"/>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="Telefonos[${phoneIndex}].Tipo" class="form-control" required>
+                            <option value="">Seleccione un tipo</option>
+                            <option value="Personal">Personal</option>
+                            <option value="Trabajo">Trabajo</option>
+                            <option value="Hogar">Hogar</option>
+                            <option value="Encargado">Encargado</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
                 `;
+
             container.appendChild(div);
             phoneIndex++;
         });

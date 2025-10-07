@@ -93,6 +93,7 @@ namespace Campus.UI.Controllers
         // GET: Grupos/Create
         public ActionResult AgregarGrupoParcial()
         {
+            ViewBag.Id = User.Identity.GetUserId();
             return PartialView("_AgregarGrupoParcial");
         }
 
