@@ -202,5 +202,46 @@ namespace Campus.UI.Controllers
                 }
             }
         }
+        // GET: Cursos/EliminarCurso/5
+        public ActionResult EliminarCurso(int id)
+        {
+            try
+            {
+                // Buscar el curso por ID para mostrar confirmación
+                var curso = ObtenerCursos().FirstOrDefault(c => c.IdCurso == id);
+
+                if (curso == null)
+                {
+                    TempData["ErrorMessage"] = "Curso no encontrado";
+                    return RedirectToAction("ListarCursos");
+                }
+
+                return PartialView("_EliminarCursoParcial", curso);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al cargar el curso: " + ex.Message;
+                return RedirectToAction("ListarCursos");
+            }
+        }
+
+        // POST: Cursos/EliminarCurso/5
+        [HttpPost, ActionName("EliminarCurso")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EliminarCursoConfirmado(int id)
+        {
+            try
+            {
+                await _eliminarCursoLN.EliminarCurso(id);
+                TempData["SuccessMessage"] = "Curso eliminado correctamente";
+                return RedirectToAction("ListarCursos");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al eliminar el curso: " + ex.Message;
+                return RedirectToAction("ListarCursos");
+            }
+        }
     }
 }
+

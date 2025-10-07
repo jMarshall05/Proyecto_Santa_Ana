@@ -2,87 +2,810 @@
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    ViewBag.Title = "Lista de Grupos";
+    ViewBag.Title = "Gestión de Grupos";
 }
 
+<div class="admin-container-fluid">
+    <!-- Header Premium -->
+    <div class="admin-header">
+        <div class="header-content">
+            <div class="header-title">
+                <div class="title-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div>
+                    <h1>@ViewBag.Title</h1>
+                    <p class="header-subtitle">Administra todos los grupos del sistema</p>
+                </div>
+            </div>
+            <button class="btn-premium btn-Agregar-Grupo">
+                <i class="fas fa-plus-circle me-2"></i>
+                Nuevo Grupo
+            </button>
+        </div>
 
-<div class="container-fluid px-4">
-    <div class="card shadow border-0 mt-4">
-        <div class="card-header bg-white py-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="m-0 text-danger">
-                    <i class="fas fa-users me-2"></i>@ViewBag.Title
-                </h4>
-                <button class="btn btn-sm btn-secondary btn-Agregar-Grupo mx-1" data-id="@ViewBag.Id" data-bs-toggle="tooltip">
-                    <i class="fas fa-users me-1"></i> Agregar Grupo
-                </button>
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon groups-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>@Model.Count()</h3>
+                    <p>Total Grupos</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon active-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>@Model.Count(g => g.estado)</h3>
+                    <p>Grupos Activos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="premium-card">
+        <div class="card-header-premium">
+            <div class="header-actions">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Buscar grupos..." id="searchInput">
+                </div>
+                <div class="filter-actions">
+                    <button class="btn-filter" id="filterBtn">
+                        <i class="fas fa-filter"></i>
+                        Filtros
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0 table-bordered" id="TablaDeGrupos">
-                    <thead class="table-danger">
+        <div class="card-body-premium">
+            <div class="table-container">
+                <table class="premium-table" id="TablaDeGrupos">
+                    <thead>
                         <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.nombre_grupo)
+                            <th class="name-col">
+                                <div class="th-content">
+                                    <span>Nombre del Grupo</span>
+                                    <i class="fas fa-sort"></i>
+                                </div>
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.descripcion)
+                            <th class="desc-col">
+                                <div class="th-content">
+                                    <span>Descripción</span>
+                                    <i class="fas fa-sort"></i>
+                                </div>
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.creado_por)
+                            <th class="creator-col">
+                                <div class="th-content">
+                                    <span>Creado Por</span>
+                                    <i class="fas fa-sort"></i>
+                                </div>
                             </th>
-                            <th></th>
+                            <th class="status-col">
+                                <div class="th-content">
+                                    <span>Estado</span>
+                                </div>
+                            </th>
+                            <th class="actions-col">
+                                <div class="th-content">
+                                    <span>Acciones</span>
+                                </div>
+                            </th>
                         </tr>
-
+                    </thead>
                     <tbody>
-                        @foreach (var item in Model)
+                        @if (!Model.Any())
                         {
-                            <tr class="hover-shadow">
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.nombre_grupo)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.descripcion)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.creado_por)
-                                </td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary btn-Editar-Grupo mx-1" data-id="@item.id_grupo" data-bs-toggle="tooltip">
-                                        <i class="fas fa-edit me-1"></i> Editar
-                                    </button>
-                                    <button class="btn btn-sm btn-warning btn-Detalles-Grupo mx-1" data-id="@item.id_grupo" data-bs-toggle="tooltip">
-                                        <i class="fas fa-info-circle me-1"></i> Detalles
-                                    </button>
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <i class="fas fa-users fa-2x mb-2"></i>
+                                    <br>
+                                    No hay grupos registrados
                                 </td>
                             </tr>
                         }
-
+                        else
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr class="group-row">
+                                    <td class="name-cell">
+                                        <div class="group-info">
+                                            <div class="group-icon">
+                                                <i class="fas fa-users"></i>
+                                            </div>
+                                            <div class="group-details">
+                                                <span class="group-name">@item.nombre_grupo</span>
+                                                <span class="group-id">ID: @item.id_grupo</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="desc-cell">
+                                        <span class="group-description">@item.descripcion</span>
+                                    </td>
+                                    <td class="creator-cell">
+                                        <div class="creator-info">
+                                            <div class="creator-avatar">
+                                                @{
+                                                    var iniciales = "AD";
+                                                    if (!string.IsNullOrEmpty(item.creado_por))
+                                                    {
+                                                        var nombres = item.creado_por.Split(' ');
+                                                        iniciales = nombres.Length >= 2
+                                                            ? nombres[0][0].ToString() + nombres[1][0].ToString()
+                                                            : nombres[0][0].ToString() + "A";
+                                                    }
+                                                }
+                                                <span class="avatar-text">@iniciales</span>
+                                            </div>
+                                            <span class="creator-name">@item.creado_por</span>
+                                        </div>
+                                    </td>
+                                    <td class="status-cell">
+                                        <span class="status-badge @(item.estado ? "active" : "inactive")">
+                                            @(item.estado ? "Activo" : "Inactivo")
+                                        </span>
+                                    </td>
+                                    <td class="actions-cell">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <!-- Botón Editar -->
+                                            <button class="btn btn-outline-primary btn-sm btn-Editar-Grupo"
+                                                    data-id="@item.id_grupo"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Editar Grupo">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <!-- Botón Detalles -->
+                                            <button class="btn btn-outline-dark btn-sm btn-Detalles-Grupo"
+                                                    data-id="@item.id_grupo"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Ver Detalles">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
                     </tbody>
                 </table>
             </div>
         </div>
 
-
-        <div class="modal fade" id="GruposModal" tabindex="-1" aria-labelledby="GruposModalTittleLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content shadow-lg">
-                    <div class="modal-header bg-primary text-white">
-                        <h1 class="modal-title fs-5" id="UGruposModalTittleLabel">Agregar</h1>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                    </div>
-                    <div class="modal-body">
-                    </div>
-                    <div class="modal-footer">
-                    </div>
-                </div>
+        <!-- Pagination -->
+        <div class="card-footer-premium">
+            <div class="pagination-info">
+                Mostrando <strong>@Model.Count()</strong> grupos
+            </div>
+            <div class="pagination-controls">
+                <button class="pagination-btn disabled">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="pagination-btn active">1</button>
+                <button class="pagination-btn">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-@section scripts{
+<!-- Modal -->
+<div class="modal fade" id="GruposModal" tabindex="-1" aria-labelledby="GruposModalTittleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content premium-modal">
+            <div class="modal-header-premium">
+                <div class="modal-title-content">
+                    <i class="fas fa-users modal-icon"></i>
+                    <h1 class="modal-title" id="GruposModalTittleLabel">Gestión de Grupo</h1>
+                </div>
+                <button type="button" class="btn-close-premium" data-bs-dismiss="modal" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body-premium"></div>
+            <div class="modal-footer-premium"></div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="~/Scripts/Grupos/ScriptDeGrupos.js"></script>
+
+    <style>
+        /* Mantenemos las variables CSS del diseño anterior */
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f8fafc;
+            --accent: #06d6a0;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Estilos específicos para grupos */
+        .groups-icon {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .active-icon {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        /* Group Table Styles */
+        .group-row:hover {
+            background: #f8fafc;
+        }
+
+        .name-col, .desc-col, .creator-col, .status-col {
+            min-width: 200px;
+        }
+
+        .group-info, .creator-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .group-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--warning);
+        }
+
+        .creator-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.7rem;
+        }
+
+        .group-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .group-name {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .group-id {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .group-description {
+            color: var(--text);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .creator-name {
+            font-weight: 500;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+            .status-badge.active {
+                background: #dcfce7;
+                color: #166534;
+            }
+
+            .status-badge.inactive {
+                background: #fef2f2;
+                color: #dc2626;
+            }
+
+        /* Resto de estilos se mantienen igual que en las vistas anteriores */
+        .admin-container-fluid {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 2rem;
+        }
+
+        .admin-header {
+            margin-bottom: 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .title-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .header-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0;
+        }
+
+        .header-subtitle {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .btn-premium {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+        }
+
+            .btn-premium:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: transform 0.3s ease;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0;
+        }
+
+        .stat-info p {
+            color: var(--text-light);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .premium-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .card-header-premium {
+            padding: 1.5rem 2rem;
+            background: var(--secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+            .search-input:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            }
+
+        .filter-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-filter {
+            padding: 0.6rem 1.2rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            color: var(--text);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .btn-filter:hover {
+                border-color: var(--primary);
+                color: var(--primary);
+            }
+
+        .card-body-premium {
+            padding: 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .premium-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .premium-table thead {
+                background: var(--secondary);
+            }
+
+            .premium-table th {
+                padding: 1.2rem 1rem;
+                text-align: left;
+                font-weight: 600;
+                color: var(--text);
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 1px solid var(--border);
+            }
+
+        .th-content {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .premium-table td {
+            padding: 1.2rem 1rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .actions-cell {
+            min-width: 150px;
+        }
+
+        .card-footer-premium {
+            padding: 1.5rem 2rem;
+            background: var(--secondary);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination-info {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .pagination-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+            .pagination-btn:hover:not(.disabled) {
+                border-color: var(--primary);
+                color: var(--primary);
+            }
+
+            .pagination-btn.active {
+                background: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
+
+            .pagination-btn.disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+        .premium-modal {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header-premium {
+            padding: 2rem;
+            background: var(--gradient);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .modal-icon {
+            font-size: 1.5rem;
+        }
+
+        .modal-title {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .btn-close-premium {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .btn-close-premium:hover {
+                background: rgba(255, 255, 255, 0.3);
+            }
+
+        .modal-body-premium {
+            padding: 2rem;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .admin-container-fluid {
+                padding: 1rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .header-title h1 {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-container {
+                max-width: 100%;
+            }
+
+            .premium-table {
+                font-size: 0.8rem;
+            }
+
+            .group-info, .creator-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .card-footer-premium {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .admin-container-fluid {
+                padding: 0.5rem;
+            }
+
+            .premium-table th,
+            .premium-table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .modal-body-premium {
+                padding: 1rem;
+            }
+        }
+
+        /* Custom Scrollbar */
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+            .table-container::-webkit-scrollbar-thumb:hover {
+                background: var(--primary-dark);
+            }
+    </style>
+
+    <script>
+        // Search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const rows = document.querySelectorAll('.group-row');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (searchTerm === '') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                }
+            });
+        });
+    }
+
+    // Tooltip initialization
+    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltips.forEach(tooltip => {
+        new bootstrap.Tooltip(tooltip);
+    });
+
+    // Add Group button
+    document.querySelector('.btn-Agregar-Grupo')?.addEventListener('click', function() {
+        const userId = this.getAttribute('data-id');
+        $('#GruposModal .modal-body-premium').load('@Url.Action("AgregarGrupoParcial", "Grupos")' + '?id=' + userId);
+        $('#GruposModal').modal('show');
+    });
+
+    // CORRECCIÓN: Edit Group buttons
+    document.querySelectorAll('.btn-Editar-Grupo').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const grupoId = this.getAttribute('data-id');
+            console.log('Cargando vista de edición para grupo ID:', grupoId);
+            $('#GruposModal .modal-body-premium').load('@Url.Action("EditarGrupoParcial", "Grupos")' + '?id=' + grupoId);
+            $('#GruposModal').modal('show');
+        });
+    });
+
+    // CORRECCIÓN: Details Group buttons
+    document.querySelectorAll('.btn-Detalles-Grupo').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const grupoId = this.getAttribute('data-id');
+            console.log('Cargando vista de detalles para grupo ID:', grupoId);
+            $('#GruposModal .modal-body-premium').load('@Url.Action("DetallesDeGrupoParcial", "Grupos")' + '?id=' + grupoId);
+            $('#GruposModal').modal('show');
+        });
+    });
+
+    // Filter button
+    document.getElementById('filterBtn')?.addEventListener('click', function() {
+        alert('Funcionalidad de filtros será implementada próximamente');
+    });
+});
+    </script>
 }
