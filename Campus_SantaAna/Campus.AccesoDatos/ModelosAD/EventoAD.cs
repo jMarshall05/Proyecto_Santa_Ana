@@ -16,5 +16,8 @@ namespace Campus.AccesoDatos.ModelosAD
         public DateTime FechaInicio { get; set; }
 
         public DateTime FechaFin { get; set; }
+        [Required]
+        public string IdUsuario { get; set; } 
     }
+
 }

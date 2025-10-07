@@ -61,7 +61,7 @@ namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN
             }
         }
 
-        public async Task<List<TareaDto>> ListarTareasPorEstudiante(string idEstudiante)
+        public async Task<IEnumerable<TareaDto>> ListarTareasPorEstudiante(string idEstudiante)
         {
             try
             {

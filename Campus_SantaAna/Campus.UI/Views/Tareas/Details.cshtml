@@ -32,11 +32,11 @@
                         </span>
                     </div>
                 }
-            <div class="mt-2">
-                <span class="badge bg-secondary">
-                    <i class="fas fa-users mr-1"></i> Materia : @ViewBag.Materia
-                </span>
-            </div>
+                <div class="mt-2">
+                    <span class="badge bg-secondary">
+                        <i class="fas fa-users mr-1"></i> Materia : @ViewBag.Materia
+                    </span>
+                </div>
 
             </div>
             <div class="col-md-6 text-end">
@@ -99,7 +99,16 @@
 
     <div class="card-footer bg-light">
         <div class="d-flex justify-content-between">
-            @Html.ActionLink("Volver al listado", "ListarTareas", null, new { @class = "btn btn-secondary" })
+            @if (User.IsInRole("Administradores") || User.IsInRole("Profesores"))
+            {@Html.ActionLink("Volver al listado", "ListarTareas", null, new { @class = "btn btn-secondary" })
+        }
+        else
+        {
+            @Html.ActionLink("Volver al listado", "MisTareas", new { Model.IdMateria , Model.Id_grupo }, new { @class = "btn btn-secondary" })
+
+        }
+
+
             @if (User.IsInRole("Administradores") || User.IsInRole("Profesores"))
             {
                 <div>

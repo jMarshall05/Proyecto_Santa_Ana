@@ -15,7 +15,7 @@ namespace Campus.LogicaDeNegocio.Materias.ListarMaterias
             _listarMaterias = new ListarMateriasAD();
         }
 
-        public List<MateriaDto> ListarMaterias()
+        public IEnumerable<MateriaDto> ListarMaterias()
         {
             return _listarMaterias.ListarMaterias();
         }

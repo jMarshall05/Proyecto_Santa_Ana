@@ -5,7 +5,7 @@ namespace Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN
 {
     public interface IListarMateriasLN
     {
-        List<MateriaDto> ListarMaterias();
+        IEnumerable<MateriaDto> ListarMaterias();
 
         MateriaDto ObtenerMateriaPorId(int id);
     }
