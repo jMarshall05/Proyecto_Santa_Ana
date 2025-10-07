@@ -17,6 +17,7 @@
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@ViewBag.Id" />
 
         <div class="edit-content">
             @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
@@ -74,10 +75,10 @@
 
         <!-- Footer -->
         <div class="edit-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">
                 <i class="fas fa-times me-2"></i>Cancelar
             </button>
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary btn-Agregar-Grupo" , data-id="@ViewBag.Id">
                 <i class="fas fa-save me-2"></i>Crear Grupo
             </button>
         </div>
