@@ -12,7 +12,7 @@ namespace Campus.LogicaDeNegocio.Usuarios.AgregarUsuarios
 {
     public class AgregarUsuariosLN : IAgregarUsuariosLN
     {
-        private  IAgregarUsuariosAD _agregarUsuarios;
+        private readonly  IAgregarUsuariosAD _agregarUsuarios;
         public AgregarUsuariosLN()
         {
             _agregarUsuarios = new AgregarUsuariosAD();

@@ -1,115 +1,723 @@
 ﻿@model Campus.Abstracciones.ModelosUI.UsuariosGruposDto
 
-<div class="card shadow-sm border-0">
-    <div class="card-header bg-primary text-white">
-        <h5 class="mb-0"><i class="fas fa-users me-2"></i>Detalles del Grupo</h5>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <!-- Columna izquierda con datos -->
-            <div class="col-md-8">
-                <div class="row mb-3">
-                    <div class="col-md-4 fw-bold text-muted">
-                        @Html.DisplayNameFor(model => model.grupo.nombre_grupo)
-                    </div>
-                    <div class="col-md-8">
-                        @Html.DisplayFor(model => model.grupo.nombre_grupo)
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-4 fw-bold text-muted">
-                        @Html.DisplayNameFor(model => model.grupo.descripcion)
-                    </div>
-                    <div class="col-md-8">
-                        @Html.DisplayFor(model => model.grupo.descripcion)
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-4 fw-bold text-muted">
-                        @Html.DisplayNameFor(model => model.grupo.creado_por)
-                    </div>
-                    <div class="col-md-8">
-                        @Html.DisplayFor(model => model.grupo.creado_por)
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-4 fw-bold text-muted">
-                        @Html.DisplayNameFor(model => model.grupo.FechaDeCreacion)
-                    </div>
-                    <div class="col-md-8">
-                        @Html.DisplayFor(model => model.grupo.FechaDeCreacion)
-                    </div>
-                </div>
-                @if (Model.grupo.FechaDeModificacion != null)
-                {
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold text-muted">
-                            @Html.DisplayNameFor(model => model.grupo.FechaDeModificacion)
-                        </div>
-                        <div class="col-md-8">
-                            @Html.DisplayFor(model => model.grupo.FechaDeModificacion)
-                        </div>
-                    </div>
-                }
-
-                <div class="row mb-3">
-                    <div class="col-md-4 fw-bold text-muted">
-                        @Html.DisplayNameFor(model => model.grupo.estado)
-                    </div>
-                    <div class="col-md-8">
-                        @if (Model.grupo.estado)
-                        {
-                            <span class="badge bg-success">Activo</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger">Inactivo</span>
-                        }
-                    </div>
+<div class="group-detail-modal">
+    <!-- Header Premium -->
+    <div class="detail-header">
+        <div class="header-content">
+            <div class="group-avatar-large">
+                <div class="avatar-placeholder-large">
+                    <i class="fas fa-users"></i>
                 </div>
             </div>
-
-            <div class="col-md-4 text-center">
-                <a href="/Grupos/GenerarReportePDF?id=@Model.grupo.id_grupo">
-                    <img src="/Grupos/GenerarReporteQR?id=@Model.grupo.id_grupo" class="img-fluid rounded" alt="Qr code" />
-                </a>
-               <p> Haz click en el qr o escanealo para descargar el reporte</p>
+            <div class="group-info-header">
+                <h2 class="group-name-large">@Model.grupo.nombre_grupo</h2>
+                <p class="group-description">@Model.grupo.descripcion</p>
+                <span class="status-badge @(Model.grupo.estado ? "active" : "inactive")">
+                    @(Model.grupo.estado ? "Activo" : "Inactivo")
+                </span>
             </div>
         </div>
     </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0 table-bordered" id="TablaDeUsuarios">
-                <thead class="table-danger">
-                    <tr>
-                        <th>@Html.DisplayNameFor(model => model.usuarios.First().Nombre)</th>
-                        <th>@Html.DisplayNameFor(model => model.usuarios.First().Apellido)</th>
-                        <th>@Html.DisplayNameFor(model => model.usuarios.First().Email)</th>
-                        <th>@Html.DisplayNameFor(model => model.usuarios.First().Telefono)</th>
-                        <th>@Html.DisplayNameFor(model => model.usuarios.First().Cedula)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.usuarios)
+
+    <!-- Content Grid -->
+    <div class="detail-content">
+        <div class="info-grid">
+            <!-- Información del Grupo -->
+            <div class="info-section">
+                <h3 class="section-title">
+                    <i class="fas fa-info-circle me-2"></i>Información del Grupo
+                </h3>
+                <div class="info-items">
+                    <div class="info-item">
+                        <span class="info-label">ID del Grupo</span>
+                        <span class="info-value">
+                            <i class="fas fa-hashtag me-2 text-primary"></i>
+                            #@Model.grupo.id_grupo
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Creado Por</span>
+                        <span class="info-value">
+                            <i class="fas fa-user me-2 text-success"></i>
+                            @Model.grupo.creado_por
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Fecha de Creación</span>
+                        <span class="info-value">
+                            <i class="fas fa-calendar-plus me-2 text-warning"></i>
+                            @Model.grupo.FechaDeCreacion.ToString("dd/MM/yyyy HH:mm")
+                        </span>
+                    </div>
+                    @if (Model.grupo.FechaDeModificacion.HasValue)
                     {
-                        <tr class="hover-shadow">
-                            <td class="fw-semibold">@Html.DisplayFor(modelItem => item.Nombre)</td>
-                            <td class="fw-semibold">@Html.DisplayFor(modelItem => item.Apellido)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Telefono)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Cedula)</td>
-                        </tr>
+                        <div class="info-item">
+                            <span class="info-label">Última Modificación</span>
+                            <span class="info-value">
+                                <i class="fas fa-edit me-2 text-info"></i>
+                                @Model.grupo.FechaDeModificacion.Value.ToString("dd/MM/yyyy HH:mm")
+                            </span>
+                        </div>
                     }
-                </tbody>
-            </table>
+                </div>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="info-section">
+                <h3 class="section-title">
+                    <i class="fas fa-chart-bar me-2"></i>Estadísticas
+                </h3>
+                <div class="stats-cards">
+                    <div class="mini-stat-card">
+                        <div class="mini-stat-icon students-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="mini-stat-info">
+                            <h4>@Model.usuarios.Count()</h4>
+                            <p>Estudiantes</p>
+                        </div>
+                    </div>
+                    <div class="mini-stat-card">
+                        <div class="mini-stat-icon status-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="mini-stat-info">
+                            <h4>@Model.grupo.estado</h4>
+                            <p>Estado</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reporte QR -->
+            <div class="info-section">
+                <h3 class="section-title">
+                    <i class="fas fa-qrcode me-2"></i>Reporte Digital
+                </h3>
+                <div class="qr-section">
+                    <a href="/Grupos/GenerarReportePDF?id=@Model.grupo.id_grupo" class="qr-link" target="_blank">
+                        <div class="qr-container">
+                            <img src="/Grupos/GenerarReporteQR?id=@Model.grupo.id_grupo" alt="QR Code" class="qr-code">
+                            <div class="qr-overlay">
+                                <i class="fas fa-download"></i>
+                                <span>Descargar Reporte</span>
+                            </div>
+                        </div>
+                    </a>
+                    <p class="qr-description">Haz click en el QR o escanéalo para descargar el reporte completo del grupo</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Estudiantes -->
+        <div class="students-section">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="fas fa-user-graduate me-2"></i>Estudiantes del Grupo
+                </h3>
+                <span class="students-count">@Model.usuarios.Count() estudiantes</span>
+            </div>
+
+            @if (!Model.usuarios.Any())
+            {
+                <div class="empty-state">
+                    <i class="fas fa-user-slash fa-3x mb-3 text-muted"></i>
+                    <h4>No hay estudiantes en este grupo</h4>
+                    <p class="text-muted">Agrega estudiantes al grupo para verlos listados aquí</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-container">
+                    <table class="premium-table students-table">
+                        <thead>
+                            <tr>
+                                <th class="student-col">Estudiante</th>
+                                <th class="email-col">Email</th>
+                                <th class="phone-col">Teléfono</th>
+                                <th class="id-col">Cédula</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var estudiante in Model.usuarios)
+                            {
+                                <tr class="student-row">
+                                    <td class="student-cell">
+                                        <div class="student-info">
+                                            <div class="student-avatar">
+                                                @{
+                                                    var inicialNombre = !string.IsNullOrEmpty(estudiante.Nombre) ? estudiante.Nombre[0].ToString() : "E";
+                                                    var inicialApellido = !string.IsNullOrEmpty(estudiante.Apellido) ? estudiante.Apellido[0].ToString() : "S";
+                                                }
+                                                <span class="avatar-text">@inicialNombre@inicialApellido</span>
+                                            </div>
+                                            <div class="student-details">
+                                                <span class="student-name">@estudiante.Nombre @estudiante.Apellido</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="email-cell">
+                                        <div class="email-content">
+                                            <i class="fas fa-envelope email-icon"></i>
+                                            <span>@estudiante.Email</span>
+                                        </div>
+                                    </td>
+                                    <td class="phone-cell">
+                                        <div class="phone-content">
+                                            <i class="fas fa-phone phone-icon"></i>
+                                            <span class="@(estudiante.Telefono == 0 ? "no-phone" : "has-phone")">
+                                                @(estudiante.Telefono == 0 ? "No asignado" : estudiante.Telefono.ToString())
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="id-cell">
+                                        <span class="id-badge">@estudiante.Cedula</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
     </div>
-    <div class="card-footer bg-light d-flex justify-content-end">
-        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">
-            <i class="fas fa-arrow-left me-2"></i>Volver
+
+    <!-- Footer -->
+    <div class="detail-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-arrow-left me-2"></i>Volver a la lista
         </button>
     </div>
 </div>
+
+<style>
+    .group-detail-modal {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Header Styles */
+    .detail-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .avatar-placeholder-large {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .group-info-header {
+        flex: 1;
+    }
+
+    .group-name-large {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .group-description {
+        opacity: 0.9;
+        margin: 0 0 1rem 0;
+        font-size: 1rem;
+        line-height: 1.4;
+    }
+
+    .status-badge {
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+        .status-badge.active {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-badge.inactive {
+            background: #ef4444;
+            color: white;
+        }
+
+    /* Content Styles */
+    .detail-content {
+        padding: 2rem;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-section {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 15px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .info-items {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        font-size: 0.9rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .info-value {
+        font-size: 0.95rem;
+        color: #1e293b;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Mini Stats */
+    .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1rem;
+    }
+
+    .mini-stat-card {
+        background: white;
+        padding: 1rem;
+        border-radius: 12px;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+    }
+
+    .mini-stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0.5rem;
+        font-size: 1.2rem;
+        color: white;
+    }
+
+    .students-icon {
+        background: linear-gradient(135deg, #8b5cf6, #a855f7);
+    }
+
+    .status-icon {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+
+    .mini-stat-info h4 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .mini-stat-info p {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin: 0;
+    }
+
+    /* QR Section */
+    .qr-section {
+        text-align: center;
+    }
+
+    .qr-link {
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .qr-container {
+        position: relative;
+        display: inline-block;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+        .qr-container:hover {
+            transform: translateY(-5px);
+        }
+
+    .qr-code {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 15px;
+    }
+
+    .qr-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(99, 102, 241, 0.9);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 15px;
+    }
+
+    .qr-container:hover .qr-overlay {
+        opacity: 1;
+    }
+
+    .qr-overlay i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .qr-description {
+        margin-top: 1rem;
+        color: #64748b;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    /* Students Section */
+    .students-section {
+        margin-top: 2rem;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .students-count {
+        background: #f1f5f9;
+        color: #64748b;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #64748b;
+    }
+
+        .empty-state h4 {
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+    /* Students Table */
+    .students-table {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+    }
+
+        .students-table th {
+            background: #f8fafc;
+            padding: 1rem;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .students-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+    .student-row:hover {
+        background: #f8fafc;
+    }
+
+    .student-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .student-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    .student-name {
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .email-content, .phone-content {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .email-icon, .phone-icon {
+        color: #64748b;
+        width: 16px;
+    }
+
+    .no-phone {
+        color: #94a3b8;
+        font-style: italic;
+    }
+
+    .has-phone {
+        color: #1e293b;
+        font-weight: 500;
+    }
+
+    .id-badge {
+        background: #f1f5f9;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+        color: #1e293b;
+    }
+
+    /* Footer */
+    .detail-footer {
+        padding: 1.5rem 2rem;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        text-align: center;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-secondary {
+        background: #64748b;
+        color: white;
+    }
+
+        .btn-secondary:hover {
+            background: #475569;
+            transform: translateY(-2px);
+        }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .detail-header {
+            padding: 1.5rem;
+        }
+
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .detail-content {
+            padding: 1.5rem;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .info-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+        }
+
+        .section-header {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .students-table {
+            font-size: 0.8rem;
+        }
+
+        .student-info {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .qr-code {
+            width: 150px;
+            height: 150px;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .detail-header {
+            padding: 1rem;
+        }
+
+        .detail-content {
+            padding: 1rem;
+        }
+
+        .avatar-placeholder-large {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+        }
+
+        .group-name-large {
+            font-size: 1.5rem;
+        }
+
+        .students-table th,
+        .students-table td {
+            padding: 0.75rem 0.5rem;
+        }
+    }
+
+    /* Custom Scrollbar */
+    .table-container::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+        background: #6366f1;
+        border-radius: 4px;
+    }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #4f46e5;
+        }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add any interactive functionality here if needed
+        console.log('Group details loaded successfully');
+    });
+
+    // CORRECCIÓN: Details Group buttons con manejo de errores
+document.querySelectorAll('.btn-Detalles-Grupo').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const grupoId = this.getAttribute('data-id');
+        console.log('Cargando vista de detalles para grupo ID:', grupoId);
+
+        $('#GruposModal .modal-body-premium')
+            .load('@Url.Action("DetallesDeGrupoParcial", "Grupos")' + '?id=' + grupoId)
+            .fail(function(xhr, status, error) {
+                console.error('Error cargando detalles:', error);
+                $('#GruposModal .modal-body-premium').html(`
+                    <div class="alert alert-danger">
+                        <h4>Error al cargar los detalles</h4>
+                        <p>No se pudieron cargar los detalles del grupo. Error: ${error}</p>
+                        <button class="btn btn-secondary" onclick="$('#GruposModal').modal('hide')">
+                            Cerrar
+                        </button>
+                    </div>
+                `);
+            });
+        $('#GruposModal').modal('show');
+    });
+});
+
+// CORRECCIÓN: Edit Group buttons con manejo de errores
+document.querySelectorAll('.btn-Editar-Grupo').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const grupoId = this.getAttribute('data-id');
+        console.log('Cargando vista de edición para grupo ID:', grupoId);
+
+        $('#GruposModal .modal-body-premium')
+            .load('@Url.Action("EditarGrupoParcial", "Grupos")' + '?id=' + grupoId)
+            .fail(function(xhr, status, error) {
+                console.error('Error cargando edición:', error);
+                $('#GruposModal .modal-body-premium').html(`
+                    <div class="alert alert-danger">
+                        <h4>Error al cargar la edición</h4>
+                        <p>No se pudo cargar el formulario de edición. Error: ${error}</p>
+                        <button class="btn btn-secondary" onclick="$('#GruposModal').modal('hide')">
+                            Cerrar
+                        </button>
+                    </div>
+                `);
+            });
+        $('#GruposModal').modal('show');
+    });
+});
+</script>

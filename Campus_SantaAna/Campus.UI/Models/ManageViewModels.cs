@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Campus.Abstracciones.ModelosUI;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 
@@ -12,7 +13,7 @@ namespace Campus.UI.Models
         public string PhoneNumber { get; set; }
         public bool TwoFactor { get; set; }
         public bool BrowserRemembered { get; set; }
-
+        public List<TelefonoDto> Telefonos { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public string Email { get; set; }

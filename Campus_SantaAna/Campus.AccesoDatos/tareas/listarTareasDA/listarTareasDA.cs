@@ -65,7 +65,9 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                 FechaModificacion = tarea.FechaModificacion,
                 ArchivoAdjunto = tarea.ArchivoAdjunto,
                 Id_grupo = tarea.IdGrupo,
-                Nombre_grupo = tarea.Grupo.nombre_grupo
+                Nombre_grupo = tarea.Grupo.nombre_grupo,
+                asignado_por = tarea.asignado_por
+
             };
         }
 

@@ -21,6 +21,7 @@ using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Materias.ListarMaterias;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
+using Campus.UI.Filtros;
 using iText.Kernel.Font;
 using iText.Kernel.Pdf;
 using iText.Layout;
@@ -31,7 +32,7 @@ using QRCoder;
 
 namespace Campus.UI.Controllers
 {
-    //[Authorize(Roles = "Administradores")]
+    [Authorize(Roles = "Administradores")]
     public class CursosController : Controller
     {
         private readonly IListarCursoLN _listarCursoLN;
@@ -202,5 +203,46 @@ namespace Campus.UI.Controllers
                 }
             }
         }
+        // GET: Cursos/EliminarCurso/5
+        public ActionResult EliminarCurso(int id)
+        {
+            try
+            {
+                // Buscar el curso por ID para mostrar confirmación
+                var curso = ObtenerCursos().FirstOrDefault(c => c.IdCurso == id);
+
+                if (curso == null)
+                {
+                    TempData["ErrorMessage"] = "Curso no encontrado";
+                    return RedirectToAction("ListarCursos");
+                }
+
+                return PartialView("_EliminarCursoParcial", curso);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al cargar el curso: " + ex.Message;
+                return RedirectToAction("ListarCursos");
+            }
+        }
+
+        // POST: Cursos/EliminarCurso/5
+        [HttpPost, ActionName("EliminarCurso")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EliminarCursoConfirmado(int id)
+        {
+            try
+            {
+                await _eliminarCursoLN.EliminarCurso(id);
+                TempData["SuccessMessage"] = "Curso eliminado correctamente";
+                return RedirectToAction("ListarCursos");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al eliminar el curso: " + ex.Message;
+                return RedirectToAction("ListarCursos");
+            }
+        }
     }
 }
+

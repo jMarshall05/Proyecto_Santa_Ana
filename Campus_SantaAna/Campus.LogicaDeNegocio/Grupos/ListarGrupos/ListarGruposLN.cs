@@ -23,7 +23,7 @@ namespace Campus.LogicaDeNegocio.Grupos.ListarGrupos
             return _listarGrupos.BuscarGruposPorId(idGrupo);
         }
 
-        public List<GruposDto> ListarGrupos()
+        public IEnumerable<GruposDto> ListarGrupos()
         {
             return _listarGrupos.ListarGrupos();
         }

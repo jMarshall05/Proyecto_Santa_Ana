@@ -17,6 +17,7 @@ using Campus.LogicaDeNegocio.Grupos.AgregarGrupo;
 using Campus.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
+using Campus.UI.Filtros;
 using iText.Kernel.Font;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Draw;
@@ -29,7 +30,7 @@ using QRCoder;
 
 namespace Campus.UI.Controllers
 {
-    //[Authorize(Roles = "Administradores")]
+    [Authorize(Roles = "Administradores")]
     public class GruposController : Controller
     {
         private IListarGruposLN _listarGrupos;
@@ -90,7 +91,7 @@ namespace Campus.UI.Controllers
         }
 
         // GET: Grupos/Create
-        public ActionResult AgregarGrupoParcial(string id)
+        public ActionResult AgregarGrupoParcial()
         {
             return PartialView("_AgregarGrupoParcial");
         }
@@ -239,7 +240,7 @@ namespace Campus.UI.Controllers
                     cursosTable.AddCell(new Paragraph(u.Nombre));
                     cursosTable.AddCell(new Paragraph(u.Apellido));
                     cursosTable.AddCell(new Paragraph(u.Email));
-                    cursosTable.AddCell(new Paragraph(u.Telefono.ToString()));
+                    cursosTable.AddCell(new Paragraph(u.Telefonos.ToString()));
                     cursosTable.AddCell(new Paragraph(u.Cedula.ToString()));
                 }
 

@@ -19,6 +19,7 @@ namespace Campus.AccesoDatos
         public DbSet<CalificacionesAD> Calificaciones { get; set; }
         public DbSet<EventoAD> Eventos { get; set; }
         public DbSet<CursosAD> Cursos { get; set; }
+        public DbSet<TelefonoAD> Telefonos { get; set; }
 
 
     }
