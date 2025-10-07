@@ -50,5 +50,6 @@ namespace Campus.Abstracciones.ModelosUI
         public string Nombre_grupo { get; set; } // Cambiado de NombreGrupo a nombre_grupo
 
         public CalificacionesDto Calificacion { get; set; }
+        public string asignado_por { get; set; }
     }
 }

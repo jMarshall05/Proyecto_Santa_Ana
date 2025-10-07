@@ -1,4 +1,9 @@
-﻿using Campus.Abstracciones.LogicaDeNegocio.Anuncios.AgregarAnunciosLN;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio.Anuncios.AgregarAnunciosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Anuncios.EditarAnunciosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Anuncios.EliminarAnunciosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Anuncios.ListarAnunciosLN;
@@ -7,12 +12,7 @@ using Campus.LogicaDeNegocio.Anuncios.AgregarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.EditarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.EliminarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.ListarAnuncios;
-using System.IO;
-using System.Linq;
-using System.Web.Mvc;
-using System;
-using System.Collections.Generic;
-
+using Campus.UI.Filtros;
 public class AnunciosController : Controller
 {
     private readonly IListarAnunciosLN _listarAnunciosLN;

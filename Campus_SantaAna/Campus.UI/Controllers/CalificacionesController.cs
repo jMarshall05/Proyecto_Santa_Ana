@@ -19,6 +19,7 @@ using Campus.LogicaDeNegocio.calificaciones.eliminarCalificacionLN;
 using Campus.LogicaDeNegocio.calificaciones.listarCalificacionesLN;
 using Campus.LogicaDeNegocio.Tareas.ListarTareaLN;
 using Campus.LogicaNegocio.Entregas.ListarEntregaLN;
+using Campus.UI.Filtros;
 using Microsoft.AspNet.Identity;
 
 namespace Campus.Web.Controllers

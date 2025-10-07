@@ -1,242 +1,443 @@
-﻿@model Campus.UI.Models.RegisterViewModel
-
-@{
-    ViewBag.Title = "Registro de Usuarios";
-    var fechaMaxima = DateTime.Now.ToString("yyyy-MM-dd");
-    Layout = null;
-    <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />
-    @Styles.Render("~/Content/css")
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@ViewBag.Title</title>
+    <title>Registro de Usuarios</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body, html {
             height: 100%;
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         .main-container {
             display: flex;
-            height: 100vh;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .register-card {
+            display: flex;
+            max-width: 1100px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
         .left-panel {
             flex: 1;
-            background-color: #F07059;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-            .left-panel img {
-                width: 300px;
-                height: auto;
-            }
-
-        .right-panel {
-            flex: 1;
-            background-color: #f9f9f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-y: auto;
-            padding: 2rem 0;
-        }
-
-        .register-box {
-            width: 90%;
-            max-width: 500px;
-            background-color: #ffffff;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            color: black;
+            background: linear-gradient(135deg, #F07059 0%, #e63946 100%);
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
+            padding: 3rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
         }
 
-            .register-box h2 {
-                text-align: center;
-                font-weight: bold;
-                margin-bottom: 30px;
-            }
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+        }
+
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            bottom: -50px;
+            left: -50px;
+        }
+
+        .left-panel img {
+            width: 200px;
+            height: auto;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+            position: relative;
+            z-index: 1;
+        }
+
+        .left-panel h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .left-panel p {
+            text-align: center;
+            opacity: 0.9;
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .right-panel {
+            flex: 1.2;
+            padding: 3rem;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        .right-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .right-panel::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .right-panel::-webkit-scrollbar-thumb {
+            background: #F07059;
+            border-radius: 10px;
+        }
+
+        h2 {
+            color: #2d3748;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .input-group-custom {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
 
         .form-control {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 15px 12px 45px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            border-color: #F07059;
+            box-shadow: 0 0 0 3px rgba(240, 112, 89, 0.1);
+            outline: none;
+        }
+
+        .form-control.no-icon {
+            padding-left: 15px;
+        }
+
+        select.form-control {
+            padding-left: 45px;
+            cursor: pointer;
+        }
+
+        .phone-section {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .phone-section h5 {
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .phone-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: start;
+        }
+
+        .phone-row input,
+        .phone-row select {
+            padding: 10px 12px;
+        }
+
+        .btn-add-phone {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
             border-radius: 10px;
-            border: 2px solid #1a1a40;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add-phone:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-register {
             width: 100%;
-            background-color: #F44336;
+            background: linear-gradient(135deg, #F07059 0%, #e63946 100%);
             border: none;
-            font-weight: bold;
-            border-radius: 20px;
-            padding: 10px;
             color: white;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
         }
 
-            .btn-register:hover {
-                background-color: #d32f2f;
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(240, 112, 89, 0.4);
+        }
+
+        .text-danger {
+            color: #e53e3e;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+        @@media (max-width: 968px) {
+            .register-card {
+                flex-direction: column;
             }
 
-        label {
-            font-weight: bold;
-        }
-
-        .text-center-link {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.9em;
-        }
-
-            .text-center-link a {
-                text-decoration: none;
-                font-weight: bold;
-                color: #F44336;
+            .left-panel {
+                padding: 2rem;
             }
+
+            .left-panel h1 {
+                font-size: 1.5rem;
+            }
+
+            .right-panel {
+                padding: 2rem;
+                max-height: none;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .phone-row {
+                flex-direction: column;
+            }
+
+            .phone-row > * {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="main-container">
-        <div class="left-panel">
-            <img src="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" alt="Logo Colegio Santa Ana" />
-        </div>
+        <div class="register-card">
+            <div class="left-panel">
+                <img src="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" alt="Logo Colegio Santa Ana" />
+                <h1>Bienvenido</h1>
+                <p>Únete a nuestra comunidad educativa y comienza tu camino hacia el éxito</p>
+            </div>
 
-        <div class="right-panel">
-            <div class="register-box">
-                <h2>@ViewBag.Title</h2>
+            <div class="right-panel">
+                <h2>Crear Cuenta</h2>
+                <p class="subtitle">Completa el formulario para registrarte</p>
 
-                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
-                {
-                    @Html.AntiForgeryToken()
-                    @Html.ValidationSummary("", new { @class = "text-danger" })
-
-                    <div class="mb-3">
-                        @Html.TextBoxFor(m => m.Nombre, new
-                        {
-                            @class = "form-control",
-                            placeholder = "Nombre",
-                            pattern = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$",
-                            maxlength = "150",
-                            required = "required",
-                            oninput = "this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')"
-                        })
-                        @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                <form role="form">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <div class="input-group-custom">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" class="form-control" placeholder="Tu nombre" required
+                                   pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" maxlength="150"
+                                   oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')">
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        @Html.TextBoxFor(m => m.Apellido, new
-                        {
-                            @class = "form-control",
-                            placeholder = "Apellido",
-                            pattern = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$",
-                            maxlength = "150",
-                            required = "required",
-                            oninput = "this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')"
-                        })
-                        @Html.ValidationMessageFor(m => m.Apellido, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <label>Apellido</label>
+                        <div class="input-group-custom">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" class="form-control" placeholder="Tu apellido" required
+                                   pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" maxlength="150"
+                                   oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')">
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        @Html.TextBoxFor(m => m.Email, new
-                        {
-                            @class = "form-control",
-                            type = "email",
-                            placeholder = "Email",
-                            maxlength = "150",
-                            required = "required"
-                        })
-                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <label>Correo Electrónico</label>
+                        <div class="input-group-custom">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" class="form-control" placeholder="tu@email.com" required maxlength="150">
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        @Html.TextBoxFor(m => m.Telefono, new
-                        {
-                            @class = "form-control",
-                            type = "tel",
-                            minlength = "8",
-                            maxlength = "8",
-                            placeholder = "Teléfono",
-                            oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
-                        })
-                        @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "text-danger" })
+                    <div class="phone-section">
+                        <h5><i class="fas fa-phone"></i> Teléfonos</h5>
+                        <div id="telefonosContainer">
+                            <div class="phone-row">
+                                <input type="text" class="form-control no-icon" placeholder="+506" maxlength="4"
+                                       style="flex: 0 0 100px;" required
+                                       oninput="let val=this.value.replace(/[^0-9]/g,''); this.value=val.length>0? '+'+val.substring(0,3):'';">
+                                <input type="text" class="form-control no-icon" placeholder="Número" required
+                                       style="flex: 1;" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                                <select class="form-control no-icon" required style="flex: 0 0 140px;">
+                                    <option value="">Tipo</option>
+                                    <option value="Personal">Personal</option>
+                                    <option value="Trabajo">Trabajo</option>
+                                    <option value="Hogar">Hogar</option>
+                                    <option value="Encargado">Encargado</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" id="addTelefono" class="btn-add-phone">
+                            <i class="fas fa-plus"></i> Agregar Teléfono
+                        </button>
                     </div>
 
-                    <div class="mb-3">
-                        @Html.TextBoxFor(m => m.Cedula, new
-                        {
-                            @class = "form-control",
-                            minlength = "9",
-                            maxlength = "9",
-                            placeholder = "Cédula",
-                            oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
-                        })
-                        @Html.ValidationMessageFor(m => m.Cedula, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <label>Cédula</label>
+                        <div class="input-group-custom">
+                            <i class="fas fa-id-card input-icon"></i>
+                            <input type="text" class="form-control" placeholder="Número de cédula"
+                                   minlength="9" maxlength="9"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        @Html.TextBoxFor(m => m.FechaDeNacimiento, "{0:yyyy-MM-dd}", new
-                        {
-                            @class = "form-control",
-                            type = "date",
-                            max = fechaMaxima,
-                            placeholder = "Fecha de Nacimiento"
-                        })
-                        @Html.ValidationMessageFor(m => m.FechaDeNacimiento, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <label>Fecha de Nacimiento</label>
+                        <div class="input-group-custom">
+                            <i class="fas fa-calendar input-icon"></i>
+                            <input type="date" class="form-control" id="fechaNacimiento">
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        @Html.DropDownListFor(m => m.Rol, new List<SelectListItem>
-                        {
-                            new SelectListItem { Text = "Estudiante", Value = "Estudiantes" },
-                            new SelectListItem { Text = "Profesor", Value = "Profesores" },
-                            new SelectListItem { Text = "Administrador", Value = "Administradores" }
-                        }, "Seleccione un tipo de Rol", new { @class = "form-control", id = "Rol", required = "required" })
-                        @Html.ValidationMessageFor(m => m.Rol, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <label>Rol</label>
+                        <div class="input-group-custom">
+                            <i class="fas fa-user-tag input-icon"></i>
+                            <select class="form-control" required>
+                                <option value="">Seleccione un tipo de Rol</option>
+                                <option value="Estudiantes">Estudiante</option>
+                                <option value="Profesores">Profesor</option>
+                                <option value="Administradores">Administrador</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        @Html.PasswordFor(m => m.Password, new
-                        {
-                            @class = "form-control",
-                            placeholder = "Contraseña"
-                        })
-                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <div class="input-group-custom">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" class="form-control" placeholder="Crea una contraseña segura" required>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        @Html.PasswordFor(m => m.ConfirmPassword, new
-                        {
-                            @class = "form-control",
-                            placeholder = "Confirmar Contraseña"
-                        })
-                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <label>Confirmar Contraseña</label>
+                        <div class="input-group-custom">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" class="form-control" placeholder="Confirma tu contraseña" required>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <input type="submit" value="Registrarse" class="btn btn-register" />
-                    </div>
-
-                    
-                }
+                    <button type="submit" class="btn-register">
+                        Registrar <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 
-    @section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
-    }
+    <script>
+        // Establecer fecha máxima para fecha de nacimiento
+        document.getElementById('fechaNacimiento').max = new Date().toISOString().split('T')[0];
+
+        // Funcionalidad para agregar teléfonos
+        let phoneIndex = 1;
+        document.getElementById('addTelefono').addEventListener('click', function () {
+            const container = document.getElementById('telefonosContainer');
+            const div = document.createElement('div');
+            div.className = 'phone-row';
+            div.innerHTML = `
+                    <input type="text" class="form-control no-icon" placeholder="+506" maxlength="4"
+                           style="flex: 0 0 100px;" required
+                           oninput="let val=this.value.replace(/[^0-9]/g,''); this.value=val.length>0? '+'+val.substring(0,3):'';">
+                    <input type="text" class="form-control no-icon" placeholder="Número" required
+                           style="flex: 1;" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                    <select class="form-control no-icon" required style="flex: 0 0 140px;">
+                        <option value="">Tipo</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Trabajo">Trabajo</option>
+                        <option value="Hogar">Hogar</option>
+                        <option value="Encargado">Encargado</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                `;
+            container.appendChild(div);
+            phoneIndex++;
+        });
+    </script>
 </body>
 </html>

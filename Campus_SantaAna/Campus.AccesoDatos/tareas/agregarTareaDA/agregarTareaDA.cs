@@ -47,7 +47,8 @@ namespace Campus.AccesoDatos.Tareas.AgregarTareaAD
                 ArchivoAdjunto = tarea.ArchivoAdjunto,
                 FechaEntrega = tarea.FechaEntrega < new DateTime(1753, 1, 1) ? DateTime.Now.AddDays(1) : tarea.FechaEntrega,
                 FechaPublicacion = tarea.FechaPublicacion < new DateTime(1753, 1, 1) ? DateTime.Now : tarea.FechaPublicacion,
-                IdGrupo = tarea.Id_grupo
+                IdGrupo = tarea.Id_grupo,
+                asignado_por = tarea.asignado_por
             };
         }
 

@@ -11,11 +11,7 @@
             Layout = "~/Views/Shared/_Layout.cshtml"; // tu layout normal
         }
     }
-    else
-    {
-        Layout = "~/Views/Shared/_Layout.cshtml"; // si no está logueado
-    }
-
+ 
     ViewBag.Title = "Bienvenidos a Santa Ana a un Click";
 }
 
@@ -76,13 +72,13 @@
                         <div class="col-12 col-md-6 col-lg-3">
                             <div class="card-info">
                                 <h3>Total de Estudiantes</h3>
-                                <p class="card-number">150</p>
+                                <p class="card-number">ViewBag.Estudiantes</p>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-3">
                             <div class="card-info">
                                 <h3>Total de Profesores</h3>
-                                <p class="card-number">25</p>
+                                <p class="card-number">ViewBag.Profesores</p>
                             </div>
                         </div>
                     </div>

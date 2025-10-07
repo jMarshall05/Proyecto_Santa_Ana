@@ -2,16 +2,17 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Campus.Abstracciones.ModelosUI;
 using Campus.Abstracciones.LogicaDeNegocio.Eventos.AgregarEventoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Eventos.ListarEventosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Eventos.EditarEventoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Eventos.EliminarEventoLN;
+using Campus.Abstracciones.LogicaDeNegocio.Eventos.ListarEventosLN;
+using Campus.Abstracciones.ModelosUI;
 using Campus.LogicaDeNegocio.Eventos.AgregarEventoLN;
 using Campus.LogicaDeNegocio.Eventos.EditarEventoLN;
 using Campus.LogicaDeNegocio.Eventos.EliminarEventoLN;
 using Campus.LogicaDeNegocio.Eventos.ListarEventosLN;
+using Campus.UI.Filtros;
 
 namespace Campus.UI.Controllers
 {

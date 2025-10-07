@@ -166,8 +166,10 @@ namespace Campus.UI
             if (dataProtectionProvider != null)
             {
                 var TokenProvider =
-                    new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
-                TokenProvider.TokenLifespan= TimeSpan.FromHours(2);
+                    new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"))
+                    {
+                        TokenLifespan = TimeSpan.FromHours(2)
+                    };
                 manager.UserTokenProvider = TokenProvider;
             }
             return manager;

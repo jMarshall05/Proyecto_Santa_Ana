@@ -1,19 +1,22 @@
 ﻿using System;
-using System.Globalization;
+using System.Configuration;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio.Telefonos.AgregarTelefono;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.AgregarUsuariosLN;
+using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Telefonos.AgregarTelefonoLN;
+using Campus.LogicaDeNegocio.Usuarios.AgregarUsuarios;
+using Campus.UI.Filtros;
+using Campus.UI.Helpers;
+using Campus.UI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Campus.UI.Models;
-using Campus.Abstracciones.LogicaDeNegocio.Usuarios.AgregarUsuariosLN;
-using Campus.LogicaDeNegocio.Usuarios.AgregarUsuarios;
-using Campus.Abstracciones.ModelosUI;
-using Microsoft.Ajax.Utilities;
-using Microsoft.AspNet.Identity.EntityFramework;
+using OtpNet;
+using QRCoder;
 
 namespace Campus.UI.Controllers
 {
@@ -24,11 +27,15 @@ namespace Campus.UI.Controllers
         private ApplicationUserManager _userManager;
         private readonly IAgregarUsuariosLN _agregarUsuariosLN;
         private readonly Random rnd;
+        private readonly IAgregarTelefonoLN _agregarTelefonoLN;
+
+        private static byte[] qrCodeImage;
 
         public AccountController()
         {
             _agregarUsuariosLN = new AgregarUsuariosLN();
-             rnd = new Random();
+            rnd = new Random();
+            _agregarTelefonoLN = new AgregarTelefonoLN();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -76,7 +83,7 @@ namespace Campus.UI.Controllers
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
-        
+
         {
             if (!ModelState.IsValid)
             {
@@ -86,27 +93,63 @@ namespace Campus.UI.Controllers
             // No cuenta los errores de inicio de sesión para el bloqueo de la cuenta
             // Para permitir que los errores de contraseña desencadenen el bloqueo de la cuenta, cambie a shouldLockout: true
             var user = UserManager.FindByEmail(model.Email);
-            if (user != null) { 
-             var result = await SignInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
+            if (user != null)
             {
-                case SignInStatus.Success:
-                        return RedirectToAction("Index", "Home");
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Intento de inicio de sesión a fallado.");
-                    return View(model);
+                var result = await SignInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, shouldLockout: false);
+                switch (result)
+                {
+                    case SignInStatus.Success:
+                        if (user.TwoFactorEnabled && !string.IsNullOrEmpty(user.GoogleAuthenticatorSecretKey))
+                        {
+                            Session["UserIdFor2FA"] = user.Id;
+                            return RedirectToAction("LoginWith2FA");
+                        }
+                        else
+                        {
+                            return RedirectToAction("Solicitud2FA", "Account");
+                        }
+                    case SignInStatus.LockedOut:
+                        return View("Lockout");
+                    case SignInStatus.RequiresVerification:
+                        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, model.RememberMe });
+                    case SignInStatus.Failure:
+                    default:
+                        ModelState.AddModelError("", "Intento de inicio de sesión a fallado.");
+                        return View(model);
+                }
             }
-            }
-            else {
+            else
+            {
                 ModelState.AddModelError("", "Intento de inicio de sesión a fallado.");
                 return View(model);
             }
-           
+
+        }
+
+        public ActionResult LoginWith2FA()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult LoginWith2FA(string code, bool rememberMe = false)
+        {
+            var userId = Session["UserIdFor2FA"]?.ToString();
+            if (userId == null) return RedirectToAction("Login");
+
+            var user = UserManager.FindById(userId);
+            var totp = new Totp((Base32Encoding.ToBytes(Encriptacion.Desencriptar(user.GoogleAuthenticatorSecretKey))));
+            if (totp.VerifyTotp(code, out _, VerificationWindow.RfcSpecifiedNetworkDelay))
+            {
+                SignInManager.SignIn(user, isPersistent: rememberMe, rememberBrowser: false);
+                Session.Remove("UserIdFor2FA");
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Código inválido.");
+                return View();
+            }
         }
 
         //
@@ -167,6 +210,7 @@ namespace Campus.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            try{
             if (ModelState.IsValid)
             {
                 ApplicationUser user = CrearUsuario(model);
@@ -176,6 +220,8 @@ namespace Campus.UI.Controllers
                     await UserManager.AddToRoleAsync(user.Id, model.Rol);
                     var usuario = ConvertirDto(model, user);
                     await _agregarUsuariosLN.AgregarUsuario(usuario);
+                    model.Telefonos.ForEach(t => t.IdUsuario = user.Id);
+                    await _agregarTelefonoLN.AgregarTelefono(model.Telefonos);
                     // await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
@@ -189,14 +235,20 @@ namespace Campus.UI.Controllers
                 AddErrors(result);
             }
 
-            // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
-            return View(model);
+                // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
+                return View(model);
+            }
+            catch(Exception ex)
+            {
+               ModelState.AddModelError("", ex.Message);
+                return View(model);
+            }
         }
 
         private ApplicationUser CrearUsuario(RegisterViewModel model)
         {
             string numeroRamdon = rnd.Next(0, 100).ToString("D2");
-            var user = new ApplicationUser { UserName = model.Nombre.ToUpper().First() + model.Apellido.Trim() + numeroRamdon, Email = model.Email };
+            var user = new ApplicationUser { UserName = model.Nombre.ToUpper().First() + model.Apellido.Trim() + numeroRamdon, Email = model.Email};
             return user;
         }
 
@@ -239,10 +291,10 @@ namespace Campus.UI.Controllers
 
                 // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                 // Enviar un correo electrónico con este vínculo
-                 string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code }, protocol: Request.Url.Scheme);		
-                 await UserManager.SendEmailAsync(user.Id, "Restablecer contraseña", "Para restablecer la contraseña, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
-                    return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code }, protocol: Request.Url.Scheme);
+                await UserManager.SendEmailAsync(user.Id, "Restablecer contraseña", "Para restablecer la contraseña, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
@@ -430,9 +482,85 @@ namespace Campus.UI.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
+        }
+        public ActionResult EnableAuthenticator()
+        {
+            var userId = User.Identity.GetUserId();
+            var user = UserManager.FindById(userId);
+
+            // Generar clave secreta si no existe
+            if (string.IsNullOrEmpty(user.GoogleAuthenticatorSecretKey))
+            {
+                var secretKey = Base32Encoding.ToString(KeyGeneration.GenerateRandomKey(20));
+                var EncryptedKey = Encriptacion.Encriptar(secretKey);
+                user.GoogleAuthenticatorSecretKey = EncryptedKey;
+                user.TwoFactorEnabled = true;
+                UserManager.Update(user);
+            }
+            user.GoogleAuthenticatorSecretKey = Encriptacion.Desencriptar(user.GoogleAuthenticatorSecretKey);
+            string issuer = ConfigurationManager.AppSettings["FromName"];
+            string otpauthUrl = $"otpauth://totp/{issuer}:{user.Email}?secret={user.GoogleAuthenticatorSecretKey}&issuer={issuer}";
+
+            // Generar QR
+            using (var qrGenerator = new QRCodeGenerator())
+            using (var qrCodeData = qrGenerator.CreateQrCode(otpauthUrl, QRCodeGenerator.ECCLevel.Q))
+            using (var qrCode = new PngByteQRCode(qrCodeData))
+            {
+                 qrCodeImage = qrCode.GetGraphic(20);
+                ViewBag.QRCode = "data:image/png;base64," + Convert.ToBase64String(qrCodeImage);
+            }
+
+            ViewBag.SecretKey = user.GoogleAuthenticatorSecretKey;
+
+            return View();
+        }
+        public ActionResult DisableAuthenticator()
+        {
+            var id = User.Identity.GetUserId();
+            var user = UserManager.FindById(id);
+            if (user != null)
+            {
+                user.TwoFactorEnabled = false;
+                user.GoogleAuthenticatorSecretKey = null;
+                UserManager.Update(user);
+                return RedirectToAction("Index", "Manage");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Manage");
+            }
+
+
+        }
+        [HttpPost]
+        public ActionResult VerifyAuthenticator(string code)
+        {
+            var userId = User.Identity.GetUserId();
+            var user = UserManager.FindById(userId);
+
+            var totp = new Totp(Base32Encoding.ToBytes(Encriptacion.Desencriptar(user.GoogleAuthenticatorSecretKey)));
+            bool isValid = totp.VerifyTotp(code, out long _, VerificationWindow.RfcSpecifiedNetworkDelay);
+
+            if (isValid)
+            {
+                user.TwoFactorEnabled = true;
+                UserManager.Update(user);
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Código inválido.");
+                ViewBag.QRCode = "data:image/png;base64," + Convert.ToBase64String(qrCodeImage);
+                return View("EnableAuthenticator");
+            }
         }
 
+        [HttpGet]
+        public ActionResult Solicitud2FA()
+        {
+            return View();
+        }
         //
         // GET: /Account/ExternalLoginFailure
         [AllowAnonymous]
@@ -471,7 +599,6 @@ namespace Campus.UI.Controllers
                 Nombre = model.Nombre,
                 Apellido = model.Apellido,
                 Email = model.Email,
-                Telefono = model.Telefono,
                 FechaDeNacimiento = model.FechaDeNacimiento,
                 Cedula = model.Cedula,
                 FechaDeRegistro = DateTime.Now,

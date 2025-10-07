@@ -1,0 +1,243 @@
+﻿@{
+    ViewData["Title"] = "Verificación en Dos Pasos";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow-lg border-0">
+                <!-- Header con icono -->
+                <div class="card-header bg-primary text-white text-center py-4 border-0">
+                    <div class="mb-3">
+                        <i class="bi bi-shield-lock-fill display-4"></i>
+                    </div>
+                    <h3 class="mb-1">Verificación en Dos Pasos</h3>
+                    <p class="mb-0 small opacity-75">Protegiendo tu cuenta</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <!-- Instrucciones -->
+                    <div class="alert alert-info border-0 mb-4" role="alert">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-phone-fill fs-4 me-3 mt-1"></i>
+                            <div>
+                                <p class="mb-0">Abre <strong>Google Authenticator</strong> en tu dispositivo móvil e introduce el código de 6 dígitos que aparece.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulario -->
+                    <form method="post" id="verifyForm" class="needs-validation" novalidate>
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-4">
+                            <label for="code" class="form-label fw-semibold text-center d-block mb-3">
+                                <i class="bi bi-key-fill me-2"></i>
+                                Código de verificación
+                            </label>
+                            <input type="text"
+                                   class="form-control form-control-lg text-center font-monospace fs-2 py-3"
+                                   id="code"
+                                   name="code"
+                                   placeholder="000000"
+                                   maxlength="6"
+                                   pattern="[0-9]{6}"
+                                   inputmode="numeric"
+                                   required
+                                   autocomplete="off"
+                                   autofocus />
+                            <div class="invalid-feedback text-center">
+                                Por favor, introduce un código de 6 dígitos válido.
+                            </div>
+                        </div>
+
+                        <!-- Indicador de tiempo -->
+                        <div class="text-center mb-4">
+                            <small class="text-muted">
+                                <i class="bi bi-clock-history me-1"></i>
+                                El código cambia cada 30 segundos
+                            </small>
+                        </div>
+
+                        <!-- Botón de verificar -->
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg py-3" id="submitBtn">
+                                <i class="bi bi-shield-check me-2"></i>
+                                Verificar código
+                            </button>
+                        </div>
+
+                        <!-- Botón de cancelar/volver -->
+                        <div class="d-grid">
+                            <a href="@Url.Action("Login", "Account")" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Volver al inicio de sesión
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Footer con ayuda -->
+                <div class="card-footer bg-light border-0 text-center py-3">
+                    <button class="btn btn-link btn-sm text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#helpCollapse">
+                        <i class="bi bi-question-circle me-1"></i>
+                        ¿Problemas para iniciar sesión?
+                    </button>
+                    <div class="collapse" id="helpCollapse">
+                        <div class="card card-body border-0 bg-light mt-2 text-start">
+                            <h6 class="mb-2"><i class="bi bi-lightbulb me-2"></i>Consejos:</h6>
+                            <ul class="small mb-2">
+                                <li>Verifica que la hora de tu dispositivo esté sincronizada</li>
+                                <li>Asegúrate de estar usando el código más reciente</li>
+                                <li>El código debe tener exactamente 6 dígitos</li>
+                                <li>Si borraste el codigo <a href="@Url.Action("EnableAuthenticator","Account")">Click aqui</a></li>
+                            </ul>
+                            <hr class="my-2" />
+                            <p class="small mb-0">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Si perdiste acceso a tu autenticador, contacta al administrador.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seguridad -->
+            <div class="text-center mt-4">
+                <small class="text-muted">
+                    <i class="bi bi-lock-fill me-1"></i>
+                    Conexión segura y encriptada
+                </small>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function() {
+            'use strict';
+
+            const form = document.getElementById('verifyForm');
+            const codeInput = document.getElementById('code');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Permitir solo números
+            codeInput.addEventListener('input', function(e) {
+                // Remover caracteres no numéricos
+                this.value = this.value.replace(/[^0-9]/g, '');
+
+                // Agregar clase de éxito cuando tenga 6 dígitos
+                if (this.value.length === 6) {
+                    this.classList.add('is-valid');
+                    this.classList.remove('is-invalid');
+                } else {
+                    this.classList.remove('is-valid');
+                }
+            });
+
+            // Auto-focus cuando se carga la página
+            window.addEventListener('load', function() {
+                codeInput.focus();
+            });
+
+            // Prevenir pegar texto no numérico
+            codeInput.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                const numericText = pastedText.replace(/[^0-9]/g, '').slice(0, 6);
+                this.value = numericText;
+
+                // Trigger input event para validación
+                const event = new Event('input', { bubbles: true });
+                this.dispatchEvent(event);
+            });
+
+            // Validación del formulario
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    codeInput.classList.add('is-invalid');
+                } else {
+                    // Mostrar loading en el botón
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Verificando...';
+                }
+
+                form.classList.add('was-validated');
+            }, false);
+
+            // Permitir Enter para enviar
+            codeInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.length === 6) {
+                    form.submit();
+                }
+            });
+
+        })();
+    </script>
+}
+
+@section Styles {
+    <style>
+        /* Animación sutil del card */
+        .card {
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilo especial para el input */
+        #code {
+            letter-spacing: 0.5rem;
+            font-weight: 600;
+            border: 2px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        #code:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+            letter-spacing: 0.5rem;
+        }
+
+        #code.is-valid {
+            border-color: #198754;
+            background-image: none;
+        }
+
+        #code.is-valid:focus {
+            border-color: #198754;
+            box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15);
+        }
+
+        /* Mejorar apariencia del placeholder */
+        #code::placeholder {
+            opacity: 0.3;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 576px) {
+            #code {
+                font-size: 1.5rem !important;
+                letter-spacing: 0.3rem;
+            }
+
+            #code:focus {
+                letter-spacing: 0.3rem;
+            }
+        }
+    </style>
+}
