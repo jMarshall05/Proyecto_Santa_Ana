@@ -20,7 +20,7 @@ using QRCoder;
 
 namespace Campus.UI.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
