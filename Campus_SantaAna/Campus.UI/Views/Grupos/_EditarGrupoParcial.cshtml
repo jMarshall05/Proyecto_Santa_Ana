@@ -73,21 +73,21 @@
             </div>
 
             <!-- Estado -->
-            <div class="form-section">
-                <h3 class="section-title">
-                    <i class="fas fa-cog me-2"></i>Configuración
-                </h3>
-                <div class="form-group">
-                    <label class="form-label">Estado del Grupo</label>
-                    <div class="toggle-group">
-                        <label class="toggle-label">
-                            @Html.EditorFor(model => model.estado, new { htmlAttributes = new { @class = "toggle-input" } })
-                            <span class="toggle-slider"></span>
-                            <span class="toggle-text">@(Model.estado ? "Activo" : "Inactivo")</span>
-                        </label>
-                    </div>
-                    @Html.ValidationMessageFor(model => model.estado, "", new { @class = "validation-message" })
+            <div class="form-group">
+                <label class="form-label">Estado del Grupo</label>
+                <div class="toggle-group">
+                    <label class="toggle-label">
+                        <input type="checkbox"
+                               class="toggle-input"
+                               name="estado"
+                               id="estado"
+                               value="true"
+                               @(Model.estado ? "checked=\"checked\"" : "") />
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-text">@(Model.estado ? "Activo" : "Inactivo")</span>
+                    </label>
                 </div>
+                @Html.ValidationMessageFor(model => model.estado, "", new { @class = "validation-message" })
             </div>
         </div>
 
@@ -104,55 +104,63 @@
 </div>
 
 <style>
-    /* Toggle Switch Styles */
+    /* Toggle base */
     .toggle-group {
-        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .toggle-label {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 1rem;
         cursor: pointer;
+        user-select: none;
+        gap: 10px;
     }
 
+    /* Ocultar el checkbox */
     .toggle-input {
         display: none;
     }
 
+    /* Switch */
     .toggle-slider {
-        width: 60px;
-        height: 30px;
-        background: #e5e7eb;
-        border-radius: 15px;
         position: relative;
+        width: 50px;
+        height: 25px;
+        background-color: #ccc;
+        border-radius: 25px;
         transition: all 0.3s ease;
     }
 
-        .toggle-slider:before {
-            content: '';
+        /* Círculo */
+        .toggle-slider::before {
+            content: "";
             position: absolute;
-            width: 26px;
-            height: 26px;
-            background: white;
-            border-radius: 50%;
-            top: 2px;
+            width: 21px;
+            height: 21px;
             left: 2px;
+            top: 2px;
+            background-color: white;
+            border-radius: 50%;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
+    /* Activado */
     .toggle-input:checked + .toggle-slider {
-        background: #10b981;
+        background-color: #10b981; /* verde */
     }
 
-        .toggle-input:checked + .toggle-slider:before {
-            transform: translateX(30px);
+        .toggle-input:checked + .toggle-slider::before {
+            transform: translateX(25px);
         }
 
+    /* Texto */
     .toggle-text {
-        font-weight: 500;
-        color: #374151;
+        font-weight: 600;
+        color: #1e293b;
+        min-width: 70px;
     }
 
     /* Resto de estilos igual que en AgregarGrupo */
@@ -414,6 +422,18 @@
                     alert('Por favor, complete todos los campos requeridos.');
                 }
             });
+        }
+    });
+
+    // Control del toggle de estado
+    $('.toggle-input').on('change', function () {
+        const $text = $(this).siblings('.toggle-text');
+        if (this.checked) {
+            $text.text('Activo');
+            $text.removeClass('text-danger').addClass('text-success');
+        } else {
+            $text.text('Inactivo');
+            $text.removeClass('text-success').addClass('text-danger');
         }
     });
 </script>

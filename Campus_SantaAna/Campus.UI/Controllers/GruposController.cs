@@ -30,7 +30,7 @@ using QRCoder;
 
 namespace Campus.UI.Controllers
 {
-    //[Authorize(Roles = "Administradores")]
+    [Authorize(Roles = "Administradores")]
     public class GruposController : Controller
     {
         private IListarGruposLN _listarGrupos;

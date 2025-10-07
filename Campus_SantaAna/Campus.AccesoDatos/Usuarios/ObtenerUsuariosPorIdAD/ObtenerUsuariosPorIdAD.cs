@@ -23,6 +23,7 @@ namespace Campus.AccesoDatos.Usuarios.ObtenerUsuariosPorIdAD
             {
                 return new UsuariosDto
                 {
+                    IdUsuario = usuario.IdUsuario,
                     Nombre = usuario.Nombre,
                     Apellido = usuario.Apellido,
                     Email = usuario.Email,

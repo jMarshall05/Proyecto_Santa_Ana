@@ -12,7 +12,7 @@ using Campus.UI.Filtros;
 
 namespace Campus.UI.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class MateriasController : Controller
     {
         private readonly IListarMateriasLN _listarMateriasLN;

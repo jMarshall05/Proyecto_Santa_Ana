@@ -3,7 +3,12 @@
     ViewBag.Title = "Administrar Cuenta";
     <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />
     @Styles.Render("~/Content/css")
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    if (User.IsInRole("Administradores"))
+    { Layout = "~/Views/Shared/_AdminLayout.cshtml"; }
+    else if (User.IsInRole("Profesores") && User.IsInRole("Estudiantes"))
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
 
 }
 <main aria-labelledby="title" class="container mb-5">

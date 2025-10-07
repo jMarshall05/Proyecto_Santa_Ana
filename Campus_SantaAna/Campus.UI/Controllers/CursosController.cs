@@ -32,7 +32,7 @@ using QRCoder;
 
 namespace Campus.UI.Controllers
 {
-    //[Authorize(Roles = "Administradores")]
+    [Authorize(Roles = "Administradores")]
     public class CursosController : Controller
     {
         private readonly IListarCursoLN _listarCursoLN;
