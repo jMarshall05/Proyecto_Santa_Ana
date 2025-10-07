@@ -6,7 +6,6 @@
     [estado]              BIT            NOT NULL,
     [FechaDeCreacion]     DATETIME       NOT NULL,
     [FechaDeModificacion] DATETIME       NULL,
-    PRIMARY KEY CLUSTERED ([id_grupo] ASC),
-    CONSTRAINT [FK_grupos_creado_por] FOREIGN KEY ([creado_por]) REFERENCES [dbo].[Usuarios_tb] ([IdUsuario]) ON DELETE SET NULL
+    PRIMARY KEY CLUSTERED ([id_grupo] ASC)
 );
 
