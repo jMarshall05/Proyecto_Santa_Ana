@@ -93,37 +93,50 @@ namespace Campus.UI.Controllers
         // GET: Grupos/Create
         public ActionResult AgregarGrupoParcial()
         {
-            ViewBag.Id = User.Identity.GetUserId();
             return PartialView("_AgregarGrupoParcial");
         }
 
         // POST: Grupos/Create
         [HttpPost]
-        public async Task<ActionResult> AgregarGrupoParcial(string id, GruposDto grupo)
+        public async Task<ActionResult> AgregarGrupoParcial(GruposDto grupo)
         {
             try
             {
-
                 if (!ModelState.IsValid)
                 {
                     ModelState.AddModelError("", "Por favor, complete todos los campos requeridos.");
                     return PartialView("_AgregarGrupoParcial", grupo);
                 }
-                if (id.IsNullOrWhiteSpace())
-                    return RedirectToAction("Login", "Account");
+
+                var id = User?.Identity?.GetUserId();
+                if (string.IsNullOrWhiteSpace(id))
+                {
+                    return Content("Usuario no logueado o UserId es null en Azure.");
+                }
+
                 var Usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
+                if (Usuario == null)
+                {
+                    return Content($"No se encontró el usuario con Id: {id}");
+                }
+
                 grupo.creado_por = Usuario.Nombre + " " + Usuario.Apellido;
                 int resultado = await _agregarGrupoLN.AgregarGrupo(grupo);
+
                 if (resultado == 0)
                 {
                     ModelState.AddModelError("", "No se pudo agregar el grupo. Por favor, intente nuevamente.");
                     return PartialView("_AgregarGrupoParcial", grupo);
                 }
+
                 return RedirectToAction("ListarGrupos");
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                Response.StatusCode = 500;
+                // Loggear en Azure App Service
+                System.Diagnostics.Trace.TraceError("Error en AgregarGrupoParcial: " + ex);
+                return Content("Error interno del servidor. Revisa logs de Azure para más detalles.");
             }
         }
 
