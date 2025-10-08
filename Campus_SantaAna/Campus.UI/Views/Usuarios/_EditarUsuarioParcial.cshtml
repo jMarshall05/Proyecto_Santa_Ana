@@ -102,7 +102,7 @@
                                             new SelectListItem { Text = "Hogar", Value = "Hogar", Selected = Model.Telefonos[i].Tipo == "Hogar" },
                                             new SelectListItem { Text = "Encargado", Value = "Encargado", Selected = Model.Telefonos[i].Tipo == "Encargado" },
                                             new SelectListItem { Text = "Otro", Value = "Otro" , Selected = Model.Telefonos[i].Tipo == "Otro"}
-                                        }, "Seleccione un tipo", new { @class = "form-control", required = "required"})
+                                        }, "Seleccione un tipo", new { @class = "form-control", required = "required" })
                                     </div>
 
                                     <div class="col-md-1">
@@ -173,21 +173,18 @@
                         new SelectListItem { Text = "Administrador", Value = "Administradores" }
                     }, new { @class = "form-control", required = "required" })
                 </div>
-                <br />
-                <div class="toggle-group mt-2">
-                    <label class="toggle-label">
-                        <input type="checkbox"
-                               class="toggle-input"
-                               name="estado"
-                               id="estado"
-                               value=@Model.Estado
-                               @(Model.Estado ? "checked=\"checked\"" : "") />
-                        <span class="toggle-slider"></span>
-                        <span class="toggle-text">@(Model.Estado ? "Activo" : "Inactivo")</span>
-                    </label>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Estado, "Estado del Usuario", new { @class = "form-label" })
+                    <div class="toggle-group">
+                        <label class="toggle-label">
+                            @Html.CheckBoxFor(m => m.Estado, new { @class = "toggle-input", id = "estadoUsuario" })
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-text">@(Model.Estado ? "Activo" : "Inactivo")</span>
+                        </label>
+                    </div>
                 </div>
                 <br />
-
             </div>
         </div>
 
@@ -203,7 +200,7 @@
     </div>
 }
 
-<!-- CSS Reutilizable -->
+<!-- CSS Corregido -->
 <style>
     .toggle-group {
         display: flex;
@@ -217,11 +214,17 @@
         cursor: pointer;
         user-select: none;
         gap: 10px;
+        position: relative;
     }
 
-    .toggle-input {
-        display: none;
-    }
+        /* Ocultar TODOS los inputs dentro del toggle */
+        .toggle-label input {
+            position: absolute !important;
+            opacity: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
+            pointer-events: none !important;
+        }
 
     .toggle-slider {
         position: relative;
@@ -230,6 +233,8 @@
         background-color: #ccc;
         border-radius: 25px;
         transition: all 0.3s ease;
+        display: inline-block;
+        flex-shrink: 0;
     }
 
         .toggle-slider::before {
@@ -242,13 +247,15 @@
             background-color: white;
             border-radius: 50%;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
-    .toggle-input:checked + .toggle-slider {
+    /* Usar el atributo checked del checkbox principal */
+    .toggle-label input[type="checkbox"]:checked ~ .toggle-slider {
         background-color: #10b981;
     }
 
-        .toggle-input:checked + .toggle-slider::before {
+        .toggle-label input[type="checkbox"]:checked ~ .toggle-slider::before {
             transform: translateX(25px);
         }
 
@@ -260,17 +267,49 @@
     }
 </style>
 
-<!-- JS Reutilizable -->
+<!-- JS Corregido -->
 <script>
     $(function () {
         // Toggle principal y de teléfonos
-        $(document).on('change', '.toggle-input', function () {
-            const $text = $(this).siblings('.toggle-text');
+        $(document).on('change', 'input[type="checkbox"].toggle-input', function () {
+            const $label = $(this).closest('.toggle-label');
+            const $text = $label.find('.toggle-text');
+            const $slider = $label.find('.toggle-slider');
+
             if (this.checked) {
                 $text.text('Activo').css('color', '#10b981');
+                $slider.css('background-color', '#10b981');
+                $slider.find('::before').css('transform', 'translateX(25px)');
             } else {
                 $text.text('Inactivo').css('color', '#ef4444');
+                $slider.css('background-color', '#ccc');
+                $slider.find('::before').css('transform', 'translateX(0)');
             }
+        });
+
+        // Inicializar estados al cargar
+        $('input[type="checkbox"].toggle-input').each(function() {
+            const $label = $(this).closest('.toggle-label');
+            const $text = $label.find('.toggle-text');
+            const $slider = $label.find('.toggle-slider');
+
+            if (this.checked) {
+                $text.css('color', '#10b981');
+                $slider.css('background-color', '#10b981');
+            } else {
+                $text.css('color', '#ef4444');
+                $slider.css('background-color', '#ccc');
+            }
+        });
+
+        // Hacer clic en el toggle-slider para cambiar el estado
+        $(document).on('click', '.toggle-slider', function(e) {
+            e.preventDefault();
+            const $label = $(this).closest('.toggle-label');
+            const $checkbox = $label.find('input[type="checkbox"].toggle-input');
+
+            // Cambiar el estado del checkbox
+            $checkbox.prop('checked', !$checkbox.prop('checked')).trigger('change');
         });
 
         // Teléfonos dinámicos
@@ -304,9 +343,10 @@
                 <div class="col-md-1">
                     <div class="toggle-group">
                         <label class="toggle-label">
-                            <input type="checkbox" name="Telefonos[${phoneIndex}].Estado" class="toggle-input" checked />
+                            <input type="checkbox" name="Telefonos[${phoneIndex}].Estado" class="toggle-input" value="true" checked />
+                            <input type="hidden" name="Telefonos[${phoneIndex}].Estado" value="false" />
                             <span class="toggle-slider"></span>
-                            <span class="toggle-text">Activo</span>
+                            <span class="toggle-text" style="color: #10b981;">Activo</span>
                         </label>
                     </div>
                 </div>
