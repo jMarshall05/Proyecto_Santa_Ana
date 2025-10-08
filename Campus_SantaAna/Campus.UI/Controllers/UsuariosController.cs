@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -180,7 +181,7 @@ namespace Campus.UI.Controllers
 
                     return RedirectToAction("ListarUsuarios");
                 }
-
+               var errores= ObtenerErroresModelState();
                 ModelState.AddModelError("", "Algo falló al editar.");
                 return View("ListarUsuarios");
             }
@@ -343,6 +344,28 @@ namespace Campus.UI.Controllers
                     }
                 }
             }
+        }
+        protected string ObtenerErroresModelState()
+        {
+            var errores = new StringBuilder();
+
+            foreach (var key in ModelState.Keys)
+            {
+                var estado = ModelState[key];
+                if (estado.Errors.Count > 0)
+                {
+                    errores.AppendLine($"Campo: {key}");
+                    foreach (var error in estado.Errors)
+                    {
+                        var mensajeError = !string.IsNullOrEmpty(error.ErrorMessage)
+                            ? error.ErrorMessage
+                            : error.Exception?.Message ?? "Error desconocido";
+                        errores.AppendLine($"  - {mensajeError}");
+                    }
+                }
+            }
+
+            return errores.ToString();
         }
     }
 }
