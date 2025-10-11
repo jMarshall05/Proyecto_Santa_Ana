@@ -44,6 +44,8 @@ namespace Campus.AccesoDatos.ModelosAD
 
         [Column("asignado_por")]
         public string asignado_por { get; set; }
+        [Column("estado")]
+        public bool Estado { get; set; }
 
     }
 }

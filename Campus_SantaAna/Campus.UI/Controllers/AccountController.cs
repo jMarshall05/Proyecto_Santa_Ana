@@ -103,7 +103,7 @@ namespace Campus.UI.Controllers
                         if (user.TwoFactorEnabled && !string.IsNullOrEmpty(user.GoogleAuthenticatorSecretKey))
                         {
                             Session["UserIdFor2FA"] = user.Id;
-                            return RedirectToAction("Home", "Home");
+                            return RedirectToAction("Index", "Home");
                         }
                         else
                         {

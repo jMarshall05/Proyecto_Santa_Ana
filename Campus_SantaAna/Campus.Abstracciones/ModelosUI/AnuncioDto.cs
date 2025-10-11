@@ -31,6 +31,8 @@ namespace Campus.Abstracciones.ModelosUI
        
         [DisplayName("Imagen del Anuncio")]
         public string ImagenRuta { get; set; }
+        [DisplayName("Estado")]
+        public bool Estado { get; set; }    
 
         [NotMapped]
         [DisplayName("Subir Imagen")]

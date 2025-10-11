@@ -45,6 +45,7 @@ namespace Campus.AccesoDatos.Anuncios.ListarAnunciosAD
                 Descripcion = anuncio.Descripcion,
                 FechaEvento = anuncio.FechaEvento,
                 FechaPublicacion = anuncio.FechaPublicacion,
+                Estado = anuncio.Estado,
 
              
                 ImagenRuta = anuncio.ImagenRuta
