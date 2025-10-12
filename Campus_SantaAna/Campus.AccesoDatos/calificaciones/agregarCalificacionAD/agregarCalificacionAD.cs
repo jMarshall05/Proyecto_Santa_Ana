@@ -30,7 +30,8 @@ namespace Campus.AccesoDatos.calificaciones.agregarCalificacionAD
                 IdEntrega = calificacionDto.id_entrega,
                 Calificacion = calificacionDto.calificacion,
                 Comentario = calificacionDto.comentario,
-                FechaCalificacion = DateTime.Now
+                FechaCalificacion = DateTime.Now,
+                Estado = true
             };
 
             _elContexto.Calificaciones.Add(calificacionAD);

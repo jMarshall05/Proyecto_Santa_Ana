@@ -78,6 +78,7 @@ namespace Campus.AccesoDatos.calificaciones.listarCalificacionAD
                     calificacion = c.Calificacion,
                     comentario = c.Comentario,
                     fecha_calificacion = c.FechaCalificacion,
+                    Estado = c.Estado
                 })
                 .ToListAsync();
 
