@@ -83,20 +83,20 @@ public class AnunciosController : Controller
     }
 
     // GET: Anuncios/Edit/5
-    public ActionResult Edit(int id)
+    public ActionResult EditParcial(int id)
     {
         var anuncio = _listarAnunciosLN.ObtenerAnuncioPorId(id);
         if (anuncio == null)
         {
             return HttpNotFound();
         }
-        return View(anuncio);
+        return PartialView("_EditParcial", anuncio);
     }
 
     // POST: Anuncios/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Edit(AnuncioDto anuncio)
+    public ActionResult EditParcial(AnuncioDto anuncio)
     {
         if (!ModelState.IsValid) return View(anuncio);
         try

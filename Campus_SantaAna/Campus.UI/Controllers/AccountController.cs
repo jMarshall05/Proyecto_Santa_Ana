@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -102,7 +103,7 @@ namespace Campus.UI.Controllers
                         if (user.TwoFactorEnabled && !string.IsNullOrEmpty(user.GoogleAuthenticatorSecretKey))
                         {
                             Session["UserIdFor2FA"] = user.Id;
-                            return RedirectToAction("LoginWith2FA");
+                            return RedirectToAction("Index", "Home");
                         }
                         else
                         {
@@ -143,6 +144,9 @@ namespace Campus.UI.Controllers
             {
                 SignInManager.SignIn(user, isPersistent: rememberMe, rememberBrowser: false);
                 Session.Remove("UserIdFor2FA");
+                var cache = MemoryCache.Default;
+                var verifiedKey = $"User2FAVerified-{user.Id}";
+                cache.Add(verifiedKey, true, DateTimeOffset.Now.AddMinutes(30));
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -540,10 +544,11 @@ namespace Campus.UI.Controllers
             var user = UserManager.FindById(userId);
 
             var totp = new Totp(Base32Encoding.ToBytes(Encriptacion.Desencriptar(user.GoogleAuthenticatorSecretKey)));
-            bool isValid = totp.VerifyTotp(code, out long _, VerificationWindow.RfcSpecifiedNetworkDelay);
+           
 
-            if (isValid)
+            if ( totp.VerifyTotp(code, out long _, VerificationWindow.RfcSpecifiedNetworkDelay))
             {
+
                 user.TwoFactorEnabled = true;
                 UserManager.Update(user);
                 return RedirectToAction("Index", "Home");

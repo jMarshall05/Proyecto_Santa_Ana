@@ -24,5 +24,8 @@ namespace Campus.AccesoDatos.ModelosAD
         [Column("GrupoId")]
         public int GrupoId { get; set; }
 
+        [Column("estado")]
+        public bool Estado { get; set; }
+
     }
 }

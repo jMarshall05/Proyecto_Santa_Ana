@@ -464,11 +464,8 @@
     <Content Include="Views\Usuarios\_DetallesDeUsuarioParcial.cshtml" />
     <Content Include="Views\Usuarios\_EditarUsuarioParcial.cshtml" />
     <Content Include="Views\anuncios\Create.cshtml" />
-    <Content Include="Views\anuncios\Delete.cshtml" />
-    <Content Include="Views\anuncios\Edit.cshtml" />
     <Content Include="Views\anuncios\ListarAnuncios.cshtml" />
     <Content Include="Views\Home\Documentos.cshtml" />
-    <Content Include="Views\anuncios\Details.cshtml" />
     <Content Include="Views\anuncios\AnunciosEstudiantes.cshtml" />
     <Content Include="Views\Tareas\ListarTareas.cshtml" />
     <Content Include="Views\Tareas\Create.cshtml" />
@@ -500,6 +497,7 @@
     <Content Include="Views\Account\EnableAuthenticator.cshtml" />
     <Content Include="Views\Account\Solicitud2FA.cshtml" />
     <Content Include="Views\Account\LoginWith2FA.cshtml" />
+    <Content Include="Views\anuncios\_EditParcial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

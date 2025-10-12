@@ -1,4 +1,5 @@
-﻿using System.Drawing.Imaging;
+﻿using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
+using Campus.Abstracciones.ModelosUI;
 using Campus.LogicaDeNegocio.Cursos.ListarCursosLN;
 using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
@@ -64,35 +66,49 @@ namespace Campus.UI.Controllers
 
         public ActionResult Index()
         {
-
             var id = User.Identity.GetUserId();
             if (id == null)
                 return RedirectToAction("login", "Account");
 
             if (User.IsInRole("Profesores"))
             {
-                var listaDeCursos = _listarCursos.ListarCursos().Where(u => u.ProfesorId == id);
+                var listaDeCursos = _listarCursos.ListarCursos()
+                    .Where(u => u.ProfesorId == id)
+                    .ToList();
+
                 foreach (var item in listaDeCursos)
                 {
                     var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(item.ProfesorId);
-                    item.NombreMateria = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId).Nombre;
-                    item.NombreGrupo = _listarGruposLN.BuscarGruposPorId(item.GrupoId).nombre_grupo;
-                    item.NombreProfesor = usuario.Nombre + " " + usuario.Apellido;
+                    var materia = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId);
+                    var grupo = _listarGruposLN.BuscarGruposPorId(item.GrupoId);
+
+                    item.NombreMateria = materia?.Nombre ?? "Sin materia";
+                    item.NombreGrupo = grupo?.nombre_grupo ?? "Sin grupo";
+                    item.NombreProfesor = usuario != null ? $"{usuario.Nombre} {usuario.Apellido}" : "Sin profesor";
                 }
                 return View(listaDeCursos);
             }
             else if (User.IsInRole("Estudiantes"))
             {
                 var grupo = _estudianteGrupoLN.BuscarEstudianteGrupoPorEstudianteId(id);
+
+                // CRITICAL FIX: Always pass a list, even if empty
                 if (grupo == null)
-                    return View();
-                var listaDeCursos = _listarCursos.ListarCursos().Where(u => u.GrupoId == grupo.GrupoId);
+                    return View(new List<CursoDto>());
+
+                var listaDeCursos = _listarCursos.ListarCursos()
+                    .Where(u => u.GrupoId == grupo.GrupoId)
+                    .ToList();
+
                 foreach (var item in listaDeCursos)
                 {
                     var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(item.ProfesorId);
-                    item.NombreMateria = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId).Nombre;
-                    item.NombreGrupo = _listarGruposLN.BuscarGruposPorId(item.GrupoId).nombre_grupo;
-                    item.NombreProfesor = usuario.Nombre + " " + usuario.Apellido;
+                    var materia = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId);
+                    var grupoInfo = _listarGruposLN.BuscarGruposPorId(item.GrupoId);
+
+                    item.NombreMateria = materia?.Nombre ?? "Sin materia";
+                    item.NombreGrupo = grupoInfo?.nombre_grupo ?? "Sin grupo";
+                    item.NombreProfesor = usuario != null ? $"{usuario.Nombre} {usuario.Apellido}" : "Sin profesor";
                 }
                 return View(listaDeCursos);
             }
@@ -101,14 +117,14 @@ namespace Campus.UI.Controllers
                 var Usuarios = _listarUsuariosLN.ListarUsuarios();
                 ViewBag.Estudiantes = Usuarios.Where(u => u.Rol == "Estudiantes").Count();
                 ViewBag.Profesores = Usuarios.Where(u => u.Rol == "Profesores").Count();
-                return View();
 
+                return View(new List<CursoDto>());
             }
 
-
-
-            return View();
+            return View(new List<CursoDto>());
         }
+
+
         public ActionResult GenerarQR(string url)
         {
             using (var qrGenerator = new QRCodeGenerator())

@@ -48,8 +48,8 @@ namespace Campus.Web.Controllers
         {
             if (idGrupo == null)
             {
-                var lista = await _listarCalificacionesLN.ListarCalificaciones();
-                return View(lista);
+                var lista = await (_listarCalificacionesLN.ListarCalificaciones());
+                return View(lista.Where(l=>l.Estado==true));
             }
             else
             {
@@ -181,7 +181,7 @@ namespace Campus.Web.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             await _eliminarCalificacionLN.EliminarCalificacion(id);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Entregas");
         }
 
 

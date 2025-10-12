@@ -66,7 +66,8 @@ namespace Campus.UI.Controllers
                 }
             }
 
-            var grupos = _listarGruposLN.ListarGrupos();
+            grupos = _listarGruposLN.ListarGrupos();
+            materias = _listarMateriasLN.ListarMaterias();
             ViewBag.IdGrupo = new SelectList(grupos, "id_grupo", "nombre_grupo", grupoId ?? 0);
 
             return View(tareas);

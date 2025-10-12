@@ -29,5 +29,7 @@ namespace Campus.AccesoDatos.ModelosAD
         public DateTime FechaCalificacion { get; set; }
 
         public virtual EntregasAD Entrega { get; set; }
+        [Column("estado")]
+        public bool Estado { get; set; }
     }
 }
