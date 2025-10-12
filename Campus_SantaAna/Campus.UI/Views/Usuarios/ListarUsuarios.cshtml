@@ -31,7 +31,7 @@
                     <i class="fas fa-users"></i>
                 </div>
                 <div class="stat-info">
-                    <h3>@Model.Count()</h3>
+                    <h3>@Model.ToList().Count()</h3>
                     <p>Total Usuarios</p>
                 </div>
             </div>
@@ -40,7 +40,7 @@
                     <i class="fas fa-user-check"></i>
                 </div>
                 <div class="stat-info">
-                    <h3>@Model.Count()</h3>
+                    <h3>@ViewBag.UsuariosInactivo</h3>
                     <p>Usuarios Activos</p>
                 </div>
             </div>
@@ -73,40 +73,11 @@
                 <table class="premium-table" id="TablaDeUsuarios">
                     <thead>
                         <tr>
-                            <th class="user-col">
-                                <div class="th-content">
-                                    <span>Usuario</span>
-                                    <i class="fas fa-sort"></i>
-                                </div>
-                            </th>
-                            <th class="email-col">
-                                <div class="th-content">
-                                    <span>Email</span>
-                                    <i class="fas fa-sort"></i>
-                                </div>
-                            </th>
-                            <th class="phone-col">
-                                <div class="th-content">
-                                    <span>Teléfono</span>
-                                    <i class="fas fa-sort"></i>
-                                </div>
-                            </th>
-                            <th class="id-col">
-                                <div class="th-content">
-                                    <span>Cédula</span>
-                                    <i class="fas fa-sort"></i>
-                                </div>
-                            </th>
-                            <th class="status-col">
-                                <div class="th-content">
-                                    <span>Estado</span>
-                                </div>
-                            </th>
-                            <th class="actions-col">
-                                <div class="th-content">
-                                    <span>Acciones</span>
-                                </div>
-                            </th>
+                            <th>Nombre Completo</th>
+                            <th>@Html.DisplayNameFor(model => model.Email)</th>
+                            <th>@Html.DisplayNameFor(model => model.Cedula)</th>
+                            <th>@Html.DisplayNameFor(model => model.Estado)</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,7 +107,7 @@
                                             </div>
                                             <div class="user-details">
                                                 <span class="user-name">@item.Nombre @item.Apellido</span>
-                                                <span class="user-role">Usuario</span>
+                                                <span class="user-role">@item.Rol</span>
                                             </div>
                                         </div>
                                     </td>
@@ -146,19 +117,15 @@
                                             <span class="email-text">@item.Email</span>
                                         </div>
                                     </td>
-                                    <td class="phone-cell" data-label="Teléfono">
-                                        <div class="phone-content">
-                                            <i class="fas fa-phone phone-icon"></i>
-                                            <span class="@(item.Telefono == 0 ? "no-phone" : "has-phone")">
-                                                @(item.Telefono == 0 ? "No asignado" : item.Telefono.ToString())
-                                            </span>
-                                        </div>
-                                    </td>
                                     <td class="id-cell" data-label="Cédula">
                                         <span class="id-badge">@item.Cedula</span>
                                     </td>
                                     <td class="status-cell" data-label="Estado">
-                                        <span class="status-badge active">Activo</span>
+                                        @if (item.Estado)
+                                        {<span class="status-badge active">Activo</span>}
+                                        else
+                                        { <span class="status-badge inactive">Inactivo</span>}
+
                                     </td>
                                     <td class="actions-cell" data-label="Acciones">
                                         <div class="actions-container">

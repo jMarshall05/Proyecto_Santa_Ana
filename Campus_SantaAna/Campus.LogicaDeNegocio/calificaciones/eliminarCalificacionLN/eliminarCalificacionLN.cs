@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.calificaciones.eliminarCalificacionDA;
 using Campus.Abstracciones.AccesoDatos.entregas.eliminarEntregaAD;
 using Campus.Abstracciones.LogicaDeNegocio.calificaciones.eliminarCalificacionLN;
+using Campus.AccesoDatos.calificaciones.eliminarCalificacionAD;
 
 namespace Campus.LogicaDeNegocio.calificaciones.eliminarCalificacionLN
 {
@@ -15,11 +16,7 @@ namespace Campus.LogicaDeNegocio.calificaciones.eliminarCalificacionLN
 
         public EliminarCalificacionLN()
         {
-        }
-
-        public EliminarCalificacionLN(IEliminarCalificacion eliminarCalificacion)
-        {
-            _eliminarCalificacion = eliminarCalificacion;
+            _eliminarCalificacion = new EliminarCalificacionAD();
         }
 
         public async Task<int> EliminarCalificacion(int id_calificacion)

@@ -9,7 +9,7 @@ namespace Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos
 {
     public interface IListarGruposLN
     {
-        List<GruposDto> ListarGrupos();
+        IEnumerable<GruposDto> ListarGrupos();
         GruposDto BuscarGruposPorId(int idGrupo);
 
     }

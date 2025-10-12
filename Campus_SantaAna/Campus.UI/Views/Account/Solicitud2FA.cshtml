@@ -1,0 +1,204 @@
+﻿@{
+    ViewData["Title"] = "Autenticación de Dos Factores";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+
+            <!-- Encabezado principal -->
+            <div class="text-center mb-4">
+                <div class="mb-3">
+                    <i class="bi bi-shield-lock display-1 text-primary"></i>
+                </div>
+                <h2 class="fw-bold">Protege tu cuenta con autenticación de dos factores</h2>
+                <p class="text-muted">Añade una capa adicional de seguridad a tu cuenta</p>
+            </div>
+
+            <!-- Alerta de estado -->
+            <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                <div>
+                    <strong>Tu cuenta no está protegida con 2FA</strong>
+                    <p class="mb-0 small">Actualmente solo usas contraseña para acceder. Te recomendamos activar la autenticación de dos factores.</p>
+                </div>
+            </div>
+
+            <!-- Tarjeta principal -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="card-title mb-4">
+                        <i class="bi bi-patch-check-fill text-success me-2"></i>
+                        ¿Por qué activar 2FA?
+                    </h5>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-shield-check text-primary fs-4"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">Mayor seguridad</h6>
+                                    <p class="text-muted small mb-0">Protege tu cuenta incluso si alguien obtiene tu contraseña</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-lock-fill text-primary fs-4"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">Previene accesos no autorizados</h6>
+                                    <p class="text-muted small mb-0">Solo tú podrás acceder a tu cuenta con tu dispositivo móvil</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-phone-fill text-primary fs-4"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">Fácil de usar</h6>
+                                    <p class="text-muted small mb-0">Solo necesitas tu smartphone y la app Google Authenticator</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-clock-history text-primary fs-4"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">Configuración rápida</h6>
+                                    <p class="text-muted small mb-0">Te tomará menos de 2 minutos configurarlo</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cómo funciona -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="card-title mb-4">
+                        <i class="bi bi-gear-fill text-primary me-2"></i>
+                        ¿Cómo funciona?
+                    </h5>
+
+                    <div class="row text-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                <span class="fs-3 fw-bold text-primary">1</span>
+                            </div>
+                            <h6>Escanea el código QR</h6>
+                            <p class="text-muted small">Usa Google Authenticator para escanear el código</p>
+                        </div>
+
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                <span class="fs-3 fw-bold text-primary">2</span>
+                            </div>
+                            <h6>Verifica el código</h6>
+                            <p class="text-muted small">Introduce el código de 6 dígitos generado</p>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                <span class="fs-3 fw-bold text-success">3</span>
+                            </div>
+                            <h6>¡Listo!</h6>
+                            <p class="text-muted small">Tu cuenta estará protegida con 2FA</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="card shadow-sm border-primary">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-7 mb-3 mb-md-0">
+                            <h5 class="mb-2">¿Listo para proteger tu cuenta?</h5>
+                            <p class="text-muted mb-0 small">La configuración es rápida y solo necesitas hacerlo una vez</p>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="@Url.Action("Index","Home")" class="btn btn-outline-secondary btn-lg">
+                                    <i class="bi bi-clock me-2"></i>
+                                    Más tarde
+                                </a>
+                                <form method="get" action="@Url.Action("EnableAuthenticator", "Account")" class="d-inline">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="bi bi-shield-plus me-2"></i>
+                                        Activar ahora
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nota informativa -->
+            <div class="alert alert-info mt-4" role="alert">
+                <div class="d-flex">
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-info-circle-fill fs-5"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="alert-heading">Información importante</h6>
+                        <ul class="mb-0 small">
+                            <li>Necesitarás un smartphone con Google Authenticator instalado</li>
+                            <li>Guarda los códigos de recuperación en un lugar seguro</li>
+                            <li>Podrás desactivar 2FA en cualquier momento desde tu perfil</li>
+                            <li>Si cambias de teléfono, podrás reconfigurar tu autenticador</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enlaces de ayuda -->
+            <div class="text-center mt-4 mb-5">
+                <p class="text-muted small mb-2">¿No tienes Google Authenticator?</p>
+                <a href="https://apps.apple.com/app/google-authenticator/id388497605" target="_blank" class="btn btn-sm btn-outline-dark me-2">
+                    <i class="bi bi-apple me-1"></i> Descargar para iOS
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank" class="btn btn-sm btn-outline-dark">
+                    <i class="bi bi-google-play me-1"></i> Descargar para Android
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        @@media (max-width: 767px) {
+            .btn-lg {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+}

@@ -1,16 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Windows.Documents;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ActualizarEstudianteGrupoLN;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorILN;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ListarEstudianteGrupoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.Abstracciones.LogicaDeNegocio.Telefonos.AgregarTelefono;
+using Campus.Abstracciones.LogicaDeNegocio.Telefonos.EditarTelefono;
+using Campus.Abstracciones.LogicaDeNegocio.Telefonos.ListarTelefonos;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.EditarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
@@ -20,12 +25,14 @@ using Campus.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
 using Campus.LogicaDeNegocio.EstudianteGrupo.ListarEstudianteGrupo;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.LogicaDeNegocio.Telefonos.AgregarTelefonoLN;
+using Campus.LogicaDeNegocio.Telefonos.EditarTelefonoLN;
+using Campus.LogicaDeNegocio.Telefonos.ListarTelefonosLN;
 using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using iText.Kernel.Font;
 using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Canvas.Draw;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
@@ -48,6 +55,10 @@ namespace Campus.UI.Controllers
         private readonly IListarEstudianteGrupoLN _listarEstudianteGrupoLN;
         private readonly IBuscarEstudianteGrupoPorIdLN _buscarEstudianteGrupoPorIdLN;
         private readonly IActualizarEstudianteGrupoLN _actualizarEstudianteGrupoLN;
+        private readonly IListarTelefonosLN _listarTelefonosLN;
+        private readonly IEditarTelefonoLN _editarTelefonoLN;
+        private readonly IAgregarTelefonoLN _agregarTelefonoLN;
+        private static IEnumerable <UsuariosDto> usuarios;
 
         public UsuariosController()
         {
@@ -59,6 +70,9 @@ namespace Campus.UI.Controllers
             _listarEstudianteGrupoLN = new ListarEstudianteGrupoLN();
             _buscarEstudianteGrupoPorIdLN = new BuscarEstudianteGrupoPorIdLN();
             _actualizarEstudianteGrupoLN = new ActualizarEstudianteGrupoLN();
+            _listarTelefonosLN = new ListarTelefonosLN();
+            _editarTelefonoLN = new EditarTelefonoLN();
+            _agregarTelefonoLN = new AgregarTelefonoLN();
 
         }
         public ApplicationUserManager UserManager
@@ -80,6 +94,8 @@ namespace Campus.UI.Controllers
         public ActionResult ListarUsuarios()
         {
             var listaDeUsuarios = _listarUsuariosLN.ListarUsuarios();
+            ViewBag.UsuariosInactivo = listaDeUsuarios.Where(u => u.Estado == true).Count();
+            usuarios = listaDeUsuarios;
 
             return View(listaDeUsuarios);
         }
@@ -89,6 +105,8 @@ namespace Campus.UI.Controllers
         {
             var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id.ToString());
             usuario.IdUsuario = id;
+            var telefonos = _listarTelefonosLN.ListarTelefono().Where(t => t.IdUsuario == id);
+            ViewBag.Telefonos = telefonos;
             var grupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
             if (grupo != null)
             {
@@ -103,94 +121,53 @@ namespace Campus.UI.Controllers
         // GET: Usuarios/Edit/5
         public ActionResult EditarUsuarioParcial(string id)
         {
-            try
-            {
-                // ✅ Validación del ID
-                if (string.IsNullOrEmpty(id))
-                {
-                    return Content("<div class='alert alert-danger'>Error: ID de usuario no proporcionado</div>");
-                }
-
-                // ✅ Obtener usuario
-                var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
-                if (usuario == null)
-                {
-                    return Content("<div class='alert alert-danger'>Error: Usuario no encontrado</div>");
-                }
-
-                // ✅ Verificar que el usuario existe en Identity
-                var user = UserManager.FindById(id);
-                if (user == null)
-                {
-                    return Content("<div class='alert alert-danger'>Error: Usuario no existe en el sistema de autenticación</div>");
-                }
-
-                var listaDeGrupos = _listarGrupos.ListarGrupos();
-                ViewBag.ListaDeGrupos = new SelectList(listaDeGrupos, "id_grupo", "nombre_grupo");
-
-                return PartialView("_EditarUsuarioParcial", usuario);
-            }
-            catch (Exception ex)
-            {
-                return Content($"<div class='alert alert-danger'>Error al cargar el formulario: {ex.Message}</div>");
-            }
+            var listaDeGrupos = _listarGrupos.ListarGrupos().Where(u => u.estado == true);
+            ViewBag.ListaDeGrupos = new SelectList(listaDeGrupos, "id_grupo", "nombre_grupo");
+            var usuario = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
+            usuario.Telefonos = _listarTelefonosLN.ListarTelefono().Where(t => t.IdUsuario == id).ToList();
+            return PartialView("_EditarUsuarioParcial", usuario);
         }
 
-        // POST: Usuarios/Edit/5
-        // POST: Usuarios/Edit/5
-        // POST: Usuarios/Edit/5
         [HttpPost]
         public async Task<ActionResult> EditarUsuarioParcial(string id, UsuariosDto usuario, int? Idgrupo)
         {
             try
             {
-                // ✅ VALIDACIÓN CRÍTICA: Verificar que el ID no sea nulo
-                if (string.IsNullOrEmpty(id))
-                {
-                    TempData["ErrorMessage"] = "ID de usuario no proporcionado.";
-                    return RedirectToAction("ListarUsuarios");
-                }
-
-                // ✅ VALIDACIÓN CRÍTICA: Verificar que el usuario exista
-                var userExists = await UserManager.FindByIdAsync(id);
-                if (userExists == null)
-                {
-                    TempData["ErrorMessage"] = "Usuario no encontrado en el sistema.";
-                    return RedirectToAction("ListarUsuarios");
-                }
-
                 if (ModelState.IsValid)
                 {
-                    // ✅ Obtener roles actuales del usuario
-                    var rolesActuales = await UserManager.GetRolesAsync(id);
-                    var rolActual = rolesActuales.FirstOrDefault();
-
-                    // ✅ Cambiar rol si es necesario
-                    if (rolActual != usuario.Rol)
+                    // Roles
+                    var rol = await UserManager.GetRolesAsync(id);
+                    if (rol.FirstOrDefault() != usuario.Rol)
                     {
-                        if (!string.IsNullOrEmpty(rolActual))
-                        {
-                            await UserManager.RemoveFromRoleAsync(id, rolActual);
-                        }
+                        await UserManager.RemoveFromRoleAsync(id, rol.FirstOrDefault());
                         await UserManager.AddToRoleAsync(id, usuario.Rol);
                     }
 
-                    // ✅ Actualizar información del usuario
                     await _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
+                    await UserManager.SetEmailAsync(id, usuario.Email);
 
-                    // ✅ Actualizar email
-                    var result = await UserManager.SetEmailAsync(id, usuario.Email);
-                    if (!result.Succeeded)
+
+                    var telefonosValidos = usuario.Telefonos
+                        .Where(t => !string.IsNullOrWhiteSpace(t.Telefono.ToString()) && !string.IsNullOrWhiteSpace(t.Tipo))
+                        .ToList();
+
+                    var telefonosExistentes = telefonosValidos.Where(t => t.Id > 0).ToList();
+                    if (telefonosExistentes.Any())
                     {
-                        ModelState.AddModelError("", "Error al actualizar el email: " + string.Join(", ", result.Errors));
-                        return CargarVistaEdicion(usuario);
+                        await _editarTelefonoLN.EditarTelefono(telefonosExistentes);
                     }
 
-                    // ✅ Manejar grupo si es estudiante
-                    if (Idgrupo != null && usuario.Rol == "Estudiantes")
+                    var telefonosNuevos = telefonosValidos.Where(t => t.Id == 0).ToList();
+                    if (telefonosNuevos.Any())
+                    {
+                        telefonosNuevos.ForEach(t => t.IdUsuario = id);
+                        await _agregarTelefonoLN.AgregarTelefono(telefonosNuevos);
+                    }
+
+                    if (Idgrupo != null)
                     {
                         var estudianteGrupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorEstudianteId(id);
-                        var estudiante = new EstudianteGrupoDto { EstudianteId = id, GrupoId = Idgrupo };
+                        var estudiante = new EstudianteGrupoDto { EstudianteId = id, GrupoId = Idgrupo.Value };
 
                         if (estudianteGrupo == null)
                         {
@@ -202,41 +179,75 @@ namespace Campus.UI.Controllers
                         }
                     }
 
-                    TempData["SuccessMessage"] = "Usuario actualizado correctamente.";
                     return RedirectToAction("ListarUsuarios");
                 }
-                else
-                {
-                    ModelState.AddModelError("", "Por favor, corrija los errores en el formulario.");
-                    return CargarVistaEdicion(usuario);
-                }
+               var errores= ObtenerErroresModelState();
+                ModelState.AddModelError("", "Algo falló al editar.");
+                return View("ListarUsuarios");
             }
             catch (Exception ex)
             {
-                // ✅ Manejo específico del error "UserId not found"
-                if (ex.Message.Contains("UserId not found") || ex.Message.Contains("User ID not found"))
-                {
-                    TempData["ErrorMessage"] = "El usuario no existe o el ID es inválido.";
-                    return RedirectToAction("ListarUsuarios");
-                }
-
-                ModelState.AddModelError("", "Error al editar el usuario: " + ex.Message);
-                return CargarVistaEdicion(usuario);
+                ModelState.AddModelError("", $"Error al editar usuario: {ex.Message}");
+                return View("ListarUsuarios",usuarios);
             }
         }
 
-        // ✅ Método helper para cargar la vista de edición
-        private ActionResult CargarVistaEdicion(UsuariosDto usuario)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditarUsuario(EditarUsuario usuarioModel)
         {
             try
             {
-                var listaDeGrupos = _listarGrupos.ListarGrupos();
-                ViewBag.ListaDeGrupos = new SelectList(listaDeGrupos, "id_grupo", "nombre_grupo");
-                return PartialView("_EditarUsuarioParcial", usuario);
+                if (ModelState.IsValid)
+                {
+                    var id = User.Identity.GetUserId();
+                    var user = await UserManager.FindByIdAsync(id);
+                    if (user != null)
+                    {
+                        var usuario = new UsuariosDto
+                        {
+                            Nombre = usuarioModel.Nombre,
+                            Apellido = usuarioModel.Apellido,
+                            Telefonos = usuarioModel.Telefonos
+                        };
+                        await _editarUsuarioLN.EditarUsuario(id, usuario);
+
+                        // Verifica que Telefonos no sea null antes de usar
+                        if (usuario.Telefonos != null)
+                        {
+                            var telefonosValidos = usuario.Telefonos
+                                .Where(t => t.Telefono > 0 && !string.IsNullOrWhiteSpace(t.Tipo))
+                                .ToList();
+
+                            var telefonosExistentes = telefonosValidos.Where(t => t.Id > 0).ToList();
+                            if (telefonosExistentes.Any())
+                            {
+                                await _editarTelefonoLN.EditarTelefono(telefonosExistentes);
+                            }
+
+                            var telefonosNuevos = telefonosValidos.Where(t => t.Id == 0).ToList();
+                            if (telefonosNuevos.Any())
+                            {
+                                telefonosNuevos.ForEach(t => t.IdUsuario = id);
+                                await _agregarTelefonoLN.AgregarTelefono(telefonosNuevos);
+                            }
+                        }
+
+                        return Json(new { success = true, message = "Cambios guardados correctamente" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Usuario no encontrado" }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Datos inválidos" }, JsonRequestBehavior.AllowGet);
+                }
             }
             catch (Exception ex)
             {
-                return Content($"<div class='alert alert-danger'>Error al cargar la vista: {ex.Message}</div>");
+                return Json(new { success = false, message = "Error: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
         public ActionResult VerDocentesAdministrativos()
@@ -250,6 +261,16 @@ namespace Campus.UI.Controllers
         public ActionResult GenerarReportePDF(string id)
         {
             var datos = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
+            var telefonos = _listarTelefonosLN.ListarTelefono().Where(t => t.IdUsuario == id);
+            List<string> telefonosFormateados = new List<string>();
+
+
+            foreach (var telefono in telefonos)
+            {
+                string telefonoFormateado = $"(+{telefono.Codigo}) {telefono.Telefono.ToString().Insert(4, "-")}: {telefono.Tipo} {(telefono.Estado ? "Activo" : "Inactivo")}";
+                telefonosFormateados.Add(telefonoFormateado);
+            }
+
 
             using (var ms = new MemoryStream())
             {
@@ -294,21 +315,21 @@ namespace Campus.UI.Controllers
                 AddRow("Nombre", datos.Nombre);
                 AddRow("Apellido", datos.Apellido);
                 AddRow("Email", datos.Email);
-                AddRow("Teléfono", datos.Telefono.ToString());
+                AddRow("Teléfonos", string.Join("\n", telefonosFormateados));
                 AddRow("Fecha de Nacimiento", datos.FechaDeNacimiento.ToShortDateString());
                 AddRow("Cédula", datos.Cedula.ToString());
                 AddRow("Rol", datos.Rol);
                 AddRow("Estado", datos.Estado ? "Activo" : "Inactivo");
 
                 document.Add(table);
-             
+
                 document.Close();
                 return File(ms.ToArray(), "application/pdf", $"reporte_usuario_{id}.pdf");
             }
         }
         public ActionResult GenerarReporteQR(string id)
         {
-            string urlPdf = Url.Action("GenerarReportePDF", "Usuarios", new { id = id }, Request.Url.Scheme);
+            string urlPdf = Url.Action("GenerarReportePDF", "Usuarios", new { id }, Request.Url.Scheme);
             using (var qrGenerator = new QRCodeGenerator())
             {
                 var qrCodeData = qrGenerator.CreateQrCode(urlPdf, QRCodeGenerator.ECCLevel.Q);
@@ -323,6 +344,28 @@ namespace Campus.UI.Controllers
                     }
                 }
             }
+        }
+        protected string ObtenerErroresModelState()
+        {
+            var errores = new StringBuilder();
+
+            foreach (var key in ModelState.Keys)
+            {
+                var estado = ModelState[key];
+                if (estado.Errors.Count > 0)
+                {
+                    errores.AppendLine($"Campo: {key}");
+                    foreach (var error in estado.Errors)
+                    {
+                        var mensajeError = !string.IsNullOrEmpty(error.ErrorMessage)
+                            ? error.ErrorMessage
+                            : error.Exception?.Message ?? "Error desconocido";
+                        errores.AppendLine($"  - {mensajeError}");
+                    }
+                }
+            }
+
+            return errores.ToString();
         }
     }
 }

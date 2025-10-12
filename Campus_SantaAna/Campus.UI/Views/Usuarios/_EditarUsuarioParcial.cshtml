@@ -1,219 +1,190 @@
 ﻿@model Campus.Abstracciones.ModelosUI.UsuariosDto
 
-<div class="edit-user-modal">
-    <!-- Header -->
-    <div class="edit-header">
-        <div class="header-content">
-            <div class="header-icon">
-                <i class="fas fa-user-edit"></i>
-            </div>
-            <div>
-                <h2 class="modal-title">Editar Usuario</h2>
-                <p class="modal-subtitle">Actualiza la información del usuario</p>
-            </div>
+<!-- Header -->
+<div class="edit-header">
+    <div class="header-content">
+        <div class="header-icon">
+            <i class="fas fa-user-edit"></i>
+        </div>
+        <div>
+            <h2 class="modal-title">Editar Usuario</h2>
+            <p class="modal-subtitle">Actualiza la información del usuario</p>
         </div>
     </div>
+</div>
 
-    @using (Html.BeginForm("EditarUsuarioParcial", "Usuarios", new { id = Model.IdUsuario }, FormMethod.Post, new { @class = "edit-form" }))
-    {
-        @Html.AntiForgeryToken()
-        @Html.HiddenFor(model => model.IdUsuario)
+@using (Html.BeginForm("EditarUsuarioParcial", "Usuarios", new { id = Model.IdUsuario }, FormMethod.Post, new { @class = "edit-form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.IdUsuario)
 
-        <div class="edit-content">
-            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+    <div class="edit-content">
+        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
 
-            <!-- Información Básica -->
-            <div class="form-section">
-                <h3 class="section-title">
-                    <i class="fas fa-user me-2"></i>Información Básica
-                </h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "form-label" })
-                        <div class="input-group">
-                            <span class="input-icon">
-                                <i class="fas fa-user"></i>
-                            </span>
-                            @Html.TextBoxFor(model => model.Nombre, new
-                            {
-                                @class = "form-control",
-                                placeholder = "Ingrese el nombre",
-                                required = "required"
-                            })
-                        </div>
-                        @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "validation-message" })
+        <!-- Información Básica -->
+        <div class="form-section">
+            <h3 class="section-title"><i class="fas fa-user me-2"></i>Información Básica</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Nombre, new { @class = "form-label" })
+                    <div class="input-group">
+                        <span class="input-icon"><i class="fas fa-user"></i></span>
+                        @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control", placeholder = "Ingrese el nombre", required = "required" })
                     </div>
+                    @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "validation-message" })
+                </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Apellido, htmlAttributes: new { @class = "form-label" })
-                        <div class="input-group">
-                            <span class="input-icon">
-                                <i class="fas fa-user"></i>
-                            </span>
-                            @Html.TextBoxFor(model => model.Apellido, new
-                            {
-                                @class = "form-control",
-                                placeholder = "Ingrese el apellido",
-                                required = "required"
-                            })
-                        </div>
-                        @Html.ValidationMessageFor(model => model.Apellido, "", new { @class = "validation-message" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Apellido, new { @class = "form-label" })
+                    <div class="input-group">
+                        <span class="input-icon"><i class="fas fa-user"></i></span>
+                        @Html.TextBoxFor(model => model.Apellido, new { @class = "form-control", placeholder = "Ingrese el apellido", required = "required" })
                     </div>
+                    @Html.ValidationMessageFor(model => model.Apellido, "", new { @class = "validation-message" })
                 </div>
             </div>
+        </div>
 
-            <!-- Contacto -->
-            <div class="form-section">
-                <h3 class="section-title">
-                    <i class="fas fa-address-book me-2"></i>Información de Contacto
-                </h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "form-label" })
-                        <div class="input-group">
-                            <span class="input-icon">
-                                <i class="fas fa-envelope"></i>
-                            </span>
-                            @Html.TextBoxFor(model => model.Email, new
-                            {
-                                @class = "form-control",
-                                placeholder = "correo@ejemplo.com",
-                                type = "email",
-                                required = "required"
-                            })
-                        </div>
-                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "validation-message" })
-                    </div>
+        <!-- Información de Contacto -->
+        <div class="form-section">
+            <h3 class="section-title"><i class="fas fa-address-book me-2"></i>Información de Contacto</h3>
+            <div class="form-grid">
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Telefono, htmlAttributes: new { @class = "form-label" })
-                        <div class="input-group">
-                            <span class="input-icon">
-                                <i class="fas fa-phone"></i>
-                            </span>
-                            @Html.TextBoxFor(model => model.Telefono, new
-                            {
-                                @class = "form-control",
-                                placeholder = "0000-0000",
-                                type = "tel"
-                            })
-                        </div>
-                        @Html.ValidationMessageFor(model => model.Telefono, "", new { @class = "validation-message" })
+                <!-- Email -->
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, new { @class = "form-label" })
+                    <div class="input-group">
+                        <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control", placeholder = "correo@ejemplo.com", type = "email", required = "required" })
                     </div>
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "validation-message" })
                 </div>
-            </div>
 
-            <!-- Información Adicional -->
-            <div class="form-section">
-                <h3 class="section-title">
-                    <i class="fas fa-info-circle me-2"></i>Información Adicional
-                </h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.FechaDeNacimiento, htmlAttributes: new { @class = "form-label" })
-                        <div class="input-group">
-                            <span class="input-icon">
-                                <i class="fas fa-calendar"></i>
-                            </span>
-                            @Html.TextBoxFor(model => model.FechaDeNacimiento, "{0:yyyy-MM-dd}", new
+                <!-- Teléfonos -->
+                <div class="form-group">
+                    @Html.Label("Teléfonos", new { @class = "form-label" })
+                    <div id="telefonosContainer">
+                        @if (Model.Telefonos != null && Model.Telefonos.Count > 0)
+                        {
+                            for (int i = 0; i < Model.Telefonos.Count; i++)
                             {
-                                @class = "form-control",
-                                type = "date"
-                            })
-                        </div>
-                        @Html.ValidationMessageFor(model => model.FechaDeNacimiento, "", new { @class = "validation-message" })
-                    </div>
+                                <div class="row mb-2 align-items-center telefono-item">
+                                    @Html.HiddenFor(m => m.Telefonos[i].Id)
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Cedula, htmlAttributes: new { @class = "form-label" })
-                        <div class="input-group">
-                            <span class="input-icon">
-                                <i class="fas fa-id-card"></i>
-                            </span>
-                            @Html.TextBoxFor(model => model.Cedula, new
-                            {
-                                @class = "form-control",
-                                placeholder = "Número de cédula",
-                                required = "required"
-                            })
-                        </div>
-                        @Html.ValidationMessageFor(model => model.Cedula, "", new { @class = "validation-message" })
-                    </div>
-                </div>
-            </div>
-
-            <!-- Grupo para Estudiantes -->
-            @if (Model.Rol == "Estudiantes")
-            {
-                <div class="form-section">
-                    <h3 class="section-title">
-                        <i class="fas fa-users me-2"></i>Información de Grupo
-                    </h3>
-                    <div class="form-group">
-                        @Html.Label("IdGrupo", "Grupo", new { @class = "form-label" })
-                        <div class="input-group">
-                            <span class="input-icon">
-                                <i class="fas fa-users"></i>
-                            </span>
-                            @if (ViewBag.ListaDeGrupos != null)
-                            {
-                                @Html.DropDownList(
-                                    "IdGrupo",
-                                    (IEnumerable<SelectListItem>)ViewBag.ListaDeGrupos,
-                                    "Seleccione un grupo",
-                                    new { @class = "form-control" }
-                                )
-                            }
-                            else
-                            {
-                                <select class="form-control" disabled>
-                                    <option>No hay grupos disponibles</option>
-                                </select>
-                            }
-                        </div>
-                        @Html.ValidationMessage("IdGrupo", "", new { @class = "validation-message" })
-                    </div>
-                </div>
-            }
-
-            <!-- Rol y Estado -->
-            <div class="form-section">
-                <h3 class="section-title">
-                    <i class="fas fa-cog me-2"></i>Configuración
-                </h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.Rol, htmlAttributes: new { @class = "form-label" })
-                        <div class="input-group">
-                            <span class="input-icon">
-                                <i class="fas fa-user-tag"></i>
-                            </span>
-                            @Html.DropDownListFor(m => m.Rol, new List<SelectListItem>
-                            {
-                                new SelectListItem { Text = "Estudiante", Value = "Estudiantes", Selected = Model.Rol == "Estudiantes" },
-                                new SelectListItem { Text = "Profesor", Value = "Profesores", Selected = Model.Rol == "Profesores" },
-                                new SelectListItem { Text = "Administrador", Value = "Administradores", Selected = Model.Rol == "Administradores" }
-                            }, new
+                                    <div class="col-md-3">
+                                        @Html.TextBoxFor(m => m.Telefonos[i].Codigo, new
                                         {
-                                @class = "form-control",
-                                required = "required"
-                            })
-                        </div>
-                        @Html.ValidationMessageFor(m => m.Rol, "", new { @class = "validation-message" })
+                                            @class = "form-control",
+                                            placeholder = "+506",
+                                            maxlength = "4",
+                                            required = "required",
+                                            oninput = "let val = this.value.replace(/[^0-9]/g, ''); this.value = val.length > 0 ? '+' + val.substring(0, 3) : '';"
+                                        })
+                                    </div>
+
+                                    <div class="col-md-5">
+                                        @Html.TextBoxFor(m => m.Telefonos[i].Telefono, new
+                                        {
+                                            @class = "form-control",
+                                            minlength = "8",
+                                            maxlength = "8",
+                                            placeholder = "Número",
+                                            required = "required",
+                                            oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                                        })
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        @Html.DropDownListFor(m => m.Telefonos[i].Tipo, new List<SelectListItem>
+                                        {
+                                            new SelectListItem { Text = "Personal", Value = "Personal", Selected = Model.Telefonos[i].Tipo == "Personal"},
+                                            new SelectListItem { Text = "Trabajo", Value = "Trabajo", Selected = Model.Telefonos[i].Tipo == "Trabajo" },
+                                            new SelectListItem { Text = "Hogar", Value = "Hogar", Selected = Model.Telefonos[i].Tipo == "Hogar" },
+                                            new SelectListItem { Text = "Encargado", Value = "Encargado", Selected = Model.Telefonos[i].Tipo == "Encargado" },
+                                            new SelectListItem { Text = "Otro", Value = "Otro" , Selected = Model.Telefonos[i].Tipo == "Otro"}
+                                        }, "Seleccione un tipo", new { @class = "form-control", required = "required" })
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        <div class="toggle-group">
+                                            <label class="toggle-label">
+                                                @Html.CheckBoxFor(m => m.Telefonos[i].Estado, new { @class = "toggle-input" })
+                                                <span class="toggle-slider"></span>
+                                                <span class="toggle-text">@((Model.Telefonos[i].Estado) ? "Activo" : "Inactivo")</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted">No hay teléfonos registrados.</p>
+                        }
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Estado</label>
-                        <div class="toggle-group">
-                            <label class="toggle-label">
-                                @Html.CheckBoxFor(model => model.Estado, new { @class = "toggle-input" })
-                                <span class="toggle-slider"></span>
-                                <span class="toggle-text">@(Model.Estado ? "Activo" : "Inactivo")</span>
-                            </label>
-                        </div>
-                        @Html.ValidationMessageFor(model => model.Estado, "", new { @class = "validation-message" })
+                    <button type="button" id="addTelefono" class="btn btn-primary mt-2">
+                        <i class="fas fa-plus me-1"></i>Agregar Teléfono
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información Adicional -->
+        <div class="form-section">
+            <h3 class="section-title"><i class="fas fa-info-circle me-2"></i>Información Adicional</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FechaDeNacimiento, new { @class = "form-label" })
+                    <div class="input-group">
+                        <span class="input-icon"><i class="fas fa-calendar"></i></span>
+                        @Html.TextBoxFor(model => model.FechaDeNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
                     </div>
                 </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Cedula, new { @class = "form-label" })
+                    <div class="input-group">
+                        <span class="input-icon"><i class="fas fa-id-card"></i></span>
+                        @Html.TextBoxFor(model => model.Cedula, new { @class = "form-control", placeholder = "Número de cédula", required = "required" })
+                    </div>
+                </div>
+
+                @if (Model.Rol == "Estudiantes")
+                {
+                    <div class="form-group">
+                        @Html.Label("IdGrupo", "Grupo", new { @class = "form-label fw-bold" })
+                        @Html.DropDownList("IdGrupo", (IEnumerable<SelectListItem>)ViewBag.ListaDeGrupos, "Seleccione un grupo", new { @class = "form-control" })
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Configuración -->
+        <div class="form-section">
+            <h3 class="section-title"><i class="fas fa-cog me-2"></i>Configuración</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Rol, new { @class = "form-label" })
+                    @Html.DropDownListFor(m => m.Rol, new List<SelectListItem>
+                    {
+                        new SelectListItem { Text = "Estudiante", Value = "Estudiantes" },
+                        new SelectListItem { Text = "Profesor", Value = "Profesores" },
+                        new SelectListItem { Text = "Administrador", Value = "Administradores" }
+                    }, new { @class = "form-control", required = "required" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Estado, "Estado del Usuario", new { @class = "form-label" })
+                    <div class="toggle-group">
+                        <label class="toggle-label">
+                            @Html.CheckBoxFor(m => m.Estado, new { @class = "toggle-input", id = "estadoUsuario" })
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-text">@(Model.Estado ? "Activo" : "Inactivo")</span>
+                        </label>
+                    </div>
+                </div>
+                <br />
             </div>
         </div>
 
@@ -226,372 +197,163 @@
                 <i class="fas fa-save me-2"></i>Guardar Cambios
             </button>
         </div>
-    }
-</div>
+    </div>
+}
 
+<!-- CSS Corregido -->
 <style>
-    .edit-user-modal {
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Header Styles */
-    .edit-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 2rem;
-    }
-
-    .header-content {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .header-icon {
-        width: 50px;
-        height: 50px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-    }
-
-    .modal-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin: 0;
-    }
-
-    .modal-subtitle {
-        opacity: 0.9;
-        margin: 0;
-        font-size: 0.9rem;
-    }
-
-    /* Content Styles */
-    .edit-content {
-        padding: 2rem;
-        max-height: 60vh;
-        overflow-y: auto;
-    }
-
-    .form-section {
-        margin-bottom: 2rem;
-        padding: 1.5rem;
-        background: #f8fafc;
-        border-radius: 15px;
-        border: 1px solid #e2e8f0;
-    }
-
-    .section-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #1e293b;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-    }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-    }
-
-    .input-group {
-        position: relative;
-        display: flex;
-        align-items: center;
-    }
-
-    .input-icon {
-        position: absolute;
-        left: 1rem;
-        color: #6b7280;
-        z-index: 10;
-    }
-
-    .form-control {
-        padding: 0.75rem 1rem 0.75rem 3rem;
-        border: 2px solid #e5e7eb;
-        border-radius: 12px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        background: white;
-        width: 100%;
-    }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-    .form-select {
-        padding: 0.75rem 1rem 0.75rem 3rem;
-        border: 2px solid #e5e7eb;
-        border-radius: 12px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        background: white;
-        width: 100%;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-        background-position: right 0.5rem center;
-        background-repeat: no-repeat;
-        background-size: 1.5em 1.5em;
-    }
-
-        .form-select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-    /* Toggle Switch */
     .toggle-group {
-        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .toggle-label {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 1rem;
         cursor: pointer;
-    }
-
-    .toggle-input {
-        display: none;
-    }
-
-    .toggle-slider {
-        width: 60px;
-        height: 30px;
-        background: #e5e7eb;
-        border-radius: 15px;
+        user-select: none;
+        gap: 10px;
         position: relative;
-        transition: all 0.3s ease;
     }
 
-        .toggle-slider:before {
-            content: '';
-            position: absolute;
-            width: 26px;
-            height: 26px;
-            background: white;
-            border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        /* Ocultar TODOS los inputs dentro del toggle */
+        .toggle-label input {
+            position: absolute !important;
+            opacity: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
+            pointer-events: none !important;
         }
 
-    .toggle-input:checked + .toggle-slider {
-        background: #10b981;
+    .toggle-slider {
+        position: relative;
+        width: 50px;
+        height: 25px;
+        background-color: #ccc;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        display: inline-block;
+        flex-shrink: 0;
     }
 
-        .toggle-input:checked + .toggle-slider:before {
-            transform: translateX(30px);
+        .toggle-slider::before {
+            content: "";
+            position: absolute;
+            width: 21px;
+            height: 21px;
+            left: 2px;
+            top: 2px;
+            background-color: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+    /* Usar el atributo checked del checkbox principal */
+    .toggle-label input[type="checkbox"]:checked ~ .toggle-slider {
+        background-color: #10b981;
+    }
+
+        .toggle-label input[type="checkbox"]:checked ~ .toggle-slider::before {
+            transform: translateX(25px);
         }
 
     .toggle-text {
-        font-weight: 500;
-        color: #374151;
-    }
-
-    /* Validation */
-    .validation-message {
-        color: #ef4444;
-        font-size: 0.8rem;
-        margin-top: 0.25rem;
-    }
-
-    .alert-danger {
-        background: #fef2f2;
-        border: 1px solid #fecaca;
-        color: #dc2626;
-        padding: 1rem;
-        border-radius: 12px;
-        margin-bottom: 1.5rem;
-    }
-
-    /* Footer */
-    .edit-footer {
-        padding: 1.5rem 2rem;
-        background: #f8fafc;
-        border-top: 1px solid #e2e8f0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .btn {
-        padding: 0.75rem 1.5rem;
-        border-radius: 12px;
         font-weight: 600;
-        transition: all 0.3s ease;
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-    }
-
-    .btn-secondary {
-        background: #6b7280;
-        color: white;
-    }
-
-        .btn-secondary:hover {
-            background: #4b5563;
-            transform: translateY(-2px);
-        }
-
-    .btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-    }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(102, 126, 234, 0.3);
-        }
-
-    /* Responsive Design */
-    @@media (max-width: 768px) {
-        .edit-header {
-            padding: 1.5rem;
-        }
-
-        .edit-content {
-            padding: 1.5rem;
-            max-height: 50vh;
-        }
-
-        .form-section {
-            padding: 1rem;
-        }
-
-        .form-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .edit-footer {
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .btn {
-            width: 100%;
-            justify-content: center;
-        }
-    }
-
-    @@media (max-width: 480px) {
-        .edit-header {
-            padding: 1rem;
-        }
-
-        .edit-content {
-            padding: 1rem;
-        }
-
-        .header-content {
-            flex-direction: column;
-            text-align: center;
-            gap: 0.5rem;
-        }
-
-        .header-icon {
-            width: 40px;
-            height: 40px;
-            font-size: 1.2rem;
-        }
-
-        .modal-title {
-            font-size: 1.3rem;
-        }
+        color: #1e293b;
+        min-width: 70px;
+        transition: color 0.3s ease;
     }
 </style>
 
+<!-- JS Corregido -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Toggle switch text update
-        const toggleInput = document.querySelector('.toggle-input');
-        const toggleText = document.querySelector('.toggle-text');
+    $(function () {
+        // Toggle principal y de teléfonos
+        $(document).on('change', 'input[type="checkbox"].toggle-input', function () {
+            const $label = $(this).closest('.toggle-label');
+            const $text = $label.find('.toggle-text');
+            const $slider = $label.find('.toggle-slider');
 
-        if (toggleInput && toggleText) {
-            // Actualizar texto inicial
-            toggleText.textContent = toggleInput.checked ? 'Activo' : 'Inactivo';
-
-            // Actualizar texto cuando cambie
-            toggleInput.addEventListener('change', function () {
-                toggleText.textContent = this.checked ? 'Activo' : 'Inactivo';
-            });
-        }
-
-        // Manejar cambio de rol para mostrar/ocultar grupo
-        const rolSelect = document.querySelector('#Rol');
-        const grupoSection = document.querySelector('.form-section:nth-child(5)'); // Sección de grupo
-
-        if (rolSelect && grupoSection) {
-            function toggleGrupoSection() {
-                if (rolSelect.value === 'Estudiantes') {
-                    grupoSection.style.display = 'block';
-                } else {
-                    grupoSection.style.display = 'none';
-                }
+            if (this.checked) {
+                $text.text('Activo').css('color', '#10b981');
+                $slider.css('background-color', '#10b981');
+                $slider.find('::before').css('transform', 'translateX(25px)');
+            } else {
+                $text.text('Inactivo').css('color', '#ef4444');
+                $slider.css('background-color', '#ccc');
+                $slider.find('::before').css('transform', 'translateX(0)');
             }
+        });
 
-            // Ejecutar al cargar
-            toggleGrupoSection();
+        // Inicializar estados al cargar
+        $('input[type="checkbox"].toggle-input').each(function() {
+            const $label = $(this).closest('.toggle-label');
+            const $text = $label.find('.toggle-text');
+            const $slider = $label.find('.toggle-slider');
 
-            // Ejecutar cuando cambie el rol
-            rolSelect.addEventListener('change', toggleGrupoSection);
-        }
+            if (this.checked) {
+                $text.css('color', '#10b981');
+                $slider.css('background-color', '#10b981');
+            } else {
+                $text.css('color', '#ef4444');
+                $slider.css('background-color', '#ccc');
+            }
+        });
 
-        // Form validation enhancement
-        const form = document.querySelector('.edit-form');
-        if (form) {
-            form.addEventListener('submit', function (e) {
-                const requiredFields = form.querySelectorAll('[required]');
-                let isValid = true;
+        // Hacer clic en el toggle-slider para cambiar el estado
+        $(document).on('click', '.toggle-slider', function(e) {
+            e.preventDefault();
+            const $label = $(this).closest('.toggle-label');
+            const $checkbox = $label.find('input[type="checkbox"].toggle-input');
 
-                requiredFields.forEach(field => {
-                    if (!field.value.trim()) {
-                        isValid = false;
-                        field.style.borderColor = '#ef4444';
-                    } else {
-                        field.style.borderColor = '#10b981';
-                    }
-                });
+            // Cambiar el estado del checkbox
+            $checkbox.prop('checked', !$checkbox.prop('checked')).trigger('change');
+        });
 
-                if (!isValid) {
-                    e.preventDefault();
-                    alert('Por favor, complete todos los campos requeridos.');
-                } else {
-                    // Mostrar mensaje de carga
-                    const submitBtn = form.querySelector('button[type="submit"]');
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Guardando...';
-                    submitBtn.disabled = true;
-                }
-            });
-        }
+        // Teléfonos dinámicos
+        let phoneIndex = @(Model.Telefonos != null ? Model.Telefonos.Count : 0);
+        $('#addTelefono').on('click', function (e) {
+            e.preventDefault();
+
+            const html = `
+            <div class="row mb-2 align-items-center telefono-item">
+                <input type="hidden" name="Telefonos[${phoneIndex}].Id" value="0" />
+                <div class="col-md-3">
+                    <input type="text" name="Telefonos[${phoneIndex}].Codigo" class="form-control"
+                           maxlength="4" placeholder="+506" required
+                           oninput="let val = this.value.replace(/[^0-9]/g, ''); this.value = val.length > 0 ? '+' + val.substring(0, 3) : '';">
+                </div>
+                <div class="col-md-5">
+                    <input type="text" name="Telefonos[${phoneIndex}].Telefono" class="form-control"
+                           minlength="8" maxlength="8" placeholder="Número" required
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                </div>
+                <div class="col-md-3">
+                    <select name="Telefonos[${phoneIndex}].Tipo" class="form-control" required>
+                        <option value="">Seleccione un tipo</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Trabajo">Trabajo</option>
+                        <option value="Hogar">Hogar</option>
+                        <option value="Encargado">Encargado</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <div class="toggle-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" name="Telefonos[${phoneIndex}].Estado" class="toggle-input" value="true" checked />
+                            <input type="hidden" name="Telefonos[${phoneIndex}].Estado" value="false" />
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-text" style="color: #10b981;">Activo</span>
+                        </label>
+                    </div>
+                </div>
+            </div>`;
+
+            $('#telefonosContainer').append(html);
+            phoneIndex++;
+        });
     });
 </script>

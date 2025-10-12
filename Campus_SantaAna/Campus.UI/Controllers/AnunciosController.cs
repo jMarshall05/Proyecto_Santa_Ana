@@ -1,4 +1,9 @@
-﻿using Campus.Abstracciones.LogicaDeNegocio.Anuncios.AgregarAnunciosLN;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio.Anuncios.AgregarAnunciosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Anuncios.EditarAnunciosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Anuncios.EliminarAnunciosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Anuncios.ListarAnunciosLN;
@@ -7,12 +12,7 @@ using Campus.LogicaDeNegocio.Anuncios.AgregarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.EditarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.EliminarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.ListarAnuncios;
-using System.IO;
-using System.Linq;
-using System.Web.Mvc;
-using System;
-using System.Collections.Generic;
-
+using Campus.UI.Filtros;
 public class AnunciosController : Controller
 {
     private readonly IListarAnunciosLN _listarAnunciosLN;
@@ -83,20 +83,20 @@ public class AnunciosController : Controller
     }
 
     // GET: Anuncios/Edit/5
-    public ActionResult Edit(int id)
+    public ActionResult EditParcial(int id)
     {
         var anuncio = _listarAnunciosLN.ObtenerAnuncioPorId(id);
         if (anuncio == null)
         {
             return HttpNotFound();
         }
-        return View(anuncio);
+        return PartialView("_EditParcial", anuncio);
     }
 
     // POST: Anuncios/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Edit(AnuncioDto anuncio)
+    public ActionResult EditParcial(AnuncioDto anuncio)
     {
         if (!ModelState.IsValid) return View(anuncio);
         try

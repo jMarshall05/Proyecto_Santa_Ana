@@ -1,7 +1,6 @@
 ﻿@model Campus.Abstracciones.ModelosUI.UsuariosDto
 
 <div class="user-detail-modal">
-    <!-- Header Premium -->
     <div class="detail-header">
         <div class="header-content">
             <div class="user-avatar-large">
@@ -26,6 +25,7 @@
     <!-- Content Grid -->
     <div class="detail-content">
         <div class="info-grid">
+
             <!-- Información Personal -->
             <div class="info-section">
                 <h3 class="section-title">
@@ -39,13 +39,50 @@
                             @Model.Email
                         </span>
                     </div>
+
                     <div class="info-item">
-                        <span class="info-label">Teléfono</span>
-                        <span class="info-value">
+                        <span class="info-label">Teléfonos</span>
+                        <div class="info-value flex-column">
                             <i class="fas fa-phone me-2 text-success"></i>
-                            @(Model.Telefono == 0 ? "No asignado" : Model.Telefono.ToString())
-                        </span>
+                            @if (ViewBag.Telefonos != null)
+                            {
+                                var telefonos = (IEnumerable<dynamic>)ViewBag.Telefonos;
+                                if (telefonos.Any())
+                                {
+                                    <ul class="list-unstyled mb-0 ms-4">
+                                        @foreach (var telefono in telefonos)
+                                        {
+                                            <li class="mb-1 d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <strong>(+@telefono.Codigo)</strong>
+                                                    @telefono.Telefono.ToString().Insert(4, "-")
+                                                    <span class="text-muted"> @telefono.Tipo</span>
+                                                </div>
+                                                @if (telefono.Estado)
+                                                {
+                                                    <span class="badge bg-success">Activo</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Inactivo</span>
+                                                }
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No se registraron teléfonos</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">No se registraron teléfonos</span>
+                            }
+
+                        </div>
                     </div>
+
                     <div class="info-item">
                         <span class="info-label">Cédula</span>
                         <span class="info-value">
@@ -69,6 +106,7 @@
                             @Model.FechaDeNacimiento.ToString("dd/MM/yyyy")
                         </span>
                     </div>
+
                     <div class="info-item">
                         <span class="info-label">Fecha de Registro</span>
                         <span class="info-value">
@@ -76,13 +114,14 @@
                             @Model.FechaDeRegistro.ToString("dd/MM/yyyy")
                         </span>
                     </div>
+
                     @if (Model.FechaDeModificacion.HasValue)
                     {
                         <div class="info-item">
-                            <span class="info-label">Última Modificación</span>
+                            <span class="info-label">Fecha de Modificación</span>
                             <span class="info-value">
                                 <i class="fas fa-edit me-2 text-warning"></i>
-                                @Model.FechaDeModificacion.Value.ToString("dd/MM/yyyy")
+                                @Model.FechaDeModificacion.Value.Date.ToString("dd/MM/yyyy")
                             </span>
                         </div>
                     }
@@ -105,6 +144,7 @@
                             </span>
                         </div>
                     }
+
                     <div class="info-item">
                         <span class="info-label">Estado</span>
                         <span class="info-value">
@@ -126,7 +166,7 @@
                         <div class="qr-container">
                             <img src="/Usuarios/GenerarReporteQR?id=@Model.IdUsuario"
                                  alt="QR Code"
-                                 class="qr-code">
+                                 class="qr-code" />
                             <div class="qr-overlay">
                                 <i class="fas fa-download"></i>
                                 <span>Descargar Reporte</span>
@@ -137,17 +177,18 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Footer -->
-    <div class="detail-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">
-            <i class="fas fa-arrow-left me-2"></i>Volver a la lista
-        </button>
+        <!-- Footer -->
+        <div class="detail-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
+                <i class="fas fa-arrow-left me-2"></i>Volver a la lista
+            </button>
+        </div>
     </div>
 </div>
 
 <style>
+    /* Estilos originales — no modificados */
     .user-detail-modal {
         background: white;
         border-radius: 20px;
@@ -155,7 +196,6 @@
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
     }
 
-    /* Header Styles */
     .detail-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -221,7 +261,6 @@
             color: white;
         }
 
-    /* Content Styles */
     .detail-content {
         padding: 2rem;
     }
@@ -274,7 +313,6 @@
         align-items: center;
     }
 
-    /* QR Section */
     .qr-section {
         text-align: center;
     }
@@ -335,7 +373,6 @@
         font-size: 0.9rem;
     }
 
-    /* Footer */
     .detail-footer {
         padding: 1.5rem 2rem;
         background: #f8fafc;
@@ -361,7 +398,6 @@
             transform: translateY(-2px);
         }
 
-    /* Responsive Design */
     @@media (max-width: 768px) {
         .detail-header {
             padding: 1.5rem;

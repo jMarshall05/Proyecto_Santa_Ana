@@ -23,11 +23,12 @@ using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Campus.LogicaNegocio.Entregas.EditarEntregaLN;
 using Campus.LogicaNegocio.Entregas.EliminarEntregaLN;
 using Campus.LogicaNegocio.Entregas.ListarEntregaLN;
+using Campus.UI.Filtros;
 using Microsoft.AspNet.Identity;
 
 namespace Campus.Web.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class EntregasController : Controller
     {
         private readonly IAgregarEntregaLN _agregarEntregaLN;
@@ -95,7 +96,7 @@ namespace Campus.Web.Controllers
 
             if (entrega == null)
                 return HttpNotFound();
-            var calificacion = (await _listarCalificacionesLN.ListarCalificacionesPorEstudianteAsync(entrega.id_estudiante)).Where(c=>c.id_entrega.Equals(id)).FirstOrDefault();
+            var calificacion = (await _listarCalificacionesLN.ListarCalificacionesPorEstudianteAsync(entrega.id_estudiante)).Where(c=>c.id_entrega.Equals(id) && c.Estado == true).FirstOrDefault();
             var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(entrega.id_estudiante);
             var tarea = await _listarTareas.ObtenerPorIdAsync(entrega.id_tarea);
             entrega.Estudiante = usuario;

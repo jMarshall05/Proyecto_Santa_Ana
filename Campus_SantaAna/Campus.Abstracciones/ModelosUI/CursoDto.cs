@@ -22,5 +22,8 @@ namespace Campus.Abstracciones.ModelosUI
         public string NombreProfesor { get; set; }
         public string NombreGrupo { get; set; }
         public string NombreMateria { get; set; }
+        
+        [DisplayName("Estado")]
+        public bool Estado { get; set; }
     }
 }

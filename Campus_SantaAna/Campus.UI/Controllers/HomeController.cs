@@ -1,4 +1,5 @@
-﻿using System.Drawing.Imaging;
+﻿using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,12 +9,16 @@ using Campus.Abstracciones.AccesoDatos.Cursos.ListarCursosLN;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorILN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
+using Campus.Abstracciones.ModelosUI;
 using Campus.LogicaDeNegocio.Cursos.ListarCursosLN;
 using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Materias.ListarMaterias;
+using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
+using Campus.UI.Filtros;
 using Campus.UI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -21,13 +26,15 @@ using QRCoder;
 
 namespace Campus.UI.Controllers
 {
-    ////[Authorize]
+    [Authorize] 
+    
     public class HomeController : Controller
     {
         private readonly IListarCursoLN _listarCursos;
         private readonly IObtenerUsuariosPorIdLN _obtenerUsuariosPorId;
         private readonly IListarMateriasLN _listarMateriasLN;
         private readonly IListarGruposLN _listarGruposLN;
+        private readonly IListarUsuariosLN _listarUsuariosLN;
         private ApplicationUserManager _userManager;
         private readonly IBuscarEstudianteGrupoPorIdLN _estudianteGrupoLN;
 
@@ -38,6 +45,7 @@ namespace Campus.UI.Controllers
             _listarMateriasLN = new ListarMateriasLN();
             _listarGruposLN = new ListarGruposLN();
             _estudianteGrupoLN = new BuscarEstudianteGrupoPorIdLN();
+            _listarUsuariosLN = new ListarUsuariosLN();
 
         }
         public HomeController(ApplicationUserManager userManager)
@@ -55,45 +63,68 @@ namespace Campus.UI.Controllers
                 _userManager = value;
             }
         }
+
         public ActionResult Index()
         {
-
             var id = User.Identity.GetUserId();
             if (id == null)
-              return RedirectToAction("login", "Account");
+                return RedirectToAction("login", "Account");
 
             if (User.IsInRole("Profesores"))
             {
-                var listaDeCursos = _listarCursos.ListarCursos().Where(u => u.ProfesorId == id);
+                var listaDeCursos = _listarCursos.ListarCursos()
+                    .Where(u => u.ProfesorId == id)
+                    .ToList();
+
                 foreach (var item in listaDeCursos)
                 {
                     var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(item.ProfesorId);
-                    item.NombreMateria = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId).Nombre;
-                    item.NombreGrupo = _listarGruposLN.BuscarGruposPorId(item.GrupoId).nombre_grupo;
-                    item.NombreProfesor = usuario.Nombre + " " + usuario.Apellido;
+                    var materia = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId);
+                    var grupo = _listarGruposLN.BuscarGruposPorId(item.GrupoId);
+
+                    item.NombreMateria = materia?.Nombre ?? "Sin materia";
+                    item.NombreGrupo = grupo?.nombre_grupo ?? "Sin grupo";
+                    item.NombreProfesor = usuario != null ? $"{usuario.Nombre} {usuario.Apellido}" : "Sin profesor";
                 }
                 return View(listaDeCursos);
             }
             else if (User.IsInRole("Estudiantes"))
             {
                 var grupo = _estudianteGrupoLN.BuscarEstudianteGrupoPorEstudianteId(id);
+
+                // CRITICAL FIX: Always pass a list, even if empty
                 if (grupo == null)
-                    return View();
-                var listaDeCursos = _listarCursos.ListarCursos().Where(u => u.GrupoId == grupo.GrupoId);
+                    return View(new List<CursoDto>());
+
+                var listaDeCursos = _listarCursos.ListarCursos()
+                    .Where(u => u.GrupoId == grupo.GrupoId)
+                    .ToList();
+
                 foreach (var item in listaDeCursos)
                 {
                     var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(item.ProfesorId);
-                    item.NombreMateria = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId).Nombre;
-                    item.NombreGrupo = _listarGruposLN.BuscarGruposPorId(item.GrupoId).nombre_grupo;
-                    item.NombreProfesor = usuario.Nombre + " " + usuario.Apellido;
+                    var materia = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId);
+                    var grupoInfo = _listarGruposLN.BuscarGruposPorId(item.GrupoId);
+
+                    item.NombreMateria = materia?.Nombre ?? "Sin materia";
+                    item.NombreGrupo = grupoInfo?.nombre_grupo ?? "Sin grupo";
+                    item.NombreProfesor = usuario != null ? $"{usuario.Nombre} {usuario.Apellido}" : "Sin profesor";
                 }
                 return View(listaDeCursos);
             }
-            
+            else if (User.IsInRole("Administradores"))
+            {
+                var Usuarios = _listarUsuariosLN.ListarUsuarios();
+                ViewBag.Estudiantes = Usuarios.Where(u => u.Rol == "Estudiantes").Count();
+                ViewBag.Profesores = Usuarios.Where(u => u.Rol == "Profesores").Count();
 
+                return View(new List<CursoDto>());
+            }
 
-            return View();
+            return View(new List<CursoDto>());
         }
+
+
         public ActionResult GenerarQR(string url)
         {
             using (var qrGenerator = new QRCodeGenerator())

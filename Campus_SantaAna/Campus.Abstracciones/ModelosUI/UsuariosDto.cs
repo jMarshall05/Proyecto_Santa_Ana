@@ -23,9 +23,8 @@ namespace Campus.Abstracciones.ModelosUI
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [EmailAddress(ErrorMessage = "El formato del correo electrónico no es válido.")]
         public string Email { get; set; }
-        [DisplayName("Teléfono")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public int Telefono { get; set; }
+        [DisplayName("Teléfonos")]
+        public List<TelefonoDto> Telefonos { get; set; } = new List<TelefonoDto>();
         [DisplayName("Fecha de Nacimiento")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public DateTime FechaDeNacimiento { get; set; }

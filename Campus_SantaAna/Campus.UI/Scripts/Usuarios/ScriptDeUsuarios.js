@@ -19,8 +19,8 @@
         },
         dom: '<"top"<"d-flex justify-content-between align-items-center"lf>>rt<"bottom"ip><"clear">',
         columnDefs: [
-            { orderable: false, targets: [5] }, // Cambiado de [6] a [5] porque tienes 6 columnas (índice 0-5)
-            { searchable: false, targets: [0, 4, 5] } // Ajustado para las columnas correctas
+            { orderable: false, targets: [4] }, 
+            { searchable: false, targets: [0, 1,3] } 
         ],
         initComplete: function () {
             // Personalizar el dropdown de cantidad de registros
@@ -89,3 +89,4 @@
     };
         $(document).on('click', '.btn-Editar', EditarUsuario)
 });
+

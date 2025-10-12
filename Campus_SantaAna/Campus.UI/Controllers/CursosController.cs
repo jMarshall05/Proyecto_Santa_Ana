@@ -21,6 +21,7 @@ using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Materias.ListarMaterias;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
+using Campus.UI.Filtros;
 using iText.Kernel.Font;
 using iText.Kernel.Pdf;
 using iText.Layout;
@@ -31,7 +32,7 @@ using QRCoder;
 
 namespace Campus.UI.Controllers
 {
-    //[Authorize(Roles = "Administradores")]
+    [Authorize(Roles = "Administradores")]
     public class CursosController : Controller
     {
         private readonly IListarCursoLN _listarCursoLN;
