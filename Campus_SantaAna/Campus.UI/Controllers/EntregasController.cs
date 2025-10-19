@@ -180,7 +180,6 @@ namespace Campus.Web.Controllers
             return View(lista);
         }
 
-        // 🚀 NUEVO: POST para entregar tarea
        
         [Authorize(Roles = "Estudiantes")]
         [HttpGet]
@@ -189,11 +188,11 @@ namespace Campus.Web.Controllers
             var entrega = new EntregasDto
             {
                 id_tarea = idTarea,
-                id_estudiante = User.Identity.GetUserId(), // Asegúrate de tener el using correcto
+                id_estudiante = User.Identity.GetUserId(),
                 fecha_entrega = DateTime.Now
             };
 
-            return View("SubirEntrega", entrega); // Usa vista personalizada
+            return View("SubirEntrega", entrega); 
         }
 
         [Authorize(Roles = "Estudiantes")]
