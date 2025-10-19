@@ -230,9 +230,10 @@ public class AnunciosController : Controller
 
     private void GuardarArchivo(AnuncioDto anuncio)
     {
-        var nombreArchivo = Path.GetFileName(anuncio.Imagen.FileName);
+        var nombreArchivo = Path.GetFileNameWithoutExtension(anuncio.Imagen.FileName);
+        var extension = Path.GetExtension(anuncio.Imagen.FileName);
         var rutaCarpeta = Server.MapPath("~/Uploads/Anuncios/");
-        var rutaCompleta = Path.Combine(rutaCarpeta, nombreArchivo);
+        var rutaCompleta = Path.Combine(rutaCarpeta, $"{nombreArchivo}_{Guid.NewGuid()}{extension}");
         if (!Directory.Exists(rutaCarpeta)) Directory.CreateDirectory(rutaCarpeta);
 
         using (var fileStream = new FileStream(rutaCompleta, FileMode.Create))
@@ -240,6 +241,7 @@ public class AnunciosController : Controller
             anuncio.Imagen.InputStream.CopyTo(fileStream);
         }
 
-        anuncio.ImagenRuta = "~/Uploads/Anuncios/" + nombreArchivo;
+        anuncio.ImagenRuta = "~/Uploads/Anuncios/" + Path.GetFileName(rutaCompleta);
+
     }
 }

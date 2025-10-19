@@ -28,15 +28,9 @@ namespace Campus.AccesoDatos.Anuncios.EditarAnunciosAD
             anuncioExistente.FechaEvento = anuncio.FechaEvento;
             anuncioExistente.FechaPublicacion = DateTime.UtcNow;
             anuncioExistente.Estado = anuncio.Estado;
-
-
-            if (!string.IsNullOrEmpty(anuncio.ImagenRuta))
-            {
-                anuncioExistente.ImagenRuta = anuncio.ImagenRuta;
-            }
+            anuncioExistente.ImagenRuta = anuncio.ImagenRuta;
             try
             {
-                _elContexto.Entry(anuncioExistente).State = System.Data.Entity.EntityState.Modified;
                 await _elContexto.SaveChangesAsync();
             }catch(Exception ex)
             {
