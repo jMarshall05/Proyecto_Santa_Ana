@@ -135,14 +135,11 @@ namespace Campus.UI.Controllers
 
                 try
                 {
-                    using (HttpClient client = new HttpClient())
-                    {
-                        byte[] imageBytes = client.GetByteArrayAsync("https://santaana.ed.cr/wp-content/uploads/LOGO-1.png").Result;
-                        Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
-                        logo.ScaleToFit(100, 100);
-                        logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
-                        document.Add(logo);
-                    }
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/logo_SantaAna.jpg"));
+                    Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
+                    logo.ScaleToFit(100, 100);
+                    logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                    document.Add(logo);
                 }
                 catch { }
 

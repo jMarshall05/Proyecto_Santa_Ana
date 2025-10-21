@@ -39,6 +39,7 @@ using iText.Layout.Properties;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using QRCoder;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 using Paragraph = iText.Layout.Element.Paragraph;
 using Table = iText.Layout.Element.Table;
 namespace Campus.UI.Controllers
@@ -58,7 +59,7 @@ namespace Campus.UI.Controllers
         private readonly IListarTelefonosLN _listarTelefonosLN;
         private readonly IEditarTelefonoLN _editarTelefonoLN;
         private readonly IAgregarTelefonoLN _agregarTelefonoLN;
-        private static IEnumerable <UsuariosDto> usuarios;
+        private static IEnumerable<UsuariosDto> usuarios;
 
         public UsuariosController()
         {
@@ -181,14 +182,14 @@ namespace Campus.UI.Controllers
 
                     return RedirectToAction("ListarUsuarios");
                 }
-               var errores= ObtenerErroresModelState();
+                var errores = ObtenerErroresModelState();
                 ModelState.AddModelError("", "Algo falló al editar.");
                 return View("ListarUsuarios");
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Error al editar usuario: {ex.Message}");
-                return View("ListarUsuarios",usuarios);
+                return View("ListarUsuarios", usuarios);
             }
         }
 
@@ -258,6 +259,105 @@ namespace Campus.UI.Controllers
             return View(usuarios);
         }
 
+        public ActionResult GenerarReportePDFGeneral()
+        {
+            var datos = usuarios;
+            using (var ms = new MemoryStream())
+            {
+                PdfWriter writer = new PdfWriter(ms);
+                PdfDocument pdf = new PdfDocument(writer);
+                Document document = new Document(pdf, iText.Kernel.Geom.PageSize.A4.Rotate()); // Orientación horizontal
+                document.SetMargins(40, 40, 40, 40);
+
+                try
+                {
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/logo_SantaAna.jpg"));
+                    Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
+                    logo.ScaleToFit(100, 100);
+                    logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                    document.Add(logo);
+                }
+                catch { }
+
+                PdfFont bold = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA_BOLD);
+                PdfFont regular = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA);
+
+                Paragraph titulo = new Paragraph("Reporte del Grupo")
+                    .SetFont(bold)
+                    .SetFontSize(20)
+                    .SetFontColor(iText.Kernel.Colors.ColorConstants.BLUE)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetMarginBottom(20);
+                document.Add(titulo);
+
+                Paragraph subtitulo = new Paragraph("Usuarios")
+                    .SetFont(bold)
+                    .SetFontSize(14)
+                    .SetFontColor(iText.Kernel.Colors.ColorConstants.BLACK)
+                    .SetTextAlignment(TextAlignment.LEFT)
+                    .SetMarginBottom(10);
+                document.Add(subtitulo);
+
+                Table cursosTable = new Table(new float[] { 1.5f, 1.5f, 2f, 2f, 2.5f, 2.5f, 2f, 2f, 1.5f, 1.5f });
+                cursosTable.SetWidth(UnitValue.CreatePercentValue(100));
+                cursosTable.SetFontSize(9);
+
+                string[] headers = { "Id Usuario", "Cedula", "Nombre", "Apelldio", "Correo", "Telefonos", "Fecha de Nacimiento", "Fecha de Registro", "Rol", "Estado" };
+
+                foreach (var header in headers)
+                {
+                    cursosTable.AddHeaderCell(new Cell()
+                        .Add(new Paragraph(header).SetFont(bold).SetFontSize(9))
+                        .SetBackgroundColor(iText.Kernel.Colors.ColorConstants.LIGHT_GRAY)
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                }
+
+                var telefonos = _listarTelefonosLN.ListarTelefono();
+
+                foreach (var u in datos)
+                {
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.IdUsuario).SetFont(regular)));
+
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.Cedula.ToString()).SetFont(regular)));
+
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.Nombre).SetFont(regular)));
+
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.Apellido).SetFont(regular)));
+
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.Email).SetFont(regular)));
+
+                    var telefonosUsuario = telefonos.Where(t => t.IdUsuario == u.IdUsuario).ToList();
+                    List<string> telefonosFormateados = new List<string>(); 
+
+                    foreach (var telefono in telefonosUsuario)
+                    {
+                        string telefonoFormateado = $"(+{telefono.Codigo}) {telefono.Telefono.ToString().Insert(4, "-")}: {telefono.Tipo} {(telefono.Estado ? "(Activo)" : "(Inactivo)")}";
+                        telefonosFormateados.Add(telefonoFormateado);
+                    }
+
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(telefonosFormateados.Count > 0 ? string.Join("\n", telefonosFormateados) : "Sin teléfonos").SetFont(regular).SetFontSize(8)));
+
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.FechaDeNacimiento.ToString("dd/MM/yyyy")).SetFont(regular)));
+
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.FechaDeRegistro.ToString("dd/MM/yyyy")).SetFont(regular)));
+
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.Rol ?? "N/A").SetFont(regular)));
+
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.Estado ? "Activo" : "Inactivo").SetFont(regular))
+                        .SetBackgroundColor(u.Estado ? iText.Kernel.Colors.ColorConstants.LIGHT_GRAY : iText.Kernel.Colors.ColorConstants.RED)
+                        .SetFontColor(u.Estado ? iText.Kernel.Colors.ColorConstants.BLACK : iText.Kernel.Colors.ColorConstants.WHITE));
+                }
+
+                document.Add(cursosTable);
+                document.Close();
+
+                return File(ms.ToArray(), "application/pdf", $"reporteUsuarios{DateTime.UtcNow.Month}-{DateTime.UtcNow.Year}_{Guid.NewGuid()}.pdf");
+            }
+        }
+
+
+
         public ActionResult GenerarReportePDF(string id)
         {
             var datos = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
@@ -267,7 +367,7 @@ namespace Campus.UI.Controllers
 
             foreach (var telefono in telefonos)
             {
-                string telefonoFormateado = $"(+{telefono.Codigo}) {telefono.Telefono.ToString().Insert(4, "-")}: {telefono.Tipo} {(telefono.Estado ? "Activo" : "Inactivo")}";
+                string telefonoFormateado = $"(+{telefono.Codigo}) {telefono.Telefono.ToString().Insert(4, "-")}: {telefono.Tipo} {(telefono.Estado ? "(Activo)" : "(Inactivo)")}";
                 telefonosFormateados.Add(telefonoFormateado);
             }
 
@@ -281,14 +381,13 @@ namespace Campus.UI.Controllers
 
                 try
                 {
-                    using (HttpClient client = new HttpClient())
-                    {
-                        byte[] imageBytes = client.GetByteArrayAsync("https://santaana.ed.cr/wp-content/uploads/LOGO-1.png").Result;
-                        Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
-                        logo.ScaleToFit(100, 100);
-                        logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
-                        document.Add(logo);
-                    }
+
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/logo_SantaAna.jpg"));
+                    Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
+                    logo.ScaleToFit(100, 100);
+                    logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                    document.Add(logo);
+
                 }
                 catch { }
 
@@ -327,6 +426,7 @@ namespace Campus.UI.Controllers
                 return File(ms.ToArray(), "application/pdf", $"reporte_usuario_{id}.pdf");
             }
         }
+
         public ActionResult GenerarReporteQR(string id)
         {
             string urlPdf = Url.Action("GenerarReportePDF", "Usuarios", new { id }, Request.Url.Scheme);
