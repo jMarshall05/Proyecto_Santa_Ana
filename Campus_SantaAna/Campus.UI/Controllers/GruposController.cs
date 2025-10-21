@@ -10,12 +10,15 @@ using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupo
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.AgregarGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.Abstracciones.LogicaDeNegocio.Telefonos.ListarTelefonos;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.AccesoDatos.ModelosAD;
 using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
 using Campus.LogicaDeNegocio.Grupos.AgregarGrupo;
 using Campus.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.LogicaDeNegocio.Telefonos.ListarTelefonosLN;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Campus.UI.Filtros;
 using iText.Kernel.Font;
@@ -33,11 +36,12 @@ namespace Campus.UI.Controllers
     [Authorize(Roles = "Administradores")]
     public class GruposController : Controller
     {
-        private IListarGruposLN _listarGrupos;
-        private IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
-        private IAgregarGrupoLN _agregarGrupoLN;
-        private IEditarGrupoLN _editarGrupoLN;
-        private IBuscarEstudianteGrupoPorIdLN _buscarEstudianteGrupoPorIdLN;
+        private readonly IListarGruposLN _listarGrupos;
+        private readonly IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
+        private readonly IAgregarGrupoLN _agregarGrupoLN;
+        private readonly IEditarGrupoLN _editarGrupoLN;
+        private readonly IBuscarEstudianteGrupoPorIdLN _buscarEstudianteGrupoPorIdLN;
+        private readonly IListarTelefonosLN _listarTelefonosLN;
         private static UsuariosGruposDto UsuariosGruposG;
         public GruposController()
         {
@@ -46,6 +50,7 @@ namespace Campus.UI.Controllers
             _agregarGrupoLN = new AgregarGrupoLN();
             _editarGrupoLN = new EditarGrupoLN();
             _buscarEstudianteGrupoPorIdLN = new BuscarEstudianteGrupoPorIdLN();
+            _listarTelefonosLN = new ListarTelefonosLN();
         }
         // GET: Grupos
         public ActionResult ListarGrupos()
@@ -70,7 +75,7 @@ namespace Campus.UI.Controllers
             var grupo = _listarGrupos.BuscarGruposPorId(id);
             var usuarios = new List<UsuariosDto>();
             var usuariosEnGrupo = _buscarEstudianteGrupoPorIdLN.BuscarEstudianteGrupoPorGrupoId(id);
-            UsuariosGruposDto UsuariosGrupos = UsuariosGrupo(grupo, usuarios, usuariosEnGrupo);
+            var UsuariosGrupos = UsuariosGrupo(grupo, usuarios, usuariosEnGrupo);
             UsuariosGruposG = UsuariosGrupos;
             return PartialView("_DetallesDeGrupoParcial", UsuariosGrupos);
         }
@@ -187,14 +192,11 @@ namespace Campus.UI.Controllers
 
                 try
                 {
-                    using (HttpClient client = new HttpClient())
-                    {
-                        byte[] imageBytes = client.GetByteArrayAsync("https://santaana.ed.cr/wp-content/uploads/LOGO-1.png").Result;
-                        Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
-                        logo.ScaleToFit(100, 100);
-                        logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
-                        document.Add(logo);
-                    }
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/logo_SantaAna.jpg"));
+                    Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
+                    logo.ScaleToFit(100, 100);
+                    logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                    document.Add(logo);
                 }
                 catch { }
 
@@ -240,7 +242,7 @@ namespace Campus.UI.Controllers
                 cursosTable.SetWidth(UnitValue.CreatePercentValue(100));
 
                 // Encabezados
-                string[] headers = { "Nombre", "Apellido", "Email", "Teléfono", "Cédula" };
+                string[] headers = { "Nombre", "Apellido", "Email", "Teléfonos", "Cédula" };
                 foreach (var header in headers)
                 {
                     cursosTable.AddHeaderCell(new Cell()
@@ -248,13 +250,25 @@ namespace Campus.UI.Controllers
                         .SetBackgroundColor(iText.Kernel.Colors.ColorConstants.LIGHT_GRAY));
                 }
 
-                // Filas de usuarios
+                var telefonos = _listarTelefonosLN.ListarTelefono();
+                List<string> telefonosFormateados = new List<string>();
+
                 foreach (var u in datos.usuarios)
                 {
                     cursosTable.AddCell(new Paragraph(u.Nombre));
                     cursosTable.AddCell(new Paragraph(u.Apellido));
                     cursosTable.AddCell(new Paragraph(u.Email));
-                    cursosTable.AddCell(new Paragraph(u.Telefonos.ToString()));
+
+                    var telefonosUsuario= telefonos.Where(t => t.IdUsuario == u.IdUsuario);
+
+
+                    foreach (var telefono in telefonosUsuario)
+                    {
+                        string telefonoFormateado = $"(+{telefono.Codigo}) {telefono.Telefono.ToString().Insert(4, "-")}: {telefono.Tipo} {(telefono.Estado ? "(Activo)" : "(Inactivo)")}";
+                        telefonosFormateados.Add(telefonoFormateado);
+                    }
+
+                    cursosTable.AddCell(new Paragraph(string.Join("\n", telefonosFormateados)));
                     cursosTable.AddCell(new Paragraph(u.Cedula.ToString()));
                 }
 
@@ -267,7 +281,7 @@ namespace Campus.UI.Controllers
 
         public ActionResult GenerarReporteQR(int id)
         {
-            string urlPdf = Url.Action("GenerarReportePDF", "Grupos", new { id = id }, Request.Url.Scheme);
+            string urlPdf = Url.Action("GenerarReportePDF", "Grupos", new { id }, Request.Url.Scheme);
             using (var qrGenerator = new QRCodeGenerator())
             {
                 var qrCodeData = qrGenerator.CreateQrCode(urlPdf, QRCodeGenerator.ECCLevel.Q);

@@ -52,7 +52,7 @@
     <Compile Include="calificaciones\eliminarCalificacionLN\eliminarCalificacionLN.cs" />
     <Compile Include="calificaciones\listarCalificacionesLN\listarCalificacionesLN.cs" />
     <Compile Include="Cursos\AgregarCursoLN\AgregarCursoLN.cs" />
-    <Compile Include="Cursos\EliminarCursosLN\EliminarCursosLN.cs" />
+    <Compile Include="Cursos\ModificarEstadoCursoLN\ModificarEstadoCursoLN.cs" />
     <Compile Include="Cursos\ListarCursosLN\ListarCursosLN.cs" />
     <Compile Include="entregas\agregarEntregaLN\agregarEntregaLN.cs" />
     <Compile Include="entregas\editarEntregaLN\editarEntregaLN.cs" />

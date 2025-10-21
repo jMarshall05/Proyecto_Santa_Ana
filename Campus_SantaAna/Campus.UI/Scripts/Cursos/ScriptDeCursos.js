@@ -4,7 +4,7 @@
         data: {},
         type: "GET",
         success: function (data) {
-            $(".modal-body").html(data);
+            $(".modal-body-premium").html(data);
             $(".modal-title").html("Agregar Curso");
             $("#CursosModal").modal("show");
         },
@@ -21,10 +21,10 @@ function GenerarReporte(event) {
         type: "GET",
         success: function (data) {
             let modalDialog = $("#CursosModal .modal-dialog");
-            modalDialog.removeClass("modal-xl"); 
-            modalDialog.addClass("modal-sm"); // agrega el que quieras (sm, lg, xl)
+            modalDialog.removeClass("modal-xl");
+            modalDialog.addClass("modal-sm");
 
-            $(".modal-body").html(`
+            $(".modal-body-premium").html(`
                 <div class="text-center">
                     <a href="/Cursos/GenerarReportePDF">
                         <img src="/Cursos/GenerarReporteQR" class="img-fluid rounded shadow" alt="Código QR del reporte" style="width:150px; height: 150px; object-fit: contain;" />
@@ -34,7 +34,7 @@ function GenerarReporte(event) {
                 </div>
             `);
             $(".modal-title").html("Generar Reporte");
-            $(".modal-footer").html();
+            $(".modal-footer-premium").html();
             $("#CursosModal").modal("show");
         },
         error: function (error) {

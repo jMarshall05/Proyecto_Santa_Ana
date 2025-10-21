@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using Campus.Abstracciones.AccesoDatos.Cursos.AgregarCursoLN;
-using Campus.Abstracciones.AccesoDatos.Cursos.EliminarCursoLN;
 using Campus.Abstracciones.AccesoDatos.Cursos.ListarCursosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
@@ -15,19 +12,17 @@ using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
 using Campus.LogicaDeNegocio.Cursos.AgregarCursoLN;
-using Campus.LogicaDeNegocio.Cursos.EliminarCursosLN;
 using Campus.LogicaDeNegocio.Cursos.ListarCursosLN;
+using Campus.LogicaDeNegocio.Cursos.ModificarEstadoCursoLN;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Materias.ListarMaterias;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
-using Campus.UI.Filtros;
 using iText.Kernel.Font;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
-using Microsoft.Ajax.Utilities;
 using QRCoder;
 
 namespace Campus.UI.Controllers
@@ -40,7 +35,7 @@ namespace Campus.UI.Controllers
         private readonly IListarGruposLN _listarGruposLN;
         private readonly IListarMateriasLN _listarMateriasLN;
         private readonly IListarUsuariosLN _listarUsuariosLN;
-        private readonly IEliminarCursoLN _eliminarCursoLN;
+        private readonly ModificarEstadoCursoLN _modificarEstadoCursoLN;
         private readonly IObtenerUsuariosPorIdLN _obtenerUsuariosPorId;
         private static List<CursoDto> cursos;
         public CursosController()
@@ -50,7 +45,7 @@ namespace Campus.UI.Controllers
             _listarGruposLN = new ListarGruposLN();
             _listarMateriasLN = new ListarMateriasLN();
             _listarUsuariosLN = new ListarUsuariosLN();
-            _eliminarCursoLN = new EliminarCursosLN();
+            _modificarEstadoCursoLN = new ModificarEstadoCursoLN();
             _obtenerUsuariosPorId = new ObtenerUsuariosPorIdLN();
         }
         // GET: Cursos
@@ -92,7 +87,7 @@ namespace Campus.UI.Controllers
         {
             var Profesores = _listarUsuariosLN.ListarUsuarios().Where(Usuario => Usuario.Rol == "Profesores").Select(Usuario => new
             {
-                IdUsuario = Usuario.IdUsuario,
+                Usuario.IdUsuario,
                 NombreCompleto = Usuario.Nombre + " " + Usuario.Apellido
             });
             var Materias = _listarMateriasLN.ListarMaterias();
@@ -135,14 +130,11 @@ namespace Campus.UI.Controllers
 
                 try
                 {
-                    using (HttpClient client = new HttpClient())
-                    {
-                        byte[] imageBytes = client.GetByteArrayAsync("https://santaana.ed.cr/wp-content/uploads/LOGO-1.png").Result;
-                        Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
-                        logo.ScaleToFit(100, 100);
-                        logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
-                        document.Add(logo);
-                    }
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/logo_SantaAna.jpg"));
+                    Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
+                    logo.ScaleToFit(100, 100);
+                    logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                    document.Add(logo);
                 }
                 catch { }
 
@@ -203,37 +195,15 @@ namespace Campus.UI.Controllers
                 }
             }
         }
-        // GET: Cursos/EliminarCurso/5
-        public ActionResult EliminarCurso(int id)
-        {
-            try
-            {
-                // Buscar el curso por ID para mostrar confirmación
-                var curso = ObtenerCursos().FirstOrDefault(c => c.IdCurso == id);
+     
 
-                if (curso == null)
-                {
-                    TempData["ErrorMessage"] = "Curso no encontrado";
-                    return RedirectToAction("ListarCursos");
-                }
-
-                return PartialView("_EliminarCursoParcial", curso);
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = "Error al cargar el curso: " + ex.Message;
-                return RedirectToAction("ListarCursos");
-            }
-        }
-
-        // POST: Cursos/EliminarCurso/5
-        [HttpPost, ActionName("EliminarCurso")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EliminarCursoConfirmado(int id)
+        public async Task<ActionResult> ModificarEstadoCurso(int id, bool estado)
         {
             try
             {
-                await _eliminarCursoLN.EliminarCurso(id);
+                await _modificarEstadoCursoLN.ModificarEstadoCurso(id, estado);
                 TempData["SuccessMessage"] = "Curso eliminado correctamente";
                 return RedirectToAction("ListarCursos");
             }

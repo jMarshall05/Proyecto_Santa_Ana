@@ -60,10 +60,10 @@
                         <i class="fas fa-filter"></i>
                         Filtros
                     </button>
-                    <button class="btn-export" id="exportBtn">
-                        <i class="fas fa-download"></i>
+                    <a  href="@Url.Action("GenerarReportePDFGeneral","Usuarios")"class="btn-export" id="exportBtn" >
+                        <i  class="fas fa-download" ></i>
                         Exportar
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -138,11 +138,6 @@
                                             <button class="btn btn-outline-primary btn-sm btn-Editar" data-id="@item.IdUsuario" data-bs-toggle="tooltip" title="Editar">
                                                 <i class="fas fa-pen"></i>
                                                 <span class="action-text">Editar</span>
-                                            </button>
-                                            <!-- Botón Eliminar - Deshabilitado -->
-                                            <button class="btn btn-outline-danger btn-sm" data-bs-toggle="tooltip" title="Eliminar (No disponible)" disabled>
-                                                <i class="fas fa-trash"></i>
-                                                <span class="action-text">Eliminar</span>
                                             </button>
                                         </div>
                                     </td>
@@ -927,9 +922,6 @@
             });
 
             // Botones de exportación y filtros
-            document.getElementById('exportBtn')?.addEventListener('click', function() {
-                alert('Funcionalidad de exportación será implementada próximamente');
-            });
 
             document.getElementById('filterBtn')?.addEventListener('click', function() {
                 alert('Funcionalidad de filtros será implementada próximamente');

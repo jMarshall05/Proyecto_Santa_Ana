@@ -62,7 +62,7 @@
     <Compile Include="calificaciones\listarCalificacionAD\listarCalificacionesAD.cs" />
     <Compile Include="Contexto.cs" />
     <Compile Include="Cursos\AgregarCursoAD\AgregarCursoAD.cs" />
-    <Compile Include="Cursos\EliminarCursoAD\EliminarCursoAD.cs" />
+    <Compile Include="Cursos\ModificarEstadoCursoAD\ModificarEstadoCursoAD.cs" />
     <Compile Include="Cursos\ListarCursosAD\ListarCursosAD.cs" />
     <Compile Include="entregas\agregarEntregaAD\agregarEntregaAD.cs" />
     <Compile Include="entregas\editarEntregaAD\editarEntregaAD.cs" />

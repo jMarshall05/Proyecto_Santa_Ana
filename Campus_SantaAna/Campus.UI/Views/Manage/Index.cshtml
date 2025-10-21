@@ -1,7 +1,7 @@
 ﻿@model Campus.UI.Models.IndexViewModel
 @{
     ViewBag.Title = "Administrar Cuenta";
-    <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />
+    <link rel="icon" type="image/png" href="~/Content/logo_SantaAna.ico" />
     @Styles.Render("~/Content/css")
     if (User.IsInRole("Administradores"))
     { Layout = "~/Views/Shared/_AdminLayout.cshtml"; }
