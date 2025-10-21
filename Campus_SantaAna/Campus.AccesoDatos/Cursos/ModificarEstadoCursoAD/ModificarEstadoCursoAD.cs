@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Campus.Abstracciones.AccesoDatos.Cursos.EliminarCursoAD;
+using Campus.Abstracciones.AccesoDatos.Cursos.ModificarEstadoCursoAD;
 
-namespace Campus.AccesoDatos.Cursos.EliminarCursoAD
+namespace Campus.AccesoDatos.Cursos.ModificarEstadoCursoAD
 {
-    public class EliminarCursoAD : IEliminarCursoAD
+    public class ModificarEstadoCursoAD : IModificarEstadoCursoAD
     {
         private readonly Contexto _elContexto;
-        public EliminarCursoAD()
+        public ModificarEstadoCursoAD()
         {
             _elContexto = new Contexto();
         }
 
-        async Task<bool> IEliminarCursoAD.EliminarCursoAD(int idCurso)
+        public async Task<bool> ModificarEstadoCurso(int idCurso, bool estado)
         {
             var CursoExistente = await _elContexto.Cursos.FindAsync(idCurso);
 
@@ -23,12 +23,15 @@ namespace Campus.AccesoDatos.Cursos.EliminarCursoAD
             {
                 throw new ArgumentException("El curso no existe");
             }
-            _elContexto.Cursos.Remove(CursoExistente);
+            CursoExistente.Estado = estado;
+
             int resultado = await _elContexto.SaveChangesAsync();
             if (resultado <= 0)
                 throw new Exception("No se pudo eliminar el curso");
             return true;
 
         }
+
+
     }
 }

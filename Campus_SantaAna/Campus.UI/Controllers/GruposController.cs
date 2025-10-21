@@ -36,12 +36,12 @@ namespace Campus.UI.Controllers
     [Authorize(Roles = "Administradores")]
     public class GruposController : Controller
     {
-        private IListarGruposLN _listarGrupos;
-        private IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
-        private IAgregarGrupoLN _agregarGrupoLN;
-        private IEditarGrupoLN _editarGrupoLN;
-        private IBuscarEstudianteGrupoPorIdLN _buscarEstudianteGrupoPorIdLN;
-        private IListarTelefonosLN _listarTelefonosLN;
+        private readonly IListarGruposLN _listarGrupos;
+        private readonly IObtenerUsuariosPorIdLN _obtenerUsuariosPorIdLN;
+        private readonly IAgregarGrupoLN _agregarGrupoLN;
+        private readonly IEditarGrupoLN _editarGrupoLN;
+        private readonly IBuscarEstudianteGrupoPorIdLN _buscarEstudianteGrupoPorIdLN;
+        private readonly IListarTelefonosLN _listarTelefonosLN;
         private static UsuariosGruposDto UsuariosGruposG;
         public GruposController()
         {
@@ -281,7 +281,7 @@ namespace Campus.UI.Controllers
 
         public ActionResult GenerarReporteQR(int id)
         {
-            string urlPdf = Url.Action("GenerarReportePDF", "Grupos", new { id = id }, Request.Url.Scheme);
+            string urlPdf = Url.Action("GenerarReportePDF", "Grupos", new { id }, Request.Url.Scheme);
             using (var qrGenerator = new QRCodeGenerator())
             {
                 var qrCodeData = qrGenerator.CreateQrCode(urlPdf, QRCodeGenerator.ECCLevel.Q);

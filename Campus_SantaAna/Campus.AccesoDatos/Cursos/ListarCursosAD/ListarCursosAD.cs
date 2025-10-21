@@ -25,7 +25,8 @@ namespace Campus.AccesoDatos.Cursos.ListarCursosAD
                                                 IdCurso = Cursos.IdCurso,
                                                 ProfesorId = Cursos.IdProfesor,
                                                 GrupoId = Cursos.GrupoId,
-                                                MateriaId = Cursos.MateriaId
+                                                MateriaId = Cursos.MateriaId,
+                                                Estado = Cursos.Estado 
                                             }).ToList();
             return ListaDeCursos;
         }
@@ -40,7 +41,9 @@ namespace Campus.AccesoDatos.Cursos.ListarCursosAD
                     IdCurso = Curso.FirstOrDefault().IdCurso,
                     ProfesorId = Curso.FirstOrDefault().IdProfesor,
                     GrupoId = Curso.FirstOrDefault().GrupoId,
-                    MateriaId = Curso.FirstOrDefault().MateriaId
+                    MateriaId = Curso.FirstOrDefault().MateriaId,
+                    Estado = Curso.FirstOrDefault().Estado
+
                 };
             }
             return null;
