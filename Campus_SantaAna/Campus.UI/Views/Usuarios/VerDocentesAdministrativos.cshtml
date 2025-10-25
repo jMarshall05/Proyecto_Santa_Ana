@@ -38,7 +38,9 @@
                             @inicial
                         </div>
                         <h5 class="card-title">@usuario.Nombre @usuario.Apellido</h5>
-                        <p class="text-muted small">@usuario.Rol</p>
+                        <p class="text-muted small">
+                            @(usuario.Rol == "Administradores" ? "Administrativo" : "Profesor")
+                        </p>
                         <p>
                             <a href="mailto:@usuario.Email" class="text-decoration-none text-dark">
                                 <i class="fas fa-envelope me-1 text-dark"></i>@usuario.Email
@@ -54,12 +56,12 @@
 @section scripts {
     <script>
         $(document).ready(function () {
-           
+
             $('.usuario-card').hide().each(function (index) {
                 $(this).delay(100 * index).fadeIn(300);
             });
 
-           
+
             $('#buscador').on('keyup', function () {
                 var filtro = $(this).val().toLowerCase();
                 $('.usuario-card').each(function () {
