@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Campus.Abstracciones.AccesoDatos.Cursos.ListarCursosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.agregarTareaLN;
@@ -11,6 +12,7 @@ using Campus.Abstracciones.LogicaDeNegocio.tareas.editarTareaLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.eliminarTareaLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Cursos.ListarCursosLN;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Materias.ListarMaterias;
 using Campus.LogicaDeNegocio.tareas.agregarTareaLN;
@@ -31,8 +33,8 @@ namespace Campus.UI.Controllers
         private readonly IEliminarTareaLN _eliminarTareaLN;
         private readonly IListarGruposLN _listarGruposLN;
         private readonly IListarMateriasLN _listarMateriasLN;
-        private static IEnumerable<GruposDto> grupos;
-        private static IEnumerable<MateriaDto> materias;
+        private readonly IListarCursoLN _listarCursosLN;
+ 
 
 
         public TareasController()
@@ -43,31 +45,46 @@ namespace Campus.UI.Controllers
             _eliminarTareaLN = new EliminarTareaLN();
             _listarGruposLN = new ListarGruposLN();
             _listarMateriasLN = new ListarMateriasLN();
+            _listarCursosLN = new ListarCursosLN();
+
 
         }
 
         [Authorize(Roles = "Administradores,Profesores")]
         public async Task<ActionResult> ListarTareas(int? grupoId, int? materiaId)
         {
-            var tareas = await _listarTareaLN.ListarTareasAsync();
+            var tareas = (await _listarTareaLN.ListarTareasAsync()).Where(t => t.Estado == true);
+            var cursos = _listarCursosLN.ListarCursos().Where(c => c.Estado == true);
+            var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);
 
             if (grupoId.HasValue && materiaId.HasValue)
             {
                 tareas = tareas.Where(t => t.Id_grupo == grupoId && t.IdMateria == materiaId);
             }
-
-            // Cargar calificaciones para cada tarea
-            foreach (var tarea in tareas)
+            if (User.IsInRole("Profesores"))
             {
-                if (tarea.Calificacion == null)
+                cursos = _listarCursosLN.ListarCursos().Where(c => c.ProfesorId == User.Identity.GetUserId());
+                var tareasPorProfesor = new List<TareaDto>();
+                foreach (var curso in cursos)
                 {
-                    // Aquí necesitarías implementar un método para obtener la calificación por tarea
-                    // tarea.Calificacion = await _obtenerCalificacionPorTarea(tarea.IdTarea);
+                    if (curso.ProfesorId == User.Identity.GetUserId())
+                    {
+                        tareasPorProfesor.AddRange(tareas.Where(t => t.Id_grupo == curso.GrupoId && t.IdMateria == curso.MateriaId));
+                    }
                 }
+                tareas = tareasPorProfesor;
             }
 
-            grupos = _listarGruposLN.ListarGrupos();
-            materias = _listarMateriasLN.ListarMaterias();
+            //foreach (var tarea in tareas)
+            //{
+            //    if (tarea.Calificacion == null)
+            //    {
+            //        // Aquí necesitarías implementar un método para obtener la calificación por tarea
+            //        // tarea.Calificacion = await _obtenerCalificacionPorTarea(tarea.IdTarea);
+            //    }
+            //}
+
+
             ViewBag.IdGrupo = new SelectList(grupos, "id_grupo", "nombre_grupo", grupoId ?? 0);
 
             return View(tareas);
@@ -76,10 +93,23 @@ namespace Campus.UI.Controllers
         [Authorize(Roles = "Administradores,Profesores")]
         public ActionResult Create()
         {
-            grupos = _listarGruposLN.ListarGrupos();
-            materias = _listarMateriasLN.ListarMaterias();
-            ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
-            ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
+            var cursos = _listarCursosLN.ListarCursos().Where(c => c.ProfesorId == User.Identity.GetUserId());
+            var materias = _listarMateriasLN.ListarMaterias().Where(m => m.Estado == true);
+            var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);
+            var materiaFiltrado = new List<MateriaDto>();
+            var gruposFiltrados = new List<GruposDto>();
+            foreach (var curso in cursos)
+            {
+                if (curso.ProfesorId == User.Identity.GetUserId())
+                {
+                    materiaFiltrado.AddRange(materias.Where(m => m.Id_Materia == curso.MateriaId));
+                    gruposFiltrados.AddRange(grupos.Where(g => g.id_grupo == curso.GrupoId));
+                }
+            }
+            materiaFiltrado = materiaFiltrado.Distinct().ToList();
+
+            ViewBag.Grupos = new SelectList(gruposFiltrados, "id_grupo", "nombre_grupo");
+            ViewBag.Materia = new SelectList(materiaFiltrado, "Id_Materia", "nombre");
             return View();
         }
 
@@ -89,8 +119,24 @@ namespace Campus.UI.Controllers
         public async Task<ActionResult> Create(TareaDto tarea)
         {
             tarea.asignado_por = User.Identity.GetUserId();
-            ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
-            ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
+            var cursos = _listarCursosLN.ListarCursos().Where(c => c.Estado == true);
+            var materias = _listarMateriasLN.ListarMaterias().Where(m => m.Estado == true);
+            var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);
+
+            var materiaFiltrado = new List<MateriaDto>();
+            var gruposFiltrados = new List<GruposDto>();
+            foreach (var curso in cursos)
+            {
+                if (curso.ProfesorId == User.Identity.GetUserId())
+                {
+                    materiaFiltrado.AddRange(materias.Where(m => m.Id_Materia == curso.MateriaId));
+                    gruposFiltrados.AddRange(grupos.Where(g => g.id_grupo == curso.GrupoId));
+                }
+            }
+            materiaFiltrado = materiaFiltrado.Distinct().ToList();
+
+            ViewBag.Grupos = new SelectList(gruposFiltrados, "id_grupo", "nombre_grupo");
+            ViewBag.Materia = new SelectList(materiaFiltrado, "Id_Materia", "nombre");
             if (ModelState.IsValid)
             {
                 try
@@ -126,9 +172,23 @@ namespace Campus.UI.Controllers
             var tarea = await _listarTareaLN.ObtenerPorIdAsync(id);
             if (tarea == null)
                 return HttpNotFound();
+            var materias = _listarMateriasLN.ListarMaterias().Where(m => m.Estado == true);
+            var cursos = _listarCursosLN.ListarCursos().Where(c => c.Estado == true);
+            var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);
+            var materiaFiltrado = new List<MateriaDto>();
+            var gruposFiltrados = new List<GruposDto>();
+            foreach (var curso in cursos)
+            {
+                if (curso.ProfesorId == User.Identity.GetUserId())
+                {
+                    materiaFiltrado.AddRange(materias.Where(m => m.Id_Materia == curso.MateriaId));
+                    gruposFiltrados.AddRange(grupos.Where(g => g.id_grupo == curso.GrupoId));
+                }
+            }
+            materiaFiltrado = materiaFiltrado.Distinct().ToList();
 
-            ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
-            ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
+            ViewBag.Grupos = new SelectList(gruposFiltrados, "id_grupo", "nombre_grupo");
+            ViewBag.Materia = new SelectList(materiaFiltrado, "Id_Materia", "nombre");
             return View(tarea);
         }
 
@@ -139,17 +199,30 @@ namespace Campus.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, TareaDto tarea)
         {
+            var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);
+            var materias = _listarMateriasLN.ListarMaterias().Where(m => m.Estado == true);
+            var cursos = _listarCursosLN.ListarCursos().Where(c => c.Estado == true);
+            var materiaFiltrado = new List<MateriaDto>();
+            var gruposFiltrados = new List<GruposDto>();
+            foreach (var curso in cursos)
+            {
+                if (curso.ProfesorId == User.Identity.GetUserId())
+                {
+                    materiaFiltrado.AddRange(materias.Where(m => m.Id_Materia == curso.MateriaId));
+                    gruposFiltrados.AddRange(grupos.Where(g => g.id_grupo == curso.GrupoId));
+                }
+            }
+            materiaFiltrado = materiaFiltrado.Distinct().ToList();
 
-            ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
-            ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
-
+            ViewBag.Grupos = new SelectList(gruposFiltrados, "id_grupo", "nombre_grupo");
+            ViewBag.Materia = new SelectList(materiaFiltrado, "Id_Materia", "nombre");
             if (!ModelState.IsValid)
                 return View(tarea);
 
             try
             {
-                string archivoAnterior = Request.Form["ArchivoAdjuntoActual"];
-                bool eliminarArchivo = Request.Form["EliminarArchivo"] == "true";
+                string archivoAnterior = Request.Form["archivoAdjuntoActual"];
+                bool eliminarArchivo = Request.Form["eliminarArchivo"] == "true";
 
                 if (eliminarArchivo && !string.IsNullOrEmpty(archivoAnterior))
                 {
@@ -161,7 +234,7 @@ namespace Campus.UI.Controllers
                 }
                 else if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
                 {
-                    if (archivoAnterior != null)
+                    if (!string.IsNullOrEmpty(archivoAnterior))
                     {
                         string rutaCompleta = Server.MapPath(archivoAnterior);
                         System.IO.File.Delete(rutaCompleta);

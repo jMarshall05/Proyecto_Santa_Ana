@@ -53,6 +53,6 @@ namespace Campus.Abstracciones.ModelosUI
         [DisplayName("Asignado Por")]
         public string asignado_por { get; set; }
         [DisplayName("Estado")]
-        public bool Estado { get; set; }
+        public bool Estado { get; set; } = true;
     }
 }

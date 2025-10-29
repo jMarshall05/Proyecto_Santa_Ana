@@ -92,7 +92,6 @@ namespace Campus.UI.Controllers
             {
                 var grupo = _estudianteGrupoLN.BuscarEstudianteGrupoPorEstudianteId(id);
 
-                // CRITICAL FIX: Always pass a list, even if empty
                 if (grupo == null)
                     return View(new List<CursoDto>());
 

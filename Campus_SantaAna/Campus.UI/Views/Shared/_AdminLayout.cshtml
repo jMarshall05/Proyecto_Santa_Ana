@@ -134,7 +134,7 @@
                                 <!-- Avatar -->
                                 <div class="user-avatar me-3">
                                     <div class="avatar-circle bg-primary text-white d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-person-fill fs-4"></i>
+                                        <i class="bi bi-person-fill fs-4">@User.Identity.Name.FirstOrDefault().ToString().ToUpper()</i>
                                     </div>
                                 </div>
 
@@ -243,6 +243,7 @@
             </style>
 
             @RenderBody()
+            @RenderSection("Styles", required: false)
         </main>
     </div>
 

@@ -1,7 +1,17 @@
 ﻿@model Campus.Abstracciones.ModelosUI.TareaDto
 @{
     ViewBag.Title = "Editar Tarea";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    if (User.Identity.IsAuthenticated)
+    {
+        if (User.IsInRole("Administradores"))
+        {
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        }
+        else
+        {
+            Layout = "~/Views/Shared/_Layout.cshtml";
+        }
+    }
 }
 
 <div class="container mt-4">
@@ -22,6 +32,8 @@
                         @Html.AntiForgeryToken()
                         @Html.ValidationSummary("", new { @class = "text-danger" })
                         @Html.HiddenFor(model => Model.FechaPublicacion)
+                        <input type="hidden" name="archivoAdjuntoActual" id="archivoAdjuntoActual" value="@Model.ArchivoAdjunto" />
+                        <input type="hidden" name="eliminarArchivo" id="eliminarArchivo" value="false" />
 
                         <div class="row">
                             <div class="col-md-6">
@@ -118,6 +130,21 @@
                             <div class="col-md-6">
                                 <div class="form-group mb-4">
                                     @Html.LabelFor(model => model.Archivo, new { @class = "font-weight-bold text-primary mb-2" })
+
+                                    <!-- Mostrar archivo actual si existe -->
+                                    @if (!string.IsNullOrEmpty(Model.ArchivoAdjunto))
+                                    {
+                                        <div class="alert alert-info d-flex justify-content-between align-items-center mb-3" id="archivoActual">
+                                            <div>
+                                                <i class="fas fa-paperclip mr-2"></i>
+                                                <span>Archivo actual: @System.IO.Path.GetFileName(Model.ArchivoAdjunto)</span>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" id="quitarArchivo">
+                                                <i class="fas fa-times"></i> Quitar
+                                            </button>
+                                        </div>
+                                    }
+
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text bg-light h-100">
@@ -127,7 +154,8 @@
                                         @Html.TextBoxFor(model => model.Archivo, new
                                         {
                                             type = "file",
-                                            @class = "form-control"
+                                            @class = "form-control",
+                                            id = "archivoInput"
                                         })
                                     </div>
                                     @Html.ValidationMessageFor(model => model.Archivo, "", new { @class = "text-danger small" })
@@ -259,50 +287,35 @@
 }
 
 @section Scripts {
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
     <script>
         $(document).ready(function () {
-            // Formatear fechas para datetime-local
-            function formatDateForInput(date) {
-                if (!date) return '';
-                const d = new Date(date);
-                return d.toISOString().slice(0, 16);
-            }
-
-            // Evento para ocultar el archivo y marcar eliminación
+            // Evento para quitar archivo actual
             $('#quitarArchivo').on('click', function () {
-                $('#archivoActual').hide().css('display', 'none');
-                $('#EliminarArchivo').val("true");
-
-                // Opcional: Limpiar el input de archivo
+                $('#archivoActual').hide();
+                $('#eliminarArchivo').val("true");
                 $('#archivoInput').val('');
 
-                // Mostrar mensaje de confirmación
+                // Mostrar mensaje
                 $(this).closest('.form-group').append(
-                    '<div class="alert alert-info mt-2" id="mensajeArchivo">' +
-                    '<i class="fas fa-info-circle mr-2"></i>El archivo será eliminado al guardar los cambios.' +
+                    '<div class="alert alert-warning mt-2" id="mensajeArchivo">' +
+                    '<i class="fas fa-exclamation-triangle mr-2"></i>El archivo será eliminado al guardar los cambios.' +
                     '</div>'
                 );
             });
 
-            // Evento para cuando se selecciona un nuevo archivo
+            // Evento cuando se selecciona nuevo archivo
             $('#archivoInput').on('change', function () {
                 if (this.files && this.files.length > 0) {
-                    // Si hay un archivo actual, ocultarlo
-                    $('#archivoActual').hide().css('display', 'none');
-                    $('#EliminarArchivo').val("true");
-
-                    // Remover mensaje anterior si existe
+                    // Ocultar archivo actual y marcar para eliminar
+                    $('#archivoActual').hide();
+                    $('#eliminarArchivo').val("true");
                     $('#mensajeArchivo').remove();
 
-                    // Mostrar información del nuevo archivo
+                    // Mostrar info del nuevo archivo
                     var fileName = this.files[0].name;
-                    var fileSize = (this.files[0].size / 1024 / 1024).toFixed(2);
-
                     $(this).closest('.form-group').append(
                         '<div class="alert alert-success mt-2" id="mensajeArchivo">' +
-                        '<i class="fas fa-check-circle mr-2"></i>Nuevo archivo seleccionado: ' + fileName + ' (' + fileSize + ' MB)' +
+                        '<i class="fas fa-check-circle mr-2"></i>Nuevo archivo seleccionado: ' + fileName +
                         '</div>'
                     );
                 }

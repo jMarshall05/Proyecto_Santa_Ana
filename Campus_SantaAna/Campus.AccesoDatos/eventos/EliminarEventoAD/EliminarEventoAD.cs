@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Data.Entity;
+using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Eventos.EliminarEventoAD;
 using Campus.AccesoDatos.ModelosAD;
 
@@ -18,7 +19,9 @@ namespace Campus.AccesoDatos.Eventos.EliminarEventoAD
             var entidad = await _contexto.Eventos.FindAsync(id);
             if (entidad == null) return 0;
 
-            _contexto.Eventos.Remove(entidad);
+
+            entidad.Estado = false;
+
             return await _contexto.SaveChangesAsync();
         }
     }

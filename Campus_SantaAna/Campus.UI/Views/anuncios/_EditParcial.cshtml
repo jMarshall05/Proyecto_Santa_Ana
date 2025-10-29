@@ -35,7 +35,7 @@
         if (!string.IsNullOrEmpty(Model.ImagenRuta))
         {
             <div class="mb-3">
-                <label>Imagen Actual</label>
+                <label>Imagen Actual</label><br />
                 <img src="@Url.Content(Model.ImagenRuta)" class="img-fluid mb-2" />
                 @Html.Hidden("ImagenActual", Model.ImagenRuta)
             </div>

@@ -59,7 +59,15 @@ namespace Campus.UI.Filtros
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
-            filterContext.Result = new RedirectResult("/Account/LoginWith2FA");
+            var user = filterContext.HttpContext.User;
+            if(user.Identity.IsAuthenticated){
+                filterContext.Result = new RedirectResult("/Account/LoginWith2FA");
+            }
+            else if (!user.Identity.IsAuthenticated)
+            {
+                filterContext.Result = new RedirectResult("/Account/login");
+
+            }
         }
     }
 }
