@@ -26,8 +26,8 @@ using QRCoder;
 
 namespace Campus.UI.Controllers
 {
-    [Authorize] 
-    
+    [Authorize]
+
     public class HomeController : Controller
     {
         private readonly IListarCursoLN _listarCursos;
@@ -72,44 +72,11 @@ namespace Campus.UI.Controllers
 
             if (User.IsInRole("Profesores"))
             {
-                var listaDeCursos = _listarCursos.ListarCursos()
-                    .Where(u => u.ProfesorId == id)
-                    .ToList();
-
-                foreach (var item in listaDeCursos)
-                {
-                    var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(item.ProfesorId);
-                    var materia = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId);
-                    var grupo = _listarGruposLN.BuscarGruposPorId(item.GrupoId);
-
-                    item.NombreMateria = materia?.Nombre ?? "Sin materia";
-                    item.NombreGrupo = grupo?.nombre_grupo ?? "Sin grupo";
-                    item.NombreProfesor = usuario != null ? $"{usuario.Nombre} {usuario.Apellido}" : "Sin profesor";
-                }
-                return View(listaDeCursos);
+                return VistaProfesor(id);
             }
             else if (User.IsInRole("Estudiantes"))
             {
-                var grupo = _estudianteGrupoLN.BuscarEstudianteGrupoPorEstudianteId(id);
-
-                if (grupo == null)
-                    return View(new List<CursoDto>());
-
-                var listaDeCursos = _listarCursos.ListarCursos()
-                    .Where(u => u.GrupoId == grupo.GrupoId)
-                    .ToList();
-
-                foreach (var item in listaDeCursos)
-                {
-                    var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(item.ProfesorId);
-                    var materia = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId);
-                    var grupoInfo = _listarGruposLN.BuscarGruposPorId(item.GrupoId);
-
-                    item.NombreMateria = materia?.Nombre ?? "Sin materia";
-                    item.NombreGrupo = grupoInfo?.nombre_grupo ?? "Sin grupo";
-                    item.NombreProfesor = usuario != null ? $"{usuario.Nombre} {usuario.Apellido}" : "Sin profesor";
-                }
-                return View(listaDeCursos);
+                return VistaEstudiante(id);
             }
             else if (User.IsInRole("Administradores"))
             {
@@ -123,6 +90,49 @@ namespace Campus.UI.Controllers
             return View(new List<CursoDto>());
         }
 
+        private ActionResult VistaEstudiante(string id)
+        {
+            var grupo = _estudianteGrupoLN.BuscarEstudianteGrupoPorEstudianteId(id);
+
+            if (grupo == null)
+                return View(new List<CursoDto>());
+
+            var listaDeCursos = _listarCursos.ListarCursos()
+                .Where(u => u.GrupoId == grupo.GrupoId)
+                .ToList();
+
+            FiltarCursos(listaDeCursos);
+            return View(listaDeCursos);
+        }
+
+        private ActionResult VistaProfesor(string id)
+        {
+            var listaDeCursos = _listarCursos.ListarCursos()
+                                .Where(u => u.ProfesorId == id && u.Estado == true)
+                                .ToList();
+
+            FiltarCursos(listaDeCursos);
+            return View(listaDeCursos.Where(c => c.Estado == true));
+        }
+
+        private void FiltarCursos(List<CursoDto> listaDeCursos)
+        {
+            foreach (var item in listaDeCursos)
+            {
+                var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(item.ProfesorId);
+                var materia = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId);
+                var grupo = _listarGruposLN.BuscarGruposPorId(item.GrupoId);
+
+
+                item.NombreMateria = materia?.Nombre ?? "Sin materia";
+                item.NombreGrupo = grupo?.nombre_grupo ?? "Sin grupo";
+                item.NombreProfesor = usuario != null ? $"{usuario.Nombre} {usuario.Apellido}" : "Sin profesor";
+                if (usuario.Estado == false || materia.Estado == false || grupo.estado == false)
+                {
+                    item.Estado = false;
+                }
+            }
+        }
 
         public ActionResult GenerarQR(string url)
         {

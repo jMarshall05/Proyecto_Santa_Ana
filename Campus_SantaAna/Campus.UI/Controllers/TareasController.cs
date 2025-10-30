@@ -34,7 +34,7 @@ namespace Campus.UI.Controllers
         private readonly IListarGruposLN _listarGruposLN;
         private readonly IListarMateriasLN _listarMateriasLN;
         private readonly IListarCursoLN _listarCursosLN;
- 
+
 
 
         public TareasController()
@@ -107,7 +107,7 @@ namespace Campus.UI.Controllers
                 }
             }
             materiaFiltrado = materiaFiltrado.Distinct().ToList();
-
+            gruposFiltrados = gruposFiltrados.Distinct().ToList();
             ViewBag.Grupos = new SelectList(gruposFiltrados, "id_grupo", "nombre_grupo");
             ViewBag.Materia = new SelectList(materiaFiltrado, "Id_Materia", "nombre");
             return View();
@@ -119,24 +119,7 @@ namespace Campus.UI.Controllers
         public async Task<ActionResult> Create(TareaDto tarea)
         {
             tarea.asignado_por = User.Identity.GetUserId();
-            var cursos = _listarCursosLN.ListarCursos().Where(c => c.Estado == true);
-            var materias = _listarMateriasLN.ListarMaterias().Where(m => m.Estado == true);
-            var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);
 
-            var materiaFiltrado = new List<MateriaDto>();
-            var gruposFiltrados = new List<GruposDto>();
-            foreach (var curso in cursos)
-            {
-                if (curso.ProfesorId == User.Identity.GetUserId())
-                {
-                    materiaFiltrado.AddRange(materias.Where(m => m.Id_Materia == curso.MateriaId));
-                    gruposFiltrados.AddRange(grupos.Where(g => g.id_grupo == curso.GrupoId));
-                }
-            }
-            materiaFiltrado = materiaFiltrado.Distinct().ToList();
-
-            ViewBag.Grupos = new SelectList(gruposFiltrados, "id_grupo", "nombre_grupo");
-            ViewBag.Materia = new SelectList(materiaFiltrado, "Id_Materia", "nombre");
             if (ModelState.IsValid)
             {
                 try
@@ -156,14 +139,40 @@ namespace Campus.UI.Controllers
                     await _agregarTareaLN.AgregarTarea(tarea);
                     return RedirectToAction("ListarTareas");
                 }
+
                 catch (Exception ex)
                 {
+                    FiltrarMateriasCursosGrupos();
                     ModelState.AddModelError("", "Error al crear la tarea: " + ex.Message);
                     return View(tarea);
 
                 }
             }
+            FiltrarMateriasCursosGrupos();
+
             return View(tarea);
+        }
+
+        private void FiltrarMateriasCursosGrupos()
+        {
+            var cursos = _listarCursosLN.ListarCursos().Where(c => c.Estado == true);
+            var materias = _listarMateriasLN.ListarMaterias().Where(m => m.Estado == true);
+            var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);
+
+            var materiaFiltrado = new List<MateriaDto>();
+            var gruposFiltrados = new List<GruposDto>();
+            foreach (var curso in cursos)
+            {
+                if (curso.ProfesorId == User.Identity.GetUserId())
+                {
+                    materiaFiltrado.AddRange(materias.Where(m => m.Id_Materia == curso.MateriaId));
+                    gruposFiltrados.AddRange(grupos.Where(g => g.id_grupo == curso.GrupoId));
+                }
+            }
+            materiaFiltrado = materiaFiltrado.Distinct().ToList();
+
+            ViewBag.Grupos = new SelectList(gruposFiltrados, "id_grupo", "nombre_grupo");
+            ViewBag.Materia = new SelectList(materiaFiltrado, "Id_Materia", "nombre");
         }
 
         [Authorize(Roles = "Administradores,Profesores")]
