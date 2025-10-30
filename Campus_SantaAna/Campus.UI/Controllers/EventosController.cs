@@ -41,8 +41,9 @@ namespace Campus.UI.Controllers
             {
                 var idUsuario = User.Identity.GetUserId();
                 var eventos = await _listarEventosLN.ListarEventos(idUsuario);
+             
 
-                var eventosUsuario = eventos.Select(e => new
+                var eventosUsuario = eventos.Where(e=>e.Estado==true).Select(e => new
                 {
                     id = e.Id,
                     title = e.Titulo,   

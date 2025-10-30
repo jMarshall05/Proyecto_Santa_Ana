@@ -14,7 +14,7 @@
         </div>
     </div>
 
-    @using (Html.BeginForm())
+    @using (Html.BeginForm("AgregarGrupoParcial", "Grupos", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         <input type="hidden" name="id" value="@ViewBag.Id" />
@@ -78,7 +78,7 @@
             <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">
                 <i class="fas fa-times me-2"></i>Cancelar
             </button>
-            <button type="submit" class="btn btn-primary btn-Agregar-Grupo" , data-id="@ViewBag.Id">
+            <button type="submit" class="btn btn-primary btn-submit-grupo" data-id="@ViewBag.Id">
                 <i class="fas fa-save me-2"></i>Crear Grupo
             </button>
         </div>
@@ -317,11 +317,10 @@
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Form validation enhancement
+    document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('form');
         if (form) {
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function (e) {
                 const requiredFields = form.querySelectorAll('[required]');
                 let isValid = true;
 
@@ -333,10 +332,10 @@
                         field.style.borderColor = '#10b981';
                     }
                 });
-
                 if (!isValid) {
                     e.preventDefault();
                     alert('Por favor, complete todos los campos requeridos.');
+                    return false;
                 }
             });
         }

@@ -26,11 +26,11 @@ namespace Campus.AccesoDatos.Tareas.EditarTareaAD
             if (tarea.Id_grupo > 0)
             {
                 var grupoExiste = await _elContexto.Grupos
-                    .AnyAsync(g => g.id_grupo == tarea.Id_grupo);
+                    .AnyAsync(g => g.id_grupo == tarea.Id_grupo && g.estado == true);
 
                 if (!grupoExiste)
                 {
-                    throw new ArgumentException("El grupo especificado no existe");
+                    throw new ArgumentException("El grupo especificado no existe o esta inactivo");
                 }
             }
 

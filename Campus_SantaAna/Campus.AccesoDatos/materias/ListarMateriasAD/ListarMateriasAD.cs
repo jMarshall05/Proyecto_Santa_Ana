@@ -21,7 +21,8 @@ namespace Campus.AccesoDatos.Materias.ListarMateriasAD
                     select new MateriaDto
                     {
                         Id_Materia = materia.IdMateria,
-                        Nombre = materia.Nombre
+                        Nombre = materia.Nombre,
+                        Estado = materia.Estado
                     }).ToList();
         }
 
@@ -34,7 +35,8 @@ namespace Campus.AccesoDatos.Materias.ListarMateriasAD
             return new MateriaDto
             {
                 Id_Materia = materia.IdMateria,
-                Nombre = materia.Nombre
+                Nombre = materia.Nombre,
+                Estado = materia.Estado
             };
         }
     }

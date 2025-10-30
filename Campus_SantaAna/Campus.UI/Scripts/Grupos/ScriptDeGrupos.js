@@ -154,7 +154,7 @@
             data: { id: id },
             type: "GET",
             success: function (data) {
-                $(".modal-body-premium").html(data); // CORREGIDO: usar modal-body-premium
+                $(".modal-body-premium").html(data); 
                 $(".modal-title").html("Modificar Grupo");
                 $("#GruposModal").modal("show");
                 initTooltips();

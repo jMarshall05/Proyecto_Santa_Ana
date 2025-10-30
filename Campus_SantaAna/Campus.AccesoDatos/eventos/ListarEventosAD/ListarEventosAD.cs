@@ -27,7 +27,8 @@ namespace Campus.AccesoDatos.Eventos.ListarEventosAD
                     Titulo = e.Titulo,
                     FechaInicio = e.FechaInicio,
                     FechaFin = e.FechaFin,
-                    IdUsuario = e.IdUsuario
+                    IdUsuario = e.IdUsuario,
+                    Estado = e.Estado
                 })
                 .ToListAsync();
         }

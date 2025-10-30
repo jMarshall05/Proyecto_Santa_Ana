@@ -37,7 +37,7 @@ namespace Campus.UI.Controllers
         private readonly IListarUsuariosLN _listarUsuariosLN;
         private readonly ModificarEstadoCursoLN _modificarEstadoCursoLN;
         private readonly IObtenerUsuariosPorIdLN _obtenerUsuariosPorId;
-        private static List<CursoDto> cursos;
+        private static IEnumerable<CursoDto> cursos;
         public CursosController()
         {
             _listarCursoLN = new ListarCursosLN();

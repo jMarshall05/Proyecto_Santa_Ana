@@ -307,7 +307,7 @@ public ActionResult GenerarReportePDFGeneral()
             Image chartImage = new Image(iText.IO.Image.ImageDataFactory.Create(chartBytes));
             chartImage.ScaleToFit(400, 300);
             chartImage.SetHorizontalAlignment(HorizontalAlignment.CENTER);
-            chartImage.SetMarginBottom(20);
+            chartImage.SetMarginBottom(25);
             document.Add(chartImage);
 
             Paragraph subtitulo = new Paragraph("Usuarios")
@@ -364,7 +364,7 @@ public ActionResult GenerarReportePDFGeneral()
             document.Add(cursosTable);
             document.Close();
 
-            return File(ms.ToArray(), "application/pdf", $"reporteUsuarios{DateTime.UtcNow.Month}-{DateTime.UtcNow.Year}_{Guid.NewGuid()}.pdf");
+            return File(ms.ToArray(), "application/pdf", $"reporteUsuarios({DateTime.UtcNow.Month}-{DateTime.UtcNow.Year})_{Guid.NewGuid()}.pdf");
         }
     }
 

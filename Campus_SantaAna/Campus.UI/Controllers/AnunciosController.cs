@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using Campus.Abstracciones.LogicaDeNegocio.Anuncios.AgregarAnunciosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Anuncios.EditarAnunciosLN;
@@ -96,7 +97,7 @@ public class AnunciosController : Controller
     // POST: Anuncios/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult EditParcial(AnuncioDto anuncio)
+    public async Task<ActionResult> EditParcialAsync(AnuncioDto anuncio)
     {
         if (!ModelState.IsValid) return View(anuncio);
         try
@@ -123,14 +124,16 @@ public class AnunciosController : Controller
                     ModelState.AddModelError("", "Tipo de archivo no permitido.");
                     return View(anuncio);
                 }
-                GuardarArchivo(anuncio);
             }
             else
             {
                 anuncio.ImagenRuta = imagenAnterior;
             }
-
-            _editarAnunciosLN.EditarAnuncio(anuncio);
+            var resultado = await _editarAnunciosLN.EditarAnuncio(anuncio);
+            if (resultado == true)
+            {
+                GuardarArchivo(anuncio);
+            }
             return RedirectToAction("ListarAnuncios");
         }
         catch (Exception ex)
@@ -150,7 +153,7 @@ public class AnunciosController : Controller
             {
                 return HttpNotFound();
             }
-            return View(anuncio); 
+            return View(anuncio);
         }
         catch (Exception ex)
         {
@@ -194,7 +197,7 @@ public class AnunciosController : Controller
     {
         try
         {
-            var anuncios = _listarAnunciosLN.ListarAnuncios(); 
+            var anuncios = _listarAnunciosLN.ListarAnuncios();
             return View(anuncios);
         }
         catch (Exception ex)
@@ -213,7 +216,7 @@ public class AnunciosController : Controller
             {
                 return HttpNotFound();
             }
-            return PartialView("_DetailsParcial",anuncio);
+            return PartialView("_DetailsParcial", anuncio);
         }
         catch (Exception ex)
         {
