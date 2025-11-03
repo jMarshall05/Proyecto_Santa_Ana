@@ -107,6 +107,12 @@ namespace Campus.UI.Controllers
                         }
                         else
                         {
+                            var cache = MemoryCache.Default;
+                            var verifiedKey = $"User2FAVerified-{user.Id}";
+
+                            if (cache[verifiedKey] as bool? == true)
+                                return RedirectToAction("Index", "Home");
+
                             return RedirectToAction("Solicitud2FA", "Account");
                         }
                     case SignInStatus.LockedOut:
@@ -214,37 +220,38 @@ namespace Campus.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            try{
-            if (ModelState.IsValid)
+            try
             {
-                ApplicationUser user = CrearUsuario(model);
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                if (ModelState.IsValid)
                 {
-                    await UserManager.AddToRoleAsync(user.Id, model.Rol);
-                    var usuario = ConvertirDto(model, user);
-                    await _agregarUsuariosLN.AgregarUsuario(usuario);
-                    model.Telefonos.ForEach(t => t.IdUsuario = user.Id);
-                    await _agregarTelefonoLN.AgregarTelefono(model.Telefonos);
-                    // await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    ApplicationUser user = CrearUsuario(model);
+                    var result = await UserManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        await UserManager.AddToRoleAsync(user.Id, model.Rol);
+                        var usuario = ConvertirDto(model, user);
+                        await _agregarUsuariosLN.AgregarUsuario(usuario);
+                        model.Telefonos.ForEach(t => t.IdUsuario = user.Id);
+                        await _agregarTelefonoLN.AgregarTelefono(model.Telefonos);
+                        // await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
-                    // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Enviar un correo electrónico con este vínculo
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirmar la cuenta", "Para confirmar su cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
+                        // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
+                        // Enviar un correo electrónico con este vínculo
+                        // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                        // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                        // await UserManager.SendEmailAsync(user.Id, "Confirmar la cuenta", "Para confirmar su cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
 
-                    return RedirectToAction("ListarUsuarios", "Usuarios");
+                        return RedirectToAction("ListarUsuarios", "Usuarios");
+                    }
+                    AddErrors(result);
                 }
-                AddErrors(result);
-            }
 
                 // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
                 return View(model);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-               ModelState.AddModelError("", ex.Message);
+                ModelState.AddModelError("", ex.Message);
                 return View(model);
             }
         }
@@ -252,7 +259,7 @@ namespace Campus.UI.Controllers
         private ApplicationUser CrearUsuario(RegisterViewModel model)
         {
             string numeroRamdon = rnd.Next(0, 100).ToString("D2");
-            var user = new ApplicationUser { UserName = model.Nombre.ToUpper().First() + model.Apellido.Trim() + numeroRamdon, Email = model.Email};
+            var user = new ApplicationUser { UserName = model.Nombre.ToUpper().First() + model.Apellido.Trim() + numeroRamdon, Email = model.Email };
             return user;
         }
 
@@ -511,7 +518,7 @@ namespace Campus.UI.Controllers
             using (var qrCodeData = qrGenerator.CreateQrCode(otpauthUrl, QRCodeGenerator.ECCLevel.Q))
             using (var qrCode = new PngByteQRCode(qrCodeData))
             {
-                 qrCodeImage = qrCode.GetGraphic(20);
+                qrCodeImage = qrCode.GetGraphic(20);
                 ViewBag.QRCode = "data:image/png;base64," + Convert.ToBase64String(qrCodeImage);
             }
 
@@ -528,6 +535,11 @@ namespace Campus.UI.Controllers
                 user.TwoFactorEnabled = false;
                 user.GoogleAuthenticatorSecretKey = null;
                 UserManager.Update(user);
+                var cache = MemoryCache.Default;
+                var User2FA = $"User2FA-{user.Id}";
+                if (cache[User2FA] != null)
+                    cache.Remove(User2FA);
+                cache.Add(User2FA, false, DateTimeOffset.Now.AddMinutes(30));
                 return RedirectToAction("Index", "Manage");
             }
             else
@@ -544,13 +556,22 @@ namespace Campus.UI.Controllers
             var user = UserManager.FindById(userId);
 
             var totp = new Totp(Base32Encoding.ToBytes(Encriptacion.Desencriptar(user.GoogleAuthenticatorSecretKey)));
-           
 
-            if ( totp.VerifyTotp(code, out long _, VerificationWindow.RfcSpecifiedNetworkDelay))
+
+            if (totp.VerifyTotp(code, out long _, VerificationWindow.RfcSpecifiedNetworkDelay))
             {
 
                 user.TwoFactorEnabled = true;
                 UserManager.Update(user);
+                var cache = MemoryCache.Default;
+                var verifiedKey = $"User2FAVerified-{user.Id}";
+                var User2FA = $"User2FA-{user.Id}";
+                if (cache[verifiedKey] != null)
+                    cache.Remove(verifiedKey);
+                cache.Add(verifiedKey, true, DateTimeOffset.Now.AddMinutes(30));
+                if (cache[User2FA] != null)
+                    cache.Remove(User2FA);
+                cache.Add(User2FA, true, DateTimeOffset.Now.AddMinutes(30));
                 return RedirectToAction("Index", "Home");
             }
             else
