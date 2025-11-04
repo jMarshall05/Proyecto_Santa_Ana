@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Telefonos.EditarTelefono;
 using Campus.Abstracciones.LogicaDeNegocio.Telefonos.EditarTelefono;
@@ -17,7 +16,7 @@ namespace Campus.LogicaDeNegocio.Telefonos.EditarTelefonoLN
         }
         public Task<int> EditarTelefono(List<TelefonoDto> telefonos)
         {
-           return _editarTelefono.EditarTelefono(telefonos);
+            return _editarTelefono.EditarTelefono(telefonos);
         }
     }
 }

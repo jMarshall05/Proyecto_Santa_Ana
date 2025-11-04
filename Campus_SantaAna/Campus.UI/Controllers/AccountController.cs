@@ -5,12 +5,13 @@ using System.Runtime.Caching;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio;
 using Campus.Abstracciones.LogicaDeNegocio.Telefonos.AgregarTelefono;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.AgregarUsuariosLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Bitacora;
 using Campus.LogicaDeNegocio.Telefonos.AgregarTelefonoLN;
 using Campus.LogicaDeNegocio.Usuarios.AgregarUsuarios;
-using Campus.UI.Filtros;
 using Campus.UI.Helpers;
 using Campus.UI.Models;
 using Microsoft.AspNet.Identity;
@@ -29,6 +30,7 @@ namespace Campus.UI.Controllers
         private readonly IAgregarUsuariosLN _agregarUsuariosLN;
         private readonly Random rnd;
         private readonly IAgregarTelefonoLN _agregarTelefonoLN;
+        private readonly IBitacoraLN _bitacoraLN;
 
         private static byte[] qrCodeImage;
 
@@ -37,6 +39,7 @@ namespace Campus.UI.Controllers
             _agregarUsuariosLN = new AgregarUsuariosLN();
             rnd = new Random();
             _agregarTelefonoLN = new AgregarTelefonoLN();
+            _bitacoraLN = new BitacoraLN();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)

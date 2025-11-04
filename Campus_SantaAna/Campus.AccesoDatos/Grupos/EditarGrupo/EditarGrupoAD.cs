@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Grupos.EditarGrupo;
 using Campus.Abstracciones.ModelosUI;
@@ -20,12 +17,13 @@ namespace Campus.AccesoDatos.Grupos.EditarGrupo
             var grupoExistente = await _elContexto.Grupos.FindAsync(id);
             if (grupoExistente == null)
             {
-                return 0; 
+                return 0;
             }
             grupoExistente.nombre_grupo = grupo.nombre_grupo;
             grupoExistente.descripcion = grupo.descripcion;
             grupoExistente.FechaDeModificacion = DateTime.Now;
             grupoExistente.estado = grupo.estado;
+            grupoExistente.modificado_por = grupo.modificado_por;
             _elContexto.Entry(grupoExistente).State = System.Data.Entity.EntityState.Modified;
             return await _elContexto.SaveChangesAsync();
         }

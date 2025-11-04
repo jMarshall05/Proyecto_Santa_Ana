@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Campus.Abstracciones.AccesoDatos.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.ModelosUI;

@@ -55,7 +55,7 @@ namespace Campus.UI.Controllers
             cursos = listaDeCursos;
             return View(listaDeCursos);
         }
-       
+
         private List<CursoDto> ObtenerCursos()
         {
             var listaDeCursos = _listarCursoLN.ListarCursos();
@@ -120,7 +120,7 @@ namespace Campus.UI.Controllers
         public ActionResult GenerarReportePDF()
         {
             var datos = cursos;
-    
+
             using (var ms = new MemoryStream())
             {
                 PdfWriter writer = new PdfWriter(ms);
@@ -166,7 +166,7 @@ namespace Campus.UI.Controllers
                     cursosTable.AddCell(new Paragraph(dato.NombreMateria));
                     cursosTable.AddCell(new Paragraph(dato.NombreGrupo));
                     cursosTable.AddCell(new Paragraph(dato.NombreProfesor));
-                
+
                 }
 
                 document.Add(cursosTable);
@@ -195,7 +195,7 @@ namespace Campus.UI.Controllers
                 }
             }
         }
-     
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

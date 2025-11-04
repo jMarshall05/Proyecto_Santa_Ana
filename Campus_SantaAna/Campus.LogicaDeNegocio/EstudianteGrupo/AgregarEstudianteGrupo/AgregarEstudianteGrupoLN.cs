@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.Abstracciones.ModelosUI;
@@ -12,7 +8,7 @@ namespace Campus.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo
 {
     public class AgregarEstudianteGrupoLN : IAgregarEstudianteGrupoLN
     {
-        private  IAgregarEstudianteGrupoAD _agregarEstudianteGrupoAD;
+        private IAgregarEstudianteGrupoAD _agregarEstudianteGrupoAD;
         public AgregarEstudianteGrupoLN()
         {
             _agregarEstudianteGrupoAD = new AgregarEstudianteGrupoAD();

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
-using Campus.Abstracciones.AccesoDatos.tareas.listarTareaAD;
 using Campus.Abstracciones.LogicaDeNegocio.calificaciones.agregarCalificacionLN;
 using Campus.Abstracciones.LogicaDeNegocio.calificaciones.editarCalificacionLN;
 using Campus.Abstracciones.LogicaDeNegocio.calificaciones.eliminarCalificacionLN;
@@ -13,13 +9,11 @@ using Campus.Abstracciones.LogicaDeNegocio.calificaciones.listarCalificacionLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
 using Campus.Abstracciones.LogicaNegocio.entregas.listarEntregaLN;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 using Campus.LogicaDeNegocio.calificaciones;
 using Campus.LogicaDeNegocio.calificaciones.eliminarCalificacionLN;
 using Campus.LogicaDeNegocio.calificaciones.listarCalificacionesLN;
 using Campus.LogicaDeNegocio.Tareas.ListarTareaLN;
 using Campus.LogicaNegocio.Entregas.ListarEntregaLN;
-using Campus.UI.Filtros;
 using Microsoft.AspNet.Identity;
 
 namespace Campus.Web.Controllers
@@ -49,7 +43,7 @@ namespace Campus.Web.Controllers
             if (idGrupo == null)
             {
                 var lista = (await _listarCalificacionesLN.ListarCalificaciones()).Where(c => c.Estado == true).ToList();
-                return View(lista.Where(l=>l.Estado==true));
+                return View(lista.Where(l => l.Estado == true));
             }
             else
             {
@@ -68,7 +62,7 @@ namespace Campus.Web.Controllers
                 id_entrega = id,
                 fecha_calificacion = DateTime.Now
             };
-            return View(modelo); 
+            return View(modelo);
         }
 
 
@@ -167,7 +161,7 @@ namespace Campus.Web.Controllers
 
         public async Task<ActionResult> Delete(int id)
         {
-            var calificaciones = (await _listarCalificacionesLN.ListarCalificaciones()).Where(c=> c.Estado == true).ToList();
+            var calificaciones = (await _listarCalificacionesLN.ListarCalificaciones()).Where(c => c.Estado == true).ToList();
             var calificacion = calificaciones.FirstOrDefault(e => e.id_calificacion == id);
 
             if (calificacion == null)
@@ -181,11 +175,11 @@ namespace Campus.Web.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             await _eliminarCalificacionLN.EliminarCalificacion(id);
-            return RedirectToAction("Index","Entregas");
+            return RedirectToAction("Index", "Entregas");
         }
 
 
-       
+
 
         public async Task<ActionResult> ObtenerCalificacionPorID(int id)
         {

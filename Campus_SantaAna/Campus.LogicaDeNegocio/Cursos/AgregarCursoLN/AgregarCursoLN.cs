@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Cursos.AgregarCursoAD;
 using Campus.Abstracciones.AccesoDatos.Cursos.AgregarCursoLN;

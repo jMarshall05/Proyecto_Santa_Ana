@@ -2,7 +2,6 @@
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Campus.Abstracciones.AccesoDatos.Cursos.ListarCursosLN;
@@ -18,8 +17,6 @@ using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Materias.ListarMaterias;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
-using Campus.UI.Filtros;
-using Campus.UI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using QRCoder;

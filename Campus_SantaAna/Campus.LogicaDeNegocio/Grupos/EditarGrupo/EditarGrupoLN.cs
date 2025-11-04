@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Grupos.EditarGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.Abstracciones.ModelosUI;
@@ -20,7 +16,8 @@ namespace Campus.LogicaDeNegocio.Grupos.EditarGrupo
 
         public Task<int> EditarGrupo(int id, GruposDto grupo)
         {
-           return _editarGrupoAD.EditarGrupo(id, grupo);
+
+            return _editarGrupoAD.EditarGrupo(id, grupo);
         }
     }
 }

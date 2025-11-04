@@ -31,6 +31,8 @@ using Campus.LogicaDeNegocio.Telefonos.ListarTelefonosLN;
 using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
+using Campus.LogicaDeNegocio.Bitacora; // NUEVO: Agregar referencia a bitácora
+using Campus.Abstracciones.LogicaDeNegocio; // NUEVO: Para BitacoraDto
 using iText.Kernel.Font;
 using iText.Kernel.Pdf;
 using iText.Layout;
@@ -45,6 +47,7 @@ using Table = iText.Layout.Element.Table;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Image = iText.Layout.Element.Image;
+
 namespace Campus.UI.Controllers
 {
     //[Authorize(Roles = "Administradores")]
@@ -62,6 +65,7 @@ namespace Campus.UI.Controllers
         private readonly IListarTelefonosLN _listarTelefonosLN;
         private readonly IEditarTelefonoLN _editarTelefonoLN;
         private readonly IAgregarTelefonoLN _agregarTelefonoLN;
+        private readonly IBitacoraLN _bitacora; 
         private static IEnumerable<UsuariosDto> usuarios;
 
         public UsuariosController()
@@ -77,6 +81,7 @@ namespace Campus.UI.Controllers
             _listarTelefonosLN = new ListarTelefonosLN();
             _editarTelefonoLN = new EditarTelefonoLN();
             _agregarTelefonoLN = new AgregarTelefonoLN();
+            _bitacora = new BitacoraLN(); 
 
         }
         public ApplicationUserManager UserManager
@@ -139,17 +144,38 @@ namespace Campus.UI.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    var usuarioActual = User.Identity.GetUserId(); // NUEVO: Obtener usuario actual para bitácora
+
                     // Roles
                     var rol = await UserManager.GetRolesAsync(id);
                     if (rol.FirstOrDefault() != usuario.Rol)
                     {
                         await UserManager.RemoveFromRoleAsync(id, rol.FirstOrDefault());
                         await UserManager.AddToRoleAsync(id, usuario.Rol);
+
+                        var bitacoraRol = new BitacoraDto
+                        {
+                            Fecha = DateTime.Now,
+                            Usuario = usuarioActual,
+                            Accion = "UPDATE",
+                            Tabla = "AspNetUserRoles",
+                            Descripcion = $"Cambio de rol del usuario ID: {id} - De '{rol.FirstOrDefault()}' a '{usuario.Rol}'"
+                        };
+                        _bitacora.RegistrarEvento(bitacoraRol);
                     }
 
                     await _editarUsuarioLN.EditarUsuarioAdmin(id, usuario);
                     await UserManager.SetEmailAsync(id, usuario.Email);
 
+                    var bitacoraUsuario = new BitacoraDto
+                    {
+                        Fecha = DateTime.Now,
+                        Usuario = usuarioActual,
+                        Accion = "UPDATE",
+                        Tabla = "AspNetUsers",
+                        Descripcion = $"Actualización de datos del usuario ID: {id} - Nombre: {usuario.Nombre} {usuario.Apellido}, Email: {usuario.Email}"
+                    };
+                    _bitacora.RegistrarEvento(bitacoraUsuario);
 
                     var telefonosValidos = usuario.Telefonos
                         .Where(t => !string.IsNullOrWhiteSpace(t.Telefono.ToString()) && !string.IsNullOrWhiteSpace(t.Tipo))
@@ -159,6 +185,16 @@ namespace Campus.UI.Controllers
                     if (telefonosExistentes.Any())
                     {
                         await _editarTelefonoLN.EditarTelefono(telefonosExistentes);
+
+                        var bitacoraTelefonos = new BitacoraDto
+                        {
+                            Fecha = DateTime.Now,
+                            Usuario = usuarioActual,
+                            Accion = "UPDATE",
+                            Tabla = "Telefonos",
+                            Descripcion = $"Actualización de {telefonosExistentes.Count} teléfono(s) del usuario ID: {id}"
+                        };
+                        _bitacora.RegistrarEvento(bitacoraTelefonos);
                     }
 
                     var telefonosNuevos = telefonosValidos.Where(t => t.Id == 0).ToList();
@@ -166,6 +202,16 @@ namespace Campus.UI.Controllers
                     {
                         telefonosNuevos.ForEach(t => t.IdUsuario = id);
                         await _agregarTelefonoLN.AgregarTelefono(telefonosNuevos);
+
+                        var bitacoraNuevosTelefonos = new BitacoraDto
+                        {
+                            Fecha = DateTime.Now,
+                            Usuario = usuarioActual,
+                            Accion = "INSERT",
+                            Tabla = "Telefonos",
+                            Descripcion = $"Registro de {telefonosNuevos.Count} nuevo(s) teléfono(s) para el usuario ID: {id}"
+                        };
+                        _bitacora.RegistrarEvento(bitacoraNuevosTelefonos);
                     }
 
                     if (Idgrupo != null)
@@ -176,10 +222,30 @@ namespace Campus.UI.Controllers
                         if (estudianteGrupo == null)
                         {
                             await _agregarEstudianteGrupoLN.AgregarEstudianteGrupo(estudiante);
+
+                            var bitacoraGrupo = new BitacoraDto
+                            {
+                                Fecha = DateTime.Now,
+                                Usuario = usuarioActual,
+                                Accion = "INSERT",
+                                Tabla = "EstudianteGrupo",
+                                Descripcion = $"Asignación del estudiante ID: {id} al grupo ID: {Idgrupo.Value}"
+                            };
+                            _bitacora.RegistrarEvento(bitacoraGrupo);
                         }
                         else
                         {
                             await _actualizarEstudianteGrupoLN.ActualizarEstudianteGrupo(estudiante);
+
+                            var bitacoraActualizarGrupo = new BitacoraDto
+                            {
+                                Fecha = DateTime.Now,
+                                Usuario = usuarioActual,
+                                Accion = "UPDATE",
+                                Tabla = "EstudianteGrupo",
+                                Descripcion = $"Cambio de grupo del estudiante ID: {id} - Nuevo grupo ID: {Idgrupo.Value}"
+                            };
+                            _bitacora.RegistrarEvento(bitacoraActualizarGrupo);
                         }
                     }
 
@@ -216,7 +282,16 @@ namespace Campus.UI.Controllers
                         };
                         await _editarUsuarioLN.EditarUsuario(id, usuario);
 
-                        // Verifica que Telefonos no sea null antes de usar
+                        var bitacoraUsuario = new BitacoraDto
+                        {
+                            Fecha = DateTime.Now,
+                            Usuario = id,
+                            Accion = "UPDATE",
+                            Tabla = "AspNetUsers",
+                            Descripcion = $"Usuario actualizó su propio perfil - Nombre: {usuario.Nombre} {usuario.Apellido}"
+                        };
+                        _bitacora.RegistrarEvento(bitacoraUsuario);
+
                         if (usuario.Telefonos != null)
                         {
                             var telefonosValidos = usuario.Telefonos
@@ -227,6 +302,16 @@ namespace Campus.UI.Controllers
                             if (telefonosExistentes.Any())
                             {
                                 await _editarTelefonoLN.EditarTelefono(telefonosExistentes);
+
+                                var bitacoraTelefonos = new BitacoraDto
+                                {
+                                    Fecha = DateTime.Now,
+                                    Usuario = id,
+                                    Accion = "UPDATE",
+                                    Tabla = "Telefonos",
+                                    Descripcion = $"Usuario actualizó {telefonosExistentes.Count} de sus teléfonos"
+                                };
+                                _bitacora.RegistrarEvento(bitacoraTelefonos);
                             }
 
                             var telefonosNuevos = telefonosValidos.Where(t => t.Id == 0).ToList();
@@ -234,6 +319,16 @@ namespace Campus.UI.Controllers
                             {
                                 telefonosNuevos.ForEach(t => t.IdUsuario = id);
                                 await _agregarTelefonoLN.AgregarTelefono(telefonosNuevos);
+
+                                var bitacoraNuevosTelefonos = new BitacoraDto
+                                {
+                                    Fecha = DateTime.Now,
+                                    Usuario = id,
+                                    Accion = "INSERT",
+                                    Tabla = "Telefonos",
+                                    Descripcion = $"Usuario agregó {telefonosNuevos.Count} nuevo(s) teléfono(s) a su perfil"
+                                };
+                                _bitacora.RegistrarEvento(bitacoraNuevosTelefonos);
                             }
                         }
 
@@ -262,199 +357,193 @@ namespace Campus.UI.Controllers
             return View(usuarios);
         }
 
-
-
-public ActionResult GenerarReportePDFGeneral()
-    {
-        var datos = usuarios;
-        using (var ms = new MemoryStream())
+        public ActionResult GenerarReportePDFGeneral()
         {
-            PdfWriter writer = new PdfWriter(ms);
-            PdfDocument pdf = new PdfDocument(writer);
-            Document document = new Document(pdf, iText.Kernel.Geom.PageSize.A4.Rotate());
-            document.SetMargins(40, 40, 40, 40);
-
-            try
+            var datos = usuarios;
+            using (var ms = new MemoryStream())
             {
-                byte[] imageBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/logo_SantaAna.jpg"));
-                Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
-                logo.ScaleToFit(100, 100);
-                logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
-                document.Add(logo);
-            }
-            catch { }
+                PdfWriter writer = new PdfWriter(ms);
+                PdfDocument pdf = new PdfDocument(writer);
+                Document document = new Document(pdf, iText.Kernel.Geom.PageSize.A4.Rotate());
+                document.SetMargins(40, 40, 40, 40);
 
-            PdfFont bold = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA_BOLD);
-            PdfFont regular = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA);
+                try
+                {
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/logo_SantaAna.jpg"));
+                    Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
+                    logo.ScaleToFit(100, 100);
+                    logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                    document.Add(logo);
+                }
+                catch { }
 
-            Paragraph titulo = new Paragraph("Reporte del Grupo")
-                .SetFont(bold)
-                .SetFontSize(20)
-                .SetFontColor(iText.Kernel.Colors.ColorConstants.BLUE)
-                .SetTextAlignment(TextAlignment.CENTER)
-                .SetMarginBottom(20);
-            document.Add(titulo);
+                PdfFont bold = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA_BOLD);
+                PdfFont regular = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA);
 
-            Paragraph subtituloGrafico = new Paragraph("Estadísticas de Usuarios")
-                .SetFont(bold)
-                .SetFontSize(14)
-                .SetFontColor(iText.Kernel.Colors.ColorConstants.BLACK)
-                .SetTextAlignment(TextAlignment.LEFT)
-                .SetMarginBottom(10);
-            document.Add(subtituloGrafico);
+                Paragraph titulo = new Paragraph("Reporte del Grupo")
+                    .SetFont(bold)
+                    .SetFontSize(20)
+                    .SetFontColor(iText.Kernel.Colors.ColorConstants.BLUE)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetMarginBottom(20);
+                document.Add(titulo);
 
-            byte[] chartBytes = GenerarGraficoPastel(datos.ToList());
-            Image chartImage = new Image(iText.IO.Image.ImageDataFactory.Create(chartBytes));
-            chartImage.ScaleToFit(400, 300);
-            chartImage.SetHorizontalAlignment(HorizontalAlignment.CENTER);
-            chartImage.SetMarginBottom(25);
-            document.Add(chartImage);
+                Paragraph subtituloGrafico = new Paragraph("Estadísticas de Usuarios")
+                    .SetFont(bold)
+                    .SetFontSize(14)
+                    .SetFontColor(iText.Kernel.Colors.ColorConstants.BLACK)
+                    .SetTextAlignment(TextAlignment.LEFT)
+                    .SetMarginBottom(10);
+                document.Add(subtituloGrafico);
 
-            Paragraph subtitulo = new Paragraph("Usuarios")
-                .SetFont(bold)
-                .SetFontSize(14)
-                .SetFontColor(iText.Kernel.Colors.ColorConstants.BLACK)
-                .SetTextAlignment(TextAlignment.LEFT)
-                .SetMarginBottom(10);
-            document.Add(subtitulo);
+                byte[] chartBytes = GenerarGraficoPastel(datos.ToList());
+                Image chartImage = new Image(iText.IO.Image.ImageDataFactory.Create(chartBytes));
+                chartImage.ScaleToFit(400, 300);
+                chartImage.SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                chartImage.SetMarginBottom(25);
+                document.Add(chartImage);
 
-            Table cursosTable = new Table(new float[] { 1.5f, 1.5f, 2f, 2f, 2.5f, 2.5f, 2f, 2f, 1.5f, 1.5f });
-            cursosTable.SetWidth(UnitValue.CreatePercentValue(100));
-            cursosTable.SetFontSize(9);
+                Paragraph subtitulo = new Paragraph("Usuarios")
+                    .SetFont(bold)
+                    .SetFontSize(14)
+                    .SetFontColor(iText.Kernel.Colors.ColorConstants.BLACK)
+                    .SetTextAlignment(TextAlignment.LEFT)
+                    .SetMarginBottom(10);
+                document.Add(subtitulo);
+
+                Table cursosTable = new Table(new float[] { 1.5f, 1.5f, 2f, 2f, 2.5f, 2.5f, 2f, 2f, 1.5f, 1.5f });
+                cursosTable.SetWidth(UnitValue.CreatePercentValue(100));
+                cursosTable.SetFontSize(9);
 
                 string[] headers = { "Id Usuario", "Cedula", "Nombre", "Apelldo", "Correo", "Telefonos", "Fecha de Nacimiento", "Fecha de Registro", "Rol", "Estado" };
 
                 foreach (var header in headers)
-            {
-                cursosTable.AddHeaderCell(new Cell()
-                    .Add(new Paragraph(header).SetFont(bold).SetFontSize(9))
-                    .SetBackgroundColor(iText.Kernel.Colors.ColorConstants.LIGHT_GRAY)
-                    .SetTextAlignment(TextAlignment.CENTER)
-                    .SetVerticalAlignment(VerticalAlignment.MIDDLE));
-            }
-
-            var telefonos = _listarTelefonosLN.ListarTelefono();
-
-            foreach (var u in datos)
-            {
-                cursosTable.AddCell(new Cell().Add(new Paragraph(u.IdUsuario).SetFont(regular)));
-                cursosTable.AddCell(new Cell().Add(new Paragraph(u.Cedula.ToString()).SetFont(regular)));
-                cursosTable.AddCell(new Cell().Add(new Paragraph(u.Nombre).SetFont(regular)));
-                cursosTable.AddCell(new Cell().Add(new Paragraph(u.Apellido).SetFont(regular)));
-                cursosTable.AddCell(new Cell().Add(new Paragraph(u.Email).SetFont(regular)));
-
-                var telefonosUsuario = telefonos.Where(t => t.IdUsuario == u.IdUsuario).ToList();
-                List<string> telefonosFormateados = new List<string>();
-
-                foreach (var telefono in telefonosUsuario)
                 {
-                    string telefonoFormateado = $"(+{telefono.Codigo}) {telefono.Telefono.ToString().Insert(4, "-")}: {telefono.Tipo} {(telefono.Estado ? "(Activo)" : "(Inactivo)")}";
-                    telefonosFormateados.Add(telefonoFormateado);
+                    cursosTable.AddHeaderCell(new Cell()
+                        .Add(new Paragraph(header).SetFont(bold).SetFontSize(9))
+                        .SetBackgroundColor(iText.Kernel.Colors.ColorConstants.LIGHT_GRAY)
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .SetVerticalAlignment(VerticalAlignment.MIDDLE));
                 }
 
-                cursosTable.AddCell(new Cell().Add(new Paragraph(telefonosFormateados.Count > 0 ? string.Join("\n", telefonosFormateados) : "Sin teléfonos").SetFont(regular).SetFontSize(8)));
-                cursosTable.AddCell(new Cell().Add(new Paragraph(u.FechaDeNacimiento.ToString("dd/MM/yyyy")).SetFont(regular)));
-                cursosTable.AddCell(new Cell().Add(new Paragraph(u.FechaDeRegistro.ToString("dd/MM/yyyy")).SetFont(regular)));
-                cursosTable.AddCell(new Cell().Add(new Paragraph(u.Rol ?? "N/A").SetFont(regular)));
-                cursosTable.AddCell(new Cell().Add(new Paragraph(u.Estado ? "Activo" : "Inactivo").SetFont(regular))
-                    .SetBackgroundColor(u.Estado ? iText.Kernel.Colors.ColorConstants.LIGHT_GRAY : iText.Kernel.Colors.ColorConstants.RED)
-                    .SetFontColor(u.Estado ? iText.Kernel.Colors.ColorConstants.BLACK : iText.Kernel.Colors.ColorConstants.WHITE));
+                var telefonos = _listarTelefonosLN.ListarTelefono();
+
+                foreach (var u in datos)
+                {
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.IdUsuario).SetFont(regular)));
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.Cedula.ToString()).SetFont(regular)));
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.Nombre).SetFont(regular)));
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.Apellido).SetFont(regular)));
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.Email).SetFont(regular)));
+
+                    var telefonosUsuario = telefonos.Where(t => t.IdUsuario == u.IdUsuario).ToList();
+                    List<string> telefonosFormateados = new List<string>();
+
+                    foreach (var telefono in telefonosUsuario)
+                    {
+                        string telefonoFormateado = $"(+{telefono.Codigo}) {telefono.Telefono.ToString().Insert(4, "-")}: {telefono.Tipo} {(telefono.Estado ? "(Activo)" : "(Inactivo)")}";
+                        telefonosFormateados.Add(telefonoFormateado);
+                    }
+
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(telefonosFormateados.Count > 0 ? string.Join("\n", telefonosFormateados) : "Sin teléfonos").SetFont(regular).SetFontSize(8)));
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.FechaDeNacimiento.ToString("dd/MM/yyyy")).SetFont(regular)));
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.FechaDeRegistro.ToString("dd/MM/yyyy")).SetFont(regular)));
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.Rol ?? "N/A").SetFont(regular)));
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.Estado ? "Activo" : "Inactivo").SetFont(regular))
+                        .SetBackgroundColor(u.Estado ? iText.Kernel.Colors.ColorConstants.LIGHT_GRAY : iText.Kernel.Colors.ColorConstants.RED)
+                        .SetFontColor(u.Estado ? iText.Kernel.Colors.ColorConstants.BLACK : iText.Kernel.Colors.ColorConstants.WHITE));
+                }
+
+                document.Add(cursosTable);
+                document.Close();
+
+                return File(ms.ToArray(), "application/pdf", $"reporteUsuarios({DateTime.UtcNow.Month}-{DateTime.UtcNow.Year})_{Guid.NewGuid()}.pdf");
             }
-
-            document.Add(cursosTable);
-            document.Close();
-
-            return File(ms.ToArray(), "application/pdf", $"reporteUsuarios({DateTime.UtcNow.Month}-{DateTime.UtcNow.Year})_{Guid.NewGuid()}.pdf");
         }
-    }
 
-    // Método para generar el gráfico de pastel
-    private byte[] GenerarGraficoPastel(List<UsuariosDto> usuarios)
-    {
-        int activos = usuarios.Count(u => u.Estado);
-        int inactivos = usuarios.Count(u => !u.Estado);
-
-        var usuariosPorRol = usuarios.GroupBy(u => u.Rol ?? "Sin Rol")
-                                      .Select(g => new { Rol = g.Key, Cantidad = g.Count() })
-                                      .ToList();
-
-        int width = 600;
-        int height = 400;
-        Bitmap bitmap = new Bitmap(width, height);
-        Graphics graphics = Graphics.FromImage(bitmap);
-        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-
-        graphics.Clear(Color.White);
-
-        Font titleFont = new Font("Arial", 16, FontStyle.Bold);
-        graphics.DrawString("Usuarios por Rol", titleFont, Brushes.Black, new PointF(width / 2 - 80, 20));
-
-        Rectangle pieRect = new Rectangle(50, 80, 300, 300);
-
-        Color[] colors = { Color.FromArgb(52, 152, 219), Color.FromArgb(46, 204, 113),
-                       Color.FromArgb(241, 196, 15), Color.FromArgb(231, 76, 60),
-                       Color.FromArgb(155, 89, 182), Color.FromArgb(52, 73, 94) };
-
-        float totalUsuarios = usuarios.Count;
-        float startAngle = 0;
-        int legendY = 100;
-
-        for (int i = 0; i < usuariosPorRol.Count; i++)
+        // Método para generar el gráfico de pastel
+        private byte[] GenerarGraficoPastel(List<UsuariosDto> usuarios)
         {
-            float sweepAngle = (usuariosPorRol[i].Cantidad / totalUsuarios) * 360;
+            int activos = usuarios.Count(u => u.Estado);
+            int inactivos = usuarios.Count(u => !u.Estado);
 
-            using (SolidBrush brush = new SolidBrush(colors[i % colors.Length]))
+            var usuariosPorRol = usuarios.GroupBy(u => u.Rol ?? "Sin Rol")
+                                          .Select(g => new { Rol = g.Key, Cantidad = g.Count() })
+                                          .ToList();
+
+            int width = 600;
+            int height = 400;
+            Bitmap bitmap = new Bitmap(width, height);
+            Graphics graphics = Graphics.FromImage(bitmap);
+            graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            graphics.Clear(Color.White);
+
+            Font titleFont = new Font("Arial", 16, FontStyle.Bold);
+            graphics.DrawString("Usuarios por Rol", titleFont, Brushes.Black, new PointF(width / 2 - 80, 20));
+
+            Rectangle pieRect = new Rectangle(50, 80, 300, 300);
+
+            Color[] colors = { Color.FromArgb(52, 152, 219), Color.FromArgb(46, 204, 113),
+                           Color.FromArgb(241, 196, 15), Color.FromArgb(231, 76, 60),
+                           Color.FromArgb(155, 89, 182), Color.FromArgb(52, 73, 94) };
+
+            float totalUsuarios = usuarios.Count;
+            float startAngle = 0;
+            int legendY = 100;
+
+            for (int i = 0; i < usuariosPorRol.Count; i++)
             {
-                graphics.FillPie(brush, pieRect, startAngle, sweepAngle);
+                float sweepAngle = (usuariosPorRol[i].Cantidad / totalUsuarios) * 360;
+
+                using (SolidBrush brush = new SolidBrush(colors[i % colors.Length]))
+                {
+                    graphics.FillPie(brush, pieRect, startAngle, sweepAngle);
+                }
+
+                graphics.DrawPie(Pens.White, pieRect, startAngle, sweepAngle);
+
+                int legendX = 380;
+                Rectangle legendRect = new Rectangle(legendX, legendY, 20, 20);
+                using (SolidBrush brush = new SolidBrush(colors[i % colors.Length]))
+                {
+                    graphics.FillRectangle(brush, legendRect);
+                }
+                graphics.DrawRectangle(Pens.Black, legendRect);
+
+                Font legendFont = new Font("Arial", 10);
+                string legendText = $"{usuariosPorRol[i].Rol}: {usuariosPorRol[i].Cantidad} ({(usuariosPorRol[i].Cantidad / totalUsuarios * 100):F1}%)";
+                graphics.DrawString(legendText, legendFont, Brushes.Black, legendX + 30, legendY);
+
+                legendY += 30;
+                startAngle += sweepAngle;
             }
 
-            graphics.DrawPie(Pens.White, pieRect, startAngle, sweepAngle);
+            Font statsFont = new Font("Arial", 12, FontStyle.Bold);
+            graphics.DrawString($"Total: {usuarios.Count} usuarios", statsFont, Brushes.Black, 380, legendY + 20);
+            graphics.DrawString($"Activos: {activos}", statsFont, Brushes.Green, 380, legendY + 45);
+            graphics.DrawString($"Inactivos: {inactivos}", statsFont, Brushes.Red, 380, legendY + 70);
 
-            int legendX = 380;
-            Rectangle legendRect = new Rectangle(legendX, legendY, 20, 20);
-            using (SolidBrush brush = new SolidBrush(colors[i % colors.Length]))
+            using (var stream = new MemoryStream())
             {
-                graphics.FillRectangle(brush, legendRect);
+                bitmap.Save(stream, ImageFormat.Png);
+                graphics.Dispose();
+                bitmap.Dispose();
+                return stream.ToArray();
             }
-            graphics.DrawRectangle(Pens.Black, legendRect);
-
-            Font legendFont = new Font("Arial", 10);
-            string legendText = $"{usuariosPorRol[i].Rol}: {usuariosPorRol[i].Cantidad} ({(usuariosPorRol[i].Cantidad / totalUsuarios * 100):F1}%)";
-            graphics.DrawString(legendText, legendFont, Brushes.Black, legendX + 30, legendY);
-
-            legendY += 30;
-            startAngle += sweepAngle;
         }
 
-        Font statsFont = new Font("Arial", 12, FontStyle.Bold);
-        graphics.DrawString($"Total: {usuarios.Count} usuarios", statsFont, Brushes.Black, 380, legendY + 20);
-        graphics.DrawString($"Activos: {activos}", statsFont, Brushes.Green, 380, legendY + 45);
-        graphics.DrawString($"Inactivos: {inactivos}", statsFont, Brushes.Red, 380, legendY + 70);
-
-        using (var stream = new MemoryStream())
-        {
-            bitmap.Save(stream, ImageFormat.Png);
-            graphics.Dispose();
-            bitmap.Dispose();
-            return stream.ToArray();
-        }
-    }
-
-
-
-    public ActionResult GenerarReportePDF(string id)
+        public ActionResult GenerarReportePDF(string id)
         {
             var datos = _obtenerUsuariosPorIdLN.ObtenerUsuarioPorId(id);
             var telefonos = _listarTelefonosLN.ListarTelefono().Where(t => t.IdUsuario == id);
             List<string> telefonosFormateados = new List<string>();
-
 
             foreach (var telefono in telefonos)
             {
                 string telefonoFormateado = $"(+{telefono.Codigo}) {telefono.Telefono.ToString().Insert(4, "-")}: {telefono.Tipo} {(telefono.Estado ? "(Activo)" : "(Inactivo)")}";
                 telefonosFormateados.Add(telefonoFormateado);
             }
-
 
             using (var ms = new MemoryStream())
             {
@@ -465,13 +554,11 @@ public ActionResult GenerarReportePDFGeneral()
 
                 try
                 {
-
                     byte[] imageBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/logo_SantaAna.jpg"));
                     Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
                     logo.ScaleToFit(100, 100);
                     logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
                     document.Add(logo);
-
                 }
                 catch { }
 

@@ -2,7 +2,6 @@
 using System.Linq;
 using Campus.Abstracciones.AccesoDatos.Materias.ListarMateriasAD;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.Materias.ListarMateriasAD
 {

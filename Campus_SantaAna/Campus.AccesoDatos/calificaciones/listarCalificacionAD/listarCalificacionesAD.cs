@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.calificaciones.listarCalificacionDA;
 using Campus.Abstracciones.ModelosUI;
@@ -24,7 +22,7 @@ namespace Campus.AccesoDatos.calificaciones.listarCalificacionAD
                 .Select(e => new CalificacionesDto
                 {
                     id_entrega = e.IdEntrega,
-                    id_calificacion=e.IdCalificacion,
+                    id_calificacion = e.IdCalificacion,
                     calificacion = e.Calificacion,
                     comentario = e.Comentario,
                     fecha_calificacion = e.FechaCalificacion,
@@ -35,7 +33,7 @@ namespace Campus.AccesoDatos.calificaciones.listarCalificacionAD
             return lista;
         }
 
-     
+
 
         public async Task<List<CalificacionesDto>> ListarCalificacionesPorGrupo(int idGrupo)
         {
@@ -86,5 +84,5 @@ namespace Campus.AccesoDatos.calificaciones.listarCalificacionAD
             return lista;
         }
     }
-    }
+}
 

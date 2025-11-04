@@ -10,7 +10,7 @@ public class AgregarCalificacionLN : IAgregarCalificacionLN
 
     public AgregarCalificacionLN()
     {
-        _agregarCalificacion = new AgregarCalificacionAD(); 
+        _agregarCalificacion = new AgregarCalificacionAD();
     }
 
     public AgregarCalificacionLN(IAgregarCalificacion agregarCalificacion)

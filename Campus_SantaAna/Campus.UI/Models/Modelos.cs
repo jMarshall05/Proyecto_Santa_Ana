@@ -10,7 +10,8 @@ public class CursoViewModel
     public string GrupoNombre { get; set; }
     public string ProfesorNombre { get; set; }
 }
-public class EditarUsuario {
+public class EditarUsuario
+{
     [DisplayName("Apellido")]
     [Required(ErrorMessage = "El campo {0} es obligatorio.")]
     public string Nombre { get; set; }

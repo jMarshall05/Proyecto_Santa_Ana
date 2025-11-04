@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.calificaciones.editarCalificacionAD;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
-using System.Data.Entity;
 
 
 namespace Campus.AccesoDatos.calificaciones.editarCalificacionAD
@@ -35,7 +34,7 @@ namespace Campus.AccesoDatos.calificaciones.editarCalificacionAD
                 throw new ArgumentException("La entrega especificada no existe");
             }
 
-          
+
             // Actualizar campos
             calificacionExistente.Calificacion = calificacion.calificacion;
             calificacionExistente.Comentario = calificacion.comentario;
@@ -46,7 +45,7 @@ namespace Campus.AccesoDatos.calificaciones.editarCalificacionAD
             _elContexto.Entry(calificacionExistente).State = EntityState.Modified;
             int resultado = await _elContexto.SaveChangesAsync();
 
-            return resultado; 
+            return resultado;
         }
 
     }

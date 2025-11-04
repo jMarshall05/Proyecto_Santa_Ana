@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorILN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.AgregarGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.EditarGrupo;
@@ -13,21 +12,18 @@ using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Telefonos.ListarTelefonos;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
+using Campus.LogicaDeNegocio.Bitacora;
 using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
 using Campus.LogicaDeNegocio.Grupos.AgregarGrupo;
 using Campus.LogicaDeNegocio.Grupos.EditarGrupo;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Telefonos.ListarTelefonosLN;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
-using Campus.UI.Filtros;
 using iText.Kernel.Font;
 using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Canvas.Draw;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
-using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using QRCoder;
 
@@ -43,6 +39,7 @@ namespace Campus.UI.Controllers
         private readonly IBuscarEstudianteGrupoPorIdLN _buscarEstudianteGrupoPorIdLN;
         private readonly IListarTelefonosLN _listarTelefonosLN;
         private static UsuariosGruposDto UsuariosGruposG;
+        private readonly IBitacoraLN _bitacora;
         public GruposController()
         {
             _listarGrupos = new ListarGruposLN();
@@ -51,6 +48,7 @@ namespace Campus.UI.Controllers
             _editarGrupoLN = new EditarGrupoLN();
             _buscarEstudianteGrupoPorIdLN = new BuscarEstudianteGrupoPorIdLN();
             _listarTelefonosLN = new ListarTelefonosLN();
+            _bitacora = new BitacoraLN();
         }
         // GET: Grupos
         public ActionResult ListarGrupos()
@@ -134,12 +132,22 @@ namespace Campus.UI.Controllers
                     return PartialView("_AgregarGrupoParcial", grupo);
                 }
 
+                // Bitácora: inserción de nuevo grupo
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = id,
+                    Accion = "INSERT",
+                    Tabla = "Grupos",
+                    Descripcion = $"Creación de grupo '{grupo.nombre_grupo}' - Descripción: {grupo.descripcion}"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+
                 return RedirectToAction("ListarGrupos");
             }
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
-                // Loggear en Azure App Service
                 System.Diagnostics.Trace.TraceError("Error en AgregarGrupoParcial: " + ex);
                 return Content("Error interno del servidor. Revisa logs de Azure para más detalles.");
             }
@@ -156,6 +164,8 @@ namespace Campus.UI.Controllers
         [HttpPost]
         public async Task<ActionResult> EditarGrupoParcial(int id_grupo, GruposDto grupo)
         {
+            grupo.modificado_por = User.Identity.Name;
+
             try
             {
                 if (!ModelState.IsValid)
@@ -163,9 +173,21 @@ namespace Campus.UI.Controllers
                     ModelState.AddModelError("", "Por favor, complete todos los campos requeridos.");
                     return PartialView("_EditarGrupoParcial", grupo);
                 }
+
                 int resultado = await _editarGrupoLN.EditarGrupo(id_grupo, grupo);
                 if (resultado == 1)
                 {
+                    // Bitácora: actualización de grupo
+                    var bitacora = new BitacoraDto
+                    {
+                        Fecha = DateTime.Now,
+                        Usuario = User.Identity.GetUserId(),
+                        Accion = "UPDATE",
+                        Tabla = "Grupos",
+                        Descripcion = $"Actualización de grupo ID: {id_grupo} - '{grupo.nombre_grupo}' - Descripción: {grupo.descripcion}"
+                    };
+                    _bitacora.RegistrarEvento(bitacora);
+
                     return RedirectToAction("ListarGrupos");
                 }
 
@@ -180,7 +202,7 @@ namespace Campus.UI.Controllers
 
         public ActionResult GenerarReportePDF(int id)
         {
-     
+
             var datos = UsuariosGruposG;
 
             using (var ms = new MemoryStream())
@@ -221,7 +243,17 @@ namespace Campus.UI.Controllers
                 AddRow("Nombre del Grupo", datos.grupo.nombre_grupo);
                 AddRow("Descripción del Grupo", datos.grupo.descripcion);
                 AddRow("Creador", datos.grupo.creado_por);
+                if (datos.grupo.modificado_por != null)
+                {
+                    AddRow("Modificado por", datos.grupo.modificado_por);
+
+                }
                 AddRow("Fecha de Creación", datos.grupo.FechaDeCreacion.ToString("dd/MM/yyyy HH:mm"));
+                if (datos.grupo.modificado_por != null)
+                {
+                    AddRow("Ultima Modificacion", datos.grupo.FechaDeModificacion?.ToString("dd/MM/yyyy HH:mm"));
+
+                }
                 AddRow("Estado", datos.grupo.estado ? "Activo" : "Inactivo");
 
                 document.Add(infoTable);
@@ -259,7 +291,7 @@ namespace Campus.UI.Controllers
                     cursosTable.AddCell(new Paragraph(u.Apellido));
                     cursosTable.AddCell(new Paragraph(u.Email));
 
-                    var telefonosUsuario= telefonos.Where(t => t.IdUsuario == u.IdUsuario);
+                    var telefonosUsuario = telefonos.Where(t => t.IdUsuario == u.IdUsuario);
 
 
                     foreach (var telefono in telefonosUsuario)
@@ -275,7 +307,7 @@ namespace Campus.UI.Controllers
                 document.Add(cursosTable);
 
                 document.Close();
-                return File(ms.ToArray(), "application/pdf", $"reporte_grupo_{id}.pdf");
+                return File(ms.ToArray(), "application/pdf", $"reporte_grupo({id})-{Guid.NewGuid()}.pdf");
             }
         }
 

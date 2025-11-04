@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.entregas.editarEntregaAD;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
-using System.Data.Entity;
 
 namespace Campus.AccesoDatos.Entregas.EditarEntregaAD
 {

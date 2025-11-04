@@ -48,6 +48,7 @@
     <Compile Include="AccesoDatos\anuncios\EditarAnunciosAD\IEditarAnunciosAD.cs" />
     <Compile Include="AccesoDatos\anuncios\EliminarAnunciosAD\IEliminarAnunciosAD.cs" />
     <Compile Include="AccesoDatos\anuncios\ListarAnunciosAD\IListarAnunciosAD.cs" />
+    <Compile Include="AccesoDatos\Bitacora\IBitacoraAD.cs" />
     <Compile Include="AccesoDatos\calificaciones\agregarCalificacionAD\IAgregarCalificacionDA.cs" />
     <Compile Include="AccesoDatos\calificaciones\editarCalificacionDA\IEditarCalificacionDA.cs" />
     <Compile Include="AccesoDatos\calificaciones\eliminarCalificacionDA\IEliminarCalificacionDA.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="LogicaDeNegocio\Grupos\AgregarGrupo\IAgregarGrupoLN.cs" />
     <Compile Include="LogicaDeNegocio\Grupos\EditarGrupo\IEditarGrupoLN.cs" />
     <Compile Include="LogicaDeNegocio\Grupos\ListarGrupos\IListarGruposLN.cs" />
+    <Compile Include="LogicaDeNegocio\Bitacora\IBitacoraLN.cs" />
     <Compile Include="LogicaDeNegocio\Materias\AgregarMateriasLN\IAgregarMateriasLN.cs" />
     <Compile Include="LogicaDeNegocio\Materias\EditarMateriasLN\IEditarMateriasLN.cs" />
     <Compile Include="LogicaDeNegocio\Materias\EliminarMateriasLN\IEliminarMateriasLN.cs" />
@@ -127,6 +129,7 @@
     <Compile Include="LogicaDeNegocio\Usuarios\ListarUsuariosLN\IListarUsuariosLN.cs" />
     <Compile Include="LogicaDeNegocio\Usuarios\ObtenerUsuariosPorIdLN\IObtenerUsuariosPorIdLN.cs" />
     <Compile Include="ModelosUI\AnuncioDto.cs" />
+    <Compile Include="ModelosUI\BitacoraDto.cs" />
     <Compile Include="ModelosUI\CalificacionesDto.cs" />
     <Compile Include="ModelosUI\CursoDto.cs" />
     <Compile Include="ModelosUI\EntregasDto.cs" />

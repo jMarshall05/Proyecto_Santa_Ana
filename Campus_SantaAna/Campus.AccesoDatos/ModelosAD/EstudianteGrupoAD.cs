@@ -17,6 +17,6 @@ namespace Campus.AccesoDatos.ModelosAD
         public int GrupoId { get; set; }
 
         [ForeignKey("GrupoId")]
-        public virtual GruposAD Grupo { get; set; } 
+        public virtual GruposAD Grupo { get; set; }
     }
 }

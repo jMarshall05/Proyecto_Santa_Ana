@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Eventos.ListarEventosad;
-using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
-using Campus.AccesoDatos.Eventos.ListarEventosAD;
 using Campus.Abstracciones.LogicaDeNegocio.Eventos.ListarEventosLN;
+using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos;
+using Campus.AccesoDatos.Eventos.ListarEventosAD;
 
 namespace Campus.LogicaDeNegocio.Eventos.ListarEventosLN
 {
@@ -14,19 +13,19 @@ namespace Campus.LogicaDeNegocio.Eventos.ListarEventosLN
     {
         private readonly IListarEventosAD _listarEventosAD;
 
-        
+
         public ListarEventosLN()
         {
             _listarEventosAD = new ListarEventosAD(new Contexto());
         }
 
-       
+
         public ListarEventosLN(IListarEventosAD listarEventosAD)
         {
             _listarEventosAD = listarEventosAD;
         }
 
-        
+
         public async Task<List<EventoDto>> ListarEventos(string idUsuario)
         {
             try

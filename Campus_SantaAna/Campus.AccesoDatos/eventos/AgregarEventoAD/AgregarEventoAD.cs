@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Campus.Abstracciones.AccesoDatos.Eventos.AgregarEventoAD;
 using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.ModelosAD;
-using Campus.Abstracciones.AccesoDatos.Eventos.AgregarEventoAD;
 
 namespace Campus.AccesoDatos.Eventos.AgregarEventoAD
 {

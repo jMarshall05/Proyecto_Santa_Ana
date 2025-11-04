@@ -13,7 +13,6 @@ using Campus.LogicaDeNegocio.Anuncios.AgregarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.EditarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.EliminarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.ListarAnuncios;
-using Campus.UI.Filtros;
 public class AnunciosController : Controller
 {
     private readonly IListarAnunciosLN _listarAnunciosLN;

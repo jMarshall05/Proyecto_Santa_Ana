@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Campus.Abstracciones.LogicaNegocio.entregas.eliminarEntregaLN;
 using Campus.Abstracciones.AccesoDatos.entregas.eliminarEntregaAD;
+using Campus.Abstracciones.LogicaNegocio.entregas.eliminarEntregaLN;
 using Campus.AccesoDatos.Entregas.EliminarEntregaAD;
 
 namespace Campus.LogicaNegocio.Entregas.EliminarEntregaLN

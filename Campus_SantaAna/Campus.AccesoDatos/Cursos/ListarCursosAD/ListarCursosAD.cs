@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Cursos.ListarCursosAD;
 using Campus.Abstracciones.ModelosUI;
 
@@ -26,7 +22,7 @@ namespace Campus.AccesoDatos.Cursos.ListarCursosAD
                                                 ProfesorId = Cursos.IdProfesor,
                                                 GrupoId = Cursos.GrupoId,
                                                 MateriaId = Cursos.MateriaId,
-                                                Estado = Cursos.Estado 
+                                                Estado = Cursos.Estado
                                             }).ToList();
             return ListaDeCursos;
         }
@@ -34,7 +30,7 @@ namespace Campus.AccesoDatos.Cursos.ListarCursosAD
         public CursoDto ObtenerPorId(int idCurso)
         {
             var Curso = _elContexto.Cursos.Where(c => c.IdCurso == idCurso);
-            if(Curso != null)
+            if (Curso != null)
             {
                 return new CursoDto
                 {

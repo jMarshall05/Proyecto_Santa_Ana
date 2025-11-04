@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Campus.AccesoDatos.ModelosAD;
-using System.Data.Entity;
 using Campus.Abstracciones.AccesoDatos.calificaciones.eliminarCalificacionDA;
 
 namespace Campus.AccesoDatos.calificaciones.eliminarCalificacionAD

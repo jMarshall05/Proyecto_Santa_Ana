@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio;
 using Campus.Abstracciones.LogicaDeNegocio.Eventos.AgregarEventoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Eventos.EditarEventoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Eventos.EliminarEventoLN;
 using Campus.Abstracciones.LogicaDeNegocio.Eventos.ListarEventosLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Bitacora;
 using Campus.LogicaDeNegocio.Eventos.AgregarEventoLN;
 using Campus.LogicaDeNegocio.Eventos.EditarEventoLN;
 using Campus.LogicaDeNegocio.Eventos.EliminarEventoLN;
@@ -22,6 +24,7 @@ namespace Campus.UI.Controllers
         private readonly IListarEventosLN _listarEventosLN;
         private readonly IEditarEventoLN _editarEventoLN;
         private readonly IEliminarEventoLN _eliminarEventoLN;
+        private readonly IBitacoraLN _bitacora;
 
         public EventosController()
         {
@@ -29,24 +32,25 @@ namespace Campus.UI.Controllers
             _listarEventosLN = new ListarEventosLN();
             _editarEventoLN = new EditarEventoLN();
             _eliminarEventoLN = new EliminarEventoLN();
+            _bitacora = new BitacoraLN();
         }
 
         public ActionResult Calendario() => View();
 
         [HttpGet]
-        
+
         public async Task<JsonResult> ObtenerEventos()
         {
             try
             {
                 var idUsuario = User.Identity.GetUserId();
                 var eventos = await _listarEventosLN.ListarEventos(idUsuario);
-             
 
-                var eventosUsuario = eventos.Where(e=>e.Estado==true).Select(e => new
+
+                var eventosUsuario = eventos.Where(e => e.Estado == true).Select(e => new
                 {
                     id = e.Id,
-                    title = e.Titulo,   
+                    title = e.Titulo,
                     start = e.FechaInicio.ToString("s"),
                     end = e.FechaFin.ToString("s")
                 });
@@ -75,6 +79,18 @@ namespace Campus.UI.Controllers
                 };
 
                 var idGenerado = await _agregarEventoLN.AgregarEvento(nuevoEvento);
+
+                // Bitácora: inserción de nuevo evento
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = "INSERT",
+                    Tabla = "Eventos",
+                    Descripcion = $"Creación de evento '{titulo}' - Fecha: {DateTime.Parse(fecha):dd/MM/yyyy}"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+
                 return Json(new { success = true, id = idGenerado });
             }
             catch (Exception ex)
@@ -98,6 +114,18 @@ namespace Campus.UI.Controllers
                 };
 
                 await _editarEventoLN.EditarEvento(evento);
+
+                // Bitácora: actualización de evento
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = "UPDATE",
+                    Tabla = "Eventos",
+                    Descripcion = $"Actualización de evento ID: {id} - '{titulo}' - Nueva fecha: {DateTime.Parse(fecha):dd/MM/yyyy}"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+
                 return Json(new { success = true });
             }
             catch (Exception ex)
@@ -112,6 +140,21 @@ namespace Campus.UI.Controllers
             try
             {
                 var resultado = await _eliminarEventoLN.EliminarEvento(id);
+
+                if (resultado > 0)
+                {
+                    // Bitácora: eliminación lógica de evento
+                    var bitacora = new BitacoraDto
+                    {
+                        Fecha = DateTime.Now,
+                        Usuario = User.Identity.GetUserId(),
+                        Accion = "DELETE",
+                        Tabla = "Eventos",
+                        Descripcion = $"Eliminación lógica de evento ID: {id} - Estado cambiado a inactivo"
+                    };
+                    _bitacora.RegistrarEvento(bitacora);
+                }
+
                 return Json(new { success = resultado > 0 });
             }
             catch (Exception ex)

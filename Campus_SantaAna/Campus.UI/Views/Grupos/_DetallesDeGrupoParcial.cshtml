@@ -42,6 +42,16 @@
                             @Model.grupo.creado_por
                         </span>
                     </div>
+                    @if (Model.grupo.modificado_por!=null)
+                    {
+                        <div class="info-item">
+                            <span class="info-label">Modificador Por</span>
+                            <span class="info-value">
+                                <i class="fas fa-edit me-2 text-info"></i>
+                                @Model.grupo.modificado_por
+                            </span>
+                        </div>
+                    }
                     <div class="info-item">
                         <span class="info-label">Fecha de Creación</span>
                         <span class="info-value">
