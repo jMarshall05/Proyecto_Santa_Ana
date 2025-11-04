@@ -48,12 +48,12 @@ namespace Campus.Web.Controllers
         {
             if (idGrupo == null)
             {
-                var lista = await (_listarCalificacionesLN.ListarCalificaciones());
+                var lista = (await _listarCalificacionesLN.ListarCalificaciones()).Where(c => c.Estado == true).ToList();
                 return View(lista.Where(l=>l.Estado==true));
             }
             else
             {
-                var lista = await _listarCalificacionesLN.ListarCalificacionesPorGrupoAsync(idGrupo.Value);
+                var lista = (await _listarCalificacionesLN.ListarCalificacionesPorGrupoAsync(idGrupo.Value)).Where(c => c.Estado == true);
                 return View(lista);
             }
         }
@@ -105,7 +105,7 @@ namespace Campus.Web.Controllers
         //Edit calificacion
         public async Task<ActionResult> Edit(int id)
         {
-            var calificaciones = (await _listarCalificacionesLN.ListarCalificaciones()).ToList();
+            var calificaciones = (await _listarCalificacionesLN.ListarCalificaciones()).Where(c => c.Estado == true).ToList();
             var calificacion = calificaciones.FirstOrDefault(e => e.id_calificacion == id);
 
             if (calificacion == null)
@@ -167,7 +167,7 @@ namespace Campus.Web.Controllers
 
         public async Task<ActionResult> Delete(int id)
         {
-            var calificaciones = (await _listarCalificacionesLN.ListarCalificaciones()).ToList();
+            var calificaciones = (await _listarCalificacionesLN.ListarCalificaciones()).Where(c=> c.Estado == true).ToList();
             var calificacion = calificaciones.FirstOrDefault(e => e.id_calificacion == id);
 
             if (calificacion == null)

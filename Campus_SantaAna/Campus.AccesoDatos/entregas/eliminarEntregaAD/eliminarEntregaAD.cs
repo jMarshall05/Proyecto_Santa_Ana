@@ -24,7 +24,8 @@ namespace Campus.AccesoDatos.Entregas.EliminarEntregaAD
                 throw new ArgumentException("La entrega especificada no existe");
             }
 
-            _elContexto.Entregas.Remove(entregaExistente);
+            entregaExistente.Estado = false;
+            _elContexto.Entry(entregaExistente).State = EntityState.Modified;
             int resultado = await _elContexto.SaveChangesAsync();
 
             return resultado; // filas afectadas

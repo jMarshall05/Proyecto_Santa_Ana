@@ -57,11 +57,10 @@ namespace Campus.Web.Controllers
             List<EntregasDto> lista;
 
             if (idGrupo == null)
-                lista = (await _listarEntregasLN.ListarEntregas()).ToList();
+                lista = (await _listarEntregasLN.ListarEntregas()).Where(e => e.estado == true).ToList();
             else
-                lista = (await _listarEntregasLN.ListarEntregasPorGrupoAsync(idGrupo.Value)).ToList();
+                lista = (await _listarEntregasLN.ListarEntregasPorGrupoAsync(idGrupo.Value)).Where(e => e.estado == true).ToList();
 
-            // Llenar el Estudiante para evitar null en la vista
             foreach (var entrega in lista)
             {
                 entrega.Estudiante = _obtenerUsuariosPorId.ObtenerUsuarioPorId(entrega.id_estudiante);
@@ -91,7 +90,7 @@ namespace Campus.Web.Controllers
         //Edit entrega
         public async Task<ActionResult> Edit(int id)
         {
-            var entregas = (await _listarEntregasLN.ListarEntregas()).ToList();
+            var entregas = (await _listarEntregasLN.ListarEntregas()).Where(e=>e.estado==true).ToList();
             var entrega = entregas.FirstOrDefault(e => e.id_entrega == id);
 
             if (entrega == null)
@@ -122,23 +121,11 @@ namespace Campus.Web.Controllers
 
         public async Task<ActionResult> Delete(int id)
         {
-            var entregas = (await _listarEntregasLN.ListarEntregas()).ToList();
-            var entrega = entregas.FirstOrDefault(e => e.id_entrega == id);
-
-            if (entrega == null)
-                return HttpNotFound();
-
-            return View(entrega);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
-        {
             await _eliminarEntregaLN.EliminarEntrega(id);
             return RedirectToAction("Index");
-        }
 
+
+        }
         // GET: Entregas/Entregar/5
         public ActionResult Entregar(int id)
         {

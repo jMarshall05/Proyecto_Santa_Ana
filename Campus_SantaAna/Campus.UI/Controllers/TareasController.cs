@@ -11,6 +11,7 @@ using Campus.Abstracciones.LogicaDeNegocio.tareas.agregarTareaLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.editarTareaLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.eliminarTareaLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
+using Campus.Abstracciones.LogicaNegocio.entregas.listarEntregaLN;
 using Campus.Abstracciones.ModelosUI;
 using Campus.LogicaDeNegocio.Cursos.ListarCursosLN;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
@@ -19,6 +20,7 @@ using Campus.LogicaDeNegocio.tareas.agregarTareaLN;
 using Campus.LogicaDeNegocio.Tareas.EditarTareaLN;
 using Campus.LogicaDeNegocio.Tareas.EliminarTareaLN;
 using Campus.LogicaDeNegocio.Tareas.ListarTareaLN;
+using Campus.LogicaNegocio.Entregas.ListarEntregaLN;
 using Campus.UI.Filtros;
 using Microsoft.AspNet.Identity;
 
@@ -34,6 +36,7 @@ namespace Campus.UI.Controllers
         private readonly IListarGruposLN _listarGruposLN;
         private readonly IListarMateriasLN _listarMateriasLN;
         private readonly IListarCursoLN _listarCursosLN;
+        private readonly IListarEntregasLN _listarEntregasLN;
 
 
 
@@ -46,6 +49,7 @@ namespace Campus.UI.Controllers
             _listarGruposLN = new ListarGruposLN();
             _listarMateriasLN = new ListarMateriasLN();
             _listarCursosLN = new ListarCursosLN();
+            _listarEntregasLN = new ListarEntregasLN();
 
 
         }
@@ -323,7 +327,12 @@ namespace Campus.UI.Controllers
                 if (string.IsNullOrWhiteSpace(idUsuario))
                     return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "Usuario no identificado");
 
-                var tareas = await _listarTareaLN.ListarTareasPorEstudiante(idUsuario);
+                var tareas = (await _listarTareaLN.ListarTareasPorEstudiante(idUsuario)).Where(t => t.Estado == true);
+                foreach (var tarea in tareas)
+                {
+                    if (tarea.Calificacion != null)
+                        tarea.Calificacion.Entrega = (await _listarEntregasLN.ListarEntregas()).Where(e => e.id_entrega == tarea.Calificacion.id_entrega && e.estado == true ).FirstOrDefault();
+                }
                 if (materiaId.HasValue && grupoId.HasValue)
                 {
                     tareas = tareas.Where(t => t.IdMateria == materiaId && t.Id_grupo == grupoId);
