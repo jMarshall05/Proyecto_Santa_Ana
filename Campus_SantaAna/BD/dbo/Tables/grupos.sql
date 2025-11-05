@@ -6,6 +6,7 @@
     [estado]              BIT            NOT NULL,
     [FechaDeCreacion]     DATETIME       NOT NULL,
     [FechaDeModificacion] DATETIME       NULL,
+    [modificado_por]      NVARCHAR (128) NULL,
     PRIMARY KEY CLUSTERED ([id_grupo] ASC)
 );
 

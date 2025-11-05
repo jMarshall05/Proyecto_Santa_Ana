@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio; // NUEVO: Para BitacoraDto
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ActualizarEstudianteGrupoLN;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorILN;
@@ -20,6 +21,7 @@ using Campus.Abstracciones.LogicaDeNegocio.Usuarios.EditarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Bitacora; // NUEVO: Agregar referencia a bitácora
 using Campus.LogicaDeNegocio.EstudianteGrupo.ActualizarEstudianteGrupoLN;
 using Campus.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
@@ -31,8 +33,6 @@ using Campus.LogicaDeNegocio.Telefonos.ListarTelefonosLN;
 using Campus.LogicaDeNegocio.Usuarios.EditarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
-using Campus.LogicaDeNegocio.Bitacora; // NUEVO: Agregar referencia a bitácora
-using Campus.Abstracciones.LogicaDeNegocio; // NUEVO: Para BitacoraDto
 using iText.Kernel.Font;
 using iText.Kernel.Pdf;
 using iText.Layout;
@@ -41,12 +41,9 @@ using iText.Layout.Properties;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using QRCoder;
-using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
+using Image = iText.Layout.Element.Image;
 using Paragraph = iText.Layout.Element.Paragraph;
 using Table = iText.Layout.Element.Table;
-using System.Drawing;
-using System.Drawing.Imaging;
-using Image = iText.Layout.Element.Image;
 
 namespace Campus.UI.Controllers
 {
@@ -65,7 +62,7 @@ namespace Campus.UI.Controllers
         private readonly IListarTelefonosLN _listarTelefonosLN;
         private readonly IEditarTelefonoLN _editarTelefonoLN;
         private readonly IAgregarTelefonoLN _agregarTelefonoLN;
-        private readonly IBitacoraLN _bitacora; 
+        private readonly IBitacoraLN _bitacora;
         private static IEnumerable<UsuariosDto> usuarios;
 
         public UsuariosController()
@@ -81,7 +78,7 @@ namespace Campus.UI.Controllers
             _listarTelefonosLN = new ListarTelefonosLN();
             _editarTelefonoLN = new EditarTelefonoLN();
             _agregarTelefonoLN = new AgregarTelefonoLN();
-            _bitacora = new BitacoraLN(); 
+            _bitacora = new BitacoraLN();
 
         }
         public ApplicationUserManager UserManager

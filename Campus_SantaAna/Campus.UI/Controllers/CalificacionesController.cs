@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio;
 using Campus.Abstracciones.LogicaDeNegocio.calificaciones.agregarCalificacionLN;
 using Campus.Abstracciones.LogicaDeNegocio.calificaciones.editarCalificacionLN;
 using Campus.Abstracciones.LogicaDeNegocio.calificaciones.eliminarCalificacionLN;
@@ -9,6 +10,7 @@ using Campus.Abstracciones.LogicaDeNegocio.calificaciones.listarCalificacionLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
 using Campus.Abstracciones.LogicaNegocio.entregas.listarEntregaLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Bitacora;
 using Campus.LogicaDeNegocio.calificaciones;
 using Campus.LogicaDeNegocio.calificaciones.eliminarCalificacionLN;
 using Campus.LogicaDeNegocio.calificaciones.listarCalificacionesLN;
@@ -27,6 +29,8 @@ namespace Campus.Web.Controllers
         private readonly IListarCalificacionesLN _listarCalificacionesLN;
         private readonly IListarEntregasLN _listarEntregasLN;
         private readonly IListarTareaLN _listarTareas;
+        private readonly IBitacoraLN _bitacora;
+
 
         public CalificacionesController()
         {
@@ -36,6 +40,7 @@ namespace Campus.Web.Controllers
             _listarCalificacionesLN = new ListarCalificacionesLN();
             _listarEntregasLN = new ListarEntregasLN();
             _listarTareas = new ListarTareaLN();
+            _bitacora = new BitacoraLN();
         }
 
         public async Task<ActionResult> Index(int? idGrupo)
@@ -82,11 +87,22 @@ namespace Campus.Web.Controllers
             calificacion.comentario = form["comentario"];
             calificacion.fecha_calificacion = DateTime.Now;
 
-            System.Diagnostics.Debug.WriteLine($"Manual POST: id_entrega={calificacion.id_entrega}, calificacion={calificacion.calificacion}, comentario={calificacion.comentario}");
-
             if (ModelState.IsValid)
             {
                 await _agregarCalificacionLN.AgregarCalificacion(calificacion);
+
+                var entrega = (await _listarEntregasLN.ListarEntregas()).FirstOrDefault(e => e.id_entrega == idEntrega);
+                var tarea = entrega != null ? await _listarTareas.ObtenerPorIdAsync(entrega.id_tarea) : null;
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = "INSERT",
+                    Tabla = "Calificaciones",
+                    Descripcion = $"Creación de calificación para entrega ID: {idEntrega} - Nota: {nota} - Tarea: {tarea?.Titulo ?? "N/A"} - Estudiante: {entrega?.id_estudiante ?? "N/A"}"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+
                 return RedirectToAction("Index", "Entregas");
             }
 
@@ -144,6 +160,20 @@ namespace Campus.Web.Controllers
                 if (calificacionOriginal != null)
                 {
                     await _editarCalificacionLN.EditarCalificacion(calificacion.id_calificacion, calificacion);
+
+                    // Bitácora: actualización de calificación
+                    var entrega = (await _listarEntregasLN.ListarEntregas()).FirstOrDefault(e => e.id_entrega == idEntrega);
+                    var tarea = entrega != null ? await _listarTareas.ObtenerPorIdAsync(entrega.id_tarea) : null;
+                    var bitacora = new BitacoraDto
+                    {
+                        Fecha = DateTime.Now,
+                        Usuario = User.Identity.GetUserId(),
+                        Accion = "UPDATE",
+                        Tabla = "Calificaciones",
+                        Descripcion = $"Actualización de calificación ID: {idCalificacion} - Nueva nota: {calificacionValor} - Entrega ID: {idEntrega} - Tarea: {tarea?.Titulo ?? "N/A"}"
+                    };
+                    _bitacora.RegistrarEvento(bitacora);
+
                     return RedirectToAction("Index", "Entregas");
                 }
                 else
@@ -174,7 +204,24 @@ namespace Campus.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
+            var calificacionInfo = (await _listarCalificacionesLN.ListarCalificaciones())
+                                   .FirstOrDefault(c => c.id_calificacion == id);
+
             await _eliminarCalificacionLN.EliminarCalificacion(id);
+
+            // Bitácora: eliminación lógica de calificación
+            var entrega = calificacionInfo != null ?
+                          (await _listarEntregasLN.ListarEntregas()).FirstOrDefault(e => e.id_entrega == calificacionInfo.id_entrega) : null;
+            var bitacora = new BitacoraDto
+            {
+                Fecha = DateTime.Now,
+                Usuario = User.Identity.GetUserId(),
+                Accion = "DELETE",
+                Tabla = "Calificaciones",
+                Descripcion = $"Eliminación lógica de calificación ID: {id} - Nota: {calificacionInfo?.calificacion ?? 0} - Entrega ID: {calificacionInfo?.id_entrega ?? 0} - Estado cambiado a inactivo"
+            };
+            _bitacora.RegistrarEvento(bitacora);
+
             return RedirectToAction("Index", "Entregas");
         }
 

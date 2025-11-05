@@ -87,15 +87,12 @@ namespace Campus.UI.Controllers
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
-
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            // No cuenta los errores de inicio de sesión para el bloqueo de la cuenta
-            // Para permitir que los errores de contraseña desencadenen el bloqueo de la cuenta, cambie a shouldLockout: true
             var user = UserManager.FindByEmail(model.Email);
             if (user != null)
             {
@@ -133,8 +130,8 @@ namespace Campus.UI.Controllers
                 ModelState.AddModelError("", "Intento de inicio de sesión a fallado.");
                 return View(model);
             }
-
         }
+
 
         public ActionResult LoginWith2FA()
         {
@@ -236,6 +233,16 @@ namespace Campus.UI.Controllers
                         await _agregarUsuariosLN.AgregarUsuario(usuario);
                         model.Telefonos.ForEach(t => t.IdUsuario = user.Id);
                         await _agregarTelefonoLN.AgregarTelefono(model.Telefonos);
+                        var bitacora = new BitacoraDto
+                        {
+                            Fecha = DateTime.Now,
+                            Usuario = user.Id,
+                            Accion = "INSERT",
+                            Tabla = "AspNetUsers",
+                            Descripcion = $"Registro de nuevo usuario - Email: {model.Email}, Nombre: {model.Nombre} {model.Apellido}, Rol: {model.Rol}, Cédula: {model.Cedula}"
+                        };
+                        _bitacoraLN.RegistrarEvento(bitacora);
+
                         // await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
                         // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
@@ -355,12 +362,22 @@ namespace Campus.UI.Controllers
             var user = await UserManager.FindByIdAsync(model.Id);
             if (user == null)
             {
-                // No revelar que el usuario no existe
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
             var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
             if (result.Succeeded)
             {
+                // Bitácora: restablecimiento de contraseña
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = user.Id,
+                    Accion = "UPDATE",
+                    Tabla = "AspNetUsers",
+                    Descripcion = $"Restablecimiento de contraseña - Usuario: {user.Email}"
+                };
+                _bitacoraLN.RegistrarEvento(bitacora);
+
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
             AddErrors(result);
@@ -511,12 +528,22 @@ namespace Campus.UI.Controllers
                 user.GoogleAuthenticatorSecretKey = EncryptedKey;
                 user.TwoFactorEnabled = true;
                 UserManager.Update(user);
+
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = userId,
+                    Accion = "UPDATE",
+                    Tabla = "AspNetUsers",
+                    Descripcion = "Configuración inicial de autenticador Google (2FA)"
+                };
+                _bitacoraLN.RegistrarEvento(bitacora);
             }
+
             user.GoogleAuthenticatorSecretKey = Encriptacion.Desencriptar(user.GoogleAuthenticatorSecretKey);
             string issuer = ConfigurationManager.AppSettings["FromName"];
             string otpauthUrl = $"otpauth://totp/{issuer}:{user.Email}?secret={user.GoogleAuthenticatorSecretKey}&issuer={issuer}";
 
-            // Generar QR
             using (var qrGenerator = new QRCodeGenerator())
             using (var qrCodeData = qrGenerator.CreateQrCode(otpauthUrl, QRCodeGenerator.ECCLevel.Q))
             using (var qrCode = new PngByteQRCode(qrCodeData))
@@ -526,7 +553,6 @@ namespace Campus.UI.Controllers
             }
 
             ViewBag.SecretKey = user.GoogleAuthenticatorSecretKey;
-
             return View();
         }
         public ActionResult DisableAuthenticator()
@@ -543,14 +569,24 @@ namespace Campus.UI.Controllers
                 if (cache[User2FA] != null)
                     cache.Remove(User2FA);
                 cache.Add(User2FA, false, DateTimeOffset.Now.AddMinutes(30));
+
+                // Bitácora: desactivación de autenticador
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = id,
+                    Accion = "UPDATE",
+                    Tabla = "AspNetUsers",
+                    Descripcion = "Desactivación de autenticador Google (2FA)"
+                };
+                _bitacoraLN.RegistrarEvento(bitacora);
+
                 return RedirectToAction("Index", "Manage");
             }
             else
             {
                 return RedirectToAction("Index", "Manage");
             }
-
-
         }
         [HttpPost]
         public ActionResult VerifyAuthenticator(string code)
@@ -560,12 +596,11 @@ namespace Campus.UI.Controllers
 
             var totp = new Totp(Base32Encoding.ToBytes(Encriptacion.Desencriptar(user.GoogleAuthenticatorSecretKey)));
 
-
             if (totp.VerifyTotp(code, out long _, VerificationWindow.RfcSpecifiedNetworkDelay))
             {
-
                 user.TwoFactorEnabled = true;
                 UserManager.Update(user);
+
                 var cache = MemoryCache.Default;
                 var verifiedKey = $"User2FAVerified-{user.Id}";
                 var User2FA = $"User2FA-{user.Id}";
@@ -575,6 +610,18 @@ namespace Campus.UI.Controllers
                 if (cache[User2FA] != null)
                     cache.Remove(User2FA);
                 cache.Add(User2FA, true, DateTimeOffset.Now.AddMinutes(30));
+
+                // Bitácora: verificación exitosa de autenticador
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = userId,
+                    Accion = "UPDATE",
+                    Tabla = "AspNetUsers",
+                    Descripcion = "Verificación exitosa de autenticador Google (2FA) - 2FA activado"
+                };
+                _bitacoraLN.RegistrarEvento(bitacora);
+
                 return RedirectToAction("Index", "Home");
             }
             else

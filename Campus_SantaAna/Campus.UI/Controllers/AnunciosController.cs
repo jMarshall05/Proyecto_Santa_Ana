@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio;
 using Campus.Abstracciones.LogicaDeNegocio.Anuncios.AgregarAnunciosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Anuncios.EditarAnunciosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Anuncios.EliminarAnunciosLN;
@@ -13,12 +14,16 @@ using Campus.LogicaDeNegocio.Anuncios.AgregarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.EditarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.EliminarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.ListarAnuncios;
+using Campus.LogicaDeNegocio.Bitacora;
+using Microsoft.AspNet.Identity;
 public class AnunciosController : Controller
 {
     private readonly IListarAnunciosLN _listarAnunciosLN;
     private readonly IAgregarAnunciosLN _agregarAnunciosLN;
     private readonly IEliminarAnunciosLN _eliminarAnunciosLN;
     private readonly IEditarAnunciosLN _editarAnunciosLN;
+    private readonly IBitacoraLN _bitacora;
+
 
     public AnunciosController()
     {
@@ -26,6 +31,7 @@ public class AnunciosController : Controller
         _agregarAnunciosLN = new AgregarAnunciosLN();
         _eliminarAnunciosLN = new EliminarAnunciosLN();
         _editarAnunciosLN = new EditarAnunciosLN();
+        _bitacora = new BitacoraLN();
     }
 
     // GET: Anuncios/ListarAnuncios
@@ -57,7 +63,6 @@ public class AnunciosController : Controller
         if (ModelState.IsValid)
         {
             try
-
             {
                 anuncio.FechaPublicacion = DateTime.Now;
                 if (anuncio.Imagen != null && anuncio.Imagen.ContentLength > 0)
@@ -71,6 +76,18 @@ public class AnunciosController : Controller
                     GuardarArchivo(anuncio);
                 }
                 _agregarAnunciosLN.AgregarAnuncio(anuncio);
+
+                // Bitácora: inserción de nuevo anuncio
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = "INSERT",
+                    Tabla = "Anuncios",
+                    Descripcion = $"Creación de anuncio '{anuncio.Titulo}'"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+
                 return RedirectToAction("ListarAnuncios");
             }
             catch (Exception ex)
@@ -81,6 +98,7 @@ public class AnunciosController : Controller
         }
         return View(anuncio);
     }
+
 
     // GET: Anuncios/Edit/5
     public ActionResult EditParcial(int id)
@@ -133,6 +151,18 @@ public class AnunciosController : Controller
             {
                 GuardarArchivo(anuncio);
             }
+
+            // Bitácora: actualización de anuncio
+            var bitacora = new BitacoraDto
+            {
+                Fecha = DateTime.Now,
+                Usuario = User.Identity.GetUserId(),
+                Accion = "UPDATE",
+                Tabla = "Anuncios",
+                Descripcion = $"Actualización de anuncio ID: {anuncio.IdAnuncio} - '{anuncio.Titulo}'"
+            };
+            _bitacora.RegistrarEvento(bitacora);
+
             return RedirectToAction("ListarAnuncios");
         }
         catch (Exception ex)
@@ -182,6 +212,17 @@ public class AnunciosController : Controller
             }
 
             _eliminarAnunciosLN.EliminarAnuncio(id);
+
+            var bitacora = new BitacoraDto
+            {
+                Fecha = DateTime.Now,
+                Usuario = User.Identity.GetUserId(),
+                Accion = "DELETE",
+                Tabla = "Anuncios",
+                Descripcion = $"Eliminación lógica de anuncio ID: {id} - '{anuncio.Titulo}' - Estado cambiado a inactivo"
+            };
+            _bitacora.RegistrarEvento(bitacora);
+
             return RedirectToAction("ListarAnuncios");
         }
         catch (Exception ex)
