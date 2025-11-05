@@ -238,7 +238,7 @@ namespace Campus.UI.Controllers
                 {
                     Fecha = DateTime.Now,
                     Usuario = User.Identity.GetUserId(),
-                    Accion = "DELETE",
+                    Accion = estado ? "UPDATE":"DELETE",
                     Tabla = "Cursos",
                     Descripcion = $"{accionDescripcion} de curso ID: {id} - Materia: {materia.Nombre}, Grupo: {grupo.nombre_grupo} - Estado cambiado a {estadoTexto}"
                 };

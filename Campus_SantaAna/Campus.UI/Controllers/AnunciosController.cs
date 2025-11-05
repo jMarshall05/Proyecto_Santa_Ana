@@ -73,7 +73,11 @@ public class AnunciosController : Controller
                         ModelState.AddModelError("", "Tipo de archivo no permitido.");
                         return View(anuncio);
                     }
-                    GuardarArchivo(anuncio);
+                    GenerarRuta(anuncio);
+                    using (var fileStream = new FileStream(Server.MapPath(anuncio.ImagenRuta), FileMode.Create))
+                    {
+                        anuncio.Imagen.InputStream.CopyTo(fileStream);
+                    }
                 }
                 _agregarAnunciosLN.AgregarAnuncio(anuncio);
 
@@ -121,6 +125,7 @@ public class AnunciosController : Controller
         {
             string imagenAnterior = Request.Form["ImagenActual"];
             bool eliminarImagen = Request.Form["EliminarImagen"] == "true";
+            bool nuevaImagen = false;
 
             if (eliminarImagen && !string.IsNullOrEmpty(imagenAnterior))
             {
@@ -130,10 +135,12 @@ public class AnunciosController : Controller
             }
             else if (anuncio.Imagen != null && anuncio.Imagen.ContentLength > 0)
             {
+                nuevaImagen = true;
                 if (!string.IsNullOrEmpty(imagenAnterior))
                 {
                     string rutaCompleta = Server.MapPath(imagenAnterior);
                     if (System.IO.File.Exists(rutaCompleta)) System.IO.File.Delete(rutaCompleta);
+
                 }
                 ComprobarTipodeArchivo(anuncio, out string[] extensionesPermitidas, out string extensionArchivo);
                 if (!extensionesPermitidas.Contains(extensionArchivo))
@@ -146,13 +153,19 @@ public class AnunciosController : Controller
             {
                 anuncio.ImagenRuta = imagenAnterior;
             }
+            if (nuevaImagen)
+                GenerarRuta(anuncio);
+
             var resultado = await _editarAnunciosLN.EditarAnuncio(anuncio);
-            if (resultado == true)
+
+            if (resultado == true && nuevaImagen)
             {
-                GuardarArchivo(anuncio);
+                using (var fileStream = new FileStream(Server.MapPath(anuncio.ImagenRuta), FileMode.Create))
+                {
+                    anuncio.Imagen.InputStream.CopyTo(fileStream);
+                }
             }
 
-            // Bitácora: actualización de anuncio
             var bitacora = new BitacoraDto
             {
                 Fecha = DateTime.Now,
@@ -271,20 +284,13 @@ public class AnunciosController : Controller
         extensionArchivo = Path.GetExtension(anuncio.Imagen.FileName).ToLower();
     }
 
-    private void GuardarArchivo(AnuncioDto anuncio)
+    private void GenerarRuta(AnuncioDto anuncio)
     {
         var nombreArchivo = Path.GetFileNameWithoutExtension(anuncio.Imagen.FileName);
         var extension = Path.GetExtension(anuncio.Imagen.FileName);
         var rutaCarpeta = Server.MapPath("~/Uploads/Anuncios/");
         var rutaCompleta = Path.Combine(rutaCarpeta, $"{nombreArchivo}_{Guid.NewGuid()}{extension}");
         if (!Directory.Exists(rutaCarpeta)) Directory.CreateDirectory(rutaCarpeta);
-
-        using (var fileStream = new FileStream(rutaCompleta, FileMode.Create))
-        {
-            anuncio.Imagen.InputStream.CopyTo(fileStream);
-        }
-
         anuncio.ImagenRuta = "~/Uploads/Anuncios/" + Path.GetFileName(rutaCompleta);
-
     }
 }
