@@ -56,6 +56,7 @@
     <Compile Include="anuncios\EditarAnunciosAD\EditarAnunciosAD.cs" />
     <Compile Include="anuncios\EliminarAnunciosAD\EliminarAnunciosAD.cs" />
     <Compile Include="anuncios\ListarAnunciosAD\ListarAnunciosAD.cs" />
+    <Compile Include="Bitacora\BitacoraAD.cs" />
     <Compile Include="calificaciones\agregarCalificacionAD\agregarCalificacionAD.cs" />
     <Compile Include="calificaciones\editarCalificacionAD\editarCalificacionAD.cs" />
     <Compile Include="calificaciones\eliminarCalificacionAD\eliminarCalificacionAD.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="materias\EditarMateriasAD\EditarMateriasAD.cs" />
     <Compile Include="materias\EliminarMateriasAD\EliminarMateriasAD.cs" />
     <Compile Include="materias\ListarMateriasAD\ListarMateriasAD.cs" />
+    <Compile Include="ModelosAD\BitacoraAD.cs" />
     <Compile Include="ModelosAD\CalificacionesAD.cs" />
     <Compile Include="ModelosAD\CursosAD.cs" />
     <Compile Include="ModelosAD\EntregasAD.cs" />

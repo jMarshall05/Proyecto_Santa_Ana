@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Campus.Abstracciones.AccesoDatos.Cursos.AgregarCursoLN;
 using Campus.Abstracciones.AccesoDatos.Cursos.ListarCursosLN;
+using Campus.Abstracciones.LogicaDeNegocio;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Bitacora;
 using Campus.LogicaDeNegocio.Cursos.AgregarCursoLN;
 using Campus.LogicaDeNegocio.Cursos.ListarCursosLN;
 using Campus.LogicaDeNegocio.Cursos.ModificarEstadoCursoLN;
@@ -23,6 +25,7 @@ using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using Microsoft.AspNet.Identity;
 using QRCoder;
 
 namespace Campus.UI.Controllers
@@ -37,6 +40,8 @@ namespace Campus.UI.Controllers
         private readonly IListarUsuariosLN _listarUsuariosLN;
         private readonly ModificarEstadoCursoLN _modificarEstadoCursoLN;
         private readonly IObtenerUsuariosPorIdLN _obtenerUsuariosPorId;
+        private readonly IBitacoraLN _bitacora;
+
         private static IEnumerable<CursoDto> cursos;
         public CursosController()
         {
@@ -47,6 +52,7 @@ namespace Campus.UI.Controllers
             _listarUsuariosLN = new ListarUsuariosLN();
             _modificarEstadoCursoLN = new ModificarEstadoCursoLN();
             _obtenerUsuariosPorId = new ObtenerUsuariosPorIdLN();
+            _bitacora = new BitacoraLN();
         }
         // GET: Cursos
         public ActionResult ListarCursos()
@@ -55,7 +61,7 @@ namespace Campus.UI.Controllers
             cursos = listaDeCursos;
             return View(listaDeCursos);
         }
-       
+
         private List<CursoDto> ObtenerCursos()
         {
             var listaDeCursos = _listarCursoLN.ListarCursos();
@@ -106,6 +112,21 @@ namespace Campus.UI.Controllers
                 try
                 {
                     await _agregarCursoLN.AgregarCurso(Curso);
+
+                    // Bitácora: inserción de nuevo curso
+                    var materia = _listarMateriasLN.ObtenerMateriaPorId(Curso.MateriaId);
+                    var grupo = _listarGruposLN.BuscarGruposPorId(Curso.GrupoId);
+                    var profesor = _obtenerUsuariosPorId.ObtenerUsuarioPorId(Curso.ProfesorId);
+                    var bitacora = new BitacoraDto
+                    {
+                        Fecha = DateTime.Now,
+                        Usuario = User.Identity.GetUserId(),
+                        Accion = "INSERT",
+                        Tabla = "Cursos",
+                        Descripcion = $"Creación de curso - Materia: {materia.Nombre}, Grupo: {grupo.nombre_grupo}, Profesor: {profesor.Nombre} {profesor.Apellido}"
+                    };
+                    _bitacora.RegistrarEvento(bitacora);
+
                     return RedirectToAction("ListarCursos");
                 }
                 catch
@@ -117,10 +138,11 @@ namespace Campus.UI.Controllers
             CargarViewBags();
             return PartialView("_AgregarCursoParcial", Curso);
         }
+
         public ActionResult GenerarReportePDF()
         {
             var datos = cursos;
-    
+
             using (var ms = new MemoryStream())
             {
                 PdfWriter writer = new PdfWriter(ms);
@@ -166,7 +188,7 @@ namespace Campus.UI.Controllers
                     cursosTable.AddCell(new Paragraph(dato.NombreMateria));
                     cursosTable.AddCell(new Paragraph(dato.NombreGrupo));
                     cursosTable.AddCell(new Paragraph(dato.NombreProfesor));
-                
+
                 }
 
                 document.Add(cursosTable);
@@ -195,7 +217,7 @@ namespace Campus.UI.Controllers
                 }
             }
         }
-     
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -203,7 +225,25 @@ namespace Campus.UI.Controllers
         {
             try
             {
+                var cursoInfo = _listarCursoLN.ListarCursos().FirstOrDefault(c => c.IdCurso == id);
+
                 await _modificarEstadoCursoLN.ModificarEstadoCurso(id, estado);
+
+                var materia = _listarMateriasLN.ObtenerMateriaPorId(cursoInfo.MateriaId);
+                var grupo = _listarGruposLN.BuscarGruposPorId(cursoInfo.GrupoId);
+                var accionDescripcion = estado ? "Reactivación" : "Eliminación lógica";
+                var estadoTexto = estado ? "activo" : "inactivo";
+
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = estado ? "UPDATE":"DELETE",
+                    Tabla = "Cursos",
+                    Descripcion = $"{accionDescripcion} de curso ID: {id} - Materia: {materia.Nombre}, Grupo: {grupo.nombre_grupo} - Estado cambiado a {estadoTexto}"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+
                 TempData["SuccessMessage"] = "Curso eliminado correctamente";
                 return RedirectToAction("ListarCursos");
             }

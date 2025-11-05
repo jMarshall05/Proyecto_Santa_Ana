@@ -1,7 +1,5 @@
-﻿using System.Data.Entity;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Eventos.EliminarEventoAD;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.Eventos.EliminarEventoAD
 {

@@ -3,7 +3,6 @@ using System.Data.Entity;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Anuncios.EditarAnunciosAD;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.Anuncios.EditarAnunciosAD
 {

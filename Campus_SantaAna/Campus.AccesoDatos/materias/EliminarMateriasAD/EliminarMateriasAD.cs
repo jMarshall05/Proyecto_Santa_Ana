@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Campus.Abstracciones.AccesoDatos.Materias.EliminarMateriasAD;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.Materias.EliminarMateriasAD
 {

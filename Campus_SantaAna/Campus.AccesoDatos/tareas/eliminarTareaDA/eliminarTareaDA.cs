@@ -3,7 +3,6 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.eliminarTareaAD;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.tareas.eliminarTareaAD
 {

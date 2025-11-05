@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.calificaciones.eliminarCalificacionDA;
-using Campus.Abstracciones.AccesoDatos.entregas.eliminarEntregaAD;
 using Campus.Abstracciones.LogicaDeNegocio.calificaciones.eliminarCalificacionLN;
 using Campus.AccesoDatos.calificaciones.eliminarCalificacionAD;
 

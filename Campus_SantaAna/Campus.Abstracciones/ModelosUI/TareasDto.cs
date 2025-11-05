@@ -40,7 +40,7 @@ namespace Campus.Abstracciones.ModelosUI
         public int Id_grupo { get; set; }
 
         [ForeignKey("id_grupo")]
-        public virtual GruposDto Grupo { get; set; } // Cambiado de IdGrupo a id_grupo
+        public virtual GruposDto Grupo { get; set; }
 
         [NotMapped]
         public HttpPostedFileBase Archivo { get; set; }

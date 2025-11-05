@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.listarTareaAD;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.tareas.listarTareaAD
 {
@@ -107,10 +105,11 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                     Calificacion = _contexto.Entregas
                         .Where(e => e.IdTarea == t.IdTarea && e.IdEstudiante == idEstudiante)
                         .SelectMany(e => _contexto.Calificaciones
-                            .Where(c => c.IdEntrega == e.IdEntrega) // Usando IdEntrega en lugar de id_entrega
+                            .Where(c => c.IdEntrega == e.IdEntrega)
                             .Select(c => new CalificacionesDto
                             {
-                                id_calificacion = c.IdCalificacion, // Mapeo correcto de propiedades
+                                id_calificacion = c.IdCalificacion,
+                                id_entrega = c.IdEntrega,
                                 calificacion = c.Calificacion,
                                 comentario = c.Comentario,
                                 fecha_calificacion = c.FechaCalificacion

@@ -1,7 +1,5 @@
 ﻿// Archivo: Campus.Abstracciones.ModelosUI/EstudianteGrupoDto.cs
 
-using System;
-
 namespace Campus.Abstracciones.ModelosUI
 {
     public class EstudianteGrupoDto

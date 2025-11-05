@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.editarTareaAD;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
-using System.Data.Entity;
 
 namespace Campus.AccesoDatos.Tareas.EditarTareaAD
 {
@@ -41,7 +40,7 @@ namespace Campus.AccesoDatos.Tareas.EditarTareaAD
             tareaExistente.ArchivoAdjunto = tarea.ArchivoAdjunto;
             tareaExistente.FechaModificacion = DateTime.Now;
             tareaExistente.FechaPublicacion = tarea.FechaPublicacion;
-            tareaExistente.IdGrupo = tarea.Id_grupo ;
+            tareaExistente.IdGrupo = tarea.Id_grupo;
 
             _elContexto.Entry(tareaExistente).State = EntityState.Modified;
             return await _elContexto.SaveChangesAsync();

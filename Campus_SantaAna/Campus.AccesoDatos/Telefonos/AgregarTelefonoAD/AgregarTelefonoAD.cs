@@ -20,7 +20,7 @@ namespace Campus.AccesoDatos.Telefonos.AgregarTelefonoAD
             foreach (var tel in telefono)
             {
                 var telefonoAD = ConvertirAD(tel);
-                
+
                 _elContexto.Telefonos.Add(telefonoAD);
             }
 

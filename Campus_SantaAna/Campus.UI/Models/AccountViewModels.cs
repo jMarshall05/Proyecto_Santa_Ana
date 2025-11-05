@@ -69,7 +69,7 @@ namespace Campus.UI.Models
     public class RegisterViewModel
     {
         [Required]
-        [Display(Name = "Primer Nombre")] 
+        [Display(Name = "Primer Nombre")]
         public string Nombre { get; set; }
         [Required]
         [Display(Name = "Apellido")]

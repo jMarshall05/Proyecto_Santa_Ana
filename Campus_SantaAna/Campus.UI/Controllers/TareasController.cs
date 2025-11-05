@@ -5,13 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Campus.Abstracciones.AccesoDatos.Cursos.ListarCursosLN;
+using Campus.Abstracciones.LogicaDeNegocio;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.agregarTareaLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.editarTareaLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.eliminarTareaLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
+using Campus.Abstracciones.LogicaNegocio.entregas.listarEntregaLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Bitacora;
 using Campus.LogicaDeNegocio.Cursos.ListarCursosLN;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Materias.ListarMaterias;
@@ -19,7 +22,7 @@ using Campus.LogicaDeNegocio.tareas.agregarTareaLN;
 using Campus.LogicaDeNegocio.Tareas.EditarTareaLN;
 using Campus.LogicaDeNegocio.Tareas.EliminarTareaLN;
 using Campus.LogicaDeNegocio.Tareas.ListarTareaLN;
-using Campus.UI.Filtros;
+using Campus.LogicaNegocio.Entregas.ListarEntregaLN;
 using Microsoft.AspNet.Identity;
 
 namespace Campus.UI.Controllers
@@ -34,6 +37,8 @@ namespace Campus.UI.Controllers
         private readonly IListarGruposLN _listarGruposLN;
         private readonly IListarMateriasLN _listarMateriasLN;
         private readonly IListarCursoLN _listarCursosLN;
+        private readonly IListarEntregasLN _listarEntregasLN;
+        private readonly IBitacoraLN _bitacora;
 
 
 
@@ -46,7 +51,8 @@ namespace Campus.UI.Controllers
             _listarGruposLN = new ListarGruposLN();
             _listarMateriasLN = new ListarMateriasLN();
             _listarCursosLN = new ListarCursosLN();
-
+            _listarEntregasLN = new ListarEntregasLN();
+            _bitacora = new BitacoraLN();
 
         }
 
@@ -124,7 +130,6 @@ namespace Campus.UI.Controllers
             {
                 try
                 {
-
                     if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
                     {
                         ComprobarTipodeArchivo(tarea, out string[] extensionesPermitidas, out string extensionArchivo);
@@ -137,19 +142,30 @@ namespace Campus.UI.Controllers
                     }
 
                     await _agregarTareaLN.AgregarTarea(tarea);
+
+                    // Bitácora: inserción de nueva tarea
+                    var materiaInfo = _listarMateriasLN.ObtenerMateriaPorId(tarea.IdMateria);
+                    var grupoInfo = _listarGruposLN.BuscarGruposPorId(tarea.Id_grupo);
+                    var bitacora = new BitacoraDto
+                    {
+                        Fecha = DateTime.Now,
+                        Usuario = User.Identity.GetUserId(),
+                        Accion = "INSERT",
+                        Tabla = "Tareas",
+                        Descripcion = $"Creación de tarea '{tarea.Titulo}' - Materia: {materiaInfo.Nombre}, Grupo: {grupoInfo.nombre_grupo}, Fecha entrega: {tarea.FechaEntrega:dd/MM/yyyy}"
+                    };
+                    _bitacora.RegistrarEvento(bitacora);
+
                     return RedirectToAction("ListarTareas");
                 }
-
                 catch (Exception ex)
                 {
                     FiltrarMateriasCursosGrupos();
                     ModelState.AddModelError("", "Error al crear la tarea: " + ex.Message);
                     return View(tarea);
-
                 }
             }
             FiltrarMateriasCursosGrupos();
-
             return View(tarea);
         }
 
@@ -213,6 +229,7 @@ namespace Campus.UI.Controllers
             var cursos = _listarCursosLN.ListarCursos().Where(c => c.Estado == true);
             var materiaFiltrado = new List<MateriaDto>();
             var gruposFiltrados = new List<GruposDto>();
+
             foreach (var curso in cursos)
             {
                 if (curso.ProfesorId == User.Identity.GetUserId())
@@ -225,6 +242,7 @@ namespace Campus.UI.Controllers
 
             ViewBag.Grupos = new SelectList(gruposFiltrados, "id_grupo", "nombre_grupo");
             ViewBag.Materia = new SelectList(materiaFiltrado, "Id_Materia", "nombre");
+
             if (!ModelState.IsValid)
                 return View(tarea);
 
@@ -232,6 +250,7 @@ namespace Campus.UI.Controllers
             {
                 string archivoAnterior = Request.Form["archivoAdjuntoActual"];
                 bool eliminarArchivo = Request.Form["eliminarArchivo"] == "true";
+                bool archivoModificado = false;
 
                 if (eliminarArchivo && !string.IsNullOrEmpty(archivoAnterior))
                 {
@@ -240,6 +259,7 @@ namespace Campus.UI.Controllers
                         System.IO.File.Delete(rutaCompleta);
 
                     tarea.ArchivoAdjunto = null;
+                    archivoModificado = true;
                 }
                 else if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
                 {
@@ -258,6 +278,7 @@ namespace Campus.UI.Controllers
                     }
 
                     GuardarArchivo(tarea);
+                    archivoModificado = true;
                 }
                 else
                 {
@@ -270,8 +291,21 @@ namespace Campus.UI.Controllers
                     return View(tarea);
                 }
 
-                // 6. Guardar cambios
                 await _editarTareaLN.EditarTarea(id, tarea);
+
+                // Bitácora: actualización de tarea
+                var materiaInfo = _listarMateriasLN.ObtenerMateriaPorId(tarea.IdMateria);
+                var grupoInfo = _listarGruposLN.BuscarGruposPorId(tarea.Id_grupo);
+                var descripcionArchivo = archivoModificado ? " - Archivo adjunto modificado" : "";
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = "UPDATE",
+                    Tabla = "Tareas",
+                    Descripcion = $"Actualización de tarea ID: {id} - '{tarea.Titulo}' - Materia: {materiaInfo.Nombre}, Grupo: {grupoInfo.nombre_grupo}{descripcionArchivo}"
+                };
+                _bitacora.RegistrarEvento(bitacora);
 
                 return RedirectToAction("ListarTareas");
             }
@@ -298,7 +332,21 @@ namespace Campus.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
+            var tareaInfo = await _listarTareaLN.ObtenerPorIdAsync(id);
+
             await _eliminarTareaLN.EliminarTarea(id);
+
+            // Bitácora: eliminación lógica de tarea
+            var bitacora = new BitacoraDto
+            {
+                Fecha = DateTime.Now,
+                Usuario = User.Identity.GetUserId(),
+                Accion = "DELETE",
+                Tabla = "Tareas",
+                Descripcion = $"Eliminación lógica de tarea ID: {id} - '{tareaInfo.Titulo}' - Estado cambiado a inactivo"
+            };
+            _bitacora.RegistrarEvento(bitacora);
+
             return RedirectToAction("ListarTareas");
         }
 
@@ -323,7 +371,12 @@ namespace Campus.UI.Controllers
                 if (string.IsNullOrWhiteSpace(idUsuario))
                     return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "Usuario no identificado");
 
-                var tareas = await _listarTareaLN.ListarTareasPorEstudiante(idUsuario);
+                var tareas = (await _listarTareaLN.ListarTareasPorEstudiante(idUsuario)).Where(t => t.Estado == true);
+                foreach (var tarea in tareas)
+                {
+                    if (tarea.Calificacion != null)
+                        tarea.Calificacion.Entrega = (await _listarEntregasLN.ListarEntregas()).Where(e => e.id_entrega == tarea.Calificacion.id_entrega && e.estado == true).FirstOrDefault();
+                }
                 if (materiaId.HasValue && grupoId.HasValue)
                 {
                     tareas = tareas.Where(t => t.IdMateria == materiaId && t.Id_grupo == grupoId);

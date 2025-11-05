@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Eventos.ListarEventosad;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.Eventos.ListarEventosAD
 {

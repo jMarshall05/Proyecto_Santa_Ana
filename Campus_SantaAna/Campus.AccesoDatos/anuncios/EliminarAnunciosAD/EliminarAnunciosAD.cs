@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Campus.Abstracciones.AccesoDatos.Anuncios.EliminarAnunciosAD;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.Anuncios.EliminarAnunciosAD
 {
