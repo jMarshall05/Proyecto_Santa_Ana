@@ -53,14 +53,30 @@ namespace Campus.Web.Controllers
             _bitacora = new BitacoraLN();
         }
 
-        public async Task<ActionResult> Index(int? idGrupo)
+        public async Task<ActionResult> Index(int? idGrupo, int? idTarea)
         {
             List<EntregasDto> lista;
 
-            if (idGrupo == null)
-                lista = (await _listarEntregasLN.ListarEntregas()).Where(e => e.estado == true).ToList();
-            else
+            if (idGrupo != null)
+            {
                 lista = (await _listarEntregasLN.ListarEntregasPorGrupoAsync(idGrupo.Value)).Where(e => e.estado == true).ToList();
+            }
+            else if (idTarea != null)
+            {
+                lista = (await _listarEntregasLN.ListarEntregas()).Where(e => e.estado == true && e.id_tarea == idTarea).ToList();
+                var tarea = await _listarTareas.ObtenerPorIdAsync(idTarea.Value);
+                ViewBag.Titulo = tarea.Titulo;
+                ViewBag.Grupo = tarea.Nombre_grupo;
+                ViewBag.idMateria = tarea.IdMateria;
+                ViewBag.idGrupo = idGrupo;
+
+                if (lista == null) lista = new List<EntregasDto>();
+
+            }
+            else
+            {
+                lista = (await _listarEntregasLN.ListarEntregas()).Where(e => e.estado == true).ToList();
+            }
 
             foreach (var entrega in lista)
             {

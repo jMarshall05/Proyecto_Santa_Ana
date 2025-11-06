@@ -1,6 +1,15 @@
 ﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.EntregasDto>
 
-<h2 class="container-title">Lista de Entregas</h2>
+@if (ViewBag.Titulo != null)
+{
+    <h2 class="container-title">Lista de Entregas de @ViewBag.Titulo : Grupo @ViewBag.Grupo</h2>
+
+}
+else
+{
+    <h2 class="container-title">Lista de Entregas</h2>
+
+}
 
 <table class="table table-striped table-bordered">
     <thead class="table-danger">
