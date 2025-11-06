@@ -1,208 +1,416 @@
 ﻿@model Campus.Abstracciones.ModelosUI.TareaDto
 
-
-<div class="container mt-4">
+<div class="container mt-4 mb-5">
     <div class="row justify-content-center">
-        <!-- Centrado horizontal -->
         <div class="col-lg-10">
-            <!-- Ancho de la tarjeta -->
             <div class="card shadow-lg border-0">
-                <div class="card-header bg-gradient-primary text-white">
-                    <h3 class="card-title mb-0">
-                        <i class="fas fa-plus-circle mr-2"></i>Crear Tarea
+                <div class="card-header bg-gradient-primary text-white position-relative overflow-hidden">
+                    <div class="position-absolute top-0 end-0 opacity-10">
+                        <i class="fas fa-tasks fa-5x"></i>
+                    </div>
+                    <h3 class="card-title mb-0 position-relative">
+                        <i class="fas fa-tasks mr-2"></i>Nueva Tarea
                     </h3>
+                    <p class="mb-0 mt-2 small opacity-90 position-relative">Complete los campos para crear una nueva tarea</p>
                 </div>
 
-                <div class="card-body py-4">
-                    @using (Html.BeginForm("Create", "Tareas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                <div class="card-body p-4">
+                    @using (Html.BeginForm("Create", "Tareas", FormMethod.Post, new { enctype = "multipart/form-data", id = "formTarea" }))
                     {
                         @Html.AntiForgeryToken()
-                        @Html.ValidationSummary("", new { @class = "text-danger" })
+                        @Html.ValidationSummary("", new { @class = "alert alert-danger alert-dismissible fade show", role = "alert" })
                         @Html.HiddenFor(model => model.IdMateria, new { Value = ViewBag.idMateria })
                         @Html.HiddenFor(model => model.Id_grupo, new { Value = ViewBag.idGrupo })
 
                         <div class="row">
-                            <div class="col-md-6">
-                                <!-- Título -->
+                            <!-- Título -->
+                            <div class="col-12">
                                 <div class="form-group mb-4">
-                                    @Html.LabelFor(model => model.Titulo, new { @class = "font-weight-bold text-primary mb-2" })
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text bg-light h-100">
-                                                <i class="fas fa-heading text-primary"></i>
-                                            </span>
-                                        </div>
+                                    @Html.LabelFor(model => model.Titulo, new { @class = "form-label fw-bold text-dark d-flex align-items-center" })
+                                    <span class="text-danger ms-1">*</span>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="fas fa-heading text-primary"></i>
+                                        </span>
                                         @Html.EditorFor(model => model.Titulo, new
                                         {
                                             htmlAttributes = new
                                             {
-                                                @class = "form-control",
-                                                placeholder = "Ej: Presentación final del proyecto"
+                                                @class = "form-control border-start-0",
+                                                placeholder = "Ej: Presentación final del proyecto",
+                                                required = "required",
+                                                maxlength = "200"
                                             }
                                         })
+                                        <span class="input-group-text character-count bg-light border-start-0" id="tituloCount">0/200</span>
                                     </div>
-                                    @Html.ValidationMessageFor(model => model.Titulo, "", new { @class = "text-danger small" })
+                                    @Html.ValidationMessageFor(model => model.Titulo, "", new { @class = "text-danger small mt-1 d-block" })
                                 </div>
                             </div>
                         </div>
-
 
                         <div class="row">
                             <!-- Descripción -->
-                            <div class="col-md-6">
+                            <div class="col-12">
                                 <div class="form-group mb-4">
-                                    @Html.LabelFor(model => model.Descripcion, new { @class = "font-weight-bold text-primary mb-2" })
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text bg-light h-100 align-items-start pt-3">
-                                                <i class="fas fa-align-left text-primary"></i>
-                                            </span>
-                                        </div>
+                                    @Html.LabelFor(model => model.Descripcion, new { @class = "form-label fw-bold text-dark d-flex align-items-center" })
+                                    <span class="text-danger ms-1">*</span>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text bg-light align-items-start pt-3 border-end-0">
+                                            <i class="fas fa-align-left text-primary mt-1"></i>
+                                        </span>
                                         @Html.TextAreaFor(model => model.Descripcion, new
                                         {
-                                            @class = "form-control",
-                                            rows = 4,
-                                            placeholder = "Describa los detalles de la tarea..."
+                                            @class = "form-control border-start-0",
+                                            rows = 5,
+                                            placeholder = "Describa los objetivos, requisitos y criterios de evaluación de la tarea...",
+                                            required = "required",
+                                            maxlength = "1000"
                                         })
                                     </div>
-                                    @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger small" })
+                                    <div class="d-flex justify-content-between mt-2">
+                                        @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger small" })
+                                        <span class="text-muted small character-count" id="descripcionCount">0/1000</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
-                            <!-- Archivo Adjunto -->
-                            <div class="col-md-6">
-                                <div class="form-group mb-4">
-                                    @Html.LabelFor(model => model.Archivo, new { @class = "font-weight-bold text-primary mb-2" })
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text bg-light h-100">
-                                                <i class="fas fa-paperclip text-primary"></i>
-                                            </span>
-                                        </div>
-                                        @Html.TextBoxFor(model => model.Archivo, new
-                                        {
-                                            type = "file",
-                                            @class = "form-control"
-                                        })
-                                    </div>
-                                    @Html.ValidationMessageFor(model => model.Archivo, "", new { @class = "text-danger small" })
-                                </div>
-                            </div>
                             <!-- Fecha de Entrega -->
                             <div class="col-md-6">
                                 <div class="form-group mb-4">
-                                    @Html.LabelFor(model => model.FechaEntrega, new { @class = "font-weight-bold text-primary mb-2" })
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text bg-light h-100">
-                                                <i class="far fa-calendar-alt text-primary"></i>
-                                            </span>
-                                        </div>
+                                    @Html.LabelFor(model => model.FechaEntrega, new { @class = "form-label fw-bold text-dark d-flex align-items-center" })
+                                    <span class="text-danger ms-1">*</span>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="far fa-calendar-alt text-primary"></i>
+                                        </span>
                                         @Html.EditorFor(model => model.FechaEntrega, new
                                         {
-                                    htmlAttributes = new
+                                            htmlAttributes = new
                                             {
-                                                 @class = "form-control",
-                                                 type = "datetime-local",
-                                                 min = DateTime.Now.ToString("yyyy-MM-ddTHH:mm")
-                                             }
-                                         })
+                                                @class = "form-control border-start-0",
+                                                type = "datetime-local",
+                                                min = DateTime.Now.ToString("yyyy-MM-ddTHH:mm"),
+                                                required = "required"
+                                            }
+                                        })
                                     </div>
-                                    @Html.ValidationMessageFor(model => model.FechaEntrega, "", new { @class = "text-danger small" })
+                                    @Html.ValidationMessageFor(model => model.FechaEntrega, "", new { @class = "text-danger small mt-1 d-block" })
+                                    <div class="mt-2 p-2 bg-light rounded">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle text-primary me-1"></i> Fecha y hora límite de entrega
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Archivo Adjunto -->
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    @Html.LabelFor(model => model.Archivo, new { @class = "form-label fw-bold text-dark" })
+                                    <div class="custom-file-container mt-2">
+                                        <label for="Archivo" class="custom-file-upload d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-cloud-upload-alt me-2 fs-5"></i>
+                                            <span id="file-label" class="fw-medium">Seleccionar archivo</span>
+                                        </label>
+                                        @Html.TextBoxFor(model => model.Archivo, new
+                                        {
+                                            type = "file",
+                                            @class = "custom-file-input",
+                                            id = "Archivo",
+                                            accept = ".jpg, .jpeg, .png, .pdf, .docx, .pptx, .xlsx, .txt, .doc" 
+                                        })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.Archivo, "", new { @class = "text-danger small mt-1 d-block" })
+                                    <div class="mt-2 p-2 bg-light rounded">
+                                        <small class="text-muted">
+                                            <i class="fas fa-file text-primary me-1"></i> Formatos: PDF, DOC, XLS, PPT, ZIP (Max. 10MB)
+                                        </small>
+                                    </div>
+                                    <div id="file-info" class="mt-2 p-3 bg-success bg-opacity-10 border border-success border-opacity-25 rounded d-none">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-file text-success me-2"></i>
+                                            <span id="file-name" class="fw-medium text-success"></span>
+                                            <button type="button" id="remove-file" class="btn-close ms-auto" aria-label="Remover archivo"></button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-
-
-                        <div class="form-group mt-5">
-                            <div class="d-flex justify-content-center">
-                                <button type="submit" class="btn btn-primary btn-lg mr-3 px-4">
-                                    <i class="fas fa-save mr-2"></i>Guardar Tarea
-                                </button>
-                                <a href="@Url.Action("ListarTareas")" class="btn btn-outline-secondary btn-lg px-4 ml-3">
-                                    <i class="fas fa-times mr-2"></i>Cancelar
+                        <!-- Botones de acción -->
+                        <div class="form-group mt-5 mb-0 pt-3 border-top">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="@Url.Action("ListarTareas")" class="btn btn-outline-secondary btn-lg px-4 py-2 d-flex align-items-center">
+                                    <i class="fas fa-arrow-left me-2"></i>Volver
                                 </a>
+                                <button type="submit" class="btn btn-primary btn-lg px-4 py-2 d-flex align-items-center" id="btnSubmit">
+                                    <i class="fas fa-save me-2"></i>Crear Tarea
+                                </button>
                             </div>
                         </div>
                     }
                 </div>
             </div>
+
+            <!-- Tarjeta de ayuda -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body bg-light">
+                    <h6 class="text-primary mb-3 d-flex align-items-center">
+                        <i class="fas fa-lightbulb me-2"></i>Consejos para crear una buena tarea
+                    </h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="mb-0 small text-muted">
+                                <li class="mb-2">Escriba un título claro y descriptivo</li>
+                                <li class="mb-2">Incluya criterios de evaluación en la descripción</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="mb-0 small text-muted">
+                                <li class="mb-2">Establezca una fecha de entrega realista</li>
+                                <li class="mb-2">Adjunte material de apoyo si es necesario</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
 @section Styles {
     <style>
+        :root {
+            --primary-color: #4e73df;
+            --primary-dark: #224abe;
+            --secondary-color: #858796;
+            --success-color: #1cc88a;
+            --danger-color: #e74a3b;
+        }
+
+        body {
+            background-color: #f8f9fc;
+        }
+
         .card {
             border-radius: 15px;
             overflow: hidden;
             border: none;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            transition: transform 0.3s ease;
         }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
 
         .card-header {
             border-radius: 15px 15px 0 0 !important;
-            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            padding: 1.75rem 2rem;
+            border-bottom: none;
         }
 
-        .form-control, .input-group-text {
-            border-radius: 8px;
-            transition: all 0.3s;
-            height: calc(2.25rem + 8px);
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .form-label {
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            margin-bottom: 0.5rem;
+            color: #5a5c69;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #d1d3e2;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            height: calc(2.5rem + 2px);
         }
 
             .form-control:focus {
                 box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-                border-color: #a1b5f1;
+                border-color: var(--primary-color);
             }
+
+        textarea.form-control {
+            height: auto !important;
+            min-height: 140px;
+            resize: vertical;
+        }
 
         .input-group-text {
             background-color: #f8f9fc;
+            border: 1px solid #d1d3e2;
             border-right: none;
-            width: 40px;
+            border-radius: 10px 0 0 10px;
+            width: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-            .input-group-text i {
-                font-size: 1.1rem;
+        .input-group > .form-control:not(:first-child) {
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .input-group-append .input-group-text {
+            border-left: none;
+            border-right: 1px solid #d1d3e2;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .input-group-text i {
+            font-size: 1.1rem;
+        }
+
+        /* Custom file upload */
+        .custom-file-container {
+            position: relative;
+        }
+
+        .custom-file-upload {
+            display: block;
+            padding: 1.25rem 1.5rem;
+            background: linear-gradient(135deg, #f8f9fc 0%, #e8eaf0 100%);
+            border: 2px dashed #d1d3e2;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: var(--secondary-color);
+            min-height: 70px;
+        }
+
+            .custom-file-upload:hover {
+                border-color: var(--primary-color);
+                background: linear-gradient(135deg, #e8eaf0 0%, #f8f9fc 100%);
+                color: var(--primary-color);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(78, 115, 223, 0.1);
             }
 
-        textarea.form-control {
-            height: auto !important;
-            min-height: 120px;
+        .custom-file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+        }
+
+        #file-info {
+            transition: all 0.3s ease;
+        }
+
+        .character-count {
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+        }
+
+        /* Buttons */
+        .btn {
+            border-radius: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            padding: 0.75rem 2rem;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             border: none;
             box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
         }
 
             .btn-primary:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1);
+                transform: translateY(-2px);
+                box-shadow: 0 7px 14px rgba(50, 50, 93, 0.2);
+            }
+
+            .btn-primary:active {
+                transform: translateY(0);
             }
 
         .btn-outline-secondary {
-            border-width: 2px;
+            border: 2px solid #d1d3e2;
+            color: var(--secondary-color);
+            background: white;
         }
 
-        label {
-            font-size: 0.9rem;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
+            .btn-outline-secondary:hover {
+                background: var(--secondary-color);
+                border-color: var(--secondary-color);
+                color: white;
+            }
+
+        /* Validation */
+        .field-validation-error {
+            display: block;
+            margin-top: 0.25rem;
         }
 
-        .ml-3 {
-            margin-left: 1.5rem !important;
+        .input-validation-error {
+            border-color: var(--danger-color) !important;
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
+        .alert-danger {
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #f8d7da 0%, #f1aeb5 100%);
+            color: #721c24;
+        }
+
+        /* Animations */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .btn-lg {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.95rem;
+            }
+
+            .d-flex.justify-content-between {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .card-header {
+                padding: 1.5rem 1.25rem;
+            }
         }
     </style>
 }
@@ -211,11 +419,92 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <script>
-        $(document).ready(function () {
-            // Establecer valores iniciales para los campos datetime-local
-            const now = new Date();
-            const nowStr = now.toISOString().slice(0, 16);
-            $('#FechaEntrega').val(nowStr);
+        // Contadores de caracteres
+        document.addEventListener('DOMContentLoaded', function () {
+            const tituloInput = document.getElementById('Titulo');
+            const descripcionInput = document.getElementById('Descripcion');
+            const tituloCount = document.getElementById('tituloCount');
+            const descripcionCount = document.getElementById('descripcionCount');
+            const archivoInput = document.getElementById('Archivo');
+            const fileLabel = document.getElementById('file-label');
+            const fileInfo = document.getElementById('file-info');
+            const fileName = document.getElementById('file-name');
+            const removeFileBtn = document.getElementById('remove-file');
+
+            // Actualizar contadores
+            function updateCharacterCount(input, countElement) {
+                const count = input.value.length;
+                const maxLength = input.getAttribute('maxlength');
+                countElement.textContent = `${count}/${maxLength}`;
+
+                // Cambiar color según el porcentaje usado
+                const percentage = (count / maxLength) * 100;
+                if (percentage > 90) {
+                    countElement.style.color = '#e74a3b';
+                } else if (percentage > 75) {
+                    countElement.style.color = '#f6c23e';
+                } else {
+                    countElement.style.color = '#858796';
+                }
+            }
+
+            // Inicializar contadores
+            updateCharacterCount(tituloInput, tituloCount);
+            updateCharacterCount(descripcionInput, descripcionCount);
+
+            // Event listeners para contadores
+            tituloInput.addEventListener('input', function () {
+                updateCharacterCount(this, tituloCount);
+            });
+
+            descripcionInput.addEventListener('input', function () {
+                updateCharacterCount(this, descripcionCount);
+            });
+
+            // Manejo de archivos
+            archivoInput.addEventListener('change', function () {
+                if (this.files.length > 0) {
+                    const file = this.files[0];
+                    fileName.textContent = file.name;
+                    fileInfo.classList.remove('d-none');
+                    fileLabel.textContent = 'Archivo seleccionado';
+                }
+            });
+
+            // Remover archivo
+            removeFileBtn.addEventListener('click', function () {
+                archivoInput.value = '';
+                fileInfo.classList.add('d-none');
+                fileLabel.textContent = 'Seleccionar archivo';
+            });
+
+            // Validación de fecha
+            const fechaInput = document.getElementById('FechaEntrega');
+            fechaInput.addEventListener('change', function () {
+                const selectedDate = new Date(this.value);
+                const now = new Date();
+
+                if (selectedDate < now) {
+                    this.setCustomValidity('La fecha de entrega no puede ser en el pasado');
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
+
+            // Validación de tamaño de archivo
+            archivoInput.addEventListener('change', function () {
+                if (this.files.length > 0) {
+                    const file = this.files[0];
+                    const maxSize = 10 * 1024 * 1024; // 10MB
+
+                    if (file.size > maxSize) {
+                        alert('El archivo es demasiado grande. El tamaño máximo permitido es 10MB.');
+                        this.value = '';
+                        fileInfo.classList.add('d-none');
+                        fileLabel.textContent = 'Seleccionar archivo';
+                    }
+                }
+            });
         });
     </script>
 }
