@@ -20,6 +20,7 @@ namespace Campus.AccesoDatos
         public DbSet<CursosAD> Cursos { get; set; }
         public DbSet<TelefonoAD> Telefonos { get; set; }
         public DbSet<BitacoraAD> Bitacora { get; set; }
+        public DbSet<DocumentosAD> Documentos { get; set; }
 
 
     }
