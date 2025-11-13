@@ -1,284 +1,579 @@
 ﻿@model Campus.Abstracciones.ModelosUI.AnuncioDto
 
 @{
-    ViewBag.Title = "Detalle del Evento";
+    ViewBag.Title = "Detalles del Anuncio";
 }
 
-<div class="event-detail-container">
-    <div class="event-header">
-        <h1 class="event-title">@Model.Titulo</h1>
-        <div class="event-status">
-            <span class="status-badge @(Model.Estado ? "active" : "inactive")">
-                @(Model.Estado ? "Activo" : "Inactivo")
-            </span>
+<div class="premium-detail-container">
+    <!-- Header del Detalle -->
+    <div class="detail-header">
+        <div class="detail-icon">
+            <i class="fas fa-bullhorn"></i>
+        </div>
+        <div class="detail-title-section">
+            <h1 class="detail-title">@Model.Titulo</h1>
+            <p class="detail-subtitle">Información completa del anuncio</p>
+        </div>
+        <div class="detail-badge">
+            <span class="status-badge active">Activo</span>
         </div>
     </div>
 
-    <div class="event-content">
-        <div class="event-dates">
-            <div class="date-card">
-                <div class="date-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                </div>
-                <div class="date-info">
-                    <span class="date-label">Fecha del Evento</span>
-                    <span class="date-value">@Model.FechaEvento.ToString("dd MMM yyyy")</span>
-                </div>
+    <!-- Grid de Información -->
+    <div class="detail-grid">
+        <!-- Tarjeta de Fechas -->
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>Fechas Importantes</h3>
             </div>
-            <div class="date-card">
-                <div class="date-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
+            <div class="detail-card-body">
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-calendar-day"></i>
+                        Fecha del Evento
+                    </div>
+                    <div class="info-value highlight">
+                        @Model.FechaEvento.ToString("dddd, dd MMMM yyyy 'a las' HH:mm")
+                    </div>
                 </div>
-                <div class="date-info">
-                    <span class="date-label">Publicado el</span>
-                    <span class="date-value">@Model.FechaPublicacion.ToString("dd MMM yyyy")</span>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-clock"></i>
+                        Fecha de Publicación
+                    </div>
+                    <div class="info-value">
+                        @Model.FechaPublicacion.ToString("dddd, dd MMMM yyyy 'a las' HH:mm")
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-hourglass-half"></i>
+                        Tiempo Transcurrido
+                    </div>
+                    <div class="info-value">
+                        @{
+                            var tiempoTranscurrido = DateTime.Now - Model.FechaPublicacion;
+                            var dias = tiempoTranscurrido.Days;
+                            var horas = tiempoTranscurrido.Hours;
+                            var texto = dias > 0 ? $"{dias} día{(dias > 1 ? "s" : "")}" : $"{horas} hora{(horas > 1 ? "s" : "")}";
+                        }
+                        <span class="time-badge">@texto</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="event-description">
-            <h3 class="section-title">Descripción</h3>
-            <div class="description-content">
-                @Model.Descripcion
+        <!-- Tarjeta de Descripción -->
+        <div class="detail-card full-width">
+            <div class="detail-card-header">
+                <i class="fas fa-align-left"></i>
+                <h3>Descripción del Anuncio</h3>
+            </div>
+            <div class="detail-card-body">
+                <div class="description-content">
+                    <div class="description-text">
+                        @Model.Descripcion
+                    </div>
+                </div>
             </div>
         </div>
 
-        @if (Model.ImagenRuta != null)
-        {
-            <div class="event-image">
-                <h3 class="section-title">Imagen del Evento</h3>
-                <div class="image-container">
-                    <img src="@Url.Content(Model.ImagenRuta)" alt="Imagen del evento @Model.Titulo" />
-                </div>
-                @Html.Hidden("ImagenActual", Model.ImagenRuta)
+        <!-- Tarjeta de Información Adicional -->
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <i class="fas fa-info-circle"></i>
+                <h3>Información Adicional</h3>
             </div>
-        }
+            <div class="detail-card-body">
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-hashtag"></i>
+                        ID del Anuncio
+                    </div>
+                    <div class="info-value code">@Model.IdAnuncio</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-file-alt"></i>
+                        Tipo de Contenido
+                    </div>
+                    <div class="info-value">
+                        <span class="content-badge">Anuncio Público</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta de Acciones Rápidas -->
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <i class="fas fa-bolt"></i>
+                <h3>Acciones Rápidas</h3>
+            </div>
+            <div class="detail-card-body">
+                <div class="actions-grid">
+                    <a href="@Url.Action("EditParcial", "Anuncios", new { id = Model.IdAnuncio })" class="action-btn edit-btn">
+                        <i class="fas fa-edit"></i>
+                        <span>Editar Anuncio</span>
+                    </a>
+                    <button class="action-btn share-btn" onclick="compartirAnuncio()">
+                        <i class="fas fa-share"></i>
+                        <span>Compartir</span>
+                    </button>
+                    <button class="action-btn print-btn" onclick="imprimirDetalle()">
+                        <i class="fas fa-print"></i>
+                        <span>Imprimir</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <style>
-    /* Variables de colores */
+    /* Variables CSS consistentes */
     :root {
-        --primary-color: #4361ee;
-        --secondary-color: #3f37c9;
-        --success-color: #10b981;
-        --danger-color: #ef4444;
-        --light-color: #f8f9fa;
-        --dark-color: #212529;
-        --gray-color: #6c757d;
-        --border-radius: 12px;
-        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        --transition: all 0.3s ease;
+        --primary: #6366f1;
+        --primary-dark: #4f46e5;
+        --secondary: #f8fafc;
+        --accent: #06d6a0;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --text: #1e293b;
+        --text-light: #64748b;
+        --border: #e2e8f0;
+        --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
 
-    /* Estilos generales */
-    .event-detail-container {
-        max-width: 900px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: var(--dark-color);
+    .premium-detail-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
     }
 
-    /* Encabezado del evento */
-    .event-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 2rem;
-        padding-bottom: 1.5rem;
-        border-bottom: 1px solid #e9ecef;
-    }
-
-    .event-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        margin: 0;
-        line-height: 1.2;
-        flex: 1;
-        margin-right: 1rem;
-    }
-
-    .event-status {
-        flex-shrink: 0;
-    }
-
-    /* Badge de estado */
-    .status-badge {
-        padding: 0.5rem 1.2rem;
-        border-radius: 50px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        box-shadow: var(--box-shadow);
-    }
-
-    .status-badge.active {
-        background: var(--success-color);
-        color: white;
-    }
-
-    .status-badge.inactive {
-        background: var(--danger-color);
-        color: white;
-    }
-
-    /* Contenido del evento */
-    .event-content {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-    }
-
-    /* Fechas del evento */
-    .event-dates {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-    }
-
-    .date-card {
+    /* Header del Detalle */
+    .detail-header {
         display: flex;
         align-items: center;
+        gap: 1.5rem;
         background: white;
-        border-radius: var(--border-radius);
-        padding: 1.5rem;
-        box-shadow: var(--box-shadow);
-        transition: var(--transition);
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+        border: 1px solid var(--border);
     }
 
-    .date-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .date-icon {
+    .detail-icon {
+        width: 80px;
+        height: 80px;
+        background: var(--gradient);
+        border-radius: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 50px;
-        height: 50px;
-        background: rgba(67, 97, 238, 0.1);
-        border-radius: 50%;
-        margin-right: 1rem;
-        color: var(--primary-color);
+        color: white;
+        font-size: 2rem;
     }
 
-    .date-info {
-        display: flex;
-        flex-direction: column;
+    .detail-title-section {
+        flex: 1;
     }
 
-    .date-label {
+    .detail-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text);
+        margin: 0 0 0.5rem 0;
+        line-height: 1.2;
+    }
+
+    .detail-subtitle {
+        color: var(--text-light);
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .detail-badge .status-badge {
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
         font-size: 0.9rem;
-        color: var(--gray-color);
-        margin-bottom: 0.3rem;
     }
 
-    .date-value {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: var(--dark-color);
+    .status-badge.active {
+        background: #dcfce7;
+        color: #166534;
+        border: 2px solid #bbf7d0;
     }
 
-    /* Descripción del evento */
-    .event-description {
+    /* Grid de Detalles */
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .detail-card {
         background: white;
-        border-radius: var(--border-radius);
-        padding: 2rem;
-        box-shadow: var(--box-shadow);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .section-title {
-        font-size: 1.4rem;
+        .detail-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .detail-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+    .detail-card-header {
+        background: var(--secondary);
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+        .detail-card-header i {
+            color: var(--primary);
+            font-size: 1.25rem;
+            width: 24px;
+        }
+
+        .detail-card-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+    .detail-card-body {
+        padding: 1.5rem;
+    }
+
+    /* Items de Información */
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 500;
+        color: var(--text);
+        font-size: 0.95rem;
+    }
+
+        .info-label i {
+            color: var(--text-light);
+            width: 16px;
+        }
+
+    .info-value {
         font-weight: 600;
-        color: var(--primary-color);
-        margin-bottom: 1.2rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+        color: var(--text);
+        text-align: right;
     }
 
+        .info-value.highlight {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .info-value.code {
+            font-family: 'Courier New', monospace;
+            background: var(--secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+    /* Badges */
+    .time-badge, .content-badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .time-badge {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .content-badge {
+        background: #e0e7ff;
+        color: #3730a3;
+    }
+
+    /* Descripción */
     .description-content {
         line-height: 1.7;
-        font-size: 1.05rem;
-        color: var(--dark-color);
     }
 
-    /* Imagen del evento */
-    .event-image {
+    .description-text {
+        color: var(--text);
+        font-size: 1rem;
+        white-space: pre-line;
+    }
+
+    /* Acciones Rápidas */
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+
+    .action-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1.5rem 1rem;
+        border: 2px solid var(--border);
+        border-radius: 12px;
         background: white;
-        border-radius: var(--border-radius);
-        padding: 2rem;
-        box-shadow: var(--box-shadow);
+        color: var(--text);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
     }
 
-    .image-container {
-        border-radius: var(--border-radius);
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+        .action-btn:hover {
+            transform: translateY(-3px);
+            text-decoration: none;
+            color: var(--text);
+        }
 
-    .image-container img {
-        width: 100%;
-        height: auto;
-        display: block;
-        transition: var(--transition);
-    }
+        .action-btn.edit-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
 
-    .image-container:hover img {
-        transform: scale(1.02);
-    }
+        .action-btn.share-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
 
-    /* Responsive */
+        .action-btn.print-btn:hover {
+            border-color: var(--warning);
+            color: var(--warning);
+        }
+
+        .action-btn i {
+            font-size: 1.5rem;
+        }
+
+        .action-btn span {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+    /* RESPONSIVE DESIGN */
     @@media (max-width: 768px) {
-        .event-header {
+        .premium-detail-container {
+            padding: 1rem;
+        }
+
+        .detail-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+
+        .detail-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+        }
+
+        .detail-title {
+            font-size: 1.5rem;
+        }
+
+        .detail-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .detail-card-header {
+            padding: 1rem 1.25rem;
+        }
+
+            .detail-card-header h3 {
+                font-size: 1.1rem;
+            }
+
+        .detail-card-body {
+            padding: 1.25rem;
+        }
+
+        .info-item {
             flex-direction: column;
             align-items: flex-start;
+            gap: 0.5rem;
+            padding: 0.75rem 0;
         }
 
-        .event-title {
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
+        .info-value {
+            text-align: left;
+            width: 100%;
         }
 
-        .event-dates {
+        .actions-grid {
             grid-template-columns: 1fr;
         }
 
-        .event-description,
-        .event-image {
-            padding: 1.5rem;
+        .action-btn {
+            flex-direction: row;
+            justify-content: center;
+            padding: 1rem;
         }
     }
 
     @@media (max-width: 480px) {
-        .event-detail-container {
-            margin: 1rem auto;
+        .premium-detail-container {
+            padding: 0.5rem;
         }
 
-        .event-title {
-            font-size: 1.5rem;
+        .detail-header {
+            padding: 1rem;
+            margin-bottom: 1rem;
         }
 
-        .date-card {
-            flex-direction: column;
-            text-align: center;
-            padding: 1.2rem;
+        .detail-title {
+            font-size: 1.25rem;
         }
 
-        .date-icon {
-            margin-right: 0;
-            margin-bottom: 0.8rem;
+        .detail-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .detail-card-header {
+            padding: 1rem;
+        }
+
+        .detail-card-body {
+            padding: 1rem;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            font-size: 0.9rem;
+        }
+
+        .description-text {
+            font-size: 0.9rem;
         }
     }
+
+    /* Animaciones */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .detail-card {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+        .detail-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .detail-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .detail-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .detail-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
 </style>
+
+<script>
+    function compartirAnuncio() {
+        if (navigator.share) {
+            navigator.share({
+                title: '@Model.Titulo',
+                text: '@Model.Descripcion',
+                url: window.location.href
+            }).then(() => {
+                console.log('Anuncio compartido exitosamente');
+            }).catch(error => {
+                console.log('Error al compartir:', error);
+            });
+        } else {
+            // Fallback para navegadores que no soportan Web Share API
+            alert('Funcionalidad de compartir disponible en dispositivos móviles');
+        }
+    }
+
+    function imprimirDetalle() {
+        window.print();
+    }
+
+    // Mejorar la experiencia de impresión
+    document.addEventListener('DOMContentLoaded', function() {
+        const style = document.createElement('style');
+        style.textContent = `
+            @@media print {
+                .premium-detail-container {
+                    background: white !important;
+                    padding: 0 !important;
+                }
+                .detail-header {
+                    box-shadow: none !important;
+                    border: 2px solid #000 !important;
+                }
+                .action-btn {
+                    display: none !important;
+                }
+                .detail-card {
+                    break-inside: avoid;
+                    box-shadow: none !important;
+                    border: 1px solid #000 !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>

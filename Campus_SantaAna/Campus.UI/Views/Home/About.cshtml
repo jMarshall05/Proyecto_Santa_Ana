@@ -6,6 +6,7 @@
 
 <main class="container py-4">
     <h2 class="text-center mb-4">📅 Calendario de Eventos</h2>
+
     <div class="card shadow-lg p-4">
         <div id="calendar"></div>
     </div>
@@ -28,6 +29,18 @@
                         <label for="titulo">Título del evento</label>
                     </div>
                     <input type="hidden" id="fecha" />
+
+                    <!-- Toggle para estado del evento -->
+                    <div class="mb-3">
+                        <div class="toggle-group">
+                            <label class="toggle-label">
+                                <input type="checkbox" class="toggle-input" id="estadoEvento" checked />
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-text">Evento Habilitado</span>
+                            </label>
+                        </div>
+                        <small class="text-muted">Si está deshabilitado, el evento no será visible para otros usuarios</small>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success w-100">💾 Guardar</button>
@@ -51,6 +64,19 @@
                     <input type="text" class="form-control" id="nuevoTitulo">
                     <label for="nuevoTitulo">Editar título</label>
                 </div>
+
+                <!-- Toggle para estado del evento en edición -->
+                <div class="mb-3">
+                    <div class="toggle-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" class="toggle-input" id="estadoEventoEditar" checked />
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-text">Evento Habilitado</span>
+                        </label>
+                    </div>
+                    <small class="text-muted">Controla la visibilidad del evento</small>
+                </div>
+
                 <div class="d-flex justify-content-between">
                     <button id="btnGuardarCambios" class="btn btn-success w-50 me-2">💾 Guardar</button>
                     <button id="btnEliminarEvento" class="btn btn-danger w-50 ms-2">🗑️ Desactivar</button>
@@ -59,6 +85,80 @@
         </div>
     </div>
 </div>
+
+<style>
+    /* Toggle Switch Styles */
+    .toggle-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .toggle-label {
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+        gap: 10px;
+        position: relative;
+    }
+
+    .toggle-input {
+        position: absolute !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        pointer-events: none !important;
+    }
+
+    .toggle-slider {
+        position: relative;
+        width: 50px;
+        height: 25px;
+        background-color: #10b981;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        display: inline-block;
+        flex-shrink: 0;
+    }
+
+        .toggle-slider::before {
+            content: "";
+            position: absolute;
+            width: 21px;
+            height: 21px;
+            left: 2px;
+            top: 2px;
+            background-color: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transform: translateX(25px);
+        }
+
+    .toggle-input:not(:checked) + .toggle-slider {
+        background-color: #ccc;
+    }
+
+        .toggle-input:not(:checked) + .toggle-slider::before {
+            transform: translateX(0);
+        }
+
+    .toggle-text {
+        font-weight: 600;
+        color: #1e293b;
+        min-width: 70px;
+        transition: color 0.3s ease;
+    }
+
+    .toggle-input:checked ~ .toggle-text {
+        color: #10b981;
+    }
+
+    .toggle-input:not(:checked) ~ .toggle-text {
+        color: #ef4444;
+    }
+</style>
 
 @section Scripts {
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
@@ -73,6 +173,55 @@
             const formCrear = document.getElementById('formCrearEvento');
             let eventoSeleccionado = null;
 
+            // Inicializar toggles
+            function inicializarToggles() {
+                // Toggle para crear evento
+                const toggleCrear = document.getElementById('estadoEvento');
+                const toggleTextCrear = document.querySelector('#estadoEvento ~ .toggle-text');
+
+                if (toggleCrear) {
+                    toggleCrear.addEventListener('change', function () {
+                        if (this.checked) {
+                            toggleTextCrear.textContent = 'Evento Habilitado';
+                            toggleTextCrear.style.color = '#10b981';
+                        } else {
+                            toggleTextCrear.textContent = 'Evento Inhabilitado';
+                            toggleTextCrear.style.color = '#ef4444';
+                        }
+                    });
+
+                    // Hacer clic en el slider para cambiar estado
+                    document.querySelector('#estadoEvento ~ .toggle-slider').addEventListener('click', function (e) {
+                        e.preventDefault();
+                        toggleCrear.checked = !toggleCrear.checked;
+                        toggleCrear.dispatchEvent(new Event('change'));
+                    });
+                }
+
+                // Toggle para editar evento
+                const toggleEditar = document.getElementById('estadoEventoEditar');
+                const toggleTextEditar = document.querySelector('#estadoEventoEditar ~ .toggle-text');
+
+                if (toggleEditar) {
+                    toggleEditar.addEventListener('change', function () {
+                        if (this.checked) {
+                            toggleTextEditar.textContent = 'Evento Habilitado';
+                            toggleTextEditar.style.color = '#10b981';
+                        } else {
+                            toggleTextEditar.textContent = 'Evento Inhabilitado';
+                            toggleTextEditar.style.color = '#ef4444';
+                        }
+                    });
+
+                    // Hacer clic en el slider para cambiar estado
+                    document.querySelector('#estadoEventoEditar ~ .toggle-slider').addEventListener('click', function (e) {
+                        e.preventDefault();
+                        toggleEditar.checked = !toggleEditar.checked;
+                        toggleEditar.dispatchEvent(new Event('change'));
+                    });
+                }
+            }
+
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 height: 'auto',
@@ -80,23 +229,39 @@
                 dateClick: function (info) {
                     document.getElementById('fecha').value = info.dateStr;
                     formCrear.reset();
+
+                    // Resetear toggle a habilitado
+                    const toggleCrear = document.getElementById('estadoEvento');
+                    if (toggleCrear) {
+                        toggleCrear.checked = true;
+                        toggleCrear.dispatchEvent(new Event('change'));
+                    }
+
                     modalCrear.show();
                 },
                 eventClick: function (info) {
                     eventoSeleccionado = info.event;
                     document.getElementById('eventoId').value = info.event.id;
                     document.getElementById('nuevoTitulo').value = info.event.title;
+
+                    // Resetear toggle a habilitado al editar
+                    const toggleEditar = document.getElementById('estadoEventoEditar');
+                    if (toggleEditar) {
+                        toggleEditar.checked = true;
+                        toggleEditar.dispatchEvent(new Event('change'));
+                    }
+
                     modalEditarEliminar.show();
                 },
                 events: '/Eventos/ObtenerEventos',
-
-              
                 eventContent: function (arg) {
                     return { html: '<span>' + arg.event.title + '</span>' };
                 }
             });
 
-           
+            // Inicializar toggles cuando el DOM esté listo
+            inicializarToggles();
+
             document.getElementById('modalCrearEvento').addEventListener('shown.bs.modal', function () {
                 document.getElementById('titulo').focus();
             });
@@ -107,6 +272,10 @@
                 const titulo = document.getElementById('titulo').value;
                 const fecha = document.getElementById('fecha').value;
                 const idUsuario = document.getElementById('idUsuario').value;
+                const estadoEvento = document.getElementById('estadoEvento').checked;
+
+                // Aquí puedes agregar el estadoEvento a tu lógica si lo necesitas después
+                console.log('Estado del evento:', estadoEvento ? 'Habilitado' : 'Inhabilitado');
 
                 fetch('/Eventos/AgregarEvento', {
                     method: 'POST',
@@ -129,6 +298,11 @@
             // Editar evento
             document.getElementById('btnGuardarCambios').onclick = function () {
                 const nuevoTitulo = document.getElementById('nuevoTitulo').value;
+                const estadoEvento = document.getElementById('estadoEventoEditar').checked;
+
+                // Aquí puedes agregar el estadoEvento a tu lógica si lo necesitas después
+                console.log('Nuevo estado del evento:', estadoEvento ? 'Habilitado' : 'Inhabilitado');
+
                 fetch('/Eventos/EditarEvento', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
