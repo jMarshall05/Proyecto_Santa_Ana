@@ -520,7 +520,6 @@ namespace Campus.UI.Controllers
             var userId = User.Identity.GetUserId();
             var user = UserManager.FindById(userId);
 
-            // Generar clave secreta si no existe
             if (string.IsNullOrEmpty(user.GoogleAuthenticatorSecretKey))
             {
                 var secretKey = Base32Encoding.ToString(KeyGeneration.GenerateRandomKey(20));
