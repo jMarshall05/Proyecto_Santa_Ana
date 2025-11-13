@@ -500,6 +500,7 @@
     <Content Include="Views\Account\Solicitud2FA.cshtml" />
     <Content Include="Views\Account\LoginWith2FA.cshtml" />
     <Content Include="Views\anuncios\_EditParcial.cshtml" />
+    <Content Include="Views\Tareas\_CreateParcial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

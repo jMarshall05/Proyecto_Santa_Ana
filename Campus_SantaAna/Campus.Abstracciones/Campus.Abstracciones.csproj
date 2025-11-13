@@ -56,6 +56,8 @@
     <Compile Include="AccesoDatos\Cursos\AgregarCursoAD\IAgregarCursoAD.cs" />
     <Compile Include="AccesoDatos\Cursos\ModificarEstadoCursoAD\IModificarEstadoCursoAD.cs" />
     <Compile Include="AccesoDatos\Cursos\ListarCursosAD\IListarCursoAD.cs" />
+    <Compile Include="AccesoDatos\Documentos\IAgregarDocumentoAD.cs" />
+    <Compile Include="AccesoDatos\Documentos\IListarDocumentoAD.cs" />
     <Compile Include="AccesoDatos\entregas\agregarEntregaAD\IAgregarEntregaDA.cs" />
     <Compile Include="AccesoDatos\entregas\editarEntregaDA\IEditarEntregaDA.cs" />
     <Compile Include="AccesoDatos\entregas\eliminarEntregaDA\IEliminarEntregaDA.cs" />
@@ -97,6 +99,8 @@
     <Compile Include="LogicaDeNegocio\Cursos\AgregarCursoLN\IAgregarCursoLN.cs" />
     <Compile Include="LogicaDeNegocio\Cursos\ModificarEstadoCursoLN\IModificarEstadoCursoLN.cs" />
     <Compile Include="LogicaDeNegocio\Cursos\ListarCursosLN\IListarCursoLN.cs" />
+    <Compile Include="LogicaDeNegocio\Documentos\IAgregarDocumentoLN.cs" />
+    <Compile Include="LogicaDeNegocio\Documentos\IListarDocumentosLN.cs" />
     <Compile Include="LogicaDeNegocio\entregas\agregarEntregaLN\IAgregarEntregaLN.cs" />
     <Compile Include="LogicaDeNegocio\entregas\editarEntregaLN\IEditarEntregaLN.cs" />
     <Compile Include="LogicaDeNegocio\entregas\eliminarEntregaLN\IEliminarEntregaLN.cs" />
@@ -132,6 +136,7 @@
     <Compile Include="ModelosUI\BitacoraDto.cs" />
     <Compile Include="ModelosUI\CalificacionesDto.cs" />
     <Compile Include="ModelosUI\CursoDto.cs" />
+    <Compile Include="ModelosUI\DocumentosDto.cs" />
     <Compile Include="ModelosUI\EntregasDto.cs" />
     <Compile Include="ModelosUI\EstudianteGrupoDto.cs" />
     <Compile Include="ModelosUI\EventoDto.cs" />

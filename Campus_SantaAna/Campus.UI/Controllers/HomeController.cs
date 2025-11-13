@@ -1,17 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Campus.Abstracciones.AccesoDatos.Cursos.ListarCursosLN;
+using Campus.Abstracciones.LogicaDeNegocio;
+using Campus.Abstracciones.LogicaDeNegocio.Documentos;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorILN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Bitacora;
 using Campus.LogicaDeNegocio.Cursos.ListarCursosLN;
+using Campus.LogicaDeNegocio.Documentos;
 using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Materias.ListarMaterias;
@@ -20,6 +25,8 @@ using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using QRCoder;
+
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace Campus.UI.Controllers
 {
@@ -34,6 +41,9 @@ namespace Campus.UI.Controllers
         private readonly IListarUsuariosLN _listarUsuariosLN;
         private ApplicationUserManager _userManager;
         private readonly IBuscarEstudianteGrupoPorIdLN _estudianteGrupoLN;
+        private readonly IBitacoraLN _bitacora;
+        private readonly IAgregarDocumentoLN _agregarDocumentos;
+        private readonly IListarDocumentosLN _listarDocumentosLN;
 
         public HomeController()
         {
@@ -43,7 +53,9 @@ namespace Campus.UI.Controllers
             _listarGruposLN = new ListarGruposLN();
             _estudianteGrupoLN = new BuscarEstudianteGrupoPorIdLN();
             _listarUsuariosLN = new ListarUsuariosLN();
-
+            _bitacora = new BitacoraLN();
+            _agregarDocumentos = new AgregarDocumentoLN();
+            _listarDocumentosLN = new ListarDocumentosLN();
         }
         public HomeController(ApplicationUserManager userManager)
         {
@@ -164,9 +176,78 @@ namespace Campus.UI.Controllers
         }
         public ActionResult Documentos()
         {
-
+            var documentos = _listarDocumentosLN.ListarDocumentos().ToList();
+            ViewBag.DocumentosAdicionales = documentos;
 
             return View();
+        }
+        [HttpPost]
+        public ActionResult AgregarDocumento(HttpPostedFileBase Archivo, string Titulo, string Descripcion, string Categoria)
+        {
+            if (Archivo != null && Archivo.ContentLength > 0)
+            {
+                ComprobarTipodeArchivo(Archivo, out string[] extensionesPermitidas, out string extensionArchivo);
+
+                if (!extensionesPermitidas.Contains(extensionArchivo))
+                {
+                    throw new System.Exception("Tipo de archivo prohibido");
+                }
+
+                if (Archivo.ContentLength > 10485760)
+                {
+                    throw new System.Exception("Archivo demasiado pesado");
+
+                }
+                var documento = new DocumentosDto
+                {
+                    Titulo = Titulo,
+                    Descripcion = Descripcion,
+                    Categoria = Categoria,
+                    FechaRegistro = DateTime.Now,
+                    Archivo = Archivo
+                };
+                GuardarArchivo(documento);
+                _agregarDocumentos.AgregarDocumento(documento);
+
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = "Insert",
+                    Tabla = "Documentos",
+                    Descripcion = $"Insert de un nuevo documento de tipo {Categoria}, Titulo :{Titulo}"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+            }
+
+
+            return RedirectToAction("Documentos");
+        }
+        private static void ComprobarTipodeArchivo(HttpPostedFileBase Archivo, out string[] extensionesPermitidas, out string extensionArchivo)
+        {
+            extensionesPermitidas = new[] { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx" };
+            extensionArchivo = Path.GetExtension(Archivo.FileName).ToLower();
+        }
+
+        private void GuardarArchivo(DocumentosDto documento)
+        {
+            var nombreArchivo = Path.GetFileNameWithoutExtension(documento.Archivo.FileName);
+            var extension = Path.GetExtension(documento.Archivo.FileName);
+            var rutaCarpeta = Server.MapPath("~/Uploads/Documentos");
+            var rutaCompleta = Path.Combine(rutaCarpeta, $"{nombreArchivo}_{Guid.NewGuid()}{extension}");
+
+
+            // Crear carpeta si no existe
+            if (!Directory.Exists(rutaCarpeta))
+                Directory.CreateDirectory(rutaCarpeta);
+
+            using (var fileStream = new FileStream(rutaCompleta, FileMode.Create))
+            {
+                documento.Archivo.InputStream.CopyTo(fileStream);
+            }
+
+            // Guardar solo la ruta relativa en la base de datos
+            documento.RutaArchivo = "~/Uploads/Documentos" + Path.GetFileName(rutaCompleta);
         }
     }
 }

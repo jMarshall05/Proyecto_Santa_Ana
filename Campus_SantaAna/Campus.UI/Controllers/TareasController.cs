@@ -62,10 +62,15 @@ namespace Campus.UI.Controllers
             var tareas = (await _listarTareaLN.ListarTareasAsync()).Where(t => t.Estado == true);
             var cursos = _listarCursosLN.ListarCursos().Where(c => c.Estado == true);
             var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);
+            var materias = _listarMateriasLN.ListarMaterias().Where(g => g.Estado == true);
 
             if (grupoId.HasValue && materiaId.HasValue)
             {
                 tareas = tareas.Where(t => t.Id_grupo == grupoId && t.IdMateria == materiaId);
+                ViewBag.Grupo = grupos.Where(g => g.id_grupo == grupoId).FirstOrDefault().nombre_grupo;
+                ViewBag.Materia = materias.Where(m => m.Id_Materia == materiaId).FirstOrDefault().Nombre;
+                ViewBag.grupoId = grupoId;
+                ViewBag.materiaId = materiaId;
             }
             if (User.IsInRole("Profesores"))
             {
@@ -95,10 +100,17 @@ namespace Campus.UI.Controllers
 
             return View(tareas);
         }
-
+   
         [Authorize(Roles = "Administradores,Profesores")]
-        public ActionResult Create()
+        public ActionResult Create(int? idMateria, int? idGrupo)
         {
+            if(idMateria.HasValue && idGrupo.HasValue)
+            {
+                ViewBag.idMateria = idMateria;
+                ViewBag.idGrupo = idGrupo;
+                return PartialView("_CreateParcial",new TareaDto());
+            }
+                
             var cursos = _listarCursosLN.ListarCursos().Where(c => c.ProfesorId == User.Identity.GetUserId());
             var materias = _listarMateriasLN.ListarMaterias().Where(m => m.Estado == true);
             var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);
@@ -156,7 +168,7 @@ namespace Campus.UI.Controllers
                     };
                     _bitacora.RegistrarEvento(bitacora);
 
-                    return RedirectToAction("ListarTareas");
+                    return Redirect(Request.Headers["Referer"].ToString());
                 }
                 catch (Exception ex)
                 {
@@ -307,7 +319,7 @@ namespace Campus.UI.Controllers
                 };
                 _bitacora.RegistrarEvento(bitacora);
 
-                return RedirectToAction("ListarTareas");
+                return Redirect(Request.Headers["Referer"].ToString());
             }
             catch (Exception ex)
             {
@@ -347,7 +359,7 @@ namespace Campus.UI.Controllers
             };
             _bitacora.RegistrarEvento(bitacora);
 
-            return RedirectToAction("ListarTareas");
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
         [Authorize]

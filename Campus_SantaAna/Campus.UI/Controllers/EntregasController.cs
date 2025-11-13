@@ -53,14 +53,30 @@ namespace Campus.Web.Controllers
             _bitacora = new BitacoraLN();
         }
 
-        public async Task<ActionResult> Index(int? idGrupo)
+        public async Task<ActionResult> Index(int? idGrupo, int? idTarea)
         {
             List<EntregasDto> lista;
 
-            if (idGrupo == null)
-                lista = (await _listarEntregasLN.ListarEntregas()).Where(e => e.estado == true).ToList();
-            else
+            if (idGrupo != null)
+            {
                 lista = (await _listarEntregasLN.ListarEntregasPorGrupoAsync(idGrupo.Value)).Where(e => e.estado == true).ToList();
+            }
+            else if (idTarea != null)
+            {
+                lista = (await _listarEntregasLN.ListarEntregas()).Where(e => e.estado == true && e.id_tarea == idTarea).ToList();
+                var tarea = await _listarTareas.ObtenerPorIdAsync(idTarea.Value);
+                ViewBag.Titulo = tarea.Titulo;
+                ViewBag.Grupo = tarea.Nombre_grupo;
+                ViewBag.idMateria = tarea.IdMateria;
+                ViewBag.idGrupo = idGrupo;
+
+                if (lista == null) lista = new List<EntregasDto>();
+
+            }
+            else
+            {
+                lista = (await _listarEntregasLN.ListarEntregas()).Where(e => e.estado == true).ToList();
+            }
 
             foreach (var entrega in lista)
             {
@@ -85,7 +101,6 @@ namespace Campus.Web.Controllers
                 await _agregarEntregaLN.AgregarEntrega(entrega);
 
                 // Bitácora: inserción de nueva entrega
-                var tarea = await _listarTareas.ObtenerPorIdAsync(entrega.id_tarea);
                 var bitacora = new BitacoraDto
                 {
                     Fecha = DateTime.Now,
@@ -225,39 +240,75 @@ namespace Campus.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> SubirEntrega(EntregasDto entrega, HttpPostedFileBase archivo)
         {
-            if (archivo != null && archivo.ContentLength > 0)
-            {
-                var nombreArchivo = Path.GetFileNameWithoutExtension(archivo.FileName);
-                var extension = Path.GetExtension(archivo.FileName);
-                var rutaCarpeta = Server.MapPath("~/Uploads/Entregas");
-                var rutaCompleta = Path.Combine(rutaCarpeta, $"{nombreArchivo}_{Guid.NewGuid()}{extension}");
-
-                if (!Directory.Exists(rutaCarpeta))
-                    Directory.CreateDirectory(rutaCarpeta);
-
-                archivo.SaveAs(rutaCompleta);
-
-                entrega.archivo_entregado = "~/Uploads/Entregas/" + Path.GetFileName(rutaCompleta);
-            }
-
             entrega.id_estudiante = User.Identity.GetUserId();
 
-            await _agregarEntregaLN.AgregarEntrega(entrega);
-
-            // Bitácora: inserción de entrega por estudiante
-            var tarea = await _listarTareas.ObtenerPorIdAsync(entrega.id_tarea);
-            var tieneArchivo = !string.IsNullOrEmpty(entrega.archivo_entregado);
-            var bitacora = new BitacoraDto
+            if (ModelState.IsValid)
             {
-                Fecha = DateTime.Now,
-                Usuario = entrega.id_estudiante,
-                Accion = "INSERT",
-                Tabla = "Entregas",
-                Descripcion = $"Estudiante subió entrega para tarea ID: {entrega.id_tarea} - '{tarea?.Titulo}' - {(tieneArchivo ? "Con archivo adjunto" : "Sin archivo adjunto")}"
-            };
-            _bitacora.RegistrarEvento(bitacora);
+                try
+                {
+                    if (archivo != null && archivo.ContentLength > 0)
+                    {
+                        ComprobarTipodeArchivo(archivo, out string[] extensionesPermitidas, out string extensionArchivo);
+                        if (!extensionesPermitidas.Contains(extensionArchivo))
+                        {
+                            ModelState.AddModelError("", "Tipo de archivo no permitido.");
+                            return View(entrega);
+                        }
+                        GuardarArchivo(entrega, archivo);
+                    }
 
-            return RedirectToAction("MisEntregas");
+                    await _agregarEntregaLN.AgregarEntrega(entrega);
+
+                    // Bitácora: inserción de entrega por estudiante
+                    var tarea = await _listarTareas.ObtenerPorIdAsync(entrega.id_tarea);
+                    var tieneArchivo = !string.IsNullOrEmpty(entrega.archivo_entregado);
+                    var bitacora = new BitacoraDto
+                    {
+                        Fecha = DateTime.Now,
+                        Usuario = entrega.id_estudiante,
+                        Accion = "INSERT",
+                        Tabla = "Entregas",
+                        Descripcion = $"Estudiante subió entrega para tarea ID: {entrega.id_tarea} - '{tarea?.Titulo}' - {(tieneArchivo ? "Con archivo adjunto" : "Sin archivo adjunto")}"
+                    };
+                    _bitacora.RegistrarEvento(bitacora);
+
+                    return RedirectToAction("MisEntregas");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Error al subir la entrega: " + ex.Message);
+                    return View(entrega);
+                }
+            }
+
+            return View(entrega);
+        }
+
+        private static void ComprobarTipodeArchivo(HttpPostedFileBase archivo, out string[] extensionesPermitidas, out string extensionArchivo)
+        {
+            extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".pdf", ".docx", ".pptx", ".xlsx", ".txt", ".doc" };
+            extensionArchivo = Path.GetExtension(archivo.FileName).ToLower();
+        }
+
+        private void GuardarArchivo(EntregasDto entrega, HttpPostedFileBase archivo)
+        {
+            // Ruta del servidor donde se guardará el archivo
+            var nombreArchivo = Path.GetFileNameWithoutExtension(archivo.FileName);
+            var extension = Path.GetExtension(archivo.FileName);
+            var rutaCarpeta = Server.MapPath("~/Uploads/Entregas/");
+            var rutaCompleta = Path.Combine(rutaCarpeta, $"{nombreArchivo}_{Guid.NewGuid()}{extension}");
+
+            // Crear carpeta si no existe
+            if (!Directory.Exists(rutaCarpeta))
+                Directory.CreateDirectory(rutaCarpeta);
+
+            using (var fileStream = new FileStream(rutaCompleta, FileMode.Create))
+            {
+                archivo.InputStream.CopyTo(fileStream);
+            }
+
+            // Guardar solo la ruta relativa en la base de datos
+            entrega.archivo_entregado = "~/Uploads/Entregas/" + Path.GetFileName(rutaCompleta);
         }
 
     }
