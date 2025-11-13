@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Anuncios.EditarAnunciosAD;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.Anuncios.EditarAnunciosAD
 {
@@ -31,8 +31,10 @@ namespace Campus.AccesoDatos.Anuncios.EditarAnunciosAD
             anuncioExistente.ImagenRuta = anuncio.ImagenRuta;
             try
             {
+                _elContexto.Entry(anuncioExistente).State = EntityState.Modified;
                 await _elContexto.SaveChangesAsync();
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception("Error al editar el anuncio", ex);
             }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Campus.Abstracciones.LogicaDeNegocio.Materias.EliminarMateriasLN
+﻿namespace Campus.Abstracciones.LogicaDeNegocio.Materias.EliminarMateriasLN
 {
     public interface IEliminarMateriasLN
     {

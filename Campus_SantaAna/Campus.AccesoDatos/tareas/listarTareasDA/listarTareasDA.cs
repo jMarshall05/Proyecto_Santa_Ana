@@ -1,10 +1,9 @@
-﻿using Campus.Abstracciones.AccesoDatos.tareas.listarTareaAD;
-using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using Campus.Abstracciones.AccesoDatos.tareas.listarTareaAD;
+using Campus.Abstracciones.ModelosUI;
 
 namespace Campus.AccesoDatos.tareas.listarTareaAD
 {
@@ -31,18 +30,8 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                     ArchivoAdjunto = t.ArchivoAdjunto,
                     Id_grupo = t.IdGrupo,
                     Nombre_grupo = t.Grupo.nombre_grupo,
-                    IdMateria = t.id_materia
-                })
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<GruposDto>> ListarGruposAsync()
-        {
-            return await _contexto.Grupos
-                .Select(g => new GruposDto
-                {
-                    id_grupo = g.id_grupo,
-                    nombre_grupo = g.nombre_grupo
+                    IdMateria = t.id_materia,
+                    Estado = t.Estado
                 })
                 .ToListAsync();
         }
@@ -66,7 +55,8 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                 ArchivoAdjunto = tarea.ArchivoAdjunto,
                 Id_grupo = tarea.IdGrupo,
                 Nombre_grupo = tarea.Grupo.nombre_grupo,
-                asignado_por = tarea.asignado_por
+                asignado_por = tarea.asignado_por,
+                Estado = tarea.Estado
 
             };
         }
@@ -115,10 +105,11 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                     Calificacion = _contexto.Entregas
                         .Where(e => e.IdTarea == t.IdTarea && e.IdEstudiante == idEstudiante)
                         .SelectMany(e => _contexto.Calificaciones
-                            .Where(c => c.IdEntrega == e.IdEntrega) // Usando IdEntrega en lugar de id_entrega
+                            .Where(c => c.IdEntrega == e.IdEntrega)
                             .Select(c => new CalificacionesDto
                             {
-                                id_calificacion = c.IdCalificacion, // Mapeo correcto de propiedades
+                                id_calificacion = c.IdCalificacion,
+                                id_entrega = c.IdEntrega,
                                 calificacion = c.Calificacion,
                                 comentario = c.Comentario,
                                 fecha_calificacion = c.FechaCalificacion

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Telefonos.EditarTelefono;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.Telefonos.EditarTelefonoAD
 {

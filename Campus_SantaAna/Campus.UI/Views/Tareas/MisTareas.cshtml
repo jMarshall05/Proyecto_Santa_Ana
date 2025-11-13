@@ -2,6 +2,17 @@
 
 @{
     ViewBag.Title = "Mis Tareas";
+    if (User.Identity.IsAuthenticated)
+    {
+        if (User.IsInRole("Administradores"))
+        {
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        }
+        else
+        {
+            Layout = "~/Views/Shared/_Layout.cshtml";
+        }
+    }
 }
 
 <div class="container mt-4">
@@ -26,7 +37,8 @@
                                 <th><i class="fas fa-heading me-2"></i>Título</th>
                                 <th><i class="fas fa-align-left me-2"></i>Descripción</th>
                                 <th><i class="fas fa-calendar-alt me-2"></i>Fecha Entrega</th>
-                                <th><i class="fas fa-paperclip me-2"></i>Archivo</th>
+                                <th><i class="fas fa-paperclip me-2"></i>Tarea</th>
+                                <th><i class="fas fa-paperclip me-2"></i>Entrega</th>
                                 <th><i class="fas fa-star me-2"></i>Calificación</th>
                                 <th><i class="fas fa-cogs me-2"></i>Acciones</th>
                             </tr>
@@ -55,6 +67,25 @@
                                         }
                                     </td>
                                     <td>
+                                        @if (tarea.Calificacion != null && tarea.Calificacion.Entrega != null)
+                                        {
+                                            if (!string.IsNullOrEmpty(tarea.Calificacion.Entrega.archivo_entregado))
+                                            {
+                                                <a href="@Url.Content(tarea.Calificacion.Entrega.archivo_entregado)" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye me-1"></i>Ver
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-light text-muted">Sin entrega</span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-light text-muted">Sin entrega</span>
+                                        }
+                                    </td>
+                                    <td>
                                         @if (tarea.Calificacion != null)
                                         {
                                             <div class="d-flex flex-column">
@@ -79,10 +110,18 @@
                                             <a href="@Url.Action("Details", "Tareas", new { id = tarea.IdTarea })" class="btn btn-sm btn-info" title="Detalles">
                                                 <i class="fas fa-info-circle"></i>
                                             </a>
-
-                                            <a href="@Url.Action("SubirEntrega", "Entregas", new { idTarea = tarea.IdTarea })" class="btn btn-sm btn-success" title="Entregar">
-                                                <i class="fas fa-file-upload"></i>
-                                            </a>
+                                            @if (tarea.Calificacion != null && tarea.Calificacion.Entrega != null)
+                                            {
+                                                <a href="@Url.Action("Delete", "Entregas", new { id = tarea.Calificacion.Entrega.id_entrega })" class="btn btn-sm btn-danger" title="Eliminar Entrega">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("SubirEntrega", "Entregas", new { idTarea = tarea.IdTarea })" class="btn btn-sm btn-success" title="Entrega">
+                                                    <i class="fas fa-file-upload"></i>
+                                                </a>
+                                            }
                                         </div>
                                     </td>
                                 </tr>

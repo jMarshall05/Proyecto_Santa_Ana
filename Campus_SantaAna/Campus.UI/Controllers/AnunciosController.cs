@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio;
 using Campus.Abstracciones.LogicaDeNegocio.Anuncios.AgregarAnunciosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Anuncios.EditarAnunciosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Anuncios.EliminarAnunciosLN;
@@ -12,13 +14,16 @@ using Campus.LogicaDeNegocio.Anuncios.AgregarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.EditarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.EliminarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.ListarAnuncios;
-using Campus.UI.Filtros;
+using Campus.LogicaDeNegocio.Bitacora;
+using Microsoft.AspNet.Identity;
 public class AnunciosController : Controller
 {
     private readonly IListarAnunciosLN _listarAnunciosLN;
     private readonly IAgregarAnunciosLN _agregarAnunciosLN;
     private readonly IEliminarAnunciosLN _eliminarAnunciosLN;
     private readonly IEditarAnunciosLN _editarAnunciosLN;
+    private readonly IBitacoraLN _bitacora;
+
 
     public AnunciosController()
     {
@@ -26,6 +31,7 @@ public class AnunciosController : Controller
         _agregarAnunciosLN = new AgregarAnunciosLN();
         _eliminarAnunciosLN = new EliminarAnunciosLN();
         _editarAnunciosLN = new EditarAnunciosLN();
+        _bitacora = new BitacoraLN();
     }
 
     // GET: Anuncios/ListarAnuncios
@@ -57,7 +63,6 @@ public class AnunciosController : Controller
         if (ModelState.IsValid)
         {
             try
-
             {
                 anuncio.FechaPublicacion = DateTime.Now;
                 if (anuncio.Imagen != null && anuncio.Imagen.ContentLength > 0)
@@ -68,9 +73,25 @@ public class AnunciosController : Controller
                         ModelState.AddModelError("", "Tipo de archivo no permitido.");
                         return View(anuncio);
                     }
-                    GuardarArchivo(anuncio);
+                    GenerarRuta(anuncio);
+                    using (var fileStream = new FileStream(Server.MapPath(anuncio.ImagenRuta), FileMode.Create))
+                    {
+                        anuncio.Imagen.InputStream.CopyTo(fileStream);
+                    }
                 }
                 _agregarAnunciosLN.AgregarAnuncio(anuncio);
+
+                // Bitácora: inserción de nuevo anuncio
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = "INSERT",
+                    Tabla = "Anuncios",
+                    Descripcion = $"Creación de anuncio '{anuncio.Titulo}'"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+
                 return RedirectToAction("ListarAnuncios");
             }
             catch (Exception ex)
@@ -81,6 +102,7 @@ public class AnunciosController : Controller
         }
         return View(anuncio);
     }
+
 
     // GET: Anuncios/Edit/5
     public ActionResult EditParcial(int id)
@@ -96,13 +118,14 @@ public class AnunciosController : Controller
     // POST: Anuncios/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult EditParcial(AnuncioDto anuncio)
+    public async Task<ActionResult> EditParcialAsync(AnuncioDto anuncio)
     {
         if (!ModelState.IsValid) return View(anuncio);
         try
         {
             string imagenAnterior = Request.Form["ImagenActual"];
             bool eliminarImagen = Request.Form["EliminarImagen"] == "true";
+            bool nuevaImagen = false;
 
             if (eliminarImagen && !string.IsNullOrEmpty(imagenAnterior))
             {
@@ -112,10 +135,12 @@ public class AnunciosController : Controller
             }
             else if (anuncio.Imagen != null && anuncio.Imagen.ContentLength > 0)
             {
+                nuevaImagen = true;
                 if (!string.IsNullOrEmpty(imagenAnterior))
                 {
                     string rutaCompleta = Server.MapPath(imagenAnterior);
                     if (System.IO.File.Exists(rutaCompleta)) System.IO.File.Delete(rutaCompleta);
+
                 }
                 ComprobarTipodeArchivo(anuncio, out string[] extensionesPermitidas, out string extensionArchivo);
                 if (!extensionesPermitidas.Contains(extensionArchivo))
@@ -123,14 +148,34 @@ public class AnunciosController : Controller
                     ModelState.AddModelError("", "Tipo de archivo no permitido.");
                     return View(anuncio);
                 }
-                GuardarArchivo(anuncio);
             }
             else
             {
                 anuncio.ImagenRuta = imagenAnterior;
             }
+            if (nuevaImagen)
+                GenerarRuta(anuncio);
 
-            _editarAnunciosLN.EditarAnuncio(anuncio);
+            var resultado = await _editarAnunciosLN.EditarAnuncio(anuncio);
+
+            if (resultado == true && nuevaImagen)
+            {
+                using (var fileStream = new FileStream(Server.MapPath(anuncio.ImagenRuta), FileMode.Create))
+                {
+                    anuncio.Imagen.InputStream.CopyTo(fileStream);
+                }
+            }
+
+            var bitacora = new BitacoraDto
+            {
+                Fecha = DateTime.Now,
+                Usuario = User.Identity.GetUserId(),
+                Accion = "UPDATE",
+                Tabla = "Anuncios",
+                Descripcion = $"Actualización de anuncio ID: {anuncio.IdAnuncio} - '{anuncio.Titulo}'"
+            };
+            _bitacora.RegistrarEvento(bitacora);
+
             return RedirectToAction("ListarAnuncios");
         }
         catch (Exception ex)
@@ -150,7 +195,7 @@ public class AnunciosController : Controller
             {
                 return HttpNotFound();
             }
-            return View(anuncio); 
+            return View(anuncio);
         }
         catch (Exception ex)
         {
@@ -180,6 +225,17 @@ public class AnunciosController : Controller
             }
 
             _eliminarAnunciosLN.EliminarAnuncio(id);
+
+            var bitacora = new BitacoraDto
+            {
+                Fecha = DateTime.Now,
+                Usuario = User.Identity.GetUserId(),
+                Accion = "DELETE",
+                Tabla = "Anuncios",
+                Descripcion = $"Eliminación lógica de anuncio ID: {id} - '{anuncio.Titulo}' - Estado cambiado a inactivo"
+            };
+            _bitacora.RegistrarEvento(bitacora);
+
             return RedirectToAction("ListarAnuncios");
         }
         catch (Exception ex)
@@ -194,7 +250,7 @@ public class AnunciosController : Controller
     {
         try
         {
-            var anuncios = _listarAnunciosLN.ListarAnuncios(); 
+            var anuncios = _listarAnunciosLN.ListarAnuncios();
             return View(anuncios);
         }
         catch (Exception ex)
@@ -213,7 +269,7 @@ public class AnunciosController : Controller
             {
                 return HttpNotFound();
             }
-            return PartialView("_DetailsParcial",anuncio);
+            return PartialView("_DetailsParcial", anuncio);
         }
         catch (Exception ex)
         {
@@ -228,20 +284,13 @@ public class AnunciosController : Controller
         extensionArchivo = Path.GetExtension(anuncio.Imagen.FileName).ToLower();
     }
 
-    private void GuardarArchivo(AnuncioDto anuncio)
+    private void GenerarRuta(AnuncioDto anuncio)
     {
         var nombreArchivo = Path.GetFileNameWithoutExtension(anuncio.Imagen.FileName);
         var extension = Path.GetExtension(anuncio.Imagen.FileName);
         var rutaCarpeta = Server.MapPath("~/Uploads/Anuncios/");
         var rutaCompleta = Path.Combine(rutaCarpeta, $"{nombreArchivo}_{Guid.NewGuid()}{extension}");
         if (!Directory.Exists(rutaCarpeta)) Directory.CreateDirectory(rutaCarpeta);
-
-        using (var fileStream = new FileStream(rutaCompleta, FileMode.Create))
-        {
-            anuncio.Imagen.InputStream.CopyTo(fileStream);
-        }
-
         anuncio.ImagenRuta = "~/Uploads/Anuncios/" + Path.GetFileName(rutaCompleta);
-
     }
 }

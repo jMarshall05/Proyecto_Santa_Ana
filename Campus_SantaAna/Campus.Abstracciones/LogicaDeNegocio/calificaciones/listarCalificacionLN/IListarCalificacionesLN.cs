@@ -9,6 +9,6 @@ namespace Campus.Abstracciones.LogicaDeNegocio.calificaciones.listarCalificacion
         Task<List<CalificacionesDto>> ListarCalificaciones();
         Task<List<CalificacionesDto>> ListarCalificacionesPorGrupoAsync(int idGrupo);
         Task<List<CalificacionesDto>> ListarCalificacionesPorEstudianteAsync(string idEstudiante);
-        
+
     }
 }

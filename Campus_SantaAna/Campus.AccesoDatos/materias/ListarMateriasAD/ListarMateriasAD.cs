@@ -2,7 +2,6 @@
 using System.Linq;
 using Campus.Abstracciones.AccesoDatos.Materias.ListarMateriasAD;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.Materias.ListarMateriasAD
 {
@@ -21,7 +20,8 @@ namespace Campus.AccesoDatos.Materias.ListarMateriasAD
                     select new MateriaDto
                     {
                         Id_Materia = materia.IdMateria,
-                        Nombre = materia.Nombre
+                        Nombre = materia.Nombre,
+                        Estado = materia.Estado
                     }).ToList();
         }
 
@@ -34,7 +34,8 @@ namespace Campus.AccesoDatos.Materias.ListarMateriasAD
             return new MateriaDto
             {
                 Id_Materia = materia.IdMateria,
-                Nombre = materia.Nombre
+                Nombre = materia.Nombre,
+                Estado = materia.Estado
             };
         }
     }

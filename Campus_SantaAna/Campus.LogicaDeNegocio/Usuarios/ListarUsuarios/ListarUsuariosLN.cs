@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Campus.Abstracciones.AccesoDatos.Usuarios.ListarUsuariosAD;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.ModelosUI;
@@ -12,7 +8,7 @@ namespace Campus.LogicaDeNegocio.Usuarios.ListarUsuarios
 {
     public class ListarUsuariosLN : IListarUsuariosLN
     {
-        private  IListarUsuariosAD _listarUsuarios;
+        private IListarUsuariosAD _listarUsuarios;
         public ListarUsuariosLN()
         {
             _listarUsuarios = new ListarUsuariosAD();

@@ -2,18 +2,51 @@
 
 @{
     ViewBag.Title = "Listado de Tareas";
+
+    if (User.Identity.IsAuthenticated)
+    {
+        if (User.IsInRole("Administradores"))
+        {
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        }
+        else
+        {
+            Layout = "~/Views/Shared/_Layout.cshtml";
+        }
+    }
+
 }
 
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-md-6">
-            <h2>@ViewBag.Title</h2>
+            @if (ViewBag.Grupo == null)
+            {
+                <h2>@ViewBag.Title</h2>
+            }
+            else
+            {
+                <h2>@ViewBag.Title del grupo @ViewBag.Grupo : @ViewBag.Materia</h2>
+            }
+
         </div>
         <div class="col-md-6">
             <div class="d-flex justify-content-end">
-                <a href="@Url.Action("Create")" class="btn btn-primary">
-                    <i class="fas fa-plus mr-2"></i> Nueva Tarea
-                </a>
+                @if (ViewBag.Grupo == null)
+                {
+                    <a href="@Url.Action("Create")" class="btn btn-primary">
+                        <i class="fas fa-plus mr-2"></i> Nueva Tarea
+                    </a>
+                }
+                else
+                {
+                    <a class="btn btn-primary btn-createParcial" data-idmateria="@ViewBag.materiaId" data-idgrupo="@ViewBag.grupoId">
+                        <i class="fas fa-plus mr-2"></i> Nueva Tarea
+                    </a>
+                }
+
+
+
             </div>
         </div>
     </div>
@@ -73,6 +106,9 @@
                                         <a href="@Url.Action("Details", new { id = item.IdTarea })" class="btn btn-sm btn-outline-info">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        <a href="@Url.Action("Index","Entregas", new { idTarea = item.IdTarea })" class="btn btn-sm btn-outline-success">
+                                            <i class="fas fa-download"></i>
+                                        </a>
                                         @using (Html.BeginForm("Delete", "Tareas", new { id = item.IdTarea }, FormMethod.Post, new { onsubmit = "return confirm('¿Estás seguro de que deseas eliminar esta tarea?');", @class = "d-inline" }))
                                         {
                                             @Html.AntiForgeryToken()
@@ -88,6 +124,27 @@
                         }
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="TareasModal" tabindex="-1" aria-labelledby="AnunciosModalTittleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-primary text-white">
+                <h1 class="modal-title fs-5 d-flex align-items-center" id="TareasModalTittleLabel">
+                    <i class="fas fa-tasks me-2"></i>
+                    <span>Agregar</span>
+                </h1>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer bg-light">
+                <button class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cerrar
+                </button>
             </div>
         </div>
     </div>
@@ -115,17 +172,149 @@
         .table-responsive {
             overflow-x: auto;
         }
+
+        /* Mejoras al Modal */
+        #TareasModal .modal-content {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: none;
+        }
+
+        #TareasModal .modal-header {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            border-bottom: none;
+            padding: 1.5rem 2rem;
+            position: relative;
+        }
+
+        #TareasModal .modal-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        #TareasModal .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        #TareasModal .modal-title i {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        #TareasModal .btn-close {
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            filter: brightness(0) invert(1);
+        }
+
+        #TareasModal .btn-close:hover {
+            opacity: 1;
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        #TareasModal .modal-body {
+            padding: 2.5rem 2rem;
+            max-height: 70vh;
+            overflow-y: auto;
+            background: #f8f9fc;
+        }
+
+        /* Scrollbar personalizado para el modal */
+        #TareasModal .modal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #TareasModal .modal-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        #TareasModal .modal-body::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #4e73df, #224abe);
+            border-radius: 10px;
+        }
+
+        #TareasModal .modal-body::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #224abe, #1a3a8f);
+        }
+
+        #TareasModal .modal-footer {
+            border-top: 1px solid #e3e6f0;
+            padding: 1.5rem 2rem;
+            background: #fff;
+        }
+
+        #TareasModal .btn-secondary {
+            border-radius: 10px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease;
+            border: 2px solid #858796;
+            padding: 0.7rem 1.5rem;
+            background: #fff;
+            color: #858796;
+        }
+
+        #TareasModal .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(133, 135, 150, 0.3);
+            background: #858796;
+            color: white;
+        }
+
+        /* Animación de entrada del modal */
+        #TareasModal.fade .modal-dialog {
+            transform: translateY(-30px) scale(0.95);
+            opacity: 0;
+            transition: all 0.3s ease-out;
+        }
+
+        #TareasModal.show .modal-dialog {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        /* Backdrop mejorado */
+        #TareasModal.modal {
+            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            #TareasModal .modal-dialog {
+                margin: 1rem;
+            }
+
+            #TareasModal .modal-body {
+                padding: 1.5rem 1.25rem;
+                max-height: 60vh;
+            }
+
+            #TareasModal .modal-header {
+                padding: 1.25rem 1.5rem;
+            }
+
+            #TareasModal .modal-title {
+                font-size: 1.15rem;
+            }
+
+            #TareasModal .modal-footer {
+                padding: 1.25rem 1.5rem;
+            }
+        }
     </style>
 }
 
 @section scripts {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <script>
-        // Cerrar automáticamente los mensajes de alerta después de 5 segundos
-        $(document).ready(function () {
-            setTimeout(function () {
-                $('.alert').alert('close');
-            }, 5000);
-        });
-    </script>
+    <script src="~/Scripts/Tareas/ScriptTareas.js"></script>
 }

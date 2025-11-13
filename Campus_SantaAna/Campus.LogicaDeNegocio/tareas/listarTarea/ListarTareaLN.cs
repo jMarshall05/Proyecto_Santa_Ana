@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.listarTareaAD;
-using Campus.Abstracciones.ModelosUI;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
+using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.tareas.listarTareaAD;
 
 namespace Campus.LogicaDeNegocio.Tareas.ListarTareaLN

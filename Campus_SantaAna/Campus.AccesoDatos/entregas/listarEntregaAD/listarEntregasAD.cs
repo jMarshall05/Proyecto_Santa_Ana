@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.entregas.listarEntregaAD;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
-using System.Data.Entity;
 
 namespace Campus.AccesoDatos.Entregas.ListarEntregaAD
 {

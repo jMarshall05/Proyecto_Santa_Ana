@@ -44,11 +44,16 @@ namespace Campus.UI.Filtros
             {
                 var appUser = userManager.FindById(userId);
                 is2FAEnabled = appUser.TwoFactorEnabled;
+                cache.Add(verifiedKey, true, DateTimeOffset.Now.AddMinutes(30));
                 cache.Add(twoFAKey, is2FAEnabled, DateTimeOffset.Now.AddMinutes(30));
             }
 
             if (!is2FAEnabled.Value)
+            {
+                if (cache[verifiedKey] == null)
+                    cache.Add(verifiedKey, true, DateTimeOffset.Now.AddMinutes(30));
                 return true;
+            }
 
             var isRecentlyVerified = cache[verifiedKey] as bool?;
             if (isRecentlyVerified == true)
@@ -59,7 +64,16 @@ namespace Campus.UI.Filtros
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
-            filterContext.Result = new RedirectResult("/Account/LoginWith2FA");
+            var user = filterContext.HttpContext.User;
+            if (user.Identity.IsAuthenticated)
+            {
+                filterContext.Result = new RedirectResult("/Account/LoginWith2FA");
+            }
+            else if (!user.Identity.IsAuthenticated)
+            {
+                filterContext.Result = new RedirectResult("/Account/login");
+
+            }
         }
     }
 }

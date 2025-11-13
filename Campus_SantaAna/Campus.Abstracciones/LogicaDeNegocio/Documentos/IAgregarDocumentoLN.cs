@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Campus.Abstracciones.ModelosUI;
 
-namespace Campus.Abstracciones.AccesoDatos.Cursos.EliminarCursoLN
+namespace Campus.Abstracciones.LogicaDeNegocio.Documentos
 {
-    public interface IEliminarCursoLN
+    public interface IAgregarDocumentoLN
     {
-        Task<bool> EliminarCurso(int idCurso);
+        int AgregarDocumento(DocumentosDto documento);
     }
 }

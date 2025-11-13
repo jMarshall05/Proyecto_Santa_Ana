@@ -28,14 +28,14 @@ namespace Campus.Abstracciones.ModelosUI
         [DisplayName("Fecha de Publicación")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public DateTime FechaPublicacion { get; set; }
-       
+
         [DisplayName("Imagen del Anuncio")]
         public string ImagenRuta { get; set; }
         [DisplayName("Estado")]
-        public bool Estado { get; set; }    
+        public bool Estado { get; set; }
 
         [NotMapped]
         [DisplayName("Subir Imagen")]
-        public HttpPostedFileBase Imagen { get; set; } 
+        public HttpPostedFileBase Imagen { get; set; }
     }
 }

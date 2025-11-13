@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Campus.Abstracciones.ModelosUI;
 
-namespace Campus.Abstracciones.AccesoDatos.Cursos.EliminarCursoAD
+namespace Campus.Abstracciones.LogicaDeNegocio.Documentos
 {
-    public interface IEliminarCursoAD
+    public interface IListarDocumentosLN
     {
-        Task<bool> EliminarCursoAD(int idCurso);
+        IEnumerable<DocumentosDto> ListarDocumentos();
+
     }
 }

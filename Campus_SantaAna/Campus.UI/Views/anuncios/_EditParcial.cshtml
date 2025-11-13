@@ -7,7 +7,7 @@
 <div class="form-container">
     <h2>Editar Anuncio</h2>
 
-    @using (Html.BeginForm("EditParcial", "Anuncios", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("EditParcialAsync", "Anuncios", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -35,7 +35,7 @@
         if (!string.IsNullOrEmpty(Model.ImagenRuta))
         {
             <div class="mb-3">
-                <label>Imagen Actual</label>
+                <label>Imagen Actual</label><br />
                 <img src="@Url.Content(Model.ImagenRuta)" class="img-fluid mb-2" />
                 @Html.Hidden("ImagenActual", Model.ImagenRuta)
             </div>

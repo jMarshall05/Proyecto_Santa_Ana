@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace Campus.Abstracciones.ModelosUI
 {
@@ -21,6 +15,6 @@ namespace Campus.Abstracciones.ModelosUI
         [DisplayName("Tipo")]
         public string Tipo { get; set; }
         [DisplayName("Estado")]
-        public bool Estado {  get; set; } = true;
+        public bool Estado { get; set; } = true;
     }
 }

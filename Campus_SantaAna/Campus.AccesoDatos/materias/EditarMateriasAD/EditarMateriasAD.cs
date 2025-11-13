@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Materias.EditarMateriasAD;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.Materias.EditarMateriasAD
 {

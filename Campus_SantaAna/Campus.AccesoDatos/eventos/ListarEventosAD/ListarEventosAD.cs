@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Eventos.ListarEventosad;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.Eventos.ListarEventosAD
 {
@@ -27,7 +26,8 @@ namespace Campus.AccesoDatos.Eventos.ListarEventosAD
                     Titulo = e.Titulo,
                     FechaInicio = e.FechaInicio,
                     FechaFin = e.FechaFin,
-                    IdUsuario = e.IdUsuario
+                    IdUsuario = e.IdUsuario,
+                    Estado = e.Estado
                 })
                 .ToListAsync();
         }
