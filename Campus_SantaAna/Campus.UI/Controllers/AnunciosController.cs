@@ -50,9 +50,9 @@ public class AnunciosController : Controller
     }
 
     // GET: Anuncios/Create
-    public ActionResult Create()
+    public ActionResult CreateParcial()
     {
-        return View();
+        return PartialView("_CreateParcial");
     }
 
     // POST: Anuncios/Create

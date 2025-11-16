@@ -20,6 +20,7 @@ namespace Campus.LogicaDeNegocio.Anuncios.AgregarAnuncios
         {
             try
             {
+                anuncio.Estado = true;
                 return await _agregarAnuncios.AgregarAnuncio(anuncio);
             }
             catch (Exception ex)
