@@ -143,11 +143,27 @@
             </div>
             <div class="form-grid">
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Cedula, new { @class = "form-label" })
+                    @Html.LabelFor(model => model.TipoIdentificacion, "Tipo de Identificación", new { @class = "form-label" })
                     <span class="required-mark">*</span>
                     <div class="input-wrapper">
-                        <span class="input-icon"><i class="fas fa-id-card"></i></span>
-                        @Html.TextBoxFor(model => model.Cedula, new { @class = "form-control", placeholder = "Número de cédula", required = "required" })
+                        <span class="input-icon"><i class="fas fa-id-card-alt"></i></span>
+                        @Html.DropDownListFor(model => model.TipoIdentificacion, new List<SelectListItem>
+                        {
+                            new SelectListItem { Text = "Cédula Física", Value = "Fisica" },
+                            new SelectListItem { Text = "DIMEX", Value = "Dimex" },
+                            new SelectListItem { Text = "Pasaporte", Value = "Pasaporte" }
+                        }, "Seleccione tipo", new { @class = "form-control", required = "required", id = "tipoIdentificacion" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.TipoIdentificacion, "", new { @class = "validation-message" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Cedula, "Número de Identificación", new { @class = "form-label" })
+                    <span class="required-mark">*</span>
+                    <div class="input-wrapper">
+                        <span class="input-icon"><i class="fas fa-fingerprint"></i></span>
+                        @Html.TextBoxFor(model => model.Cedula, new { @class = "form-control", placeholder = "Ingrese el número", required = "required", id = "numeroIdentificacion" })
+                        <small class="form-text text-muted" id="formatoAyuda"></small>
                     </div>
                     @Html.ValidationMessageFor(model => model.Cedula, "", new { @class = "validation-message" })
                 </div>
@@ -526,6 +542,112 @@
 $(function(){
     var phoneIndex=@(Model.Telefonos != null ? Model.Telefonos.Count : 0);
 
+    // Configuración de formatos de identificación
+    var formatosIdentificacion = {
+        'Fisica': {
+            pattern: /^[0-9]{9}$/,
+            placeholder: '123456789',
+            maxlength: 9,
+            ayuda: 'Formato: 9 dígitos numéricos',
+            ejemplo: 'Ejemplo: 123456789'
+        },
+        'Dimex': {
+            pattern: /^[0-9]{11,12}$/,
+            placeholder: '12345678901',
+            maxlength: 12,
+            ayuda: 'Formato: 11 o 12 dígitos numéricos',
+            ejemplo: 'Ejemplo: 12345678901'
+        },
+        'Pasaporte': {
+            pattern: /^[A-Z0-9]{6,9}$/,
+            placeholder: 'A1234567',
+            maxlength: 9,
+            ayuda: 'Formato: 6 a 9 caracteres alfanuméricos (mayúsculas)',
+            ejemplo: 'Ejemplo: A1234567'
+        }
+    };
+
+    // Función para actualizar formato según tipo de identificación
+    function actualizarFormatoIdentificacion() {
+        var tipo = $('#tipoIdentificacion').val();
+        var $numeroId = $('#numeroIdentificacion');
+        var $ayuda = $('#formatoAyuda');
+
+        if (tipo && formatosIdentificacion[tipo]) {
+            var formato = formatosIdentificacion[tipo];
+            $numeroId.attr({
+                'placeholder': formato.placeholder,
+                'maxlength': formato.maxlength
+            });
+            $ayuda.html('<i class="fas fa-info-circle me-1"></i>' + formato.ayuda + ' - ' + formato.ejemplo);
+        } else {
+            $numeroId.attr({
+                'placeholder': 'Ingrese el número',
+                'maxlength': '20'
+            });
+            $ayuda.html('');
+        }
+    }
+
+    // Evento change del dropdown de tipo identificación
+    $('#tipoIdentificacion').on('change', function() {
+        actualizarFormatoIdentificacion();
+        $('#numeroIdentificacion').val(''); // Limpiar campo al cambiar tipo
+    });
+
+    // Validación en tiempo real del número de identificación
+    $('#numeroIdentificacion').on('input', function() {
+        var tipo = $('#tipoIdentificacion').val();
+        var valor = $(this).val();
+
+        if (tipo && formatosIdentificacion[tipo]) {
+            var formato = formatosIdentificacion[tipo];
+
+            // Aplicar formato específico según tipo
+            if (tipo === 'Fisica' || tipo === 'Dimex') {
+                // Solo números
+                $(this).val(valor.replace(/[^0-9]/g, ''));
+            } else if (tipo === 'Pasaporte') {
+                // Alfanumérico en mayúsculas
+                $(this).val(valor.toUpperCase().replace(/[^A-Z0-9]/g, ''));
+            }
+        }
+    });
+
+    // Validación antes de enviar el formulario
+    $('#formEditarUsuario').on('submit', function(e) {
+        var tipo = $('#tipoIdentificacion').val();
+        var numero = $('#numeroIdentificacion').val();
+
+        if (!tipo) {
+            alert('Por favor seleccione el tipo de identificación');
+            e.preventDefault();
+            return false;
+        }
+
+        if (!numero) {
+            alert('Por favor ingrese el número de identificación');
+            e.preventDefault();
+            return false;
+        }
+
+        // Validar formato según tipo
+        if (formatosIdentificacion[tipo]) {
+            var formato = formatosIdentificacion[tipo];
+            if (!formato.pattern.test(numero)) {
+                alert('Formato inválido. ' + formato.ayuda);
+                e.preventDefault();
+                return false;
+            }
+        }
+
+        var $btn = $('#btnGuardar');
+        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Guardando...');
+    });
+
+    // Inicializar formato al cargar la página
+    actualizarFormatoIdentificacion();
+
     function updateToggleState($c){
         var $l=$c.closest('.toggle-label,.toggle-label-large');
         var $t=$l.find('.toggle-text-large');
@@ -564,11 +686,6 @@ $(function(){
                 }
             });
         }
-    });
-
-    $('#formEditarUsuario').on('submit',function(e){
-        var $btn=$('#btnGuardar');
-        $btn.prop('disabled',true).html('<span class="spinner-border spinner-border-sm me-2"></span>Guardando...');
     });
 });
 </script>

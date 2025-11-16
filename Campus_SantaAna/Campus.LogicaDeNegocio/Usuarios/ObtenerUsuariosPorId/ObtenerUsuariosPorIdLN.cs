@@ -7,7 +7,7 @@ namespace Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId
 {
     public class ObtenerUsuariosPorIdLN : IObtenerUsuariosPorIdLN
     {
-        private IObtenerUsuariosPorIdAD _obtenerUsuariosPorId;
+        private readonly IObtenerUsuariosPorIdAD _obtenerUsuariosPorId;
         public ObtenerUsuariosPorIdLN()
         {
             _obtenerUsuariosPorId = new ObtenerUsuariosPorIdAD();

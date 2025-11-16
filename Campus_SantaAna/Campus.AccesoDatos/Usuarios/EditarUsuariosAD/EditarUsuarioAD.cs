@@ -27,6 +27,7 @@ namespace Campus.AccesoDatos.Usuarios.EditarUsuariosAD
                 usuarioExistente.FechaDeModificacion = DateTime.Now;
                 usuarioExistente.Rol = usuario.Rol;
                 usuarioExistente.Estado = usuario.Estado;
+                usuarioExistente.TipoIdentificacion = usuario.TipoIdentificacion;
 
                 EntityState estado = _elContexto.Entry(usuarioExistente).State = EntityState.Modified;
                 int resultado = await _elContexto.SaveChangesAsync();

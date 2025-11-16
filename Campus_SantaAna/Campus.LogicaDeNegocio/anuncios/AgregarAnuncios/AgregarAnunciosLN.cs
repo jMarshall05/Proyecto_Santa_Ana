@@ -9,7 +9,7 @@ namespace Campus.LogicaDeNegocio.Anuncios.AgregarAnuncios
 {
     public class AgregarAnunciosLN : IAgregarAnunciosLN
     {
-        private IAgregarAnunciosAD _agregarAnuncios;
+        private readonly IAgregarAnunciosAD _agregarAnuncios;
 
         public AgregarAnunciosLN()
         {

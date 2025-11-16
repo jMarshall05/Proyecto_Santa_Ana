@@ -34,6 +34,9 @@ namespace Campus.Abstracciones.ModelosUI
         public DateTime? FechaDeModificacion { get; set; }
         [DisplayName("Rol")]
         public string Rol { get; set; }
+
+        [DisplayName("Tipo de Identificacion")]
+        public string TipoIdentificacion { get; set; }
         [DisplayName("Estado")]
         public bool Estado { get; set; }
 

@@ -16,6 +16,8 @@ using Campus.LogicaDeNegocio.Anuncios.EliminarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.ListarAnuncios;
 using Campus.LogicaDeNegocio.Bitacora;
 using Microsoft.AspNet.Identity;
+
+[Authorize]
 public class AnunciosController : Controller
 {
     private readonly IListarAnunciosLN _listarAnunciosLN;

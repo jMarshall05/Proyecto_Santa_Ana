@@ -105,6 +105,9 @@ namespace Campus.UI.Models
         [Display(Name = "Rol ")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Rol { get; set; }
+        [Display(Name = "Tipo de Identificacion ")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public string TipoIdentificacion { get; set; }
     }
 
     public class ResetPasswordViewModel

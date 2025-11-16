@@ -26,8 +26,6 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using QRCoder;
 
-using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
-
 namespace Campus.UI.Controllers
 {
     [Authorize]
