@@ -35,7 +35,8 @@ namespace Campus.AccesoDatos.Usuarios.AgregarUsuariosAD
                 Cedula = usuario.Cedula,
                 FechaDeRegistro = usuario.FechaDeRegistro,
                 Rol = usuario.Rol,
-                Estado = usuario.Estado
+                Estado = usuario.Estado,
+                TipoIdentificacion = usuario.TipoIdentificacion
 
             };
         }

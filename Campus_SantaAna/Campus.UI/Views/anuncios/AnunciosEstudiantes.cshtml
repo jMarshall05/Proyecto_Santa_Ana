@@ -1,48 +1,146 @@
-﻿
-@model IEnumerable<Campus.Abstracciones.ModelosUI.AnuncioDto>
-
+﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.AnuncioDto>
 @{
-    ViewBag.Title = "Lista de Anuncios";
+    ViewBag.Title = "Próximos Eventos Escolares";
+    var anunciosOrdenados = Model.OrderByDescending(a => a.FechaPublicacion).ToList();
 }
 
-<div class="container">
-    <h1 class="container-title">Próximos Eventos Escolares</h1>
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="text-center mb-5">
+        <h1 class="container-title display-4 fw-bold">
+            <i class="fas fa-calendar-star text-primary me-3"></i>
+            Próximos Eventos Escolares
+        </h1>
+        <p class="lead text-muted mt-3">Mantente informado sobre las actividades y eventos de nuestra institución</p>
+        <hr class="mx-auto" style="width: 100px; height: 3px; background: linear-gradient(to right, #007bff, #6610f2);">
+    </div>
 
-    @if (!Model.Any())
+    @if (!anunciosOrdenados.Any())
     {
-        <p class="text-center text-muted">No hay eventos disponibles por el momento. ¡Vuelve pronto!</p>
+        <!-- Empty State -->
+        <div class="text-center py-5">
+            <div class="empty-state">
+                <i class="fas fa-calendar-times text-muted mb-4" style="font-size: 5rem; opacity: 0.3;"></i>
+                <h3 class="text-muted">No hay eventos disponibles</h3>
+                <p class="text-muted">¡Vuelve pronto para ver las próximas actividades!</p>
+            </div>
+        </div>
     }
     else
     {
-        <div class="row">
-            @foreach (var anuncio in Model)
-            {
-                <div class="col-md-6 col-lg-4">
-                    <div class="event-card">
+        <!-- Events Counter -->
+        <div class="mb-4 d-flex justify-content-between align-items-center">
+            <div>
+                <span class="badge bg-primary fs-6 px-3 py-2">
+                    <i class="fas fa-bullhorn me-2"></i>@anunciosOrdenados.Count Evento(s) Publicado(s)
+                </span>
+            </div>
+            <div class="text-muted small">
+                <i class="fas fa-sort-amount-down me-1"></i>Ordenados por fecha de publicación
+            </div>
+        </div>
 
-                        @* 🔹 Mostrar imagen si existe *@
+        <!-- Events Grid -->
+        <div class="row g-4">
+            @foreach (var anuncio in anunciosOrdenados)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="event-card h-100">
+                        @* Imagen del evento *@
                         @if (!string.IsNullOrEmpty(anuncio.ImagenRuta))
                         {
-                            <div class="event-image text-center mb-2">
+                            <div class="event-image-container position-relative overflow-hidden">
                                 <img src="@Url.Content(anuncio.ImagenRuta)"
-                                     alt="Imagen de @anuncio.Titulo"
-                                     class="img-fluid rounded"
-                                     style="max-height:200px; object-fit:cover;" />
+                                     alt="@anuncio.Titulo"
+                                     class="event-image" />
+                                <div class="image-overlay">
+                                    <i class="fas fa-search-plus text-white fs-2"></i>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="event-image-container event-image-placeholder">
+                                <i class="fas fa-image text-white"></i>
                             </div>
                         }
 
-                        <div class="event-title">@anuncio.Titulo</div>
+                        <div class="event-content p-4">
+                            <!-- Título -->
+                            <h3 class="event-title mb-3">@anuncio.Titulo</h3>
 
-                        <div class="event-date">
-                            <strong>Evento:</strong> @anuncio.FechaEvento.ToString("dd MMM yyyy")<br />
-                            <strong>Publicado:</strong> @anuncio.FechaPublicacion.ToString("dd MMM yyyy")
+                            <!-- Fechas -->
+                            <div class="event-dates mb-3">
+                                @if (anuncio.FechaEvento!=null)
+                                {
+                                    var diasRestantes = (anuncio.FechaEvento - DateTime.Now).Days;
+                                    var badgeClass = diasRestantes <= 7 ? "bg-danger" : (diasRestantes <= 14 ? "bg-warning text-dark" : "bg-info");
+
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-calendar-day text-primary me-2"></i>
+                                        <span class="fw-bold me-2">Evento:</span>
+                                        <span class="badge @badgeClass">
+                                            @anuncio.FechaEvento.ToString("dd MMM yyyy")
+                                        </span>
+                                    </div>
+
+                                    if (diasRestantes >= 0)
+                                    {
+                                        <div class="text-muted small">
+                                            <i class="fas fa-clock me-1"></i>
+                                            @if (diasRestantes == 0)
+                                            {
+                                                <span class="text-danger fw-bold">¡Hoy!</span>
+                                            }
+                                            else if (diasRestantes == 1)
+                                            {
+                                                <span class="text-warning fw-bold">¡Mañana!</span>
+                                            }
+                                            else
+                                            {
+                                                <span>En @diasRestantes días</span>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-muted small">
+                                            <i class="fas fa-check-circle me-1 text-success"></i>Evento finalizado
+                                        </div>
+                                    }
+                                }
+
+                                <div class="d-flex align-items-center mt-2">
+                                    <i class="fas fa-newspaper text-success me-2"></i>
+                                    <span class="text-muted small">
+                                        Publicado: @anuncio.FechaPublicacion.ToString("dd MMM yyyy")
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Descripción -->
+                            <div class="event-description mb-3">
+                                @{
+                                    var descripcionCorta = anuncio.Descripcion.Length > 120
+                                        ? anuncio.Descripcion.Substring(0, 120) + "..."
+                                        : anuncio.Descripcion;
+                                }
+                                @descripcionCorta
+                            </div>
+
+                            <!-- Botón de detalles -->
+                            <button class="btn btn-details w-100 btn-Detalles-Anuncio" data-id="@anuncio.IdAnuncio">
+                                <i class="fas fa-info-circle me-2"></i>Ver Detalles
+                            </button>
                         </div>
 
-                        <div class="event-description">@anuncio.Descripcion</div>
-
-                        <button class="btn btn-details btn-Detalles-Anuncio" data-id="@anuncio.IdAnuncio">
-                            <i class="fas fa-edit me-1"></i> Detalles
-                        </button>
+                        <!-- Ribbon para eventos recientes -->
+                        @if ((DateTime.Now - anuncio.FechaPublicacion).Days <= 3)
+                        {
+                            <div class="ribbon">
+                                <span>NUEVO</span>
+                            </div>
+                        }
                     </div>
                 </div>
             }
@@ -50,47 +148,266 @@
     }
 </div>
 
+<!-- Modal de Detalles -->
 <div class="modal fade" id="AnuciosModal" tabindex="-1" aria-labelledby="AnunciosModalTittleLabel" aria-hidden="true">
-    <div class="modal-dialog modal-ms">
-        <div class="modal-content shadow-lg">
-            <div class="modal-header bg-primary text-white">
-                <h1 class="modal-title fs-5" id="UAnunciosModalTittleLabel">Agregar</h1>
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-gradient text-white border-0">
+                <h5 class="modal-title fw-bold" id="UAnunciosModalTittleLabel">
+                    <i class="fas fa-info-circle me-2"></i>Detalles del Evento
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Cargando información del evento...</p>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <div class="modal-footer border-0 bg-light">
+                <button class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cerrar
+                </button>
             </div>
         </div>
     </div>
 </div>
-@section scripts{
 
+@section scripts{
     <script>
         $(document).ready(function () {
+            // Animación de entrada para las tarjetas
             $('.event-card').hide().each(function (index) {
                 $(this).delay(150 * index).fadeIn(600);
             });
+
+            // Función para mostrar detalles del anuncio
+            function DetallesAnuncio() {
+                const id = $(this).data('id');
+                const modal = $("#AnuciosModal");
+                const modalBody = modal.find(".modal-body");
+                const modalTitle = modal.find(".modal-title");
+
+                // Mostrar spinner de carga
+                modalBody.html(`
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p class="mt-3 text-muted">Cargando información del evento...</p>
+                        </div>
+                    `);
+
+                modalTitle.html('<i class="fas fa-info-circle me-2"></i>Detalles del Evento');
+                modal.modal("show");
+
+                $.ajax({
+                    url: "/Anuncios/DetailsParcial",
+                    data: { id: id },
+                    type: "GET",
+                    success: function (data) {
+                        modalBody.html(data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error al cargar detalles:", error);
+                        modalBody.html(`
+                                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                    <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
+                                    <div>
+                                        <strong>Error al cargar los detalles</strong><br>
+                                        Por favor, intenta nuevamente en unos momentos.
+                                    </div>
+                                </div>
+                            `);
+                    }
+                });
+            }
+
+            // Event listener para el botón de detalles
+            $(document).on('click', '.btn-Detalles-Anuncio', DetallesAnuncio);
+
+            // Efecto hover en las tarjetas
+            $('.event-card').hover(
+                function () {
+                    $(this).addClass('shadow-lg');
+                },
+                function () {
+                    $(this).removeClass('shadow-lg');
+                }
+            );
         });
     </script>
-    <script>
-        function DetallesAnuncio(event) {
-            var id = $(this).data('id');
-            $.ajax({
-                url: "/Anuncios/DetailsParcial",
-                data: { id: id },
-                type: "GET",
-                success: function (data) {
-                    $(".modal-body").html(data);
-                    $(".modal-title").html("Detalles Anuncio");
-                    $("#AnuciosModal").modal("show");
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
-        };
-        $(document).on('click', '.btn-Detalles-Anuncio', DetallesAnuncio)
-    </script>
 }
+
+<style>
+    .container-title {
+        color: #2c3e50;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-text-fill-color: transparent;
+    }
+
+    .event-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .event-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+
+    .event-image-container {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+    }
+
+    .event-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .event-card:hover .event-image {
+        transform: scale(1.1);
+    }
+
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .event-card:hover .image-overlay {
+        opacity: 1;
+    }
+
+    .event-image-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .event-image-placeholder i {
+        font-size: 4rem;
+        opacity: 0.5;
+    }
+
+    .event-content {
+        background: white;
+    }
+
+    .event-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2c3e50;
+        line-height: 1.4;
+        min-height: 60px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .event-dates {
+        padding: 15px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    .event-description {
+        color: #6c757d;
+        line-height: 1.6;
+        min-height: 80px;
+        font-size: 0.95rem;
+    }
+
+    .btn-details {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+
+    .btn-details:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .ribbon {
+        position: absolute;
+        top: 15px;
+        right: -35px;
+        width: 150px;
+        background: #e74c3c;
+        color: white;
+        text-align: center;
+        padding: 5px;
+        transform: rotate(45deg);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 10;
+    }
+
+    .ribbon span {
+        font-weight: bold;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+    }
+
+    .bg-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .modal-content {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        padding: 20px 30px;
+    }
+
+    .empty-state {
+        padding: 60px 20px;
+    }
+
+    @@media (max-width: 768px) {
+        .event-title {
+            font-size: 1.1rem;
+            min-height: auto;
+        }
+
+        .event-description {
+            min-height: auto;
+        }
+
+        .ribbon {
+            right: -40px;
+            top: 10px;
+        }
+    }
+</style>

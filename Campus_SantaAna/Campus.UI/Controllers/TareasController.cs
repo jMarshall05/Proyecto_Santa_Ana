@@ -100,17 +100,17 @@ namespace Campus.UI.Controllers
 
             return View(tareas);
         }
-   
+
         [Authorize(Roles = "Administradores,Profesores")]
         public ActionResult Create(int? idMateria, int? idGrupo)
         {
-            if(idMateria.HasValue && idGrupo.HasValue)
+            if (idMateria.HasValue && idGrupo.HasValue)
             {
                 ViewBag.idMateria = idMateria;
                 ViewBag.idGrupo = idGrupo;
-                return PartialView("_CreateParcial",new TareaDto());
+                return PartialView("_CreateParcial", new TareaDto());
             }
-                
+
             var cursos = _listarCursosLN.ListarCursos().Where(c => c.ProfesorId == User.Identity.GetUserId());
             var materias = _listarMateriasLN.ListarMaterias().Where(m => m.Estado == true);
             var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);

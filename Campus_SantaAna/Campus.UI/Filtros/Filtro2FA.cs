@@ -16,7 +16,6 @@ namespace Campus.UI.Filtros
 
             // Permitir acceso libre a las rutas públicas
             if (path == "/account/login" ||
-                path == "/account/register" ||
                 path == "/account/forgotpassword" ||
                 path == "/account/enableauthenticator" ||
                 path == "/account/logoff" ||

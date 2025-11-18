@@ -1,26 +1,506 @@
 ﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.CalificacionesDto>
 
-<h2>Mis Calificaciones</h2>
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Tarea</th>
-            <th>Calificación</th>
-            <th>Comentario</th>
-            <th>Fecha</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var cal in Model)
-        {
-            <tr>
-                <td>@cal.Entrega.Tarea.Titulo</td>
-                <td>@cal.calificacion</td>
-                <td>@cal.comentario</td>
-                <td>@cal.fecha_calificacion.ToShortDateString()</td>
-            </tr>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Calificaciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --border-radius: 8px;
         }
-    </tbody>
-</table>
 
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eaeaea;
+            font-weight: 600;
+            padding: 1rem 1.25rem;
+        }
+
+        .table-responsive {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-weight: 600;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .badge-calificacion {
+            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 20px;
+            min-width: 60px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .badge-excelente {
+            background-color: var(--success-color);
+        }
+
+        .badge-bueno {
+            background-color: #27ae60;
+        }
+
+        .badge-regular {
+            background-color: var(--warning-color);
+        }
+
+        .badge-insuficiente {
+            background-color: var(--danger-color);
+        }
+
+        .comentario-cell {
+            max-width: 300px;
+        }
+
+        .stats-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .stats-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .filter-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #dee2e6;
+        }
+
+        .calificacion-cell {
+            font-weight: 600;
+        }
+
+        .hidden-row {
+            display: none;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        @@media (max-width: 768px) {
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+
+            .stats-card {
+                padding: 1rem;
+            }
+
+            .stats-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-4">
+        <!-- Encabezado -->
+        <div class="header-section">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-1"><i class="fas fa-graduation-cap me-2"></i>Mis Calificaciones</h1>
+                    <p class="mb-0">Consulta tus calificaciones y comentarios de las tareas entregadas</p>
+                </div>
+                @if (Model != null && Model.Any())
+                {
+                    <div class="text-end">
+                        <div class="fw-bold h5 mb-0" id="promedioGeneral">Promedio: @Model.Average(c => c.calificacion).ToString("0.0")</div>
+                        <small>Basado en todas tus calificaciones</small>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Filtros y Estadísticas -->
+        @if (Model != null && Model.Any())
+        {
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <div class="filter-section">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-4">
+                                <label for="filtroTarea" class="form-label">Filtrar por tarea:</label>
+                                <input type="text" class="form-control" id="filtroTarea" placeholder="Nombre de la tarea...">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="filtroCalificacion" class="form-label">Filtrar por calificación:</label>
+                                <select class="form-select" id="filtroCalificacion">
+                                    <option value="">Todas las calificaciones</option>
+                                    <option value="9-10">Excelente (9-10)</option>
+                                    <option value="8-8.9">Bueno (8-8.9)</option>
+                                    <option value="6-7.9">Regular (6-7.9)</option>
+                                    <option value="0-5.9">Insuficiente (0-5.9)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="ordenarPor" class="form-label">Ordenar por:</label>
+                                <select class="form-select" id="ordenarPor">
+                                    <option value="fecha-reciente">Fecha (más reciente)</option>
+                                    <option value="fecha-antigua">Fecha (más antigua)</option>
+                                    <option value="calificacion-alta">Calificación (más alta)</option>
+                                    <option value="calificacion-baja">Calificación (más baja)</option>
+                                    <option value="tarea-asc">Tarea (A-Z)</option>
+                                    <option value="tarea-desc">Tarea (Z-A)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="limpiarFiltros">
+                                    <i class="fas fa-times me-1"></i>Limpiar filtros
+                                </button>
+                                <span class="text-muted ms-2 small" id="contadorFiltros">
+                                    Mostrando @Model.Count() de @Model.Count() registros
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="card stats-card">
+                                <div class="stats-value text-primary" id="totalRegistros">@Model.Count()</div>
+                                <div class="stats-label">Tareas Calificadas</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card stats-card">
+                                <div class="stats-value text-success" id="promedioActual">@Model.Average(c => c.calificacion).ToString("0.0")</div>
+                                <div class="stats-label">Promedio General</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Tabla de Calificaciones -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-list me-2"></i>Lista de Calificaciones</span>
+                @if (Model != null && Model.Any())
+                {
+                    <span class="badge bg-primary" id="badgeRegistros">@Model.Count() registros</span>
+                }
+            </div>
+            <div class="card-body p-0">
+                @if (Model == null || !Model.Any())
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h4>No hay calificaciones disponibles</h4>
+                        <p>Parece que aún no tienes calificaciones registradas.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" id="tablaCalificaciones">
+                            <thead>
+                                <tr>
+                                    <th width="25%">Tarea</th>
+                                    <th width="15%">Calificación</th>
+                                    <th width="35%">Comentario</th>
+                                    <th width="25%">Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var cal in Model)
+                                {
+                                    <tr data-tarea="@cal.Entrega.Tarea.Titulo.ToLower()"
+                                        data-calificacion="@cal.calificacion"
+                                        data-fecha="@cal.fecha_calificacion.ToString("yyyy-MM-dd")">
+                                        <td>@cal.Entrega.Tarea.Titulo</td>
+                                        <td class="calificacion-cell">
+                                            @{ var badgeClass = "badge-calificacion ";
+                                                if (cal.calificacion >= 90) { badgeClass += "badge-excelente"; }
+                                                else if (cal.calificacion >= 80) { badgeClass += "badge-bueno"; }
+                                                else if (cal.calificacion >= 60) { badgeClass += "badge-regular"; }
+                                                else { badgeClass += "badge-insuficiente"; }
+                                            }
+                                            <span class="@badgeClass text-white">@cal.calificacion</span>
+                                        </td>
+                                        <td class="comentario-cell">@cal.comentario</td>
+                                        <td>
+                                            <i class="far fa-calendar me-2 text-muted"></i>@cal.fecha_calificacion.ToShortDateString()
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div class="no-results hidden-row" id="noResults">
+                            <i class="fas fa-search fa-2x mb-3"></i>
+                            <p>No se encontraron resultados con los filtros aplicados</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Pie de página informativo -->
+        <div class="mt-4 text-center text-muted">
+            <p class="small">Si tienes alguna pregunta sobre tus calificaciones, contacta a tu instructor.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const filtroTarea = document.getElementById('filtroTarea');
+            const filtroCalificacion = document.getElementById('filtroCalificacion');
+            const ordenarPor = document.getElementById('ordenarPor');
+            const limpiarFiltros = document.getElementById('limpiarFiltros');
+            const tablaCalificaciones = document.getElementById('tablaCalificaciones');
+            const contadorFiltros = document.getElementById('contadorFiltros');
+            const badgeRegistros = document.getElementById('badgeRegistros');
+            const totalRegistros = document.getElementById('totalRegistros');
+            const promedioActual = document.getElementById('promedioActual');
+            const promedioGeneral = document.getElementById('promedioGeneral');
+            const noResults = document.getElementById('noResults');
+
+            let calificacionesOriginales = [];
+
+            // Almacenar datos originales
+            if (tablaCalificaciones) {
+                const filas = tablaCalificaciones.querySelectorAll('tbody tr');
+                filas.forEach(fila => {
+                    calificacionesOriginales.push({
+                        elemento: fila,
+                        tarea: fila.dataset.tarea,
+                        calificacion: parseFloat(fila.dataset.calificacion),
+                        fecha: new Date(fila.dataset.fecha)
+                    });
+                });
+            }
+
+            // Event listeners para los filtros
+            if (filtroTarea) {
+                filtroTarea.addEventListener('input', aplicarFiltros);
+            }
+
+            if (filtroCalificacion) {
+                filtroCalificacion.addEventListener('change', aplicarFiltros);
+            }
+
+            if (ordenarPor) {
+                ordenarPor.addEventListener('change', aplicarOrdenamiento);
+            }
+
+            if (limpiarFiltros) {
+                limpiarFiltros.addEventListener('click', limpiarFiltrosHandler);
+            }
+
+            function aplicarFiltros() {
+                const textoFiltro = filtroTarea ? filtroTarea.value.toLowerCase() : '';
+                const rangoCalificacion = filtroCalificacion ? filtroCalificacion.value : '';
+
+                let filasVisibles = 0;
+                let sumaCalificaciones = 0;
+
+                calificacionesOriginales.forEach(item => {
+                    let coincide = true;
+
+                    // Filtro por texto en tarea
+                    if (textoFiltro && !item.tarea.includes(textoFiltro)) {
+                        coincide = false;
+                    }
+
+                    // Filtro por rango de calificación
+                    if (rangoCalificacion && coincide) {
+                        const calificacion = item.calificacion;
+                        switch (rangoCalificacion) {
+                            case '9-10':
+                                coincide = calificacion >= 90;
+                                break;
+                            case '8-8.9':
+                                coincide = calificacion >= 80 && calificacion < 90;
+                                break;
+                            case '6-7.9':
+                                coincide = calificacion >= 60 && calificacion < 80;
+                                break;
+                            case '0-5.9':
+                                coincide = calificacion < 60;
+                                break;
+                        }
+                    }
+
+                    if (coincide) {
+                        item.elemento.classList.remove('hidden-row');
+                        filasVisibles++;
+                        sumaCalificaciones += item.calificacion;
+                    } else {
+                        item.elemento.classList.add('hidden-row');
+                    }
+                });
+
+                // Actualizar estadísticas
+                actualizarEstadisticas(filasVisibles, sumaCalificaciones);
+
+                // Mostrar/ocultar mensaje de no resultados
+                if (noResults) {
+                    if (filasVisibles === 0) {
+                        noResults.classList.remove('hidden-row');
+                    } else {
+                        noResults.classList.add('hidden-row');
+                    }
+                }
+
+                // Aplicar ordenamiento después de filtrar
+                aplicarOrdenamiento();
+            }
+
+            function aplicarOrdenamiento() {
+                if (!ordenarPor || !tablaCalificaciones) return;
+
+                const tbody = tablaCalificaciones.querySelector('tbody');
+                const filasVisibles = Array.from(tbody.querySelectorAll('tr:not(.hidden-row)'));
+
+                const criterio = ordenarPor.value;
+
+                filasVisibles.sort((a, b) => {
+                    const tareaA = a.dataset.tarea.toLowerCase();
+                    const tareaB = b.dataset.tarea.toLowerCase();
+                    const calificacionA = parseFloat(a.dataset.calificacion);
+                    const calificacionB = parseFloat(b.dataset.calificacion);
+                    const fechaA = new Date(a.dataset.fecha);
+                    const fechaB = new Date(b.dataset.fecha);
+
+                    switch (criterio) {
+                        case 'fecha-reciente':
+                            return fechaB - fechaA;
+                        case 'fecha-antigua':
+                            return fechaA - fechaB;
+                        case 'calificacion-alta':
+                            return calificacionB - calificacionA;
+                        case 'calificacion-baja':
+                            return calificacionA - calificacionB;
+                        case 'tarea-asc':
+                            return tareaA.localeCompare(tareaB);
+                        case 'tarea-desc':
+                            return tareaB.localeCompare(tareaA);
+                        default:
+                            return 0;
+                    }
+                });
+
+                // Reordenar las filas en el DOM
+                filasVisibles.forEach(fila => tbody.appendChild(fila));
+            }
+
+            function actualizarEstadisticas(filasVisibles, sumaCalificaciones) {
+                const total = calificacionesOriginales.length;
+                const promedio = filasVisibles > 0 ? (sumaCalificaciones / filasVisibles).toFixed(1) : '0.0';
+
+                if (contadorFiltros) {
+                    contadorFiltros.textContent = `Mostrando ${filasVisibles} de ${total} registros`;
+                }
+
+                if (badgeRegistros) {
+                    badgeRegistros.textContent = `${filasVisibles} registros`;
+                }
+
+                if (promedioActual) {
+                    promedioActual.textContent = promedio;
+                }
+
+                if (totalRegistros) {
+                    totalRegistros.textContent = filasVisibles;
+                }
+
+                if (promedioGeneral) {
+                    promedioGeneral.textContent = `Promedio: ${promedio}`;
+                }
+            }
+
+            function limpiarFiltrosHandler() {
+                if (filtroTarea) filtroTarea.value = '';
+                if (filtroCalificacion) filtroCalificacion.value = '';
+                if (ordenarPor) ordenarPor.value = 'fecha-reciente';
+
+                aplicarFiltros();
+            }
+
+            // Aplicar ordenamiento inicial
+            aplicarOrdenamiento();
+        });
+    </script>
+</body>
+</html>

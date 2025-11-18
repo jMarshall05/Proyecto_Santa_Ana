@@ -28,6 +28,8 @@ namespace Campus.AccesoDatos.ModelosAD
         public string Rol { get; set; }
         [Column("Estado")]
         public bool Estado { get; set; }
+        [Column("TipoIdentificacion")]
+        public string TipoIdentificacion { get; set; }
 
     }
 }

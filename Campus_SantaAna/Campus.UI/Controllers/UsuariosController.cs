@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Campus.Abstracciones.LogicaDeNegocio; 
+using Campus.Abstracciones.LogicaDeNegocio;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.ActualizarEstudianteGrupoLN;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorILN;
@@ -21,7 +21,7 @@ using Campus.Abstracciones.LogicaDeNegocio.Usuarios.EditarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
 using Campus.Abstracciones.ModelosUI;
-using Campus.LogicaDeNegocio.Bitacora; 
+using Campus.LogicaDeNegocio.Bitacora;
 using Campus.LogicaDeNegocio.EstudianteGrupo.ActualizarEstudianteGrupoLN;
 using Campus.LogicaDeNegocio.EstudianteGrupo.AgregarEstudianteGrupo;
 using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
@@ -584,7 +584,8 @@ namespace Campus.UI.Controllers
                 AddRow("Email", datos.Email);
                 AddRow("Teléfonos", string.Join("\n", telefonosFormateados));
                 AddRow("Fecha de Nacimiento", datos.FechaDeNacimiento.ToShortDateString());
-                AddRow("Cédula", datos.Cedula.ToString());
+                AddRow("Tipo de Identificacion",datos.TipoIdentificacion);
+                AddRow("Identificacion", datos.Cedula.ToString());
                 AddRow("Rol", datos.Rol);
                 AddRow("Estado", datos.Estado ? "Activo" : "Inactivo");
 

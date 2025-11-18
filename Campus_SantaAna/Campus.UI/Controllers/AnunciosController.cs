@@ -16,6 +16,8 @@ using Campus.LogicaDeNegocio.Anuncios.EliminarAnuncios;
 using Campus.LogicaDeNegocio.Anuncios.ListarAnuncios;
 using Campus.LogicaDeNegocio.Bitacora;
 using Microsoft.AspNet.Identity;
+
+[Authorize]
 public class AnunciosController : Controller
 {
     private readonly IListarAnunciosLN _listarAnunciosLN;
@@ -50,9 +52,9 @@ public class AnunciosController : Controller
     }
 
     // GET: Anuncios/Create
-    public ActionResult Create()
+    public ActionResult CreateParcial()
     {
-        return View();
+        return PartialView("_CreateParcial");
     }
 
     // POST: Anuncios/Create
