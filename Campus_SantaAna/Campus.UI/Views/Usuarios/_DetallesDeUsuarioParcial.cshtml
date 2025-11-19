@@ -97,9 +97,44 @@
                     </div>
 
                     <div class="info-item">
-                        <span class="info-label">Cédula</span>
+                        <span class="info-label">Tipo de Identificación</span>
+                        <span class="info-value tipo-id-value">
+                            @{
+                                var tipoIdIcon = "fa-id-card";
+                                var tipoIdText = "Cédula Física";
+                                var tipoIdColor = "text-primary";
+
+                                if (!string.IsNullOrEmpty(Model.TipoIdentificacion))
+                                {
+                                    switch (Model.TipoIdentificacion)
+                                    {
+                                        case "Fisica":
+                                            tipoIdIcon = "fa-id-card";
+                                            tipoIdText = "Cédula Física";
+                                            tipoIdColor = "text-primary";
+                                            break;
+                                        case "Dimex":
+                                            tipoIdIcon = "fa-passport";
+                                            tipoIdText = "DIMEX";
+                                            tipoIdColor = "text-info";
+                                            break;
+                                        case "Pasaporte":
+                                            tipoIdIcon = "fa-plane";
+                                            tipoIdText = "Pasaporte";
+                                            tipoIdColor = "text-success";
+                                            break;
+                                    }
+                                }
+                            }
+                            <i class="fas @tipoIdIcon me-2 @tipoIdColor"></i>
+                            <span>@tipoIdText</span>
+                        </span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Número de Identificación</span>
                         <span class="info-value cedula-value">
-                            <i class="fas fa-id-card me-2 text-warning"></i>
+                            <i class="fas fa-fingerprint me-2 text-warning"></i>
                             <span>@Model.Cedula</span>
                         </span>
                     </div>
@@ -357,10 +392,10 @@
         width: 100%;
     }
 
-    .phone-item:hover {
-        border-color: #667eea;
-        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
-    }
+        .phone-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
 
     .phone-content-wrapper {
         display: flex;
@@ -379,9 +414,9 @@
         flex-wrap: wrap;
     }
 
-    .phone-info i {
-        flex-shrink: 0;
-    }
+        .phone-info i {
+            flex-shrink: 0;
+        }
 
     .phone-code {
         flex-shrink: 0;
@@ -427,17 +462,18 @@
         flex-shrink: 0;
     }
 
-    .btn-toggle-phone:hover {
-        background: #764ba2;
-        transform: scale(1.05);
-    }
+        .btn-toggle-phone:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
 
-    .btn-toggle-phone i {
-        font-size: 0.9rem;
-    }
+        .btn-toggle-phone i {
+            font-size: 0.9rem;
+        }
 
     .email-value,
-    .cedula-value {
+    .cedula-value,
+    .tipo-id-value {
         background: white;
         border: 1px solid #e2e8f0;
         border-radius: 10px;
@@ -447,11 +483,12 @@
         width: 100%;
     }
 
-    .email-value span,
-    .cedula-value span {
-        word-break: break-all;
-        flex: 1;
-    }
+        .email-value span,
+        .cedula-value span,
+        .tipo-id-value span {
+            word-break: break-all;
+            flex: 1;
+        }
 
     .qr-section {
         text-align: center;

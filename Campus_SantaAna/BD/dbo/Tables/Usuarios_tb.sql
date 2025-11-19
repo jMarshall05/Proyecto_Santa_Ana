@@ -9,6 +9,7 @@
     [FechaDeModificacion] DATETIME       NULL,
     [Rol]                 NVARCHAR (128) NOT NULL,
     [Estado]              BIT            NOT NULL,
+    [TipoIdentificacion]  NVARCHAR (50)  NULL,
     CONSTRAINT [PK_UsuariosID] PRIMARY KEY CLUSTERED ([IdUsuario] ASC),
     CONSTRAINT [FK_Usuarios_AspNetUsers] FOREIGN KEY ([IdUsuario]) REFERENCES [dbo].[AspNetUsers] ([Id]) ON DELETE CASCADE,
     UNIQUE NONCLUSTERED ([Cedula] ASC),

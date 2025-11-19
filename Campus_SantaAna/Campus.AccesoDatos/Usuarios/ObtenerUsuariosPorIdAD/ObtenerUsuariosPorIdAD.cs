@@ -29,6 +29,7 @@ namespace Campus.AccesoDatos.Usuarios.ObtenerUsuariosPorIdAD
                     FechaDeModificacion = usuario.FechaDeModificacion,
                     Rol = usuario.Rol,
                     Estado = usuario.Estado,
+                    TipoIdentificacion = usuario.TipoIdentificacion
                 };
             }
             return null;

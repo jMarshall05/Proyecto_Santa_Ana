@@ -465,7 +465,6 @@
     <Content Include="Views\Usuarios\ListarUsuarios.cshtml" />
     <Content Include="Views\Usuarios\_DetallesDeUsuarioParcial.cshtml" />
     <Content Include="Views\Usuarios\_EditarUsuarioParcial.cshtml" />
-    <Content Include="Views\anuncios\Create.cshtml" />
     <Content Include="Views\anuncios\ListarAnuncios.cshtml" />
     <Content Include="Views\Home\Documentos.cshtml" />
     <Content Include="Views\anuncios\AnunciosEstudiantes.cshtml" />
@@ -501,6 +500,7 @@
     <Content Include="Views\Account\LoginWith2FA.cshtml" />
     <Content Include="Views\anuncios\_EditParcial.cshtml" />
     <Content Include="Views\Tareas\_CreateParcial.cshtml" />
+    <Content Include="Views\anuncios\_CreateParcial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
