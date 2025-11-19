@@ -4,254 +4,73 @@
     ViewBag.Title = "Editar Anuncio";
 }
 
-<div class="premium-form-container">
-    <!-- Header del Formulario -->
-    <div class="form-header">
-        <div class="header-icon">
-            <i class="fas fa-edit"></i>
-        </div>
-        <div class="header-content">
-            <h1>Editar Anuncio</h1>
-            <p>Modifica la información del anuncio existente</p>
-            <div class="announcement-id">
-                <span class="id-badge">ID: @Model.IdAnuncio</span>
-            </div>
-        </div>
-    </div>
+<div class="form-container">
+    <h2>Editar Anuncio</h2>
 
-    <!-- Formulario Premium -->
-    <div class="premium-form-card">
-        @using (Html.BeginForm("EditParcial", "Anuncios", FormMethod.Post, new { enctype = "multipart/form-data", @class = "premium-form" }))
+    @using (Html.BeginForm("EditParcialAsync", "Anuncios", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(m => m.IdAnuncio)
+
+        <div class="mb-3">
+            <label for="Titulo">Título del Anuncio</label>
+            @Html.TextBoxFor(m => m.Titulo, new { @class = "form-control", required = "required", placeholder = "Ingrese el título" })
+            @Html.ValidationMessageFor(m => m.Titulo, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            <label for="Descripcion">Descripción</label>
+            @Html.TextAreaFor(m => m.Descripcion, new { @class = "form-control", rows = 5, required = "required", placeholder = "Ingrese la descripción" })
+            @Html.ValidationMessageFor(m => m.Descripcion, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            <label for="FechaEvento">Fecha del Evento</label>
+            @Html.TextBoxFor(m => m.FechaEvento, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local", required = "required" })
+            @Html.ValidationMessageFor(m => m.FechaEvento, "", new { @class = "text-danger" })
+        </div>
+
+        @* Imagen actual *@
+        if (!string.IsNullOrEmpty(Model.ImagenRuta))
         {
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(m => m.IdAnuncio)
-
-            <div class="validation-summary">
-                @Html.ValidationSummary(true, "", new { @class = "validation-errors" })
+            <div class="mb-3">
+                <label>Imagen Actual</label><br />
+                <img src="@Url.Content(Model.ImagenRuta)" class="img-fluid mb-2" />
+                @Html.Hidden("ImagenActual", Model.ImagenRuta)
             </div>
 
-            <!-- Sección de Información Básica -->
-            <div class="form-section">
-                <div class="section-header">
-                    <i class="fas fa-info-circle"></i>
-                    <h3>Información Básica</h3>
-                </div>
-                <div class="form-grid">
-                    <div class="form-group full-width">
-                        <label class="form-label">
-                            <i class="fas fa-heading"></i>
-                            Título del Anuncio
-                        </label>
-                        @Html.TextBoxFor(m => m.Titulo, new
-                        {
-                            @class = "form-input",
-                            placeholder = "Ingresa un título llamativo para el anuncio",
-                            required = "required"
-                        })
-                        @Html.ValidationMessageFor(m => m.Titulo, "", new { @class = "error-message" })
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label class="form-label">
-                            <i class="fas fa-align-left"></i>
-                            Descripción del Anuncio
-                        </label>
-                        @Html.TextAreaFor(m => m.Descripcion, new
-                        {
-                            @class = "form-textarea",
-                            rows = 6,
-                            placeholder = "Describe detalladamente el anuncio",
-                            required = "required"
-                        })
-                        <div class="character-count">
-                            <span id="descripcionCount">@(Model.Descripcion?.Length ?? 0)</span> caracteres
-                        </div>
-                        @Html.ValidationMessageFor(m => m.Descripcion, "", new { @class = "error-message" })
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección de Fechas -->
-            <div class="form-section">
-                <div class="section-header">
-                    <i class="fas fa-calendar-alt"></i>
-                    <h3>Fecha del Evento</h3>
-                </div>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-calendar-day"></i>
-                            Fecha y Hora del Evento
-                        </label>
-                        @Html.TextBoxFor(m => m.FechaEvento, "{0:yyyy-MM-ddTHH:mm}", new
-                        {
-                            @class = "form-input",
-                            type = "datetime-local",
-                            required = "required"
-                        })
-                        @Html.ValidationMessageFor(m => m.FechaEvento, "", new { @class = "error-message" })
-                        <div class="form-hint">Actualiza la fecha y hora del evento</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección de Gestión de Imágenes -->
-            <div class="form-section">
-                <div class="section-header">
-                    <i class="fas fa-images"></i>
-                    <h3>Gestión de Imágenes</h3>
-                </div>
-                <div class="form-grid">
-                    <!-- Imagen Actual -->
-                    @if (!string.IsNullOrEmpty(Model.ImagenRuta))
-                    {
-                        <div class="form-group full-width">
-                            <label class="form-label">
-                                <i class="fas fa-image"></i>
-                                Imagen Actual
-                            </label>
-                            @Html.Hidden("ImagenActual", Model.ImagenRuta)
-                            <div class="current-image-container">
-                                <div class="current-image-card">
-                                    <img src="@Url.Content(Model.ImagenRuta)" class="current-image" alt="Imagen actual del anuncio" />
-                                    <div class="image-actions">
-                                        <a href="@Url.Content(Model.ImagenRuta)" target="_blank" class="btn-view-image">
-                                            <i class="fas fa-expand"></i>
-                                            Ver Completa
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Opción para eliminar imagen -->
-                                <div class="delete-option">
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="EliminarImagen" value="true" id="EliminarImagen" class="checkbox-input" />
-                                        <span class="checkbox-custom"></span>
-                                        <span class="checkbox-text">
-                                            <i class="fas fa-trash"></i>
-                                            Eliminar imagen actual
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    }
-
-                    <!-- Subir Nueva Imagen -->
-                    <div class="form-group full-width">
-                        <label class="form-label">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            @(string.IsNullOrEmpty(Model.ImagenRuta) ? "Subir Imagen" : "Reemplazar Imagen")
-                        </label>
-                        <div class="file-upload-container">
-                            <input type="file" name="Imagen" class="file-input" id="imagenUpload" accept=".jpg,.jpeg,.png,.gif,.webp" />
-                            <label for="imagenUpload" class="file-upload-label">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <span class="file-text">
-                                    @(string.IsNullOrEmpty(Model.ImagenRuta) ? "Seleccionar imagen" : "Seleccionar nueva imagen")
-                                </span>
-                            </label>
-                            <div class="file-preview" id="filePreview"></div>
-                        </div>
-                        <div class="form-hint">Formatos soportados: JPG, PNG, GIF, WEBP (Max. 5MB)</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección de Estado (Simple) -->
-            <div class="form-section">
-                <div class="section-header">
-                    <i class="fas fa-toggle-on"></i>
-                    <h3>Estado del Anuncio</h3>
-                </div>
-                <div class="form-grid">
-                    <div class="form-group full-width">
-                        <div class="toggle-group">
-                            <label class="toggle-label">
-                                <input type="checkbox" class="toggle-input" id="estadoAnuncio" checked />
-                                <span class="toggle-slider"></span>
-                                <span class="toggle-text">Habilitado</span>
-                            </label>
-                        </div>
-                        <div class="form-hint">Controla si el anuncio está visible para los usuarios</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección de Previsualización -->
-            <div class="form-section">
-                <div class="section-header">
-                    <i class="fas fa-eye"></i>
-                    <h3>Vista Previa</h3>
-                </div>
-                <div class="preview-container">
-                    <div class="preview-card" id="anuncioPreview">
-                        <div class="preview-header">
-                            <div class="preview-icon">
-                                <i class="fas fa-bullhorn"></i>
-                            </div>
-                            <div class="preview-title-section">
-                                <h4 id="previewTitulo">@Model.Titulo</h4>
-                                <p id="previewFecha">
-                                    @Model.FechaEvento.ToString("dddd, dd MMMM yyyy 'a las' HH:mm")
-                                </p>
-                            </div>
-                        </div>
-                        <div class="preview-body">
-                            <p id="previewDescripcion">@Model.Descripcion</p>
-                        </div>
-                        <div class="preview-image" id="previewImage">
-                            @if (!string.IsNullOrEmpty(Model.ImagenRuta))
-                            {
-                                <img src="@Url.Content(Model.ImagenRuta)" alt="Imagen actual" style="max-width: 100%; border-radius: 8px;" />
-                            }
-                            else
-                            {
-                                <i class="fas fa-image"></i>
-                                <span>Sin imagen</span>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Acciones del Formulario -->
-            <div class="form-actions">
-                <button type="submit" class="btn-submit">
-                    <i class="fas fa-save"></i>
-                    Guardar Cambios
-                </button>
-                <a href="@Url.Action("ListarAnuncios", "Anuncios")" class="btn-cancel">
-                    <i class="fas fa-times"></i>
-                    Cancelar
-                </a>
-                <button type="button" class="btn-reset" id="resetForm">
-                    <i class="fas fa-undo"></i>
-                    Restablecer
-                </button>
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" name="EliminarImagen" value="true" id="EliminarImagen" />
+                <label class="form-check-label" for="EliminarImagen">Eliminar imagen actual</label>
             </div>
         }
-    </div>
-</div>
 
-<style>
-    /* Variables CSS consistentes */
-    :root {
-        --primary: #6366f1;
-        --primary-dark: #4f46e5;
-        --secondary: #f8fafc;
-        --accent: #06d6a0;
-        --danger: #ef4444;
-        --warning: #f59e0b;
-        --text: #1e293b;
-        --text-light: #64748b;
-        --border: #e2e8f0;
-        --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-        --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        <div class="mb-3">
+            <label for="Imagen">Subir Nueva Imagen</label>
+            <input type="file" name="Imagen" class="form-control" accept=".jpg,.jpeg,.png,.gif" />
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Estado, "Estado", new { @class = "form-label" })
+            <div class="toggle-group">
+                <label class="toggle-label">
+                    @Html.CheckBoxFor(m => m.Estado, new { @class = "toggle-input", id = "Estado" })
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-text">@(Model.Estado ? "Activo" : "Inactivo")</span>
+                </label>
+            </div>
+        </div>
+        <br />
+
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-save me-2"></i>
+            Guardar Cambios
+        </button>
     }
-
-    /* Toggle Switch Simple */
+</div>
+<style>
     .toggle-group {
         display: flex;
         align-items: center;
@@ -267,19 +86,20 @@
         position: relative;
     }
 
-    .toggle-input {
-        position: absolute !important;
-        opacity: 0 !important;
-        width: 0 !important;
-        height: 0 !important;
-        pointer-events: none !important;
-    }
+        /* Ocultar TODOS los inputs dentro del toggle */
+        .toggle-label input {
+            position: absolute !important;
+            opacity: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
+            pointer-events: none !important;
+        }
 
     .toggle-slider {
         position: relative;
         width: 50px;
         height: 25px;
-        background-color: #10b981;
+        background-color: #ccc;
         border-radius: 25px;
         transition: all 0.3s ease;
         display: inline-block;
@@ -297,15 +117,15 @@
             border-radius: 50%;
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            transform: translateX(25px);
         }
 
-    .toggle-input:not(:checked) + .toggle-slider {
-        background-color: #ccc;
+    /* Usar el atributo checked del checkbox principal */
+    .toggle-label input[type="checkbox"]:checked ~ .toggle-slider {
+        background-color: #10b981;
     }
 
-        .toggle-input:not(:checked) + .toggle-slider::before {
-            transform: translateX(0);
+        .toggle-label input[type="checkbox"]:checked ~ .toggle-slider::before {
+            transform: translateX(25px);
         }
 
     .toggle-text {
@@ -314,808 +134,51 @@
         min-width: 70px;
         transition: color 0.3s ease;
     }
-
-    .toggle-input:checked ~ .toggle-text {
-        color: #10b981;
-    }
-
-    .toggle-input:not(:checked) ~ .toggle-text {
-        color: #ef4444;
-    }
-
-    /* Resto de tus estilos originales se mantienen igual */
-    .premium-form-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 2rem;
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        min-height: 100vh;
-    }
-
-    .form-header {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        background: white;
-        padding: 2rem;
-        border-radius: 20px;
-        box-shadow: var(--shadow);
-        margin-bottom: 2rem;
-        border: 1px solid var(--border);
-        position: relative;
-    }
-
-    .header-icon {
-        width: 70px;
-        height: 70px;
-        background: var(--gradient);
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.75rem;
-    }
-
-    .header-content {
-        flex: 1;
-    }
-
-        .header-content h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text);
-            margin: 0 0 0.5rem 0;
-        }
-
-        .header-content p {
-            color: var(--text-light);
-            font-size: 1rem;
-            margin: 0 0 0.5rem 0;
-        }
-
-    .announcement-id {
-        margin-top: 0.5rem;
-    }
-
-    .id-badge {
-        background: var(--secondary);
-        padding: 0.4rem 0.8rem;
-        border-radius: 8px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: var(--text);
-        border: 1px solid var(--border);
-        font-family: 'Courier New', monospace;
-    }
-
-    .premium-form-card {
-        background: white;
-        border-radius: 20px;
-        box-shadow: var(--shadow);
-        border: 1px solid var(--border);
-        overflow: hidden;
-    }
-
-    .premium-form {
-        padding: 0;
-    }
-
-    .form-section {
-        padding: 2rem;
-        border-bottom: 1px solid var(--border);
-    }
-
-        .form-section:last-child {
-            border-bottom: none;
-        }
-
-    .section-header {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
-
-        .section-header i {
-            color: var(--primary);
-            font-size: 1.25rem;
-            width: 24px;
-        }
-
-        .section-header h3 {
-            margin: 0;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1.5rem;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
-
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-    .form-label {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-weight: 600;
-        color: var(--text);
-        margin-bottom: 0.5rem;
-        font-size: 0.95rem;
-    }
-
-        .form-label i {
-            color: var(--primary);
-            width: 16px;
-        }
-
-    .form-input, .form-textarea {
-        padding: 0.75rem 1rem;
-        border: 2px solid var(--border);
-        border-radius: 12px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        background: white;
-        font-family: inherit;
-    }
-
-        .form-input:focus, .form-textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-    .form-textarea {
-        resize: vertical;
-        min-height: 120px;
-    }
-
-    .current-image-container {
-        background: var(--secondary);
-        border-radius: 12px;
-        padding: 1.5rem;
-    }
-
-    .current-image-card {
-        text-align: center;
-        margin-bottom: 1rem;
-    }
-
-    .current-image {
-        max-width: 300px;
-        max-height: 200px;
-        border-radius: 12px;
-        border: 3px solid var(--border);
-        box-shadow: var(--shadow);
-    }
-
-    .image-actions {
-        margin-top: 1rem;
-    }
-
-    .btn-view-image {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        background: var(--primary);
-        color: white;
-        text-decoration: none;
-        border-radius: 8px;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
-    }
-
-        .btn-view-image:hover {
-            background: var(--primary-dark);
-            color: white;
-            text-decoration: none;
-        }
-
-    .checkbox-label {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        cursor: pointer;
-        padding: 1rem;
-        background: #fef2f2;
-        border: 2px solid #fecaca;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-    }
-
-        .checkbox-label:hover {
-            background: #fef2f2;
-            border-color: #fca5a5;
-        }
-
-    .checkbox-input {
-        display: none;
-    }
-
-        .checkbox-input:checked + .checkbox-custom {
-            background: var(--danger);
-            border-color: var(--danger);
-        }
-
-            .checkbox-input:checked + .checkbox-custom::after {
-                content: '✓';
-                color: white;
-                font-size: 0.8rem;
-                font-weight: bold;
-            }
-
-    .checkbox-custom {
-        width: 20px;
-        height: 20px;
-        border: 2px solid var(--border);
-        border-radius: 4px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-    }
-
-    .checkbox-text {
-        font-weight: 600;
-        color: var(--text);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-        .checkbox-text i {
-            color: var(--danger);
-        }
-
-    .file-upload-container {
-        position: relative;
-    }
-
-    .file-input {
-        display: none;
-    }
-
-    .file-upload-label {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 1rem 1.5rem;
-        border: 2px dashed var(--border);
-        border-radius: 12px;
-        background: var(--secondary);
-        color: var(--text);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-        justify-content: center;
-    }
-
-        .file-upload-label:hover {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.05);
-        }
-
-    .file-preview {
-        margin-top: 1rem;
-        display: none;
-    }
-
-        .file-preview img {
-            max-width: 200px;
-            max-height: 150px;
-            border-radius: 8px;
-            border: 2px solid var(--border);
-        }
-
-    .character-count {
-        text-align: right;
-        font-size: 0.8rem;
-        color: var(--text-light);
-        margin-top: 0.5rem;
-    }
-
-    .form-hint {
-        font-size: 0.8rem;
-        color: var(--text-light);
-        margin-top: 0.5rem;
-        font-style: italic;
-    }
-
-    .validation-summary {
-        margin-bottom: 1.5rem;
-    }
-
-    .validation-errors {
-        background: #fef2f2;
-        border: 1px solid #fecaca;
-        border-radius: 12px;
-        padding: 1rem 1.5rem;
-        color: #dc2626;
-        font-size: 0.9rem;
-    }
-
-    .error-message {
-        color: #dc2626;
-        font-size: 0.8rem;
-        margin-top: 0.25rem;
-        display: block;
-    }
-
-    .preview-container {
-        background: var(--secondary);
-        border-radius: 12px;
-        padding: 1.5rem;
-    }
-
-    .preview-card {
-        background: white;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        overflow: hidden;
-        box-shadow: var(--shadow);
-    }
-
-    .preview-header {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 1.5rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-    }
-
-    .preview-icon {
-        width: 50px;
-        height: 50px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.25rem;
-    }
-
-    .preview-title-section h4 {
-        margin: 0 0 0.25rem 0;
-        font-size: 1.1rem;
-        font-weight: 600;
-    }
-
-    .preview-title-section p {
-        margin: 0;
-        font-size: 0.85rem;
-        opacity: 0.9;
-    }
-
-    .preview-body {
-        padding: 1.5rem;
-        border-bottom: 1px solid var(--border);
-    }
-
-        .preview-body p {
-            margin: 0;
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-    .preview-image {
-        padding: 2rem;
-        text-align: center;
-        color: var(--text-light);
-        background: var(--secondary);
-    }
-
-        .preview-image i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-    .form-actions {
-        padding: 2rem;
-        background: var(--secondary);
-        display: flex;
-        gap: 1rem;
-        justify-content: flex-end;
-        border-top: 1px solid var(--border);
-        flex-wrap: wrap;
-    }
-
-    .btn-submit, .btn-cancel, .btn-reset {
-        padding: 0.75rem 2rem;
-        border: none;
-        border-radius: 12px;
-        font-weight: 600;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        font-size: 1rem;
-    }
-
-    .btn-submit {
-        background: var(--gradient);
-        color: white;
-        box-shadow: var(--shadow);
-    }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-            color: white;
-        }
-
-    .btn-cancel {
-        background: white;
-        color: var(--text);
-        border: 2px solid var(--border);
-    }
-
-        .btn-cancel:hover {
-            background: var(--secondary);
-            color: var(--text);
-            text-decoration: none;
-            border-color: var(--text-light);
-        }
-
-    .btn-reset {
-        background: #f3f4f6;
-        color: var(--text);
-        border: 2px solid #d1d5db;
-    }
-
-        .btn-reset:hover {
-            background: #e5e7eb;
-            border-color: #9ca3af;
-        }
-
-    /* RESPONSIVE DESIGN */
-    @@media (max-width: 768px) {
-        .premium-form-container {
-            padding: 1rem;
-        }
-
-        .form-header {
-            flex-direction: column;
-            text-align: center;
-            gap: 1rem;
-            padding: 1.5rem;
-        }
-
-        .header-icon {
-            width: 60px;
-            height: 60px;
-            font-size: 1.5rem;
-        }
-
-        .header-content h1 {
-            font-size: 1.5rem;
-        }
-
-        .form-section {
-            padding: 1.5rem;
-        }
-
-        .form-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-
-        .section-header {
-            margin-bottom: 1rem;
-        }
-
-        .form-actions {
-            flex-direction: column;
-            padding: 1.5rem;
-        }
-
-        .btn-submit, .btn-cancel, .btn-reset {
-            justify-content: center;
-        }
-
-        .current-image {
-            max-width: 100%;
-        }
-
-        .preview-header {
-            flex-direction: column;
-            text-align: center;
-            gap: 0.75rem;
-            padding: 1rem;
-        }
-    }
-
-    @@media (max-width: 480px) {
-        .premium-form-container {
-            padding: 0.5rem;
-        }
-
-        .form-header {
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .header-content h1 {
-            font-size: 1.25rem;
-        }
-
-        .form-section {
-            padding: 1rem;
-        }
-
-        .form-input, .form-textarea {
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-        }
-
-        .file-upload-label {
-            padding: 0.75rem 1rem;
-            font-size: 0.9rem;
-        }
-
-        .current-image-container {
-            padding: 1rem;
-        }
-    }
-
-    .form-input:invalid, .form-textarea:invalid {
-        border-color: #fca5a5;
-    }
-
-    .form-input:valid, .form-textarea:valid {
-        border-color: #86efac;
-    }
-
-    @@keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .form-section {
-        animation: slideIn 0.5s ease-out;
-    }
 </style>
 
+<!-- JS Corregido -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const tituloInput = document.getElementById('Titulo');
-        const descripcionTextarea = document.getElementById('Descripcion');
-        const fechaEventoInput = document.getElementById('FechaEvento');
-        const imagenUpload = document.getElementById('imagenUpload');
-        const eliminarImagenCheckbox = document.getElementById('EliminarImagen');
-        const descripcionCount = document.getElementById('descripcionCount');
-        const resetFormBtn = document.getElementById('resetForm');
+    $(function () {
+        // Toggle principal y de teléfonos
+        $(document).on('change', 'input[type="checkbox"].toggle-input', function () {
+            const $label = $(this).closest('.toggle-label');
+            const $text = $label.find('.toggle-text');
+            const $slider = $label.find('.toggle-slider');
 
-        // Elementos de previsualización
-        const previewTitulo = document.getElementById('previewTitulo');
-        const previewDescripcion = document.getElementById('previewDescripcion');
-        const previewFecha = document.getElementById('previewFecha');
-        const previewImage = document.getElementById('previewImage');
-        const filePreview = document.getElementById('filePreview');
+            if (this.checked) {
+                $text.text('Activo').css('color', '#10b981');
+                $slider.css('background-color', '#10b981');
+                $slider.find('::before').css('transform', 'translateX(25px)');
+            } else {
+                $text.text('Inactivo').css('color', '#ef4444');
+                $slider.css('background-color', '#ccc');
+                $slider.find('::before').css('transform', 'translateX(0)');
+            }
+        });
 
-        // Valores originales para el reset
-        const originalValues = {
-            titulo: tituloInput.value,
-            descripcion: descripcionTextarea.value,
-            fechaEvento: fechaEventoInput.value
-        };
+        // Inicializar estados al cargar
+        $('input[type="checkbox"].toggle-input').each(function () {
+            const $label = $(this).closest('.toggle-label');
+            const $text = $label.find('.toggle-text');
+            const $slider = $label.find('.toggle-slider');
 
-        // Control del toggle switch (solo visual)
-        const toggleCheckbox = document.getElementById('estadoAnuncio');
-        const toggleText = document.querySelector('.toggle-text');
+            if (this.checked) {
+                $text.css('color', '#10b981');
+                $slider.css('background-color', '#10b981');
+            } else {
+                $text.css('color', '#ef4444');
+                $slider.css('background-color', '#ccc');
+            }
+        });
 
-        if (toggleCheckbox) {
-            toggleCheckbox.addEventListener('change', function() {
-                if (this.checked) {
-                    toggleText.textContent = 'Habilitado';
-                    toggleText.style.color = '#10b981';
-                } else {
-                    toggleText.textContent = 'Inhabilitado';
-                    toggleText.style.color = '#ef4444';
-                }
-            });
+        // Hacer clic en el toggle-slider para cambiar el estado
+        $(document).on('click', '.toggle-slider', function (e) {
+            e.preventDefault();
+            const $label = $(this).closest('.toggle-label');
+            const $checkbox = $label.find('input[type="checkbox"].toggle-input');
 
-            // Hacer clic en el slider para cambiar estado
-            document.querySelector('.toggle-slider').addEventListener('click', function(e) {
-                e.preventDefault();
-                toggleCheckbox.checked = !toggleCheckbox.checked;
-                toggleCheckbox.dispatchEvent(new Event('change'));
-            });
-        }
-
-        // Actualizar contador de caracteres
-        if (descripcionTextarea && descripcionCount) {
-            descripcionTextarea.addEventListener('input', function() {
-                descripcionCount.textContent = this.value.length;
-            });
-        }
-
-        // Previsualización en tiempo real
-        if (tituloInput && previewTitulo) {
-            tituloInput.addEventListener('input', function() {
-                previewTitulo.textContent = this.value || 'Título del anuncio aparecerá aquí';
-            });
-        }
-
-        if (descripcionTextarea && previewDescripcion) {
-            descripcionTextarea.addEventListener('input', function() {
-                previewDescripcion.textContent = this.value || 'La descripción del anuncio aparecerá aquí...';
-            });
-        }
-
-        if (fechaEventoInput && previewFecha) {
-            fechaEventoInput.addEventListener('change', function() {
-                if (this.value) {
-                    const fecha = new Date(this.value);
-                    previewFecha.textContent = `Evento: ${fecha.toLocaleDateString('es-ES', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    })}`;
-                }
-            });
-        }
-
-        // Previsualización de nueva imagen
-        if (imagenUpload) {
-            imagenUpload.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    if (file.size > 5 * 1024 * 1024) {
-                        alert('La imagen no puede ser mayor a 5MB');
-                        this.value = '';
-                        return;
-                    }
-
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        filePreview.innerHTML = `<img src="${e.target.result}" alt="Vista previa">`;
-                        filePreview.style.display = 'block';
-
-                        // Actualizar previsualización
-                        previewImage.innerHTML = `<img src="${e.target.result}" alt="Vista previa" style="max-width: 100%; border-radius: 8px;">`;
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    filePreview.style.display = 'none';
-                    // Restaurar imagen actual si existe
-                    const imagenActual = '@Model.ImagenRuta';
-                    if (imagenActual) {
-                        previewImage.innerHTML = `<img src="@Url.Content(Model.ImagenRuta)" alt="Imagen actual" style="max-width: 100%; border-radius: 8px;" />`;
-                    } else {
-                        previewImage.innerHTML = '<i class="fas fa-image"></i><span>Sin imagen</span>';
-                    }
-                }
-            });
-        }
-
-        // Manejar la opción de eliminar imagen
-        if (eliminarImagenCheckbox) {
-            eliminarImagenCheckbox.addEventListener('change', function() {
-                if (this.checked) {
-                    previewImage.innerHTML = '<i class="fas fa-image"></i><span>Imagen eliminada</span>';
-                    previewImage.style.color = '#ef4444';
-                } else {
-                    const imagenActual = '@Model.ImagenRuta';
-                    if (imagenActual) {
-                        previewImage.innerHTML = `<img src="@Url.Content(Model.ImagenRuta)" alt="Imagen actual" style="max-width: 100%; border-radius: 8px;" />`;
-                        previewImage.style.color = '';
-                    }
-                }
-            });
-        }
-
-        // Función para restablecer el formulario
-        if (resetFormBtn) {
-            resetFormBtn.addEventListener('click', function() {
-                if (confirm('¿Estás seguro de que deseas restablecer todos los cambios?')) {
-                    tituloInput.value = originalValues.titulo;
-                    descripcionTextarea.value = originalValues.descripcion;
-                    fechaEventoInput.value = originalValues.fechaEvento;
-
-                    // Restablecer imagen
-                    imagenUpload.value = '';
-                    filePreview.style.display = 'none';
-
-                    if (eliminarImagenCheckbox) {
-                        eliminarImagenCheckbox.checked = false;
-                    }
-
-                    // Restablecer toggle
-                    if (toggleCheckbox) {
-                        toggleCheckbox.checked = true;
-                        toggleCheckbox.dispatchEvent(new Event('change'));
-                    }
-
-                    // Actualizar previsualización
-                    previewTitulo.textContent = originalValues.titulo;
-                    previewDescripcion.textContent = originalValues.descripcion;
-
-                    if (originalValues.fechaEvento) {
-                        const fecha = new Date(originalValues.fechaEvento);
-                        previewFecha.textContent = `Evento: ${fecha.toLocaleDateString('es-ES', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        })}`;
-                    }
-
-                    // Restaurar imagen original
-                    const imagenActual = '@Model.ImagenRuta';
-                    if (imagenActual) {
-                        previewImage.innerHTML = `<img src="@Url.Content(Model.ImagenRuta)" alt="Imagen actual" style="max-width: 100%; border-radius: 8px;" />`;
-                    } else {
-                        previewImage.innerHTML = '<i class="fas fa-image"></i><span>Sin imagen</span>';
-                    }
-
-                    // Actualizar contador
-                    descripcionCount.textContent = originalValues.descripcion.length;
-
-                    alert('Formulario restablecido a los valores originales');
-                }
-            });
-        }
-
-        // Validación adicional antes del envío
-        const form = document.querySelector('.premium-form');
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                const titulo = tituloInput.value.trim();
-                const descripcion = descripcionTextarea.value.trim();
-
-                if (!titulo) {
-                    e.preventDefault();
-                    alert('Por favor, ingresa un título para el anuncio');
-                    tituloInput.focus();
-                    return;
-                }
-
-                if (!descripcion) {
-                    e.preventDefault();
-                    alert('Por favor, ingresa una descripción para el anuncio');
-                    descripcionTextarea.focus();
-                    return;
-                }
-
-                // Mostrar loading
-                const submitBtn = document.querySelector('.btn-submit');
-                if (submitBtn) {
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
-                    submitBtn.disabled = true;
-                }
-            });
-        }
+            // Cambiar el estado del checkbox
+            $checkbox.prop('checked', !$checkbox.prop('checked')).trigger('change');
+        });
     });
 </script>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
