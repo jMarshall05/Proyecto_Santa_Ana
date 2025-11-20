@@ -55,35 +55,78 @@ namespace Campus.Web.Controllers
 
         public async Task<ActionResult> Index(int? idGrupo, int? idTarea)
         {
+            var userId = User.Identity.GetUserId();
             List<EntregasDto> lista;
 
-            if (idGrupo != null)
+            if (idGrupo.HasValue)
             {
-                lista = (await _listarEntregasLN.ListarEntregasPorGrupoAsync(idGrupo.Value)).Where(e => e.estado == true).ToList();
+                lista = await ObtenerEntregasPorGrupoAsync(idGrupo.Value);
             }
-            else if (idTarea != null)
+            else if (idTarea.HasValue)
             {
-                lista = (await _listarEntregasLN.ListarEntregas()).Where(e => e.estado == true && e.id_tarea == idTarea).ToList();
-                var tarea = await _listarTareas.ObtenerPorIdAsync(idTarea.Value);
+                lista = await ObtenerEntregasPorTareaAsync(idTarea.Value);
+                await ConfigurarViewBagParaTareaAsync(idTarea.Value, idGrupo);
+            }
+            else
+            {
+                lista = await ObtenerEntregasDeUsuarioAsync(userId);
+            }
+
+            // Cargar información de estudiantes
+            CargarEstudiantesEnEntregasAsync(lista);
+
+            return View(lista);
+        }
+
+        private async Task<List<EntregasDto>> ObtenerEntregasPorGrupoAsync(int idGrupo)
+        {
+            var entregas = await _listarEntregasLN.ListarEntregasPorGrupoAsync(idGrupo);
+            return entregas.Where(e => e.estado).ToList();
+        }
+
+        private async Task<List<EntregasDto>> ObtenerEntregasPorTareaAsync(int idTarea)
+        {
+            var entregas = await _listarEntregasLN.ListarEntregas();
+            return entregas.Where(e => e.estado && e.id_tarea == idTarea).ToList();
+        }
+
+        private async Task ConfigurarViewBagParaTareaAsync(int idTarea, int? idGrupo)
+        {
+            var tarea = await _listarTareas.ObtenerPorIdAsync(idTarea);
+            if (tarea != null)
+            {
                 ViewBag.Titulo = tarea.Titulo;
                 ViewBag.Grupo = tarea.Nombre_grupo;
                 ViewBag.idMateria = tarea.IdMateria;
                 ViewBag.idGrupo = idGrupo;
-
-                if (lista == null) lista = new List<EntregasDto>();
-
             }
-            else
+        }
+
+        private async Task<List<EntregasDto>> ObtenerEntregasDeUsuarioAsync(string userId)
+        {
+            var todasLasEntregas = await _listarEntregasLN.ListarEntregas();
+            var entregasActivas = todasLasEntregas.Where(e => e.estado).ToList();
+
+            var lista = new List<EntregasDto>();
+
+            foreach (var entrega in entregasActivas)
             {
-                lista = (await _listarEntregasLN.ListarEntregas()).Where(e => e.estado == true).ToList();
+                entrega.Tarea = await _listarTareas.ObtenerPorIdAsync(entrega.id_tarea);
+                if (entrega.Tarea?.asignado_por == userId)
+                {
+                    lista.Add(entrega);
+                }
             }
 
-            foreach (var entrega in lista)
+            return lista;
+        }
+
+        private void CargarEstudiantesEnEntregasAsync(List<EntregasDto> entregas)
+        {
+            foreach (var entrega in entregas)
             {
                 entrega.Estudiante = _obtenerUsuariosPorId.ObtenerUsuarioPorId(entrega.id_estudiante);
             }
-
-            return View(lista);
         }
 
 
