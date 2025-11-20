@@ -22,7 +22,7 @@
             <td>
                 @if (!string.IsNullOrEmpty(item.archivo_entregado))
                 {
-                    <a href="@Url.Content("~/Archivos/" + item.archivo_entregado)" target="_blank">Ver Archivo</a>
+                    <a href="@Url.Content(item.archivo_entregado)" target="_blank">Ver Archivo</a>
                 }
                 else
                 {
