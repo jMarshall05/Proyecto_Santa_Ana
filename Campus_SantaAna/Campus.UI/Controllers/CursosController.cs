@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -19,6 +21,14 @@ using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Materias.ListarMaterias;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
+using Campus.UI.Filtros;
+using iText.Kernel.Font;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.Layout.Properties;
+using Microsoft.Ajax.Utilities;
+using QRCoder;
 
 namespace Campus.UI.Controllers
 {
@@ -32,6 +42,7 @@ namespace Campus.UI.Controllers
         private readonly IListarUsuariosLN _listarUsuariosLN;
         private readonly IEliminarCursoLN _eliminarCursoLN;
         private readonly IObtenerUsuariosPorIdLN _obtenerUsuariosPorId;
+        private static List<CursoDto> cursos;
         public CursosController()
         {
             _listarCursoLN = new ListarCursosLN();
@@ -45,7 +56,13 @@ namespace Campus.UI.Controllers
         // GET: Cursos
         public ActionResult ListarCursos()
         {
-
+            List<CursoDto> listaDeCursos = ObtenerCursos();
+            cursos = listaDeCursos;
+            return View(listaDeCursos);
+        }
+       
+        private List<CursoDto> ObtenerCursos()
+        {
             var listaDeCursos = _listarCursoLN.ListarCursos();
             foreach (var item in listaDeCursos)
             {
@@ -55,7 +72,7 @@ namespace Campus.UI.Controllers
                 item.NombreProfesor = usuario.Nombre + " " + usuario.Apellido;
             }
 
-            return View(listaDeCursos);
+            return listaDeCursos;
         }
 
         // GET: Cursos/Details/5
@@ -105,42 +122,127 @@ namespace Campus.UI.Controllers
             CargarViewBags();
             return PartialView("_AgregarCursoParcial", Curso);
         }
-
-        // GET: Cursos/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult GenerarReportePDF()
         {
-            return View();
+            var datos = cursos;
+    
+            using (var ms = new MemoryStream())
+            {
+                PdfWriter writer = new PdfWriter(ms);
+                PdfDocument pdf = new PdfDocument(writer);
+                Document document = new Document(pdf, iText.Kernel.Geom.PageSize.A4);
+                document.SetMargins(40, 40, 40, 40);
+
+                try
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        byte[] imageBytes = client.GetByteArrayAsync("https://santaana.ed.cr/wp-content/uploads/LOGO-1.png").Result;
+                        Image logo = new Image(iText.IO.Image.ImageDataFactory.Create(imageBytes));
+                        logo.ScaleToFit(100, 100);
+                        logo.SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                        document.Add(logo);
+                    }
+                }
+                catch { }
+
+                PdfFont bold = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA_BOLD);
+                Paragraph titulo = new Paragraph("Reporte de Cursos")
+                    .SetFont(bold)
+                    .SetFontSize(20)
+                    .SetFontColor(iText.Kernel.Colors.ColorConstants.BLUE)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetMarginBottom(20);
+                document.Add(titulo);
+
+                Table cursosTable = new Table(new float[] { 2, 3, 3, 4 });
+                cursosTable.SetWidth(UnitValue.CreatePercentValue(100));
+
+                // Encabezados
+                string[] headers = { "Id", "Materia", "Grupo", "Profesor" };
+                foreach (var header in headers)
+                {
+                    cursosTable.AddHeaderCell(new Cell()
+                        .Add(new Paragraph(header).SetFont(bold))
+                        .SetBackgroundColor(iText.Kernel.Colors.ColorConstants.LIGHT_GRAY));
+                }
+
+                // Filas de usuarios
+                foreach (var dato in datos)
+                {
+                    cursosTable.AddCell(new Paragraph(dato.IdCurso.ToString()));
+                    cursosTable.AddCell(new Paragraph(dato.NombreMateria));
+                    cursosTable.AddCell(new Paragraph(dato.NombreGrupo));
+                    cursosTable.AddCell(new Paragraph(dato.NombreProfesor));
+                
+                }
+
+                document.Add(cursosTable);
+
+                document.Close();
+                return File(ms.ToArray(), "application/pdf", $"reporte_Cursos({DateTime.Today.Date.ToShortDateString()}).pdf");
+            }
         }
 
-        // POST: Cursos/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+
+        public ActionResult GenerarReporteQR()
+        {
+            string urlPdf = Url.Action("GenerarReportePDF", "Cursos", null, Request.Url.Scheme);
+            using (var qrGenerator = new QRCodeGenerator())
+            {
+                var qrCodeData = qrGenerator.CreateQrCode(urlPdf, QRCodeGenerator.ECCLevel.Q);
+                var qrCode = new QRCode(qrCodeData);
+
+                using (var qrImage = qrCode.GetGraphic(20))
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        qrImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                        return File(ms.ToArray(), "image/png");
+                    }
+                }
+            }
+        }
+        // GET: Cursos/EliminarCurso/5
+        public ActionResult EliminarCurso(int id)
         {
             try
             {
-                // TODO: Add update logic here
+                // Buscar el curso por ID para mostrar confirmación
+                var curso = ObtenerCursos().FirstOrDefault(c => c.IdCurso == id);
 
-                return RedirectToAction("Index");
+                if (curso == null)
+                {
+                    TempData["ErrorMessage"] = "Curso no encontrado";
+                    return RedirectToAction("ListarCursos");
+                }
+
+                return PartialView("_EliminarCursoParcial", curso);
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                TempData["ErrorMessage"] = "Error al cargar el curso: " + ex.Message;
+                return RedirectToAction("ListarCursos");
             }
         }
 
-        // POST: Cursos/Delete/5
-        [HttpPost]
-        public async Task<ActionResult> EliminarCurso(int id)
+        // POST: Cursos/EliminarCurso/5
+        [HttpPost, ActionName("EliminarCurso")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EliminarCursoConfirmado(int id)
         {
             try
             {
                 await _eliminarCursoLN.EliminarCurso(id);
+                TempData["SuccessMessage"] = "Curso eliminado correctamente";
                 return RedirectToAction("ListarCursos");
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                TempData["ErrorMessage"] = "Error al eliminar el curso: " + ex.Message;
+                return RedirectToAction("ListarCursos");
             }
         }
     }
 }
+

@@ -1,15 +1,14 @@
 ﻿
 @model List<Campus.Abstracciones.ModelosUI.EntregasDto>
-
 @{
-    ViewBag.Title = "Mis Entregas";
+    List<Campus.Abstracciones.ModelosUI.MateriaDto> materias = ViewBag.Materias;
 }
-
 <h2>Mis Entregas</h2>
 
 <table class="table table-bordered">
     <tr>
         <th>Tarea</th>
+        <th>Materia</th>
         <th>Archivo Entregado</th>
         <th>Fecha Entrega</th>
         <th>Estado</th>
@@ -18,7 +17,8 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>@item.Tarea?.Titulo</td>
+            <td>@item.Tarea.Titulo</td>
+            <td>@materias.FirstOrDefault(i => i.Id_Materia == item.Tarea.IdMateria).Nombre</td>
             <td>
                 @if (!string.IsNullOrEmpty(item.archivo_entregado))
                 {

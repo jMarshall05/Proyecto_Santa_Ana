@@ -20,13 +20,14 @@ namespace Campus.AccesoDatos.Eventos.AgregarEventoAD
             {
                 Titulo = evento.Titulo,
                 FechaInicio = evento.FechaInicio,
-                FechaFin = evento.FechaFin
+                FechaFin = evento.FechaFin,
+                IdUsuario = evento.IdUsuario // 👈 Ahora se guarda el usuario dueño del evento
             };
 
             _contexto.Eventos.Add(entidad);
             await _contexto.SaveChangesAsync();
 
-            return entidad.Id; // Devolver el ID generado por la base de datos
+            return entidad.Id; // Devuelve el ID generado por la base de datos
         }
     }
 }

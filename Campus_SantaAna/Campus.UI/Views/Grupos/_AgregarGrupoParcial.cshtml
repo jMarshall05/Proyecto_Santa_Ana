@@ -1,59 +1,344 @@
 ﻿@model Campus.Abstracciones.ModelosUI.GruposDto
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-
-    <div class="container p-4 rounded shadow-sm bg-light">
-        <h3 class="mb-4 text-primary">
-            <i class="fas fa-users me-2"></i> Gestión de Grupo
-        </h3>
-
-        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
-
-        <div class="form-group mb-4">
-            @Html.LabelFor(model => model.nombre_grupo, htmlAttributes: new { @class = "form-label fw-bold" })
-            <div>
-                @Html.EditorFor(model => model.nombre_grupo, new { htmlAttributes = new { @class = "form-control", placeholder = "Ingrese el nombre del grupo",
-               required = "required"
-           }
-           })
-                @Html.ValidationMessageFor(model => model.nombre_grupo, "", new { @class = "text-danger small" })
+<div class="edit-group-modal">
+    <!-- Header -->
+    <div class="edit-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-users"></i>
             </div>
-        </div>
-
-        <div class="form-group mb-4">
-            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "form-label fw-bold" })
             <div>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text bg-light h-100 align-items-start pt-3">
-                            <i class="fas fa-align-left text-primary"></i>
-                        </span>
-                    </div>
-                    @Html.TextAreaFor(model => model.descripcion, new
-               {
-                   @class = "form-control",
-                   rows = 4,
-                   placeholder = "Detalles del grupo...",
-                   required = "required"
-
-               })
-                </div>
-                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger small" })
+                <h2 class="modal-title">Crear Nuevo Grupo</h2>
+                <p class="modal-subtitle">Completa la información del grupo</p>
             </div>
-        </div>
-
-        <div class="d-flex justify-content-between mt-4">
-            <a class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                <i class="fas fa-arrow-left me-2"></i> Volver
-            </a>
-            <button type="submit" class="btn btn-success">
-                <i class="fas fa-save me-2"></i> Guardar
-            </button>
         </div>
     </div>
-}
-@section Scripts {
-@Scripts.Render("~/bundles/jqueryval")
-}
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@ViewBag.Id" />
+
+        <div class="edit-content">
+            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+            <!-- Información del Grupo -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-info-circle me-2"></i>Información del Grupo
+                </h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.nombre_grupo, htmlAttributes: new { @class = "form-label" })
+                        <div class="input-group">
+                            <span class="input-icon">
+                                <i class="fas fa-users"></i>
+                            </span>
+                            @Html.EditorFor(model => model.nombre_grupo, new
+                            {
+                                htmlAttributes = new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Ingrese el nombre del grupo",
+                                    required = "required"
+                                }
+                            })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.nombre_grupo, "", new { @class = "validation-message" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-align-left me-2"></i>Descripción
+                </h3>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "form-label" })
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <i class="fas fa-pen"></i>
+                        </span>
+                        @Html.TextAreaFor(model => model.descripcion, new
+                        {
+                            @class = "form-control",
+                            rows = 4,
+                            placeholder = "Detalles del grupo...",
+                            required = "required"
+                        })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "validation-message" })
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="edit-footer">
+            <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">
+                <i class="fas fa-times me-2"></i>Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary btn-Agregar-Grupo" , data-id="@ViewBag.Id">
+                <i class="fas fa-save me-2"></i>Crear Grupo
+            </button>
+        </div>
+    }
+</div>
+
+<style>
+    .edit-group-modal {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Header Styles */
+    .edit-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .header-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .modal-subtitle {
+        opacity: 0.9;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    /* Content Styles */
+    .edit-content {
+        padding: 2rem;
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: #f8fafc;
+        border-radius: 15px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .input-group {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        color: #6b7280;
+        z-index: 10;
+    }
+
+    .form-control {
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+        width: 100%;
+    }
+
+    textarea.form-control {
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    /* Validation */
+    .validation-message {
+        color: #ef4444;
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+    }
+
+    .alert-danger {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #dc2626;
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Footer */
+    .edit-footer {
+        padding: 1.5rem 2rem;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-secondary {
+        background: #6b7280;
+        color: white;
+    }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(102, 126, 234, 0.3);
+        }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .edit-header {
+            padding: 1.5rem;
+        }
+
+        .edit-content {
+            padding: 1.5rem;
+            max-height: 50vh;
+        }
+
+        .form-section {
+            padding: 1rem;
+        }
+
+        .edit-footer {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .edit-header {
+            padding: 1rem;
+        }
+
+        .edit-content {
+            padding: 1rem;
+        }
+
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 0.5rem;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form validation enhancement
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const requiredFields = form.querySelectorAll('[required]');
+                let isValid = true;
+
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.style.borderColor = '#ef4444';
+                    } else {
+                        field.style.borderColor = '#10b981';
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                    alert('Por favor, complete todos los campos requeridos.');
+                }
+            });
+        }
+    });
+</script>

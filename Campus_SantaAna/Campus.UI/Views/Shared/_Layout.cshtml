@@ -9,6 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
     <link href="~/Content/styles.css" rel="stylesheet" />
+    <link href="~/Content/responsive.css" rel="stylesheet" />
+
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @RenderSection("styles", required: false)
@@ -107,6 +109,7 @@
         <div id="mySidebar" class="sidebar">
             <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar()">&times;</a>
             <a href="@Url.Action("AnunciosEstudiantes", "Anuncios")">Anuncios</a>
+            <a href="@Url.Action("MisEntregas","Entregas")">Entregas Realizadas</a>
             <a href="@Url.Action("MisCalificaciones", "Calificaciones")">Calificaciones</a>
             <a href="@Url.Action("Documentos", "Home")">Documentos</a>
             <a href="@Url.Action("VerDocentesAdministrativos", "Usuarios")">Contactos</a>

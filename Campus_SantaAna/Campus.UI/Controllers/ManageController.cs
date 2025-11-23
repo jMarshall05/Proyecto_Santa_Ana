@@ -3,25 +3,31 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio.Telefonos.ListarTelefonos;
+using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
+using Campus.LogicaDeNegocio.Telefonos.ListarTelefonosLN;
+using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
+using Campus.UI.Filtros;
+using Campus.UI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Campus.UI.Models;
-using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
-using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 
 namespace Campus.UI.Controllers
 {
     [Authorize]
+    
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private IObtenerUsuariosPorIdLN _ObtenerUsuarioPorIdLN;
+        private readonly IListarTelefonosLN _ListarTelefonosLN;
 
         public ManageController()
         {
             _ObtenerUsuarioPorIdLN = new ObtenerUsuariosPorIdLN();
+            _ListarTelefonosLN = new ListarTelefonosLN();
         }
 
         public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -69,6 +75,7 @@ namespace Campus.UI.Controllers
 
             var userId = User.Identity.GetUserId();
             var usuario = _ObtenerUsuarioPorIdLN.ObtenerUsuarioPorId(userId);
+            var Telefonos= _ListarTelefonosLN.ListarTelefono().Where(t => t.IdUsuario == userId );
             var model = new IndexViewModel
             {
                 HasPassword = HasPassword(),
@@ -76,11 +83,12 @@ namespace Campus.UI.Controllers
                 TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
                 Logins = await UserManager.GetLoginsAsync(userId),
                 BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId),
-                Nombre= usuario.Nombre,
-                Apellido= usuario.Apellido,
-                Email=usuario.Email,
-                Cedula=usuario.Cedula,
-                Id=userId
+                Nombre = usuario.Nombre,
+                Apellido = usuario.Apellido,
+                Email = usuario.Email,
+                Cedula = usuario.Cedula,
+                Id = userId,
+                Telefonos = Telefonos.ToList()
             }; 
             return View(model);
         }

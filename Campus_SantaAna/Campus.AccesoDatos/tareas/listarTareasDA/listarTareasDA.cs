@@ -30,7 +30,8 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                     FechaPublicacion = t.FechaPublicacion,
                     ArchivoAdjunto = t.ArchivoAdjunto,
                     Id_grupo = t.IdGrupo,
-                    Nombre_grupo = t.Grupo.nombre_grupo
+                    Nombre_grupo = t.Grupo.nombre_grupo,
+                    IdMateria = t.id_materia
                 })
                 .ToListAsync();
         }
@@ -64,7 +65,9 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                 FechaModificacion = tarea.FechaModificacion,
                 ArchivoAdjunto = tarea.ArchivoAdjunto,
                 Id_grupo = tarea.IdGrupo,
-                Nombre_grupo = tarea.Grupo.nombre_grupo
+                Nombre_grupo = tarea.Grupo.nombre_grupo,
+                asignado_por = tarea.asignado_por
+
             };
         }
 
@@ -107,6 +110,7 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                     FechaPublicacion = t.FechaPublicacion,
                     ArchivoAdjunto = t.ArchivoAdjunto,
                     Id_grupo = t.IdGrupo,
+                    IdMateria = t.id_materia,
                     Nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo",
                     Calificacion = _contexto.Entregas
                         .Where(e => e.IdTarea == t.IdTarea && e.IdEstudiante == idEstudiante)

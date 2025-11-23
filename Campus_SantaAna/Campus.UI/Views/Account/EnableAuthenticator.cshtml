@@ -1,0 +1,185 @@
+﻿@{
+    ViewData["Title"] = "Configurar Autenticación de Dos Factores";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-shield-lock-fill me-2"></i>
+                        Configurar Autenticación de Dos Factores
+                    </h4>
+                </div>
+
+                <div class="card-body p-4">
+                    <!-- Instrucciones -->
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <strong>Paso 1:</strong> Descarga Google Authenticator en tu dispositivo móvil si aún no lo tienes.
+                    </div>
+
+                    <!-- Sección del código QR -->
+                    <div class="text-center mb-4">
+                        <h5 class="mb-3">
+                            <i class="bi bi-qr-code me-2"></i>
+                            Escanea este código QR
+                        </h5>
+                        <div class="qr-container bg-light p-4 rounded d-inline-block">
+                            <img src="@ViewBag.QRCode" alt="Código QR para Google Authenticator" class="img-fluid" style="max-width: 250px;" />
+                        </div>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <span class="text-muted">- O -</span>
+                    </div>
+
+                    <!-- Clave manual -->
+                    <div class="mb-4">
+                        <h6 class="mb-2">
+                            <i class="bi bi-key-fill me-2"></i>
+                            Introduce la clave manualmente:
+                        </h6>
+                        <div class="input-group">
+                            <input type="text" class="form-control font-monospace text-center fs-5"
+                                   id="secretKey"
+                                   value="@ViewBag.SecretKey"
+                                   readonly />
+                            <button class="btn btn-outline-secondary" type="button" onclick="copySecretKey()">
+                                <i class="bi bi-clipboard"></i> Copiar
+                            </button>
+                        </div>
+                        <small class="text-muted d-block mt-1">
+                            <i class="bi bi-lightbulb"></i>
+                            Guarda esta clave en un lugar seguro por si necesitas reconfigurar tu autenticador.
+                        </small>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <!-- Formulario de verificación -->
+                    <div class="alert alert-warning" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Paso 2:</strong> Introduce el código de 6 dígitos que aparece en tu app.
+                    </div>
+
+                    <form method="post" action="/Account/VerifyAuthenticator" id="verifyForm">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label for="Code" class="form-label fw-bold">Código de verificación:</label>
+                            <input type="text"
+                                   class="form-control form-control-lg text-center font-monospace"
+                                   id="Code"
+                                   name="Code"
+                                   placeholder="000000"
+                                   maxlength="6"
+                                   pattern="[0-9]{6}"
+                                   required
+                                   autocomplete="off"
+                                   autofocus />
+                            <div class="invalid-feedback">
+                                Por favor, introduce un código de 6 dígitos válido.
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle me-2"></i>
+                                Verificar y Activar
+                            </button>
+                            <a href="/Account/Manage" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-footer text-center text-muted py-3">
+                    <small>
+                        <i class="bi bi-lock-fill"></i>
+                        Tu seguridad es nuestra prioridad. Esta información está encriptada.
+                    </small>
+                </div>
+            </div>
+
+            <!-- Sección de ayuda -->
+            <div class="mt-4">
+                <div class="accordion" id="helpAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpCollapse">
+                                <i class="bi bi-question-circle me-2"></i>
+                                ¿Necesitas ayuda?
+                            </button>
+                        </h2>
+                        <div id="helpCollapse" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body">
+                                <h6>Descarga Google Authenticator:</h6>
+                                <ul>
+                                    <li><a href="https://apps.apple.com/app/google-authenticator/id388497605" target="_blank">iOS (App Store)</a></li>
+                                    <li><a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank">Android (Google Play)</a></li>
+                                </ul>
+                                <h6>Problemas comunes:</h6>
+                                <ul>
+                                    <li>Asegúrate de que la hora de tu dispositivo esté sincronizada</li>
+                                    <li>El código cambia cada 30 segundos, introduce el código actual</li>
+                                    <li>Si el código no funciona, verifica que escaneaste el QR correcto</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Copiar clave secreta al portapapeles
+        function copySecretKey() {
+            const secretKey = document.getElementById('secretKey');
+            secretKey.select();
+            secretKey.setSelectionRange(0, 99999); // Para móviles
+
+            navigator.clipboard.writeText(secretKey.value).then(function() {
+                // Cambiar temporalmente el texto del botón
+                const btn = event.target.closest('button');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-check"></i> ¡Copiado!';
+                btn.classList.remove('btn-outline-secondary');
+                btn.classList.add('btn-success');
+
+                setTimeout(function() {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('btn-success');
+                    btn.classList.add('btn-outline-secondary');
+                }, 2000);
+            });
+        }
+
+        // Validación del formulario
+        (function() {
+            'use strict';
+            const form = document.getElementById('verifyForm');
+            const codeInput = document.getElementById('Code');
+
+            // Permitir solo números
+            codeInput.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+
+            // Validación al enviar
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        })();
+    </script>
+}

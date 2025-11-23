@@ -1,27 +1,28 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
+using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.agregarTareaLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.editarTareaLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.eliminarTareaLN;
+using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
+using Campus.LogicaDeNegocio.Materias.ListarMaterias;
 using Campus.LogicaDeNegocio.tareas.agregarTareaLN;
 using Campus.LogicaDeNegocio.Tareas.EditarTareaLN;
 using Campus.LogicaDeNegocio.Tareas.EliminarTareaLN;
 using Campus.LogicaDeNegocio.Tareas.ListarTareaLN;
-using System.Web.Mvc.Html;
-using System.Linq;
-using System.IO;
-using System;
+using Campus.UI.Filtros;
 using Microsoft.AspNet.Identity;
-using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
-using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
-using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
-using Campus.LogicaDeNegocio.Materias.ListarMaterias;
 
 namespace Campus.UI.Controllers
 {
-     [Authorize]
+    [Authorize]
     public class TareasController : Controller
     {
         private readonly IListarTareaLN _listarTareaLN;
@@ -30,6 +31,9 @@ namespace Campus.UI.Controllers
         private readonly IEliminarTareaLN _eliminarTareaLN;
         private readonly IListarGruposLN _listarGruposLN;
         private readonly IListarMateriasLN _listarMateriasLN;
+        private static IEnumerable<GruposDto> grupos;
+        private static IEnumerable<MateriaDto> materias;
+
 
         public TareasController()
         {
@@ -43,14 +47,13 @@ namespace Campus.UI.Controllers
         }
 
         [Authorize(Roles = "Administradores,Profesores")]
-        public async Task<ActionResult> ListarTareas(int? grupoId)
+        public async Task<ActionResult> ListarTareas(int? grupoId, int? materiaId)
         {
             var tareas = await _listarTareaLN.ListarTareasAsync();
 
-            // Filtrar si se pasó grupoId
-            if (grupoId.HasValue && grupoId.Value > 0)
+            if (grupoId.HasValue && materiaId.HasValue)
             {
-                tareas = tareas.Where(t => t.Id_grupo == grupoId.Value);
+                tareas = tareas.Where(t => t.Id_grupo == grupoId && t.IdMateria == materiaId);
             }
 
             // Cargar calificaciones para cada tarea
@@ -72,8 +75,8 @@ namespace Campus.UI.Controllers
         [Authorize(Roles = "Administradores,Profesores")]
         public ActionResult Create()
         {
-            var grupos = _listarGruposLN.ListarGrupos();
-            var materias = _listarMateriasLN.ListarMaterias();
+            grupos = _listarGruposLN.ListarGrupos();
+            materias = _listarMateriasLN.ListarMaterias();
             ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
             ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
             return View();
@@ -84,8 +87,7 @@ namespace Campus.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(TareaDto tarea)
         {
-            var grupos = _listarGruposLN.ListarGrupos();
-            var materias = _listarMateriasLN.ListarMaterias();
+            tarea.asignado_por = User.Identity.GetUserId();
             ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
             ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
             if (ModelState.IsValid)
@@ -103,8 +105,6 @@ namespace Campus.UI.Controllers
                         }
                         GuardarArchivo(tarea);
                     }
-
-                    tarea.FechaModificacion = DateTime.Now;
 
                     await _agregarTareaLN.AgregarTarea(tarea);
                     return RedirectToAction("ListarTareas");
@@ -126,8 +126,6 @@ namespace Campus.UI.Controllers
             if (tarea == null)
                 return HttpNotFound();
 
-            var grupos = _listarGruposLN.ListarGrupos();
-            var materias = _listarMateriasLN.ListarMaterias();
             ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
             ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
             return View(tarea);
@@ -140,8 +138,7 @@ namespace Campus.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, TareaDto tarea)
         {
-            var grupos = _listarGruposLN.ListarGrupos();
-            var materias = _listarMateriasLN.ListarMaterias();
+
             ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
             ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
 
@@ -184,9 +181,6 @@ namespace Campus.UI.Controllers
                     tarea.ArchivoAdjunto = archivoAnterior;
                 }
 
-                // 5. Validación de fechas
-                tarea.FechaModificacion = DateTime.Now;
-
                 if (tarea.FechaEntrega < tarea.FechaPublicacion)
                 {
                     ModelState.AddModelError("FechaEntrega", "La fecha de entrega no puede ser anterior a la fecha de publicacion");
@@ -225,7 +219,7 @@ namespace Campus.UI.Controllers
             return RedirectToAction("ListarTareas");
         }
 
-        [Authorize(Roles = "Administradores,Profesores")]
+        [Authorize]
         public async Task<ActionResult> Details(int id)
         {
             var tarea = await _listarTareaLN.ObtenerPorIdAsync(id);
@@ -236,7 +230,7 @@ namespace Campus.UI.Controllers
             return View(tarea);
         }
         [Authorize(Roles = "Estudiantes")]
-        public async Task<ActionResult> MisTareas()
+        public async Task<ActionResult> MisTareas(int? materiaId, int? grupoId)
         {
             try
             {
@@ -247,12 +241,18 @@ namespace Campus.UI.Controllers
                     return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "Usuario no identificado");
 
                 var tareas = await _listarTareaLN.ListarTareasPorEstudiante(idUsuario);
+                if (materiaId.HasValue && grupoId.HasValue)
+                {
+                    tareas = tareas.Where(t => t.IdMateria == materiaId && t.Id_grupo == grupoId);
+                    return View(tareas);
+                }
+                else
+                { return View(tareas); }
 
-                return View(tareas);
+
             }
             catch (Exception ex)
             {
-                // Podés loguear el error acá si querés
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError, "Error al obtener tareas: " + ex.Message);
             }
         }
@@ -268,9 +268,11 @@ namespace Campus.UI.Controllers
         private void GuardarArchivo(TareaDto tarea)
         {
             // Ruta del servidor donde se guardará el archivo
-            var nombreArchivo = Path.GetFileName(tarea.Archivo.FileName);
+            var nombreArchivo = Path.GetFileNameWithoutExtension(tarea.Archivo.FileName);
+            var extension = Path.GetExtension(tarea.Archivo.FileName);
             var rutaCarpeta = Server.MapPath("~/Uploads/");
-            var rutaCompleta = Path.Combine(rutaCarpeta, nombreArchivo);
+            var rutaCompleta = Path.Combine(rutaCarpeta, $"{nombreArchivo}_{Guid.NewGuid()}{extension}");
+
 
             // Crear carpeta si no existe
             if (!Directory.Exists(rutaCarpeta))
@@ -282,7 +284,7 @@ namespace Campus.UI.Controllers
             }
 
             // Guardar solo la ruta relativa en la base de datos
-            tarea.ArchivoAdjunto = "~/Uploads/" + nombreArchivo;
+            tarea.ArchivoAdjunto = "~/Uploads/" + Path.GetFileName(rutaCompleta);
         }
 
 

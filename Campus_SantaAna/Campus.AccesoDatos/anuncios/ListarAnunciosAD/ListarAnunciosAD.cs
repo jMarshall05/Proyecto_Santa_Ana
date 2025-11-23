@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;                       
+using System.Linq;
 using Campus.Abstracciones.AccesoDatos.Anuncios.ListarAnunciosAD;
 using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.ModelosAD;
@@ -24,7 +24,10 @@ namespace Campus.AccesoDatos.Anuncios.ListarAnunciosAD
                         Titulo = anuncio.Titulo,
                         Descripcion = anuncio.Descripcion,
                         FechaEvento = anuncio.FechaEvento,
-                        FechaPublicacion = anuncio.FechaPublicacion
+                        FechaPublicacion = anuncio.FechaPublicacion,
+
+                        // ✅ Nuevo: incluir la imagen
+                        ImagenRuta = anuncio.ImagenRuta
                     }).ToList();
         }
 
@@ -41,7 +44,10 @@ namespace Campus.AccesoDatos.Anuncios.ListarAnunciosAD
                 Titulo = anuncio.Titulo,
                 Descripcion = anuncio.Descripcion,
                 FechaEvento = anuncio.FechaEvento,
-                FechaPublicacion = anuncio.FechaPublicacion
+                FechaPublicacion = anuncio.FechaPublicacion,
+
+             
+                ImagenRuta = anuncio.ImagenRuta
             };
         }
     }

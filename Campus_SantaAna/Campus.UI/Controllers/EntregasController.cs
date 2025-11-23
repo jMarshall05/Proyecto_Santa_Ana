@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Campus.Abstracciones.LogicaDeNegocio.calificaciones.listarCalificacionLN;
+using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
@@ -15,12 +16,14 @@ using Campus.Abstracciones.LogicaNegocio.entregas.eliminarEntregaLN;
 using Campus.Abstracciones.LogicaNegocio.entregas.listarEntregaLN;
 using Campus.Abstracciones.ModelosUI;
 using Campus.LogicaDeNegocio.calificaciones.listarCalificacionesLN;
+using Campus.LogicaDeNegocio.Materias.ListarMaterias;
 using Campus.LogicaDeNegocio.Tareas.ListarTareaLN;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
 using Campus.LogicaNegocio.Entregas.EditarEntregaLN;
 using Campus.LogicaNegocio.Entregas.EliminarEntregaLN;
 using Campus.LogicaNegocio.Entregas.ListarEntregaLN;
+using Campus.UI.Filtros;
 using Microsoft.AspNet.Identity;
 
 namespace Campus.Web.Controllers
@@ -35,6 +38,7 @@ namespace Campus.Web.Controllers
         private readonly IListarCalificacionesLN _listarCalificacionesLN; 
         private readonly IObtenerUsuariosPorIdLN _obtenerUsuariosPorId;
         private readonly IListarTareaLN _listarTareas;
+        private readonly IListarMateriasLN _listarMaterias;
 
         public EntregasController()
         {
@@ -45,6 +49,7 @@ namespace Campus.Web.Controllers
             _listarCalificacionesLN = new ListarCalificacionesLN();
             _obtenerUsuariosPorId = new ObtenerUsuariosPorIdLN();
             _listarTareas = new ListarTareaLN();
+            _listarMaterias = new ListarMateriasLN();
         }
 
         public async Task<ActionResult> Index(int? idGrupo)
@@ -165,8 +170,13 @@ namespace Campus.Web.Controllers
         [Authorize(Roles = "Estudiantes")]
         public async Task<ActionResult> MisEntregas()
         {
-            var idEstudiante = User.Identity.Name;
+            var idEstudiante = User.Identity.GetUserId();
             var lista = await _listarEntregasLN.ListarEntregasPorEstudianteAsync(idEstudiante);
+            ViewBag.Materias = _listarMaterias.ListarMaterias();
+            foreach(var tarea in lista)
+            {
+                tarea.Tarea = await _listarTareas.ObtenerPorIdAsync(tarea.id_tarea);
+            }
             return View(lista);
         }
 
@@ -193,22 +203,21 @@ namespace Campus.Web.Controllers
         {
             if (archivo != null && archivo.ContentLength > 0)
             {
-                var nombreArchivo = Path.GetFileName(archivo.FileName);
+                var nombreArchivo = Path.GetFileNameWithoutExtension(archivo.FileName);
+                var extension= Path.GetExtension(archivo.FileName);
                 var rutaCarpeta = Server.MapPath("~/Uploads/Entregas");
-                var rutaCompleta = Path.Combine(rutaCarpeta, nombreArchivo);
+                var rutaCompleta = Path.Combine(rutaCarpeta, $"{nombreArchivo}_{Guid.NewGuid()}{extension}");
 
                 if (!Directory.Exists(rutaCarpeta))
                     Directory.CreateDirectory(rutaCarpeta);
 
                 archivo.SaveAs(rutaCompleta);
 
-                entrega.archivo_entregado = "~/Uploads/Entregas/" + nombreArchivo;
+                entrega.archivo_entregado = "~/Uploads/Entregas/" + Path.GetFileName(rutaCompleta);
             }
 
-            entrega.fecha_entrega = DateTime.Now;
             entrega.id_estudiante = User.Identity.GetUserId();
-            entrega.estado = true; // ← ESTA ES LA LÍNEA CLAVE QUE FALTABA
-
+        
             await _agregarEntregaLN.AgregarEntrega(entrega);
             return RedirectToAction("MisEntregas");
         }

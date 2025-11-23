@@ -102,6 +102,35 @@
         .password-container {
             position: relative;
         }
+
+        /* 🎯 Responsivo para móviles */
+        @@media (max-width: 768px) {
+            .main-container {
+                flex-direction: column; /* apila los paneles */
+                height: auto; /* permite scroll si es necesario */
+            }
+
+            .left-panel {
+                flex: none;
+                width: 100%;
+                padding: 20px;
+            }
+
+                .left-panel img {
+                    width: 180px; /* logo más pequeño en móviles */
+                }
+
+            .right-panel {
+                flex: none;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .login-box {
+                width: 100%;
+                margin: 0 auto;
+            }
+        }
     </style>
 </head>
 <body>

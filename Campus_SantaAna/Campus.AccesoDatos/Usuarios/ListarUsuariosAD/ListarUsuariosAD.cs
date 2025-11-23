@@ -10,7 +10,7 @@ namespace Campus.AccesoDatos.Usuarios.ListarUsuariosAD
 {
     public class ListarUsuariosAD : IListarUsuariosAD
     {
-        private Contexto _elContexto;
+        private readonly Contexto _elContexto;
         public ListarUsuariosAD()
         {
             _elContexto = new Contexto();
@@ -25,7 +25,6 @@ namespace Campus.AccesoDatos.Usuarios.ListarUsuariosAD
                                                      Nombre=Usuarios.Nombre,
                                                      Apellido = Usuarios.Apellido,
                                                      Email = Usuarios.Email,
-                                                     Telefono = Usuarios.Telefono,
                                                      FechaDeNacimiento = Usuarios.FechaDeNacimiento,
                                                      Cedula = Usuarios.Cedula,
                                                      FechaDeRegistro = Usuarios.FechaDeRegistro,

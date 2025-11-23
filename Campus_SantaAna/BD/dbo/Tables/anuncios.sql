@@ -4,6 +4,7 @@
     [descripcion]       TEXT          NULL,
     [fecha_evento]      DATETIME      NULL,
     [fecha_publicacion] DATETIME      NULL,
+    [imagen_ruta]       VARCHAR (300) NULL,
     PRIMARY KEY CLUSTERED ([id_anuncio] ASC)
 );
 
