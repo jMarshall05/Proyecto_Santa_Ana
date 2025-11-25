@@ -4,57 +4,179 @@
     ViewBag.Title = "Editar Entrega";
 }
 
-<h2 class="container-title">Estado de la Entrega</h2>
+<div class="container my-5">
+    <h2 class="text-center mb-4 fw-bold text-primary">Estado de la Entrega</h2>
 
-@using (Html.BeginForm("Edit", "Entregas", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
+    @using (Html.BeginForm("Edit", "Entregas", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+    {
+        @Html.AntiForgeryToken()
 
-    <div class="d-flex justify-content-center">
-        <div class="card shadow" style="max-width: 800px; width: 100%;">
-            <div class="card-header bg-primary text-white">
-                Información de la Entrega
+        <div class="d-flex justify-content-center">
+            <div class="card premium-card shadow-lg" style="max-width: 900px; width: 100%;">
+                <div class="card-header premium-header text-white d-flex align-items-center">
+                    <i class="fas fa-file-alt me-2 icon-header"></i>
+                    Información de la Entrega
+                </div>
+
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-user-graduate me-2 text-primary"></i> <strong>Estudiante:</strong> @Model.Estudiante.Nombre @Model.Estudiante.Apellido (@Model.id_estudiante)</span>
+                    </li>
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-tasks me-2 text-success"></i> <strong>Tarea:</strong> @Model.Tarea.Titulo</span>
+                    </li>
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-file-upload me-2 text-warning"></i> <strong>Archivo Entregado:</strong></span>
+                        <span>
+                            @if (!string.IsNullOrEmpty(Model.archivo_entregado))
+                            {
+                                <a href="@Url.Content(Model.archivo_entregado)" target="_blank" class="btn btn-sm btn-outline-primary ripple"><i class="fas fa-download me-1"></i> Descargar</a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No se ha subido archivo</span>
+                            }
+                        </span>
+                    </li>
+
+                    <li class="list-group-item">
+                        @if (Model.Calificacion == null)
+                        {
+                            @Html.ActionLink("Añadir calificación", "Create", "Calificaciones", new { id = Model.id_entrega }, new { @class = "btn btn-primary ripple" })
+                        }
+                        else
+                        {
+                            <div class="mb-2"><i class="fas fa-star me-2 text-warning"></i><strong>Calificación:</strong> @Model.Calificacion.calificacion</div>
+                            <div class="mb-3"><i class="fas fa-comment-alt me-2 text-info"></i><strong>Comentario:</strong> @(Model.Calificacion?.comentario ?? "No hay comentario")</div>
+
+                            <div class="btn-group ripple" role="group">
+                                @Html.ActionLink("Editar calificación", "Edit", "Calificaciones", new { id = Model.Calificacion.id_calificacion }, new { @class = "btn btn-warning" })
+                                @Html.ActionLink("Eliminar calificación", "Delete", "Calificaciones", new { id = Model.Calificacion.id_calificacion }, new { @class = "btn btn-danger", onclick = "return confirm('¿Está seguro que desea eliminar esta calificación?');" })
+                            </div>
+                        }
+                    </li>
+                </ul>
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <strong>Estudiante:</strong> @Model.Estudiante.Nombre @Model.Estudiante.Apellido (@Model.id_estudiante)
-                </li>
-                <li class="list-group-item">
-                    <strong>Tarea:</strong> @Model.Tarea.Titulo
-                </li>
-                <li class="list-group-item">
-                    <strong>Archivo Entregado:</strong>
-                    @if (!string.IsNullOrEmpty(Model.archivo_entregado))
-                    {
-                        <a href="@Url.Content(Model.archivo_entregado)" target="_blank" class="btn btn-link">Descargar</a>
-                    }
-                    else
-                    {
-                        <span class="text-muted">No se ha subido archivo</span>
-                    }
-                </li>
-                <li class="list-group-item">
-                    @if (Model.Calificacion == null)
-                    {
-                        @Html.ActionLink("Añadir calificación", "Create", "Calificaciones", new { id = Model.id_entrega }, new { @class = "btn btn-primary" })
-                    }
-                    else
-                    {
-                        <div><strong>Calificación:</strong> @Model.Calificacion.calificacion</div>
-                        <div><strong>Comentario:</strong> @(Model.Calificacion?.comentario ?? "No hay comentario")</div>
-
-                        <div class="btn-group mt-2" role="group">
-                            @Html.ActionLink("Editar calificación", "Edit", "Calificaciones", new { id = Model.Calificacion.id_calificacion }, new { @class = "btn btn-warning" })
-                            @Html.ActionLink("Eliminar calificación", "Delete", "Calificaciones", new { id = Model.Calificacion.id_calificacion }, new { @class = "btn btn-danger", onclick = "return confirm('¿Está seguro que desea eliminar esta calificación?');" })
-                        </div>
-                    }
-                </li>
-            </ul>
         </div>
-    </div>
 
-    <div class="mt-3 text-center">
-        <button type="submit" class="btn btn-success">Guardar Cambios</button>
-        <a href="@Url.Action("Index", "Entregas")" class="btn btn-secondary">Cancelar</a>
-    </div>
+        <div class="mt-4 text-center">
+            <button type="submit" class="btn premium-btn-primary ripple">
+                <i class="fas fa-save me-1"></i> Guardar Cambios
+            </button>
+            <a href="@Url.Action("Index", "Entregas")" class="btn premium-btn-secondary ripple ms-2">Cancelar</a>
+        </div>
+    }
+</div>
+
+@section styles {
+    <style>
+/* Card premium */
+.premium-card {
+    border-radius: 18px;
+    overflow: hidden;
+    background: #ffffff;
+    animation: fadeInUp 0.5s ease;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+}
+
+/* Header premium */
+.premium-header {
+    background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+    padding: 18px 25px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.icon-header {
+    font-size: 1.6rem;
+    opacity: 0.9;
+}
+
+/* Lista items */
+.list-group-item {
+    font-size: 1rem;
+    padding: 16px 20px;
+    transition: background 0.2s ease;
+}
+.list-group-item:hover {
+    background: #f5f7ff;
+}
+
+/* Botones premium */
+.premium-btn-primary {
+    background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 12px 25px;
+    border: none;
+    transition: all 0.2s ease;
+}
+.premium-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(34,74,190,0.45);
+}
+
+.premium-btn-secondary {
+    background: #e7f0ff;
+    color: #224abe;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 12px 25px;
+    border: none;
+}
+.premium-btn-secondary:hover {
+    background: #d0e2ff;
+}
+
+/* Animación fadeInUp */
+@@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+/* Ripple */
+.ripple { position: relative; overflow: hidden; }
+
+.ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+    opacity: 0;
+}
+
+@@keyframes ripple {
+    to { transform: scale(4); opacity: 0; }
+}
+    </style>
+}
+
+@section scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <script>
+// Ripple effect
+document.querySelectorAll('.ripple').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        let circle = document.createElement("span");
+        const diameter = Math.max(this.clientWidth, this.clientHeight);
+        const radius = diameter / 2;
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${e.clientX - this.offsetLeft - radius}px`;
+        circle.style.top = `${e.clientY - this.offsetTop - radius}px`;
+        circle.classList.add("ripple-effect");
+        this.appendChild(circle);
+        setTimeout(() => circle.remove(), 600);
+    });
+});
+    </script>
 }

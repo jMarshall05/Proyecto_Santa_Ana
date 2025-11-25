@@ -1,46 +1,179 @@
 ﻿@model Campus.Abstracciones.ModelosUI.CalificacionesDto
+
 @{
     ViewBag.Title = "Editar Calificación";
 }
 
-<div class="card shadow-sm">
-    <div class="card-header bg-warning text-white">
-        <h3 class="card-title mb-0">
-            <i class="fas fa-edit mr-2"></i> Editar Calificación
-        </h3>
+<div class="container my-4">
+    <div class="card premium-card shadow-lg">
+        <div class="card-header premium-header text-white d-flex align-items-center">
+            <i class="fas fa-edit me-2 icono-header"></i>
+            <h3 class="card-title mb-0">Editar Calificación</h3>
+        </div>
+
+        @using (Html.BeginForm("Edit", "Calificaciones", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            @Html.HiddenFor(m => m.id_calificacion)
+            @Html.HiddenFor(m => m.id_entrega)
+            @Html.HiddenFor(m => m.fecha_calificacion)
+
+            <div class="card-body">
+                <div class="mb-4">
+                    @Html.LabelFor(m => m.calificacion, new { @class = "form-label fw-bold" })
+                    <input type="number"
+                           name="calificacion"
+                           value="@Model.calificacion.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)"
+                           class="form-control premium-input"
+                           min="0" max="100" step="0.01" required />
+                    @Html.ValidationMessageFor(m => m.calificacion, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="mb-4">
+                    @Html.LabelFor(m => m.comentario, new { @class = "form-label fw-bold" })
+                    <textarea name="comentario"
+                              class="form-control premium-input"
+                              rows="4"
+                              placeholder="Ingrese comentarios adicionales">@Model.comentario</textarea>
+                    @Html.ValidationMessageFor(m => m.comentario, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-between premium-footer">
+                @Html.ActionLink("Volver al listado", "Index", "Entregas", null, new { @class = "btn premium-btn-secondary ripple" })
+
+                <button type="submit" class="btn premium-btn-primary ripple">
+                    <i class="fas fa-save me-1"></i> Guardar Cambios
+                </button>
+            </div>
+        }
     </div>
-
-    @using (Html.BeginForm("Edit", "Calificaciones", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
-    {
-        @Html.AntiForgeryToken()
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-
-        @Html.HiddenFor(m => m.id_calificacion)
-        @Html.HiddenFor(m => m.id_entrega)
-        @Html.HiddenFor(m => m.fecha_calificacion)
-  
-        <div class="card-body">
-            <div class="mb-3">
-                @Html.LabelFor(m => m.calificacion, new { @class = "form-label" })
-                <input type="number" name="calificacion" value="@Model.calificacion.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)"
-                       class="form-control" min="0" max="100" step="0.01" required />
-                @Html.ValidationMessageFor(m => m.calificacion, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="mb-3">
-                @Html.LabelFor(m => m.comentario, new { @class = "form-label" })
-                <textarea name="comentario" class="form-control" rows="3"
-                          placeholder="Ingrese comentarios adicionales">@Model.comentario</textarea>
-                @Html.ValidationMessageFor(m => m.comentario, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="card-footer bg-light d-flex justify-content-between">
-            @Html.ActionLink("Volver al listado", "Index", "Entregas", null, new { @class = "btn btn-secondary" })
-            <button type="submit" class="btn btn-success">
-                <i class="fas fa-save me-1"></i> Guardar Cambios
-            </button>
-        </div>
-    }
 </div>
+
+@section styles {
+    <style>
+/* ---------- Card  ---------- */
+.premium-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #ffffff;
+    animation: fadeIn 0.5s ease;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* ---------- Header ---------- */
+.premium-header {
+    background: linear-gradient(90deg, #0d6efd, #0a58ca);
+    padding: 20px;
+    font-weight: 600;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+.icono-header {
+    font-size: 1.5rem;
+}
+
+/* ---------- Inputs Premium ---------- */
+.premium-input {
+    border-radius: 12px;
+    border: 1px solid #c5d3f6;
+    padding: 10px 12px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.premium-input:focus {
+    border-color: #0b5ed7;
+    box-shadow: 0 0 10px rgba(13, 110, 253, 0.3);
+    outline: none;
+}
+
+/* ---------- Botones ---------- */
+.premium-btn-primary {
+    background: linear-gradient(90deg, #0d6efd, #0a58ca);
+    color: white;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 10px 20px;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.premium-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(13,110,253,0.4);
+}
+
+.premium-btn-secondary {
+    background: #e7f0ff;
+    color: #0d6efd;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 10px 20px;
+    border: none;
+}
+
+.premium-btn-secondary:hover {
+    background: #d7e6ff;
+}
+
+/* ---------- Footer ---------- */
+.premium-footer {
+    background: #f8f9fc;
+    border-top: 1px solid #e5e5e5;
+    padding: 15px 20px;
+}
+
+/* ---------- Animaciones ---------- */
+@@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+/* ---------- Ripple Effect ---------- */
+.ripple { position: relative; overflow: hidden; }
+.ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    opacity: 0;
+}
+
+@@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+    </style>
+}
+
+@section scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <script>
+        // Ripple
+        document.querySelectorAll('.ripple').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                let circle = document.createElement("span");
+                const d = Math.max(this.clientWidth, this.clientHeight);
+                const r = d / 2;
+                circle.style.width = circle.style.height = `${d}px`;
+                circle.style.left = `${e.clientX - this.offsetLeft - r}px`;
+                circle.style.top = `${e.clientY - this.offsetTop - r}px`;
+                circle.classList.add("ripple-effect");
+                this.appendChild(circle);
+                setTimeout(() => circle.remove(), 600);
+            });
+        });
+    </script>
+}

@@ -16,7 +16,6 @@
     <title>@ViewBag.Title</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
     <style>
         * {
             margin: 0;
@@ -27,7 +26,7 @@
         body, html {
             height: 100%;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #8fb5db /* 🔵 Fondo AZUL SUAVE */
         }
 
         .main-container {
@@ -48,9 +47,10 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
+        /* 🔵 PANEL IZQUIERDO: Azul oscuro */
         .left-panel {
             flex: 1;
-            background: linear-gradient(135deg, #F07059 0%, #e63946 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -121,12 +121,12 @@
             }
 
             .right-panel::-webkit-scrollbar-track {
-                background: #f1f1f1;
+                background: #e2e8f0;
                 border-radius: 10px;
             }
 
             .right-panel::-webkit-scrollbar-thumb {
-                background: #F07059;
+                background: #2563eb; /* 🔵 Azul Scrollbar */
                 border-radius: 10px;
             }
 
@@ -135,7 +135,7 @@
         }
 
             .register-box h2 {
-                color: #2d3748;
+                color: #000000;
                 font-weight: 700;
                 margin-bottom: 0.5rem;
                 font-size: 1.8rem;
@@ -143,7 +143,7 @@
             }
 
         .subtitle {
-            color: #718096;
+            color: #000000;
             margin-bottom: 2rem;
             font-size: 0.95rem;
             text-align: center;
@@ -156,7 +156,7 @@
         label, h5 {
             display: block;
             margin-bottom: 0.5rem;
-            color: #4a5568;
+            color: #000000;
             font-weight: 600;
             font-size: 0.9rem;
         }
@@ -170,14 +170,14 @@
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #a0aec0;
+            color: #000000;
             pointer-events: none;
             z-index: 1;
         }
 
         .form-control {
             width: 100%;
-            border: 2px solid #e2e8f0;
+            border: 2px solid #cbd5e0;
             border-radius: 12px;
             padding: 12px 15px 12px 45px;
             font-size: 0.95rem;
@@ -186,8 +186,8 @@
         }
 
             .form-control:focus {
-                border-color: #F07059;
-                box-shadow: 0 0 0 3px rgba(240, 112, 89, 0.1);
+                border-color: #2563eb;
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
                 outline: none;
             }
 
@@ -195,38 +195,23 @@
                 color: #a0aec0;
             }
 
-        .form-text {
-            display: block;
-            margin-top: 0.5rem;
-            font-size: 0.85rem;
-            color: #718096;
-        }
-
         .phone-section {
-            background: #f7fafc;
+            background: #f1f5f9;
             padding: 1.5rem;
             border-radius: 12px;
             margin-bottom: 1.5rem;
         }
 
             .phone-section h5 {
-                color: #2d3748;
+                color: #1e3a8a;
                 font-weight: 600;
                 margin-bottom: 1rem;
                 font-size: 1rem;
             }
 
-        .row.mb-2 {
-            margin-bottom: 10px;
-        }
-
-        .col-md-3 .form-control,
-        .col-md-5 .form-control {
-            padding: 10px 12px;
-        }
-
+        /* 🔵 Botón Agregar teléfono */
         #addTelefono {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
             color: white;
             border: none;
             padding: 10px 20px;
@@ -242,12 +227,13 @@
 
             #addTelefono:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+                box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
             }
 
+        /* 🔵 BOTÓN REGISTRAR – NUEVO AZUL */
         .btn-register {
             width: 100%;
-            background: linear-gradient(135deg, #F07059 0%, #e63946 100%);
+            background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
             border: none;
             color: white;
             padding: 14px;
@@ -261,7 +247,7 @@
 
             .btn-register:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 10px 25px rgba(240, 112, 89, 0.4);
+                box-shadow: 0 10px 25px rgba(29, 78, 216, 0.4);
             }
 
         .text-danger {
@@ -272,20 +258,15 @@
         }
 
         .validation-summary-errors {
-            background-color: #fff5f5;
-            border: 1px solid #fc8181;
+            background-color: #e0f2fe;
+            border: 1px solid #2563eb;
             border-radius: 8px;
             padding: 1rem;
             margin-bottom: 1rem;
         }
 
-            .validation-summary-errors ul {
-                margin: 0;
-                padding-left: 1.5rem;
-            }
-
             .validation-summary-errors li {
-                color: #e53e3e;
+                color: #1e3a8a;
             }
 
         @@media (max-width: 968px) {
@@ -321,6 +302,8 @@
             }
         }
     </style>
+
+
 </head>
 
 <body>
