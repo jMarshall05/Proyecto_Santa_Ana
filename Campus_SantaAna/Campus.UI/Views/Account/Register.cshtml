@@ -4,7 +4,7 @@
     ViewBag.Title = "Registro de Usuarios";
     var fechaMaxima = DateTime.Now.ToString("yyyy-MM-dd");
     Layout = null;
-    <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />
+    <link rel="icon" type="image/png" href="~/Content/logo_SantaAna.ico" />
     @Styles.Render("~/Content/css")
 }
 
@@ -16,7 +16,6 @@
     <title>@ViewBag.Title</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
     <style>
         * {
             margin: 0;
@@ -27,7 +26,7 @@
         body, html {
             height: 100%;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #8fb5db /* 🔵 Fondo AZUL SUAVE */
         }
 
         .main-container {
@@ -48,9 +47,10 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
+        /* 🔵 PANEL IZQUIERDO: Azul oscuro */
         .left-panel {
             flex: 1;
-            background: linear-gradient(135deg, #F07059 0%, #e63946 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -61,53 +61,53 @@
             overflow: hidden;
         }
 
-        .left-panel::before {
-            content: '';
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            top: -100px;
-            right: -100px;
-        }
+            .left-panel::before {
+                content: '';
+                position: absolute;
+                width: 300px;
+                height: 300px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+                top: -100px;
+                right: -100px;
+            }
 
-        .left-panel::after {
-            content: '';
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            bottom: -50px;
-            left: -50px;
-        }
+            .left-panel::after {
+                content: '';
+                position: absolute;
+                width: 200px;
+                height: 200px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+                bottom: -50px;
+                left: -50px;
+            }
 
-        .left-panel img {
-            width: 200px;
-            height: auto;
-            margin-bottom: 2rem;
-            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
-            position: relative;
-            z-index: 1;
-        }
+            .left-panel img {
+                width: 200px;
+                height: auto;
+                margin-bottom: 2rem;
+                filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+                position: relative;
+                z-index: 1;
+            }
 
-        .left-panel h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 1;
-        }
+            .left-panel h1 {
+                font-size: 2rem;
+                font-weight: 700;
+                text-align: center;
+                margin-bottom: 1rem;
+                position: relative;
+                z-index: 1;
+            }
 
-        .left-panel p {
-            text-align: center;
-            opacity: 0.9;
-            font-size: 1rem;
-            position: relative;
-            z-index: 1;
-        }
+            .left-panel p {
+                text-align: center;
+                opacity: 0.9;
+                font-size: 1rem;
+                position: relative;
+                z-index: 1;
+            }
 
         .right-panel {
             flex: 1.2;
@@ -116,34 +116,34 @@
             max-height: 90vh;
         }
 
-        .right-panel::-webkit-scrollbar {
-            width: 8px;
-        }
+            .right-panel::-webkit-scrollbar {
+                width: 8px;
+            }
 
-        .right-panel::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
+            .right-panel::-webkit-scrollbar-track {
+                background: #e2e8f0;
+                border-radius: 10px;
+            }
 
-        .right-panel::-webkit-scrollbar-thumb {
-            background: #F07059;
-            border-radius: 10px;
-        }
+            .right-panel::-webkit-scrollbar-thumb {
+                background: #2563eb; /* 🔵 Azul Scrollbar */
+                border-radius: 10px;
+            }
 
         .register-box {
             width: 100%;
         }
 
-        .register-box h2 {
-            color: #2d3748;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            font-size: 1.8rem;
-            text-align: center;
-        }
+            .register-box h2 {
+                color: #000000;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                font-size: 1.8rem;
+                text-align: center;
+            }
 
         .subtitle {
-            color: #718096;
+            color: #000000;
             margin-bottom: 2rem;
             font-size: 0.95rem;
             text-align: center;
@@ -156,7 +156,7 @@
         label, h5 {
             display: block;
             margin-bottom: 0.5rem;
-            color: #4a5568;
+            color: #000000;
             font-weight: 600;
             font-size: 0.9rem;
         }
@@ -170,14 +170,14 @@
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #a0aec0;
+            color: #000000;
             pointer-events: none;
             z-index: 1;
         }
 
         .form-control {
             width: 100%;
-            border: 2px solid #e2e8f0;
+            border: 2px solid #cbd5e0;
             border-radius: 12px;
             padding: 12px 15px 12px 45px;
             font-size: 0.95rem;
@@ -185,41 +185,33 @@
             background-color: white;
         }
 
-        .form-control:focus {
-            border-color: #F07059;
-            box-shadow: 0 0 0 3px rgba(240, 112, 89, 0.1);
-            outline: none;
-        }
+            .form-control:focus {
+                border-color: #2563eb;
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+                outline: none;
+            }
 
-        .form-control::placeholder {
-            color: #a0aec0;
-        }
+            .form-control::placeholder {
+                color: #a0aec0;
+            }
 
         .phone-section {
-            background: #f7fafc;
+            background: #f1f5f9;
             padding: 1.5rem;
             border-radius: 12px;
             margin-bottom: 1.5rem;
         }
 
-        .phone-section h5 {
-            color: #2d3748;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-        }
+            .phone-section h5 {
+                color: #1e3a8a;
+                font-weight: 600;
+                margin-bottom: 1rem;
+                font-size: 1rem;
+            }
 
-        .row.mb-2 {
-            margin-bottom: 10px;
-        }
-
-        .col-md-3 .form-control,
-        .col-md-5 .form-control {
-            padding: 10px 12px;
-        }
-
+        /* 🔵 Botón Agregar teléfono */
         #addTelefono {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
             color: white;
             border: none;
             padding: 10px 20px;
@@ -233,14 +225,15 @@
             gap: 8px;
         }
 
-        #addTelefono:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
+            #addTelefono:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+            }
 
+        /* 🔵 BOTÓN REGISTRAR – NUEVO AZUL */
         .btn-register {
             width: 100%;
-            background: linear-gradient(135deg, #F07059 0%, #e63946 100%);
+            background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
             border: none;
             color: white;
             padding: 14px;
@@ -252,10 +245,10 @@
             margin-top: 1rem;
         }
 
-        .btn-register:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(240, 112, 89, 0.4);
-        }
+            .btn-register:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(29, 78, 216, 0.4);
+            }
 
         .text-danger {
             color: #e53e3e;
@@ -265,21 +258,16 @@
         }
 
         .validation-summary-errors {
-            background-color: #fff5f5;
-            border: 1px solid #fc8181;
+            background-color: #e0f2fe;
+            border: 1px solid #2563eb;
             border-radius: 8px;
             padding: 1rem;
             margin-bottom: 1rem;
         }
 
-        .validation-summary-errors ul {
-            margin: 0;
-            padding-left: 1.5rem;
-        }
-
-        .validation-summary-errors li {
-            color: #e53e3e;
-        }
+            .validation-summary-errors li {
+                color: #1e3a8a;
+            }
 
         @@media (max-width: 968px) {
             .register-card {
@@ -290,9 +278,9 @@
                 padding: 2rem;
             }
 
-            .left-panel h1 {
-                font-size: 1.5rem;
-            }
+                .left-panel h1 {
+                    font-size: 1.5rem;
+                }
 
             .right-panel {
                 padding: 2rem;
@@ -314,13 +302,15 @@
             }
         }
     </style>
+
+
 </head>
 
 <body>
     <div class="main-container">
         <div class="register-card">
             <div class="left-panel">
-                <img src="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" alt="Logo Colegio Santa Ana" />
+                <img src="~/Content/logo_SantaAna.jpg" alt="Logo Colegio Santa Ana" />
                 <h1>Bienvenido</h1>
                 <p>Únete a nuestra comunidad educativa y comienza tu camino hacia el éxito</p>
             </div>
@@ -330,7 +320,7 @@
                     <h2>@ViewBag.Title</h2>
                     <p class="subtitle">Completa el formulario para registrarte</p>
 
-                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form", id = "registerForm" }))
                     {
                         @Html.AntiForgeryToken()
                         @Html.ValidationSummary("", new { @class = "text-danger" })
@@ -399,8 +389,8 @@
                                         <input type="text" name="Telefonos[0].Telefono" class="form-control"
                                                placeholder="Número" required
                                                oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-                                               minlenght="8"
-                                               maxlength="8"/>
+                                               minlength="8"
+                                               maxlength="8" />
                                     </div>
                                     <div class="col-md-3">
                                         <select name="Telefonos[0].Tipo" class="form-control" required>
@@ -420,17 +410,31 @@
                         </div>
 
                         <div class="mb-3">
-                            <label>Cédula</label>
+                            <label>Tipo de Identificación</label>
                             <div class="input-wrapper">
-                                <i class="fas fa-id-card input-icon"></i>
+                                <i class="fas fa-id-card-alt input-icon"></i>
+                                @Html.DropDownListFor(m => m.TipoIdentificacion, new List<SelectListItem>
+                                {
+                                    new SelectListItem { Text = "Cédula Física", Value = "Fisica" },
+                                    new SelectListItem { Text = "DIMEX", Value = "Dimex" },
+                                    new SelectListItem { Text = "Pasaporte", Value = "Pasaporte" }
+                                }, "Seleccione tipo de identificación", new { @class = "form-control", id = "tipoIdentificacion", required = "required" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.TipoIdentificacion, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Número de Identificación</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-fingerprint input-icon"></i>
                                 @Html.TextBoxFor(m => m.Cedula, new
                                 {
                                     @class = "form-control",
-                                    minlength = "9",
-                                    maxlength = "9",
-                                    placeholder = "Número de cédula",
-                                    oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                                    id = "numeroIdentificacion",
+                                    placeholder = "Ingrese el número",
+                                    required = "required"
                                 })
+                                <small class="form-text" id="formatoAyuda"></small>
                             </div>
                             @Html.ValidationMessageFor(m => m.Cedula, "", new { @class = "text-danger" })
                         </div>
@@ -502,6 +506,99 @@
     <script>
         let phoneIndex = 1; // ya tenemos un teléfono inicial
 
+        // Configuración de formatos de identificación
+        const formatosIdentificacion = {
+            'Fisica': {
+                pattern: /^[0-9]{9}$/,
+                placeholder: '123456789',
+                maxlength: 9,
+                ayuda: 'Formato: 9 dígitos numéricos. Ejemplo: 123456789'
+            },
+            'Dimex': {
+                pattern: /^[0-9]{11,12}$/,
+                placeholder: '12345678901',
+                maxlength: 12,
+                ayuda: 'Formato: 11 o 12 dígitos numéricos. Ejemplo: 12345678901'
+            },
+            'Pasaporte': {
+                pattern: /^[A-Z0-9]{6,9}$/,
+                placeholder: 'A1234567',
+                maxlength: 9,
+                ayuda: 'Formato: 6 a 9 caracteres alfanuméricos (mayúsculas). Ejemplo: A1234567'
+            }
+        };
+
+        // Función para actualizar formato según tipo de identificación
+        function actualizarFormatoIdentificacion() {
+            const tipo = document.getElementById('tipoIdentificacion').value;
+            const numeroId = document.getElementById('numeroIdentificacion');
+            const ayuda = document.getElementById('formatoAyuda');
+
+            if (tipo && formatosIdentificacion[tipo]) {
+                const formato = formatosIdentificacion[tipo];
+                numeroId.setAttribute('placeholder', formato.placeholder);
+                numeroId.setAttribute('maxlength', formato.maxlength);
+                ayuda.innerHTML = '<i class="fas fa-info-circle me-1"></i>' + formato.ayuda;
+            } else {
+                numeroId.setAttribute('placeholder', 'Ingrese el número');
+                numeroId.setAttribute('maxlength', '20');
+                ayuda.innerHTML = '';
+            }
+        }
+
+        // Evento change del dropdown de tipo identificación
+        document.getElementById('tipoIdentificacion').addEventListener('change', function () {
+            actualizarFormatoIdentificacion();
+            document.getElementById('numeroIdentificacion').value = ''; // Limpiar campo
+        });
+
+        // Validación en tiempo real del número de identificación
+        document.getElementById('numeroIdentificacion').addEventListener('input', function () {
+            const tipo = document.getElementById('tipoIdentificacion').value;
+            let valor = this.value;
+
+            if (tipo && formatosIdentificacion[tipo]) {
+                const formato = formatosIdentificacion[tipo];
+
+                if (tipo === 'Fisica' || tipo === 'Dimex') {
+                    // Solo números
+                    this.value = valor.replace(/[^0-9]/g, '');
+                } else if (tipo === 'Pasaporte') {
+                    // Alfanumérico en mayúsculas
+                    this.value = valor.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                }
+            }
+        });
+
+        // Validación antes de enviar el formulario
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
+            const tipo = document.getElementById('tipoIdentificacion').value;
+            const numero = document.getElementById('numeroIdentificacion').value;
+
+            if (!tipo) {
+                alert('Por favor seleccione el tipo de identificación');
+                e.preventDefault();
+                return false;
+            }
+
+            if (!numero) {
+                alert('Por favor ingrese el número de identificación');
+                e.preventDefault();
+                return false;
+            }
+
+            // Validar formato según tipo
+            if (formatosIdentificacion[tipo]) {
+                const formato = formatosIdentificacion[tipo];
+                if (!formato.pattern.test(numero)) {
+                    alert('Formato inválido. ' + formato.ayuda);
+                    e.preventDefault();
+                    return false;
+                }
+            }
+        });
+
+        // Agregar teléfonos dinámicamente
         document.getElementById('addTelefono').addEventListener('click', function () {
             const container = document.getElementById('telefonosContainer');
 
@@ -518,8 +615,8 @@
                         <input type="text" name="Telefonos[${phoneIndex}].Telefono" class="form-control"
                                placeholder="Número" required
                                oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-                               minlenght="8"
-                                maxlength="8"/>
+                               minlength="8"
+                               maxlength="8"/>
                     </div>
                     <div class="col-md-3">
                         <select name="Telefonos[${phoneIndex}].Tipo" class="form-control" required>

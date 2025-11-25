@@ -89,3 +89,4 @@
     };
         $(document).on('click', '.btn-Editar', EditarUsuario)
 });
+

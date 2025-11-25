@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Campus.AccesoDatos.ModelosAD
 {
@@ -33,6 +28,8 @@ namespace Campus.AccesoDatos.ModelosAD
         public string Rol { get; set; }
         [Column("Estado")]
         public bool Estado { get; set; }
+        [Column("TipoIdentificacion")]
+        public string TipoIdentificacion { get; set; }
 
     }
 }

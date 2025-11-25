@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Campus.Abstracciones.ModelosUI
 {
@@ -24,7 +21,7 @@ namespace Campus.Abstracciones.ModelosUI
         [EmailAddress(ErrorMessage = "El formato del correo electrónico no es válido.")]
         public string Email { get; set; }
         [DisplayName("Teléfonos")]
-        public List <TelefonoDto> Telefonos { get; set; }
+        public List<TelefonoDto> Telefonos { get; set; } = new List<TelefonoDto>();
         [DisplayName("Fecha de Nacimiento")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public DateTime FechaDeNacimiento { get; set; }
@@ -37,6 +34,9 @@ namespace Campus.Abstracciones.ModelosUI
         public DateTime? FechaDeModificacion { get; set; }
         [DisplayName("Rol")]
         public string Rol { get; set; }
+
+        [DisplayName("Tipo de Identificacion")]
+        public string TipoIdentificacion { get; set; }
         [DisplayName("Estado")]
         public bool Estado { get; set; }
 

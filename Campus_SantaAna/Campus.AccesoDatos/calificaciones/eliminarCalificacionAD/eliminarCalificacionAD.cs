@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Campus.AccesoDatos.ModelosAD;
-using System.Data.Entity;
 using Campus.Abstracciones.AccesoDatos.calificaciones.eliminarCalificacionDA;
 
 namespace Campus.AccesoDatos.calificaciones.eliminarCalificacionAD
@@ -17,14 +15,14 @@ namespace Campus.AccesoDatos.calificaciones.eliminarCalificacionAD
 
         public async Task<int> EliminarCalificacion(int id_calificacion)
         {
-            var calificacionExistente = await _elContexto.Cursos.FindAsync(id_calificacion);
+            var calificacionExistente = await _elContexto.Calificaciones.FindAsync(id_calificacion);
 
             if (calificacionExistente == null)
             {
                 throw new ArgumentException("La entrega especificada no existe");
             }
 
-            _elContexto.Cursos.Remove(calificacionExistente);
+            calificacionExistente.Estado = false;
             int resultado = await _elContexto.SaveChangesAsync();
 
             return resultado; // filas afectadas

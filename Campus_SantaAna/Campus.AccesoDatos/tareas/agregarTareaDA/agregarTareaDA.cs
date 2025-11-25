@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Data.Entity;
+using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.agregarTareaAD;
 using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.ModelosAD;
-using System.Data.Entity;
-using System;
 
 namespace Campus.AccesoDatos.Tareas.AgregarTareaAD
 {
@@ -48,7 +48,8 @@ namespace Campus.AccesoDatos.Tareas.AgregarTareaAD
                 FechaEntrega = tarea.FechaEntrega < new DateTime(1753, 1, 1) ? DateTime.Now.AddDays(1) : tarea.FechaEntrega,
                 FechaPublicacion = tarea.FechaPublicacion < new DateTime(1753, 1, 1) ? DateTime.Now : tarea.FechaPublicacion,
                 IdGrupo = tarea.Id_grupo,
-                asignado_por = tarea.asignado_por
+                asignado_por = tarea.asignado_por,
+                Estado = tarea.Estado
             };
         }
 

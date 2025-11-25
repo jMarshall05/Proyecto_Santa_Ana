@@ -6,7 +6,6 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using HttpContext = System.Web.HttpContext;
 
-
 namespace Campus.UI.Filtros
 {
     public class Filtro2FA : AuthorizeAttribute
@@ -15,14 +14,13 @@ namespace Campus.UI.Filtros
         {
             var path = httpContext.Request.Path.ToLower();
 
-            if (path.Contains("/account/loginwith2fa") ||
-                path.Contains("/account/login") ||
-                path.Contains("/account/register") ||
-                path.Contains("/account/forgotpassword") ||
-                path.Contains("/account/solicitud2fa") ||
-                path.Contains("/account/enableauthenticator")
-             )
-
+            // Permitir acceso libre a las rutas públicas
+            
+            if (path ==  "/account/login" || 
+                path == "/account/forgotpassword" ||
+                path == "/account/enableauthenticator" ||
+                path == "/account/logoff" ||
+                path == "/account/loginwith2fa")
             {
                 return true;
             }
@@ -35,32 +33,47 @@ namespace Campus.UI.Filtros
 
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var userId = user.Identity.GetUserId();
-            var cacheKey = $"User2FA-{userId}";
             var cache = MemoryCache.Default;
 
-            var is2FAEnabled = cache[cacheKey] as bool?;
+            var twoFAKey = $"User2FA-{userId}";
+            var verifiedKey = $"User2FAVerified-{userId}";
+
+            var is2FAEnabled = cache[twoFAKey] as bool?;
 
             if (is2FAEnabled == null)
             {
                 var appUser = userManager.FindById(userId);
-
                 is2FAEnabled = appUser.TwoFactorEnabled;
-
-                cache.Add(cacheKey, is2FAEnabled, DateTimeOffset.Now.AddDays(1));
+                cache.Add(verifiedKey, true, DateTimeOffset.Now.AddMinutes(30));
+                cache.Add(twoFAKey, is2FAEnabled, DateTimeOffset.Now.AddMinutes(30));
             }
+
             if (!is2FAEnabled.Value)
+            {
+                if (cache[verifiedKey] == null)
+                    cache.Add(verifiedKey, true, DateTimeOffset.Now.AddMinutes(30));
+                return true;
+            }
+
+            var isRecentlyVerified = cache[verifiedKey] as bool?;
+            if (isRecentlyVerified == true)
                 return true;
 
-            if (session["UserIdFor2FA"] != null)
-                return false;
-
-            return true;
+            return false;
         }
+
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
-            // Redirige al flujo de 2FA
-            filterContext.Result = new RedirectResult("/Account/LoginWith2FA");
-        }
+            var user = filterContext.HttpContext.User;
+            if (user.Identity.IsAuthenticated)
+            {
+                filterContext.Result = new RedirectResult("/Account/LoginWith2FA");
+            }
+            else if (!user.Identity.IsAuthenticated)
+            {
+                filterContext.Result = new RedirectResult("/Account/login");
 
+            }
+        }
     }
 }

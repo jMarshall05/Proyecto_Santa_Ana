@@ -1,7 +1,4 @@
-﻿using System;
-using Campus.Abstracciones.ModelosUI;
-
-namespace Campus.Abstracciones.AccesoDatos.Materias.EliminarMateriasAD
+﻿namespace Campus.Abstracciones.AccesoDatos.Materias.EliminarMateriasAD
 {
     public interface IEliminarMateriasAD
     {

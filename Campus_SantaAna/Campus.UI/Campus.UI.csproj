@@ -398,6 +398,8 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\logo_SantaAna.ico" />
+    <Content Include="Content\logo_SantaAna.jpg" />
     <Content Include="Content\responsive.css" />
     <Content Include="Content\Styles.css" />
     <Content Include="favicon.ico" />
@@ -463,12 +465,8 @@
     <Content Include="Views\Usuarios\ListarUsuarios.cshtml" />
     <Content Include="Views\Usuarios\_DetallesDeUsuarioParcial.cshtml" />
     <Content Include="Views\Usuarios\_EditarUsuarioParcial.cshtml" />
-    <Content Include="Views\anuncios\Create.cshtml" />
-    <Content Include="Views\anuncios\Delete.cshtml" />
-    <Content Include="Views\anuncios\Edit.cshtml" />
     <Content Include="Views\anuncios\ListarAnuncios.cshtml" />
     <Content Include="Views\Home\Documentos.cshtml" />
-    <Content Include="Views\anuncios\Details.cshtml" />
     <Content Include="Views\anuncios\AnunciosEstudiantes.cshtml" />
     <Content Include="Views\Tareas\ListarTareas.cshtml" />
     <Content Include="Views\Tareas\Create.cshtml" />
@@ -500,6 +498,9 @@
     <Content Include="Views\Account\EnableAuthenticator.cshtml" />
     <Content Include="Views\Account\Solicitud2FA.cshtml" />
     <Content Include="Views\Account\LoginWith2FA.cshtml" />
+    <Content Include="Views\anuncios\_EditParcial.cshtml" />
+    <Content Include="Views\Tareas\_CreateParcial.cshtml" />
+    <Content Include="Views\anuncios\_CreateParcial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

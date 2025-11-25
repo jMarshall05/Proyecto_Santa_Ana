@@ -3,11 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio;
 using Campus.Abstracciones.LogicaDeNegocio.Telefonos.ListarTelefonos;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
+using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Bitacora;
 using Campus.LogicaDeNegocio.Telefonos.ListarTelefonosLN;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
-using Campus.UI.Filtros;
 using Campus.UI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -16,18 +18,20 @@ using Microsoft.Owin.Security;
 namespace Campus.UI.Controllers
 {
     [Authorize]
-    
+
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private IObtenerUsuariosPorIdLN _ObtenerUsuarioPorIdLN;
         private readonly IListarTelefonosLN _ListarTelefonosLN;
+        private readonly IBitacoraLN _bitacora;
 
         public ManageController()
         {
             _ObtenerUsuarioPorIdLN = new ObtenerUsuariosPorIdLN();
             _ListarTelefonosLN = new ListarTelefonosLN();
+            _bitacora = new BitacoraLN();
         }
 
         public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -42,9 +46,9 @@ namespace Campus.UI.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -75,7 +79,7 @@ namespace Campus.UI.Controllers
 
             var userId = User.Identity.GetUserId();
             var usuario = _ObtenerUsuarioPorIdLN.ObtenerUsuarioPorId(userId);
-            var Telefonos= _ListarTelefonosLN.ListarTelefono().Where(t => t.IdUsuario == userId );
+            var Telefonos = _ListarTelefonosLN.ListarTelefono().Where(t => t.IdUsuario == userId);
             var model = new IndexViewModel
             {
                 HasPassword = HasPassword(),
@@ -89,7 +93,7 @@ namespace Campus.UI.Controllers
                 Cedula = usuario.Cedula,
                 Id = userId,
                 Telefonos = Telefonos.ToList()
-            }; 
+            };
             return View(model);
         }
 
@@ -154,12 +158,25 @@ namespace Campus.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> EnableTwoFactorAuthentication()
         {
-            await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserId(), true);
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            var userId = User.Identity.GetUserId();
+            await UserManager.SetTwoFactorEnabledAsync(userId, true);
+            var user = await UserManager.FindByIdAsync(userId);
             if (user != null)
             {
                 await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
+
+            // Bitácora: activación de autenticación de dos factores
+            var bitacora = new BitacoraDto
+            {
+                Fecha = DateTime.Now,
+                Usuario = userId,
+                Accion = "UPDATE",
+                Tabla = "AspNetUsers",
+                Descripcion = "Activación de autenticación de dos factores"
+            };
+            _bitacora.RegistrarEvento(bitacora);
+
             return RedirectToAction("Index", "Manage");
         }
 
@@ -169,12 +186,25 @@ namespace Campus.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DisableTwoFactorAuthentication()
         {
-            await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserId(), false);
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            var userId = User.Identity.GetUserId();
+            await UserManager.SetTwoFactorEnabledAsync(userId, false);
+            var user = await UserManager.FindByIdAsync(userId);
             if (user != null)
             {
                 await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
+
+            // Bitácora: desactivación de autenticación de dos factores
+            var bitacora = new BitacoraDto
+            {
+                Fecha = DateTime.Now,
+                Usuario = userId,
+                Accion = "UPDATE",
+                Tabla = "AspNetUsers",
+                Descripcion = "Desactivación de autenticación de dos factores"
+            };
+            _bitacora.RegistrarEvento(bitacora);
+
             return RedirectToAction("Index", "Manage");
         }
 
@@ -218,16 +248,32 @@ namespace Campus.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RemovePhoneNumber()
         {
-            var result = await UserManager.SetPhoneNumberAsync(User.Identity.GetUserId(), null);
+            var userId = User.Identity.GetUserId();
+            var user = await UserManager.FindByIdAsync(userId);
+            var phoneNumberAnterior = user?.PhoneNumber;
+
+            var result = await UserManager.SetPhoneNumberAsync(userId, null);
             if (!result.Succeeded)
             {
                 return RedirectToAction("Index", new { Message = ManageMessageId.Error });
             }
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+
             if (user != null)
             {
                 await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
+
+            // Bitácora: eliminación de número de teléfono
+            var bitacora = new BitacoraDto
+            {
+                Fecha = DateTime.Now,
+                Usuario = userId,
+                Accion = "DELETE",
+                Tabla = "AspNetUsers",
+                Descripcion = $"Eliminación de número de teléfono: {phoneNumberAnterior}"
+            };
+            _bitacora.RegistrarEvento(bitacora);
+
             return RedirectToAction("Index", new { Message = ManageMessageId.RemovePhoneSuccess });
         }
 
@@ -248,19 +294,34 @@ namespace Campus.UI.Controllers
             {
                 return View(model);
             }
-            var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
+
+            var userId = User.Identity.GetUserId();
+            var result = await UserManager.ChangePasswordAsync(userId, model.OldPassword, model.NewPassword);
             if (result.Succeeded)
             {
-                var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                var user = await UserManager.FindByIdAsync(userId);
                 if (user != null)
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
+
+                // Bitácora: cambio de contraseña
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = userId,
+                    Accion = "UPDATE",
+                    Tabla = "AspNetUsers",
+                    Descripcion = "Usuario cambió su contraseña"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+
                 return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
             }
             AddErrors(result);
             return View(model);
         }
+
 
         //
         // GET: /Manage/SetPassword
@@ -277,20 +338,32 @@ namespace Campus.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
+                var userId = User.Identity.GetUserId();
+                var result = await UserManager.AddPasswordAsync(userId, model.NewPassword);
                 if (result.Succeeded)
                 {
-                    var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                    var user = await UserManager.FindByIdAsync(userId);
                     if (user != null)
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     }
+
+                    // Bitácora: establecimiento de contraseña
+                    var bitacora = new BitacoraDto
+                    {
+                        Fecha = DateTime.Now,
+                        Usuario = userId,
+                        Accion = "INSERT",
+                        Tabla = "AspNetUsers",
+                        Descripcion = "Usuario estableció una contraseña (primera vez o después de usar login externo)"
+                    };
+                    _bitacora.RegistrarEvento(bitacora);
+
                     return RedirectToAction("Index", new { Message = ManageMessageId.SetPasswordSuccess });
                 }
                 AddErrors(result);
             }
 
-            // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
             return View(model);
         }
 
@@ -351,7 +424,7 @@ namespace Campus.UI.Controllers
             base.Dispose(disposing);
         }
 
-#region Aplicaciones auxiliares
+        #region Aplicaciones auxiliares
         // Se usa para la protección XSRF al agregar inicios de sesión externos
         private const string XsrfKey = "XsrfId";
 
@@ -402,6 +475,6 @@ namespace Campus.UI.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }

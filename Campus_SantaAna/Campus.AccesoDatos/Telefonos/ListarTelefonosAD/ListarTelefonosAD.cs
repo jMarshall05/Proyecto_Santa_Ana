@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Telefonos.ListarTelefonos;
 using Campus.Abstracciones.ModelosUI;
 
@@ -21,7 +18,7 @@ namespace Campus.AccesoDatos.Telefonos.ListarTelefonosAD
                              select new TelefonoDto
                              {
                                  Id = Telefonos.Id,
-                                 Codigo =Telefonos.Codigo,
+                                 Codigo = Telefonos.Codigo,
                                  Telefono = Telefonos.Telefono,
                                  Tipo = Telefonos.Tipo,
                                  Estado = Telefonos.Estado,

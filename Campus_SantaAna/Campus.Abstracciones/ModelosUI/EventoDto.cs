@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace Campus.Abstracciones.ModelosUI
 {
@@ -10,5 +11,8 @@ namespace Campus.Abstracciones.ModelosUI
         public DateTime FechaFin { get; set; }
 
         public string IdUsuario { get; set; }
+
+        [DisplayName("Estado")]
+        public bool Estado { get; set; } = true;
     }
 }

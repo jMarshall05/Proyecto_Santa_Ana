@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Campus.Abstracciones.AccesoDatos.Eventos.AgregarEventoAD;
 using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.ModelosAD;
-using Campus.Abstracciones.AccesoDatos.Eventos.AgregarEventoAD;
 
 namespace Campus.AccesoDatos.Eventos.AgregarEventoAD
 {
@@ -21,7 +21,8 @@ namespace Campus.AccesoDatos.Eventos.AgregarEventoAD
                 Titulo = evento.Titulo,
                 FechaInicio = evento.FechaInicio,
                 FechaFin = evento.FechaFin,
-                IdUsuario = evento.IdUsuario // 👈 Ahora se guarda el usuario dueño del evento
+                IdUsuario = evento.IdUsuario,
+                Estado = evento.Estado
             };
 
             _contexto.Eventos.Add(entidad);

@@ -42,6 +42,16 @@
                             @Model.grupo.creado_por
                         </span>
                     </div>
+                    @if (Model.grupo.modificado_por!=null)
+                    {
+                        <div class="info-item">
+                            <span class="info-label">Modificador Por</span>
+                            <span class="info-value">
+                                <i class="fas fa-edit me-2 text-info"></i>
+                                @Model.grupo.modificado_por
+                            </span>
+                        </div>
+                    }
                     <div class="info-item">
                         <span class="info-label">Fecha de Creación</span>
                         <span class="info-value">
@@ -79,11 +89,22 @@
                     </div>
                     <div class="mini-stat-card">
                         <div class="mini-stat-icon status-icon">
-                            <i class="fas fa-check-circle"></i>
+                            @if (Model.grupo.estado)
+                            {
+
+
+                                <i class="fas fa-check-circle"></i>
+                            }
+                            else
+                            {
+                                <i class="fas fa-times-circle" style="color: red;"></i>
+                            }
+
                         </div>
                         <div class="mini-stat-info">
-                            <h4>@Model.grupo.estado</h4>
                             <p>Estado</p>
+                            <h4>@(Model.grupo.estado ? "Activo" : "Inactivo")</h4>
+
                         </div>
                     </div>
                 </div>
@@ -134,7 +155,6 @@
                             <tr>
                                 <th class="student-col">Estudiante</th>
                                 <th class="email-col">Email</th>
-                                <th class="phone-col">Teléfono</th>
                                 <th class="id-col">Cédula</th>
                             </tr>
                         </thead>
@@ -160,14 +180,6 @@
                                         <div class="email-content">
                                             <i class="fas fa-envelope email-icon"></i>
                                             <span>@estudiante.Email</span>
-                                        </div>
-                                    </td>
-                                    <td class="phone-cell">
-                                        <div class="phone-content">
-                                            <i class="fas fa-phone phone-icon"></i>
-                                            <span class="@(estudiante.Telefono == 0 ? "no-phone" : "has-phone")">
-                                                @(estudiante.Telefono == 0 ? "No asignado" : estudiante.Telefono.ToString())
-                                            </span>
                                         </div>
                                     </td>
                                     <td class="id-cell">
@@ -321,6 +333,25 @@
         align-items: center;
         gap: 0.5rem;
     }
+
+    .status-badge {
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+        .status-badge.active {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-badge.inactive {
+            background: #ef4444;
+            color: white;
+        }
 
     /* Mini Stats */
     .stats-cards {
@@ -666,58 +697,3 @@
             background: #4f46e5;
         }
 </style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Add any interactive functionality here if needed
-        console.log('Group details loaded successfully');
-    });
-
-    // CORRECCIÓN: Details Group buttons con manejo de errores
-document.querySelectorAll('.btn-Detalles-Grupo').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const grupoId = this.getAttribute('data-id');
-        console.log('Cargando vista de detalles para grupo ID:', grupoId);
-
-        $('#GruposModal .modal-body-premium')
-            .load('@Url.Action("DetallesDeGrupoParcial", "Grupos")' + '?id=' + grupoId)
-            .fail(function(xhr, status, error) {
-                console.error('Error cargando detalles:', error);
-                $('#GruposModal .modal-body-premium').html(`
-                    <div class="alert alert-danger">
-                        <h4>Error al cargar los detalles</h4>
-                        <p>No se pudieron cargar los detalles del grupo. Error: ${error}</p>
-                        <button class="btn btn-secondary" onclick="$('#GruposModal').modal('hide')">
-                            Cerrar
-                        </button>
-                    </div>
-                `);
-            });
-        $('#GruposModal').modal('show');
-    });
-});
-
-// CORRECCIÓN: Edit Group buttons con manejo de errores
-document.querySelectorAll('.btn-Editar-Grupo').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const grupoId = this.getAttribute('data-id');
-        console.log('Cargando vista de edición para grupo ID:', grupoId);
-
-        $('#GruposModal .modal-body-premium')
-            .load('@Url.Action("EditarGrupoParcial", "Grupos")' + '?id=' + grupoId)
-            .fail(function(xhr, status, error) {
-                console.error('Error cargando edición:', error);
-                $('#GruposModal .modal-body-premium').html(`
-                    <div class="alert alert-danger">
-                        <h4>Error al cargar la edición</h4>
-                        <p>No se pudo cargar el formulario de edición. Error: ${error}</p>
-                        <button class="btn btn-secondary" onclick="$('#GruposModal').modal('hide')">
-                            Cerrar
-                        </button>
-                    </div>
-                `);
-            });
-        $('#GruposModal').modal('show');
-    });
-});
-</script>

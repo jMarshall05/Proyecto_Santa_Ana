@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Cursos.AgregarCursoAD;
 using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.ModelosAD;
@@ -32,7 +28,8 @@ namespace Campus.AccesoDatos.Cursos.AgregarCursoAD
                 IdCurso = curso.IdCurso,
                 IdProfesor = curso.ProfesorId,
                 GrupoId = curso.GrupoId,
-                MateriaId = curso.MateriaId
+                MateriaId = curso.MateriaId,
+                Estado = true
             };
         }
     }

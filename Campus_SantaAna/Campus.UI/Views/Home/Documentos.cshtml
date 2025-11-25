@@ -12,56 +12,1156 @@
     }
     ViewBag.Title = "Documentos";
 }
-<style>
-    .qr-code {
-        width: 200px;
-        height: 200px;
-        object-fit: contain; /* mantiene proporción */
-    }
-</style>
-<main aria-labelledby="title" class="container mt-5">
-    <h2 id="title" class="container-title">📄 Normativas y Reglamentos Estudiantiles</h2>
-    <p class="lead text-center">Aquí puedes consultar la normativa y reglamentos actualizados del centro educativo.</p>
 
-    <div class="card mb-4 shadow-sm" data-aos="fade-up">
-        <div class="card-body row">
-            <div class="col-md-8">
-                <h5 class="card-title"><i class="fas fa-file-contract"></i> Normativa Interna</h5>
-                <p class="card-text">Consulta las reglas y lineamientos internos para el año 2025</p>
-
-                <a href="https://santaana.ed.cr/wp-content/uploads/C.S.A.-NORMATIVA-INTERNA-2024-.pdf"
-                   class="btn custom-btn" target="_blank">Ver Documento</a>
-            </div>
-
-            <div class="col-md-4 d-flex justify-content-end align-items-center">
-                <img src="/Home/GenerarQR?url=https://santaana.ed.cr/wp-content/uploads/C.S.A.-NORMATIVA-INTERNA-2024-.pdf"
-                     alt="QR Code" class="qr-code img-fluid">
+<main class="documentos-main">
+    <div class="container-fluid px-4">
+        <!-- Header Section -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="header-text">
+                    <h1 class="page-title">
+                        <i class="fas fa-folder-open"></i>
+                        Documentos y Normativas
+                    </h1>
+                    <p class="page-subtitle">Gestiona y consulta documentos importantes del centro educativo</p>
+                </div>
+                @if (User.IsInRole("Administradores"))
+                {
+                    <div class="header-actions">
+                        <button class="btn-add-document" data-bs-toggle="modal" data-bs-target="#agregarDocumentoModal">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Agregar Documento</span>
+                        </button>
+                    </div>
+                }
             </div>
         </div>
-    </div>
 
-    <div class="card mb-4 shadow-sm" data-aos="fade-up" data-aos-delay="100">
-        <div class="card-body row">
-            <div class="col-md-8">
-                <h5 class="card-title"><i class="fas fa-clipboard-check"></i> Reglamento de Evaluación</h5>
-                <p class="card-text">Revisa los criterios y procesos de evaluación vigentes para este año.</p>
-                <a href="https://santaana.ed.cr/wp-content/uploads/REGLAMENTO-DE-EVALUACION-2024.pdf"
-                   class="btn custom-btn" target="_blank">Ver Documento</a>
+        <!-- Documentos Oficiales (Fijos) -->
+        <div class="documents-section">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <i class="fas fa-star section-icon"></i>
+                    <h2 class="section-title">Documentos Oficiales</h2>
+                </div>
+                <span class="section-badge">Documentos Institucionales</span>
             </div>
 
-            <div class="col-md-4 d-flex justify-content-end align-items-center">
-                <img src="/Home/GenerarQR?url=https://santaana.ed.cr/wp-content/uploads/REGLAMENTO-DE-EVALUACION-2024.pdf" alt="QR Code" class="qr-code img-fluid">
+            <div class="row g-4 mb-5">
+                <!-- Normativa Interna -->
+                <div class="col-12 col-lg-6" data-aos="fade-up">
+                    <div class="document-card official-doc">
+                        <div class="document-badge">
+                            <i class="fas fa-certificate"></i>
+                            <span>Oficial</span>
+                        </div>
+                        <div class="document-header">
+                            <div class="document-icon normativa">
+                                <i class="fas fa-file-contract"></i>
+                            </div>
+                            <div class="document-info">
+                                <h3 class="document-title">Normativa Interna</h3>
+                                <p class="document-meta">
+                                    <i class="far fa-calendar-alt"></i>
+                                    <span>Actualizado 2025</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="document-body">
+                            <p class="document-description">
+                                Consulta las reglas y lineamientos internos del centro educativo.
+                                Este documento contiene todas las normativas vigentes para el correcto funcionamiento institucional.
+                            </p>
+                          
+                        </div>
+                        <div class="document-footer">
+                            <div class="qr-container">
+                                <img src="/Home/GenerarQR?url=https://santaana.ed.cr/normativa.html"
+                                     alt="QR Normativa" class="qr-code">
+                                <span class="qr-label">Escanea para ver</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="https://santaana.ed.cr/normativa.html"
+                                   class="btn-document btn-primary"
+                                   target="_blank">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Ver Documento
+                                </a>
+                                <button class="btn-document btn-secondary" onclick="compartirDocumento('Normativa Interna', 'https://santaana.ed.cr/normativa.html')">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reglamento de Evaluación -->
+                <div class="col-12 col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="document-card official-doc">
+                        <div class="document-badge">
+                            <i class="fas fa-certificate"></i>
+                            <span>Oficial</span>
+                        </div>
+                        <div class="document-header">
+                            <div class="document-icon reglamento">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <div class="document-info">
+                                <h3 class="document-title">Reglamento de Evaluación</h3>
+                                <p class="document-meta">
+                                    <i class="far fa-calendar-alt"></i>
+                                    <span>Actualizado 2025</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="document-body">
+                            <p class="document-description">
+                                Revisa los criterios y procesos de evaluación vigentes.
+                                Incluye lineamientos sobre calificaciones, exámenes y evaluación continua del desempeño estudiantil.
+                            </p>
+                         
+                        </div>
+                        <div class="document-footer">
+                            <div class="qr-container">
+                                <img src="/Home/GenerarQR?url=https://santaana.ed.cr/reglamento.html"
+                                     alt="QR Reglamento" class="qr-code">
+                                <span class="qr-label">Escanea para ver</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="https://santaana.ed.cr/reglamento.html"
+                                   class="btn-document btn-primary"
+                                   target="_blank">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Ver Documento
+                                </a>
+                                <button class="btn-document btn-secondary" onclick="compartirDocumento('Reglamento de Evaluación', 'https://santaana.ed.cr/reglamento.html')">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documentos Adicionales -->
+        <div class="documents-section">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <i class="fas fa-folder section-icon"></i>
+                    <h2 class="section-title">Documentos Adicionales</h2>
+                </div>
+                @using System.Linq
+                <span class="section-badge">
+                    @(ViewBag.DocumentosAdicionales != null ? ((IEnumerable<object>)ViewBag.DocumentosAdicionales).Count() : 0) Documentos
+                </span>
+            </div>
+
+            <div class="row g-4" id="documentosAdicionalesContainer">
+                @* Aquí se renderizarán los documentos adicionales *@
+                @if (ViewBag.DocumentosAdicionales != null && ((IEnumerable<dynamic>)ViewBag.DocumentosAdicionales).Any())
+                {
+                    foreach (var doc in ViewBag.DocumentosAdicionales)
+                    {
+                        <div class="col-12 col-md-6 col-xl-4" data-aos="fade-up">
+                            <div class="document-card">
+                                <div class="document-header">
+                                    <div class="document-icon adicional">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <div class="document-info">
+                                        <h3 class="document-title">@doc.Titulo</h3>
+                                        <p class="document-meta">
+                                            <i class="far fa-calendar-alt"></i>
+                                            <span>@doc.FechaRegistro.ToString("dd/MM/yyyy")</span>
+                                        </p>
+                                    </div>
+                                    @if (User.IsInRole("Administradores"))
+                                    {
+                                        <div class="document-menu">
+                                            <button class="btn-menu" onclick="toggleMenu(this)">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <div class="menu-dropdown">
+                                                <a href="#" onclick="editarDocumento(@doc.Id)">
+                                                    <i class="fas fa-edit"></i> Editar
+                                                </a>
+                                                <a href="#" onclick="eliminarDocumento(@doc.Id)">
+                                                    <i class="fas fa-trash"></i> Eliminar
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="document-body">
+                                    <p class="document-description">@doc.Descripcion</p>
+                                </div>
+                                <div class="document-footer">
+                                    <div class="document-actions full-width">
+                                        <a href="@doc.RutaArchivo"
+                                           class="btn-document btn-primary"
+                                           target="_blank">
+                                            <i class="fas fa-external-link-alt"></i>
+                                            Ver Documento
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
+                            <h3>No hay documentos adicionales</h3>
+                            <p>Los documentos que se agreguen aparecerán aquí</p>
+                            @if (User.IsInRole("Administradores"))
+                            {
+                                <button class="btn-add-document" data-bs-toggle="modal" data-bs-target="#agregarDocumentoModal">
+                                    <i class="fas fa-plus-circle"></i>
+                                    <span>Agregar Primer Documento</span>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
 </main>
 
-
+<!-- Modal Agregar Documento -->
+<div class="modal fade" id="agregarDocumentoModal" tabindex="-1" aria-labelledby="agregarDocumentoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="agregarDocumentoLabel">
+                    <i class="fas fa-file-upload me-2"></i>
+                    Agregar Nuevo Documento
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formAgregarDocumento" method="post" action="@Url.Action("AgregarDocumento", "Home")" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="tituloDocumento" class="form-label">
+                            <i class="fas fa-heading"></i> Título del Documento
+                        </label>
+                        <input type="text" class="form-control" id="tituloDocumento" name="Titulo" required
+                               placeholder="Ej: Manual de Convivencia">
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcionDocumento" class="form-label">
+                            <i class="fas fa-align-left"></i> Descripción
+                        </label>
+                        <textarea class="form-control" id="descripcionDocumento" name="Descripcion" rows="3" required
+                                  placeholder="Describe brevemente el contenido del documento"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="archivoDocumento" class="form-label">
+                            <i class="fas fa-file-upload"></i> Archivo del Documento
+                        </label>
+                        <input type="file" class="form-control" id="archivoDocumento" name="Archivo" required
+                               accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+                        <div class="form-text">
+                            Formatos permitidos: PDF, Word, Excel, PowerPoint (Máx. 10MB)
+                        </div>
+                        <div id="archivoPreview" class="file-preview mt-2" style="display: none;">
+                            <div class="file-preview-item">
+                                <i class="fas fa-file-pdf file-preview-icon"></i>
+                                <div class="file-preview-info">
+                                    <span class="file-preview-name"></span>
+                                    <span class="file-preview-size"></span>
+                                </div>
+                                <button type="button" class="btn-remove-file" onclick="removerArchivo()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoriaDocumento" class="form-label">
+                            <i class="fas fa-tag"></i> Categoría
+                        </label>
+                        <select class="form-select" id="categoriaDocumento" name="Categoria">
+                            <option value="Normativa">Normativa</option>
+                            <option value="Reglamento">Reglamento</option>
+                            <option value="Manual">Manual</option>
+                            <option value="Guía">Guía</option>
+                            <option value="Circular">Circular</option>
+                            <option value="Formato">Formato</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar Documento
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @section scripts{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            AOS.init();
+            AOS.init({
+                duration: 800,
+                once: true
+            });
         });
+
+        function compartirDocumento(titulo, url) {
+            if (navigator.share) {
+                navigator.share({
+                    title: titulo,
+                    url: url
+                }).catch(err => console.log('Error al compartir:', err));
+            } else {
+                // Fallback: copiar al portapapeles
+                navigator.clipboard.writeText(url);
+                alert('Link copiado al portapapeles');
+            }
+        }
+
+        function toggleMenu(button) {
+            const menu = button.nextElementSibling;
+            menu.classList.toggle('show');
+
+            // Cerrar otros menús abiertos
+            document.querySelectorAll('.menu-dropdown.show').forEach(m => {
+                if (m !== menu) m.classList.remove('show');
+            });
+        }
+
+        // Cerrar menús al hacer clic fuera
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.document-menu')) {
+                document.querySelectorAll('.menu-dropdown.show').forEach(m => {
+                    m.classList.remove('show');
+                });
+            }
+        });
+
+        function editarDocumento(id) {
+            // Implementar lógica de edición
+            console.log('Editar documento:', id);
+        }
+
+        function eliminarDocumento(id) {
+            if (confirm('¿Estás seguro de que deseas eliminar este documento?')) {
+                // Implementar lógica de eliminación
+                console.log('Eliminar documento:', id);
+            }
+        }
+
+        // Preview de archivo seleccionado
+        document.getElementById('archivoDocumento')?.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const preview = document.getElementById('archivoPreview');
+                const fileName = preview.querySelector('.file-preview-name');
+                const fileSize = preview.querySelector('.file-preview-size');
+                const icon = preview.querySelector('.file-preview-icon');
+
+                // Cambiar icono según el tipo de archivo
+                const ext = file.name.split('.').pop().toLowerCase();
+                const iconMap = {
+                    'pdf': 'fa-file-pdf',
+                    'doc': 'fa-file-word',
+                    'docx': 'fa-file-word',
+                    'xls': 'fa-file-excel',
+                    'xlsx': 'fa-file-excel',
+                    'ppt': 'fa-file-powerpoint',
+                    'pptx': 'fa-file-powerpoint'
+                };
+
+                icon.className = 'fas ' + (iconMap[ext] || 'fa-file') + ' file-preview-icon';
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                preview.style.display = 'block';
+            }
+        });
+
+        function removerArchivo() {
+            document.getElementById('archivoDocumento').value = '';
+            document.getElementById('archivoPreview').style.display = 'none';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
     </script>
+
+    <style>
+        :root {
+            --primary: #0D126E;
+            --primary-light: #1a237e;
+            --primary-dark: #090d4a;
+            --secondary: #2196F3;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #f44336;
+            --info: #00BCD4;
+            --gray-50: #f8f9fa;
+            --gray-100: #f1f3f5;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-600: #6c757d;
+            --gray-800: #343a40;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.12);
+            --shadow-xl: 0 12px 24px rgba(0,0,0,0.15);
+        }
+
+        /* File Preview Styles */
+        .file-preview {
+            background: var(--gray-50);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 2px dashed var(--gray-300);
+        }
+
+        .file-preview-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .file-preview-icon {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+            .file-preview-icon.fa-file-pdf {
+                color: #e74c3c;
+            }
+
+            .file-preview-icon.fa-file-word {
+                color: #2b579a;
+            }
+
+            .file-preview-icon.fa-file-excel {
+                color: #1d6f42;
+            }
+
+            .file-preview-icon.fa-file-powerpoint {
+                color: #d24726;
+            }
+
+        .file-preview-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .file-preview-name {
+            font-weight: 600;
+            color: var(--gray-800);
+            font-size: 0.95rem;
+        }
+
+        .file-preview-size {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        .btn-remove-file {
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .btn-remove-file:hover {
+                background: #c0392b;
+                transform: scale(1.1);
+            }
+
+        /* Custom file input */
+        .form-control[type="file"] {
+            cursor: pointer;
+            padding: 0.875rem 1rem;
+        }
+
+            .form-control[type="file"]::file-selector-button {
+                background: linear-gradient(135deg, var(--primary), var(--primary-light));
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                cursor: pointer;
+                margin-right: 1rem;
+                font-weight: 600;
+                transition: all 0.3s ease;
+            }
+
+                .form-control[type="file"]::file-selector-button:hover {
+                    background: linear-gradient(135deg, var(--primary-light), #283593);
+                    transform: translateY(-1px);
+                }
+
+        .documentos-main {
+            min-height: calc(100vh - 80px);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 2rem 0;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .header-text {
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+        }
+
+        .btn-add-document {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+            .btn-add-document:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-lg);
+                background: var(--gray-50);
+            }
+
+            .btn-add-document i {
+                font-size: 1.2rem;
+            }
+
+        /* Section */
+        .documents-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .section-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin: 0;
+        }
+
+        .section-badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* Document Cards */
+        .document-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .document-card:hover {
+                transform: translateY(-8px);
+                box-shadow: var(--shadow-xl);
+            }
+
+        .official-doc {
+            border-top: 4px solid var(--primary);
+        }
+
+        .document-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            padding: 0.375rem 0.875rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            z-index: 10;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .document-header {
+            padding: 1.75rem;
+            display: flex;
+            gap: 1.25rem;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .document-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+            color: white;
+        }
+
+            .document-icon.normativa {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+
+            .document-icon.reglamento {
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            }
+
+            .document-icon.adicional {
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            }
+
+        .document-info {
+            flex: 1;
+        }
+
+        .document-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .document-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin: 0;
+        }
+
+        .document-body {
+            padding: 0 1.75rem 1.25rem;
+            flex: 1;
+        }
+
+        .document-description {
+            color: var(--gray-600);
+            line-height: 1.6;
+            margin: 0 0 1rem 0;
+        }
+
+        .document-stats {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+            .stat-item i {
+                color: var(--primary);
+            }
+
+        .document-footer {
+            padding: 1.75rem;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .qr-container {
+            text-align: center;
+        }
+
+        .qr-code {
+            width: 160px;
+            height: 160px;
+            border-radius: 12px;
+            border: 2px solid var(--gray-200);
+            padding: 0.5rem;
+            background: white;
+            object-fit: contain;
+        }
+
+        .qr-label {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--gray-600);
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+            .document-actions.full-width {
+                width: 100%;
+                justify-content: center;
+            }
+
+        .btn-document {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+        }
+
+            .btn-document.btn-primary {
+                background: linear-gradient(135deg, var(--primary), var(--primary-light));
+                color: white;
+            }
+
+                .btn-document.btn-primary:hover {
+                    background: linear-gradient(135deg, var(--primary-light), #283593);
+                    transform: translateY(-2px);
+                    box-shadow: var(--shadow-md);
+                    color: white;
+                }
+
+            .btn-document.btn-secondary {
+                background: var(--gray-200);
+                color: var(--gray-800);
+                padding: 0.75rem;
+            }
+
+                .btn-document.btn-secondary:hover {
+                    background: var(--gray-300);
+                }
+
+        /* Document Menu */
+        .document-menu {
+            position: relative;
+            margin-left: auto;
+        }
+
+        .btn-menu {
+            background: none;
+            border: none;
+            color: var(--gray-600);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-menu:hover {
+                background: var(--gray-100);
+                color: var(--gray-800);
+            }
+
+        .menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            padding: 0.5rem;
+            min-width: 150px;
+            z-index: 100;
+            display: none;
+        }
+
+            .menu-dropdown.show {
+                display: block;
+            }
+
+            .menu-dropdown a {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.75rem;
+                color: var(--gray-800);
+                text-decoration: none;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+                font-size: 0.9rem;
+            }
+
+                .menu-dropdown a:hover {
+                    background: var(--gray-100);
+                }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: var(--gray-300);
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .modal-title {
+            font-weight: 600;
+        }
+
+        .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 1px solid var(--gray-300);
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 0.2rem rgba(13, 18, 110, 0.15);
+            }
+
+        .form-text {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            gap: 0.75rem;
+        }
+
+            .modal-footer .btn {
+                padding: 0.75rem 1.5rem;
+                border-radius: 12px;
+                font-weight: 600;
+            }
+
+            .modal-footer .btn-primary {
+                background: linear-gradient(135deg, var(--primary), var(--primary-light));
+                border: none;
+                color: white;
+            }
+
+                .modal-footer .btn-primary:hover {
+                    background: linear-gradient(135deg, var(--primary-light), #283593);
+                    transform: translateY(-2px);
+                }
+
+            .modal-footer .btn-secondary {
+                background: var(--gray-200);
+                border: none;
+                color: var(--gray-800);
+            }
+
+                .modal-footer .btn-secondary:hover {
+                    background: var(--gray-300);
+                }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .documentos-main {
+                padding: 1rem 0;
+            }
+
+            .page-header {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 1rem;
+            }
+
+            .btn-add-document {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .document-card {
+                margin-bottom: 1rem;
+            }
+
+            .document-header {
+                flex-direction: column;
+                padding: 1.25rem;
+            }
+
+            .document-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.75rem;
+            }
+
+            .document-title {
+                font-size: 1.1rem;
+            }
+
+            .document-body {
+                padding: 0 1.25rem 1rem;
+            }
+
+            .document-footer {
+                flex-direction: column;
+                padding: 1.25rem;
+                gap: 1rem;
+            }
+
+            .qr-container {
+                width: 100%;
+            }
+
+            .qr-code {
+                width: 140px;
+                height: 140px;
+            }
+
+            .document-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .btn-document {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .document-stats {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .empty-state {
+                padding: 2rem 1rem;
+            }
+
+            .empty-icon {
+                font-size: 3rem;
+            }
+        }
+
+        @@media (min-width: 769px) and (max-width: 991px) {
+            .page-title {
+                font-size: 1.75rem;
+            }
+
+            .document-footer {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .document-actions {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @@media (min-width: 992px) {
+            .container-fluid {
+                max-width: 1400px;
+            }
+        }
+
+        /* Animaciones adicionales */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .document-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Mejoras de accesibilidad */
+        .btn-document:focus,
+        .btn-add-document:focus,
+        .btn-menu:focus {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: var(--primary-dark);
+            }
+    </style>
 }

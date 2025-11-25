@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Campus.Abstracciones.AccesoDatos.Usuarios.ObtenerUsuariosPorIdAD;
 using Campus.Abstracciones.ModelosUI;
 
@@ -33,6 +29,7 @@ namespace Campus.AccesoDatos.Usuarios.ObtenerUsuariosPorIdAD
                     FechaDeModificacion = usuario.FechaDeModificacion,
                     Rol = usuario.Rol,
                     Estado = usuario.Estado,
+                    TipoIdentificacion = usuario.TipoIdentificacion
                 };
             }
             return null;

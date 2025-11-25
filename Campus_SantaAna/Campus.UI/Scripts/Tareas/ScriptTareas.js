@@ -91,4 +91,33 @@ $(document).on('click', '.btn-Detalles', DetallesTarea)
         });
     };
     $(document).on('click', '.btn-Editar', EditarTarea) 
+
+    // Cerrar automáticamente los mensajes de alerta después de 5 segundos
+    $(document).ready(function () {
+        setTimeout(function () {
+            $('.alert').alert('close');
+        }, 5000);
+    });
+
+    function CrearTarea(event) {
+        var idMateria = $(this).data('idmateria');
+        var idGrupo = $(this).data('idgrupo');
+        $.ajax({
+            url: "/Tareas/Create",
+            data: {
+                idMateria: idMateria,
+                idGrupo: idGrupo
+            },
+            type: "GET",
+            success: function (data) {
+                $(".modal-body").html(data);
+                $(".modal-title").html("Crear Tarea");
+                $("#TareasModal").modal("show");
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    };
+    $(document).on('click', '.btn-createParcial', CrearTarea)
 });

@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="icon" type="image/png" href="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" />
+    <link rel="icon" type="image/png" href="~/Content/logo_SantaAna.ico" />
     <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
     <style>
         html, body {
@@ -100,7 +100,7 @@
         <aside class="sidebar-admin">
             <div class="logo">
                 <a href="@Url.Action("Index", "Home")">
-                    <img src="https://santaana.ed.cr/wp-content/uploads/LOGO-1.png" alt="Logo" />
+                    <img src="~/Content/logo_SantaAna.jpg" alt="Logo" />
                 </a>
                 <h4>Panel Administrador</h4>
             </div>
@@ -134,7 +134,7 @@
                                 <!-- Avatar -->
                                 <div class="user-avatar me-3">
                                     <div class="avatar-circle bg-primary text-white d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-person-fill fs-4"></i>
+                                        <i class="bi bi-person-fill fs-4">@User.Identity.Name.FirstOrDefault().ToString().ToUpper()</i>
                                     </div>
                                 </div>
 
@@ -243,6 +243,7 @@
             </style>
 
             @RenderBody()
+            @RenderSection("Styles", required: false)
         </main>
     </div>
 

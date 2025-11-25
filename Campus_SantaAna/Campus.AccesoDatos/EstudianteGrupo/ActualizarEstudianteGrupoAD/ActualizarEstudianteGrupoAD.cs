@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.EstudianteGrupo.ActualizarEstudianteGrupoAD;
 using Campus.Abstracciones.ModelosUI;
@@ -16,7 +13,7 @@ namespace Campus.AccesoDatos.EstudianteGrupo.ActualizarEstudianteGrupoAD
         {
             _elContexto = new Contexto();
         }
-        
+
         public async Task<int> ActualizarEstudianteGrupo(EstudianteGrupoDto estudiante)
         {
             EstudianteGrupoAD EstudianteGrupoEnBase = _elContexto.EstudianteGrupos.FirstOrDefault(x => x.EstudianteId == estudiante.EstudianteId);

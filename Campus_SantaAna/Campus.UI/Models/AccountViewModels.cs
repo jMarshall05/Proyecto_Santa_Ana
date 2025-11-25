@@ -69,7 +69,7 @@ namespace Campus.UI.Models
     public class RegisterViewModel
     {
         [Required]
-        [Display(Name = "Primer Nombre")] 
+        [Display(Name = "Primer Nombre")]
         public string Nombre { get; set; }
         [Required]
         [Display(Name = "Apellido")]
@@ -105,6 +105,9 @@ namespace Campus.UI.Models
         [Display(Name = "Rol ")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Rol { get; set; }
+        [Display(Name = "Tipo de Identificacion ")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public string TipoIdentificacion { get; set; }
     }
 
     public class ResetPasswordViewModel
@@ -115,7 +118,7 @@ namespace Campus.UI.Models
         //public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 15)]
         [DataType(DataType.Password)]
         [Display(Name = "Contraseña")]
         public string Password { get; set; }
