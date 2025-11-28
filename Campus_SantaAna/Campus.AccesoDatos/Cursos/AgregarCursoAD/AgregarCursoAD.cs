@@ -28,7 +28,8 @@ namespace Campus.AccesoDatos.Cursos.AgregarCursoAD
                 IdCurso = curso.IdCurso,
                 IdProfesor = curso.ProfesorId,
                 GrupoId = curso.GrupoId,
-                MateriaId = curso.MateriaId
+                MateriaId = curso.MateriaId,
+                Estado = true
             };
         }
     }

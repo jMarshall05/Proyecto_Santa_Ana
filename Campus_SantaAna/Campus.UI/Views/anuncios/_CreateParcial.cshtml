@@ -3,329 +3,539 @@
     ViewBag.Title = "Publicar Anuncio";
 }
 
-<div class="form-modal-container">
+<div class="edit-group-modal">
+    <!-- Header -->
+    <div class="edit-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div>
+                <h2 class="modal-title">Crear Nuevo Anuncio</h2>
+                <p class="modal-subtitle">Completa la información del anuncio</p>
+            </div>
+        </div>
+    </div>
+
     @using (Html.BeginForm("Create", "Anuncios", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", id = "formCrearAnuncio" }))
     {
         @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@ViewBag.Id" />
 
-        if (ViewBag.Error != null)
-        {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle me-2"></i>
-                <strong>Error:</strong> @ViewBag.Error
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        }
+        <div class="edit-content">
 
-        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+            <!-- Información del Anuncio -->
+            <div class="form-section">
+                <h3 class="section-title"><i class="fas fa-info-circle me-2"></i>Información del Anuncio</h3>
+                <div class="form-grid two-cols">
+                    <!-- ← GRID PARA ORDENAR -->
 
-        <!-- Título del Anuncio -->
-        <div class="mb-3">
-            <label for="Titulo" class="form-label fw-bold">
-                <i class="fas fa-heading text-primary me-2"></i>Título del Anuncio
-                <span class="text-danger">*</span>
-            </label>
-            @Html.TextBoxFor(m => m.Titulo, new
-            {
-                @class = "form-control form-control-lg",
-                placeholder = "Ej: Festival de Ciencias 2024",
-                required = "required",
-                maxlength = "100",
-                id = "Titulo"
-            })
-            <div class="form-text">
-                <span id="tituloCounter">0</span>/100 caracteres
-            </div>
-            @Html.ValidationMessageFor(m => m.Titulo, "", new { @class = "text-danger small" })
-        </div>
-
-        <!-- Descripción -->
-        <div class="mb-3">
-            <label for="Descripcion" class="form-label fw-bold">
-                <i class="fas fa-align-left text-primary me-2"></i>Descripción
-                <span class="text-danger">*</span>
-            </label>
-            @Html.TextAreaFor(m => m.Descripcion, new
-            {
-                @class = "form-control",
-                rows = 4,
-                placeholder = "Describe los detalles del evento...",
-                required = "required",
-                maxlength = "500",
-                id = "Descripcion"
-            })
-            <div class="form-text">
-                <span id="descripcionCounter">0</span>/500 caracteres
-            </div>
-            @Html.ValidationMessageFor(m => m.Descripcion, "", new { @class = "text-danger small" })
-        </div>
-
-        <!-- Fecha del Evento -->
-        <div class="mb-3">
-            <label for="FechaEvento" class="form-label fw-bold">
-                <i class="fas fa-calendar-alt text-primary me-2"></i>Fecha y Hora del Evento
-                <span class="text-danger">*</span>
-            </label>
-            @Html.TextBoxFor(m => m.FechaEvento, new
-            {
-                @class = "form-control",
-                type = "datetime-local",
-                required = "required",
-                id = "FechaEvento"
-            })
-            <div class="form-text">
-                <i class="fas fa-info-circle me-1"></i>Selecciona la fecha y hora en que se realizará el evento
-            </div>
-            @Html.ValidationMessageFor(m => m.FechaEvento, "", new { @class = "text-danger small" })
-        </div>
-
-        <!-- Imagen del Anuncio -->
-        <div class="mb-3">
-            <label for="Imagen" class="form-label fw-bold">
-                <i class="fas fa-image text-primary me-2"></i>Imagen del Anuncio
-                <span class="text-muted small">(Opcional)</span>
-            </label>
-            <div class="input-group">
-                <input type="file"
-                       name="Imagen"
-                       id="Imagen"
-                       class="form-control"
-                       accept="image/jpeg,image/png,image/jpg,image/gif" />
-                <label class="input-group-text" for="Imagen">
-                    <i class="fas fa-upload"></i>
-                </label>
-            </div>
-            <div class="form-text">
-                <i class="fas fa-info-circle me-1"></i>Formatos permitidos: JPG, PNG, GIF (Máx. 5MB)
-            </div>
-
-            <!-- Preview de la imagen -->
-            <div id="imagePreview" class="mt-3 d-none">
-                <div class="card">
-                    <div class="card-body text-center p-2">
-                        <img id="previewImg" src="" alt="Vista previa" class="img-fluid rounded" style="max-height: 200px;">
-                        <button type="button" class="btn btn-sm btn-danger mt-2" id="removeImage">
-                            <i class="fas fa-times me-1"></i>Eliminar imagen
-                        </button>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Titulo)
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fas fa-tag"></i></span>
+                            @Html.TextBoxFor(m => m.Titulo, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Ej: Festival de Ciencias",
+                                maxlength = "100",
+                                required = "required",
+                                id = "Titulo"
+                            })
+                        </div>
+                        <small class="form-text"><span id="tituloCounter">0</span>/100</small>
                     </div>
+
+                    <div class="form-group full">
+                        @Html.LabelFor(m => m.Descripcion)
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fas fa-pen"></i></span>
+                            @Html.TextAreaFor(m => m.Descripcion, new
+                            {
+                                @class = "form-control",
+                                rows = 4,
+                                maxlength = "500",
+                                placeholder = "Describe los detalles del evento...",
+                                id = "Descripcion",
+                                required = "required"
+                            })
+                        </div>
+                        <small class="form-text"><span id="descripcionCounter">0</span>/500</small>
+                    </div>
+
                 </div>
             </div>
-        </div>
 
-        <!-- Botones de Acción -->
-        <div class="modal-footer-custom mt-4 pt-3 border-top">
-            <div class="d-flex gap-2 justify-content-end">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Cancelar
-                </button>
-                <button type="submit" class="btn btn-primary" id="btnGuardar">
-                    <i class="fas fa-save me-2"></i>Publicar Anuncio
-                </button>
+            <!-- Fecha del Evento -->
+            <div class="form-section">
+                <h3 class="section-title"><i class="fas fa-calendar-alt me-2"></i>Fecha y Hora del Evento</h3>
+                @Html.TextBoxFor(m => m.FechaEvento, new
+                {
+                    @class = "form-control",
+                    type = "datetime-local",
+                    id = "FechaEvento",
+                    required = "required"
+                })
             </div>
+
+            <!-- Imagen -->
+            <div class="form-section">
+                <h3 class="section-title"><i class="fas fa-image me-2"></i>Imagen del Anuncio (Opcional)</h3>
+
+                <div class="input-group">
+                    <input type="file" name="Imagen" id="Imagen" class="form-control" accept="image/*" />
+                    <label class="input-group-text" for="Imagen"><i class="fas fa-upload"></i></label>
+                </div>
+
+                <div id="imagePreview" class="mt-3 d-none">
+                    <img id="previewImg" class="img-fluid rounded" style="max-height:200px">
+                    <button type="button" class="btn btn-danger btn-sm mt-2" id="removeImage">Eliminar imagen</button>
+                </div>
+            </div>
+
+        </div><!-- end content -->
+
+        <!-- Footer Botones -->
+        <div class="edit-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Crear Anuncio</button>
         </div>
     }
-</div>
 
-<style>
-    .form-modal-container {
-        padding: 0;
-    }
 
-    .form-label {
-        color: #2c3e50;
-        margin-bottom: 0.5rem;
-    }
 
-    .form-control:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-    }
+    <style>
+        .form-modal-container {
+            padding: 0;
+        }
 
-    .form-control-lg {
-        font-size: 1.1rem;
-        font-weight: 500;
-    }
+        .form-label {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
 
-    .form-text {
-        font-size: 0.85rem;
-        color: #6c757d;
-    }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
 
-    #imagePreview .card {
-        border: 2px dashed #dee2e6;
-        background-color: #f8f9fa;
-    }
+        .form-control-lg {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
 
-    .modal-footer-custom {
-        background-color: #f8f9fa;
-        margin: 0 -1rem -1rem -1rem;
-        padding: 1rem 1rem;
-    }
+        .form-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
 
-    .btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border: none;
-    }
+        #imagePreview .card {
+            border: 2px dashed #dee2e6;
+            background-color: #f8f9fa;
+        }
 
-    .btn-primary:hover {
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
-    }
+        .modal-footer-custom {
+            background-color: #f8f9fa;
+            margin: 0 -1rem -1rem -1rem;
+            padding: 1rem 1rem;
+        }
 
-    .text-danger {
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
-        display: block;
-    }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
 
-    /* Animación de carga en el botón */
-    .btn-loading {
-        position: relative;
-        pointer-events: none;
-    }
-
-    .btn-loading::after {
-        content: "";
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        top: 50%;
-        left: 50%;
-        margin-left: -8px;
-        margin-top: -8px;
-        border: 2px solid #ffffff;
-        border-radius: 50%;
-        border-top-color: transparent;
-        animation: spinner 0.6s linear infinite;
-    }
-
-    @@keyframes spinner {
-        to {transform: rotate(360deg);}
-    }
-</style>
-
-<script>
-    $(document).ready(function() {
-        // Contador de caracteres para Título
-        $('#Titulo').on('input', function() {
-            const length = $(this).val().length;
-            $('#tituloCounter').text(length);
-
-            if (length > 90) {
-                $('#tituloCounter').addClass('text-danger').removeClass('text-muted');
-            } else {
-                $('#tituloCounter').addClass('text-muted').removeClass('text-danger');
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
             }
-        });
 
-        // Contador de caracteres para Descripción
-        $('#Descripcion').on('input', function() {
-            const length = $(this).val().length;
-            $('#descripcionCounter').text(length);
+        .text-danger {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
 
-            if (length > 450) {
-                $('#descripcionCounter').addClass('text-danger').removeClass('text-muted');
-            } else {
-                $('#descripcionCounter').addClass('text-muted').removeClass('text-danger');
+        /* Animación de carga en el botón */
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+        }
+
+            .btn-loading::after {
+                content: "";
+                position: absolute;
+                width: 16px;
+                height: 16px;
+                top: 50%;
+                left: 50%;
+                margin-left: -8px;
+                margin-top: -8px;
+                border: 2px solid #ffffff;
+                border-radius: 50%;
+                border-top-color: transparent;
+                animation: spinner 0.6s linear infinite;
             }
-        });
 
-        // Establecer fecha mínima (hoy)
-        const now = new Date();
-        const minDateTime = now.toISOString().slice(0, 16);
-        $('#FechaEvento').attr('min', minDateTime);
+        @@keyframes spinner {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
-        // Preview de imagen
-        $('#Imagen').on('change', function(e) {
-            const file = e.target.files[0];
 
-            if (file) {
-                // Validar tamaño (5MB)
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('La imagen es demasiado grande. El tamaño máximo es 5MB.');
-                    $(this).val('');
-                    return;
+        .edit-group-modal {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styles */
+        .edit-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .modal-subtitle {
+            opacity: 0.9;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Content Styles */
+        .edit-content {
+            padding: 2rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            color: #6b7280;
+            z-index: 10;
+        }
+
+        .form-control {
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            width: 100%;
+        }
+
+        textarea.form-control {
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Validation */
+        .validation-message {
+            color: #ef4444;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .alert-danger {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Footer */
+        .edit-footer {
+            padding: 1.5rem 2rem;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+            .btn-secondary:hover {
+                background: #4b5563;
+                transform: translateY(-2px);
+            }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 15px rgba(102, 126, 234, 0.3);
+            }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .edit-header {
+                padding: 1.5rem;
+            }
+
+            .edit-content {
+                padding: 1.5rem;
+                max-height: 50vh;
+            }
+
+            .form-section {
+                padding: 1rem;
+            }
+
+            .edit-footer {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .edit-header {
+                padding: 1rem;
+            }
+
+            .edit-content {
+                padding: 1rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .header-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .modal-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            // Contador de caracteres para Título
+            $('#Titulo').on('input', function () {
+                const length = $(this).val().length;
+                $('#tituloCounter').text(length);
+
+                if (length > 90) {
+                    $('#tituloCounter').addClass('text-danger').removeClass('text-muted');
+                } else {
+                    $('#tituloCounter').addClass('text-muted').removeClass('text-danger');
+                }
+            });
+
+            // Contador de caracteres para Descripción
+            $('#Descripcion').on('input', function () {
+                const length = $(this).val().length;
+                $('#descripcionCounter').text(length);
+
+                if (length > 450) {
+                    $('#descripcionCounter').addClass('text-danger').removeClass('text-muted');
+                } else {
+                    $('#descripcionCounter').addClass('text-muted').removeClass('text-danger');
+                }
+            });
+
+            // Establecer fecha mínima (hoy)
+            const now = new Date();
+            const minDateTime = now.toISOString().slice(0, 16);
+            $('#FechaEvento').attr('min', minDateTime);
+
+            // Preview de imagen
+            $('#Imagen').on('change', function (e) {
+                const file = e.target.files[0];
+
+                if (file) {
+                    // Validar tamaño (5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('La imagen es demasiado grande. El tamaño máximo es 5MB.');
+                        $(this).val('');
+                        return;
+                    }
+
+                    // Validar tipo
+                    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                    if (!validTypes.includes(file.type)) {
+                        alert('Formato de imagen no válido. Use JPG, PNG o GIF.');
+                        $(this).val('');
+                        return;
+                    }
+
+                    // Mostrar preview
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#previewImg').attr('src', e.target.result);
+                        $('#imagePreview').removeClass('d-none');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Eliminar imagen
+            $('#removeImage').on('click', function () {
+                $('#Imagen').val('');
+                $('#imagePreview').addClass('d-none');
+                $('#previewImg').attr('src', '');
+            });
+
+            // Validación del formulario antes de enviar
+            $('#formCrearAnuncio').on('submit', function (e) {
+                const titulo = $('#Titulo').val().trim();
+                const descripcion = $('#Descripcion').val().trim();
+                const fechaEvento = $('#FechaEvento').val();
+
+                // Validaciones
+                if (!titulo) {
+                    alert('Por favor ingrese un título');
+                    e.preventDefault();
+                    return false;
                 }
 
-                // Validar tipo
-                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-                if (!validTypes.includes(file.type)) {
-                    alert('Formato de imagen no válido. Use JPG, PNG o GIF.');
-                    $(this).val('');
-                    return;
+                if (titulo.length < 5) {
+                    alert('El título debe tener al menos 5 caracteres');
+                    e.preventDefault();
+                    return false;
                 }
 
-                // Mostrar preview
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#previewImg').attr('src', e.target.result);
-                    $('#imagePreview').removeClass('d-none');
+                if (!descripcion) {
+                    alert('Por favor ingrese una descripción');
+                    e.preventDefault();
+                    return false;
                 }
-                reader.readAsDataURL(file);
-            }
+
+                if (descripcion.length < 10) {
+                    alert('La descripción debe tener al menos 10 caracteres');
+                    e.preventDefault();
+                    return false;
+                }
+
+                if (!fechaEvento) {
+                    alert('Por favor seleccione la fecha del evento');
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Validar que la fecha sea futura
+                const selectedDate = new Date(fechaEvento);
+                if (selectedDate < new Date()) {
+                    alert('La fecha del evento debe ser futura');
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Mostrar loading en el botón
+                const btnGuardar = $('#btnGuardar');
+                btnGuardar.prop('disabled', true);
+                btnGuardar.html('<span class="spinner-border spinner-border-sm me-2"></span>Publicando...');
+            });
+
+            // Inicializar contadores con valores existentes (para modo edición)
+            $('#Titulo').trigger('input');
+            $('#Descripcion').trigger('input');
         });
-
-        // Eliminar imagen
-        $('#removeImage').on('click', function() {
-            $('#Imagen').val('');
-            $('#imagePreview').addClass('d-none');
-            $('#previewImg').attr('src', '');
-        });
-
-        // Validación del formulario antes de enviar
-        $('#formCrearAnuncio').on('submit', function(e) {
-            const titulo = $('#Titulo').val().trim();
-            const descripcion = $('#Descripcion').val().trim();
-            const fechaEvento = $('#FechaEvento').val();
-
-            // Validaciones
-            if (!titulo) {
-                alert('Por favor ingrese un título');
-                e.preventDefault();
-                return false;
-            }
-
-            if (titulo.length < 5) {
-                alert('El título debe tener al menos 5 caracteres');
-                e.preventDefault();
-                return false;
-            }
-
-            if (!descripcion) {
-                alert('Por favor ingrese una descripción');
-                e.preventDefault();
-                return false;
-            }
-
-            if (descripcion.length < 10) {
-                alert('La descripción debe tener al menos 10 caracteres');
-                e.preventDefault();
-                return false;
-            }
-
-            if (!fechaEvento) {
-                alert('Por favor seleccione la fecha del evento');
-                e.preventDefault();
-                return false;
-            }
-
-            // Validar que la fecha sea futura
-            const selectedDate = new Date(fechaEvento);
-            if (selectedDate < new Date()) {
-                alert('La fecha del evento debe ser futura');
-                e.preventDefault();
-                return false;
-            }
-
-            // Mostrar loading en el botón
-            const btnGuardar = $('#btnGuardar');
-            btnGuardar.prop('disabled', true);
-            btnGuardar.html('<span class="spinner-border spinner-border-sm me-2"></span>Publicando...');
-        });
-
-        // Inicializar contadores con valores existentes (para modo edición)
-        $('#Titulo').trigger('input');
-        $('#Descripcion').trigger('input');
-    });
-</script>
+    </script>

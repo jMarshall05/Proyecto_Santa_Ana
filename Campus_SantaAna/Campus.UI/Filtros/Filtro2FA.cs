@@ -15,7 +15,7 @@ namespace Campus.UI.Filtros
             var path = httpContext.Request.Path.ToLower();
 
             // Permitir acceso libre a las rutas públicas
-            if (path == "/account/login" ||
+            if (path ==  "/account/login" || 
                 path == "/account/forgotpassword" ||
                 path == "/account/enableauthenticator" ||
                 path == "/account/logoff" ||
