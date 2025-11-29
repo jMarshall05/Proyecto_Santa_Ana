@@ -168,7 +168,7 @@ namespace Campus.UI.Controllers
                     };
                     _bitacora.RegistrarEvento(bitacora);
 
-                    return Redirect(Request.Headers["Referer"].ToString());
+                    return RedirectToAction("ListarTareas", new { materiaId = tarea.IdMateria, grupoId = tarea.Id_grupo });
                 }
                 catch (Exception ex)
                 {
@@ -319,7 +319,7 @@ namespace Campus.UI.Controllers
                 };
                 _bitacora.RegistrarEvento(bitacora);
 
-                return Redirect(Request.Headers["Referer"].ToString());
+                return RedirectToAction("ListarTareas", new { materiaId = tarea.IdMateria, grupoId = tarea.Id_grupo });
             }
             catch (Exception ex)
             {
