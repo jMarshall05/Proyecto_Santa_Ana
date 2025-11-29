@@ -277,8 +277,7 @@ namespace Campus.UI.Controllers
                             Apellido = usuarioModel.Apellido,
                             Telefonos = usuarioModel.Telefonos
                         };
-                        await _editarUsuarioLN.EditarUsuario(id, usuario);
-
+                        var result = await _editarUsuarioLN.EditarUsuario(id, usuario);
                         var bitacoraUsuario = new BitacoraDto
                         {
                             Fecha = DateTime.Now,
@@ -412,7 +411,7 @@ namespace Campus.UI.Controllers
                 cursosTable.SetWidth(UnitValue.CreatePercentValue(100));
                 cursosTable.SetFontSize(9);
 
-                string[] headers = { "Id Usuario", "Cedula", "Nombre", "Apelldo", "Correo", "Telefonos", "Fecha de Nacimiento", "Fecha de Registro", "Rol", "Estado" };
+                string[] headers = { "Id Usuario", "Identificacion", "Nombre", "Apelldo", "Correo", "Telefonos", "Fecha de Nacimiento", "Fecha de Registro", "Rol", "Estado" };
 
                 foreach (var header in headers)
                 {
@@ -428,7 +427,7 @@ namespace Campus.UI.Controllers
                 foreach (var u in datos)
                 {
                     cursosTable.AddCell(new Cell().Add(new Paragraph(u.IdUsuario).SetFont(regular)));
-                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.Cedula.ToString()).SetFont(regular)));
+                    cursosTable.AddCell(new Cell().Add(new Paragraph(u.Identificacion.ToString()).SetFont(regular)));
                     cursosTable.AddCell(new Cell().Add(new Paragraph(u.Nombre).SetFont(regular)));
                     cursosTable.AddCell(new Cell().Add(new Paragraph(u.Apellido).SetFont(regular)));
                     cursosTable.AddCell(new Cell().Add(new Paragraph(u.Email).SetFont(regular)));
@@ -585,7 +584,7 @@ namespace Campus.UI.Controllers
                 AddRow("Teléfonos", string.Join("\n", telefonosFormateados));
                 AddRow("Fecha de Nacimiento", datos.FechaDeNacimiento.ToShortDateString());
                 AddRow("Tipo de Identificacion",datos.TipoIdentificacion);
-                AddRow("Identificacion", datos.Cedula.ToString());
+                AddRow("Identificacion", datos.Identificacion.ToString());
                 AddRow("Rol", datos.Rol);
                 AddRow("Estado", datos.Estado ? "Activo" : "Inactivo");
 

@@ -32,7 +32,7 @@ namespace Campus.AccesoDatos.Usuarios.AgregarUsuariosAD
                 Apellido = usuario.Apellido,
                 Email = usuario.Email,
                 FechaDeNacimiento = usuario.FechaDeNacimiento,
-                Cedula = usuario.Cedula,
+                Identificacion = usuario.Identificacion,
                 FechaDeRegistro = usuario.FechaDeRegistro,
                 Rol = usuario.Rol,
                 Estado = usuario.Estado,

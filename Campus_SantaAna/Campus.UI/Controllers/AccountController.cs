@@ -237,7 +237,7 @@ namespace Campus.UI.Controllers
                             Usuario = user.Id,
                             Accion = "INSERT",
                             Tabla = "AspNetUsers",
-                            Descripcion = $"Registro de nuevo usuario - Email: {model.Email}, Nombre: {model.Nombre} {model.Apellido}, Rol: {model.Rol}, Cédula: {model.Cedula}"
+                            Descripcion = $"Registro de nuevo usuario - Email: {model.Email}, Nombre: {model.Nombre} {model.Apellido}, Rol: {model.Rol}, Identificacion: {model.Identificacion}"
                         };
                         _bitacoraLN.RegistrarEvento(bitacora);
 
@@ -673,10 +673,11 @@ namespace Campus.UI.Controllers
                 Apellido = model.Apellido,
                 Email = model.Email,
                 FechaDeNacimiento = model.FechaDeNacimiento,
-                Cedula = model.Cedula,
+                Identificacion = model.Identificacion,
+                TipoIdentificacion = model.TipoIdentificacion,
                 FechaDeRegistro = DateTime.Now,
-                Rol = rol, // Asignar un rol predeterminado
-                Estado = true // Asignar estado activo por defecto
+                Rol = rol, 
+                Estado = true 
             };
         }
 

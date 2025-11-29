@@ -18,8 +18,8 @@ namespace Campus.AccesoDatos.ModelosAD
         public string Email { get; set; }
         [Column("FechaDeNacimiento")]
         public DateTime FechaDeNacimiento { get; set; }
-        [Column("Cedula")]
-        public int Cedula { get; set; }
+        [Column("Identificacion")]
+        public string Identificacion { get; set; }
         [Column("FechaDeRegistro")]
         public DateTime FechaDeRegistro { get; set; }
         [Column("FechaDeModificacion")]

@@ -90,7 +90,7 @@ namespace Campus.UI.Controllers
                 Nombre = usuario.Nombre,
                 Apellido = usuario.Apellido,
                 Email = usuario.Email,
-                Cedula = usuario.Cedula,
+                Identificacion = usuario.Identificacion,
                 Id = userId,
                 Telefonos = Telefonos.ToList()
             };

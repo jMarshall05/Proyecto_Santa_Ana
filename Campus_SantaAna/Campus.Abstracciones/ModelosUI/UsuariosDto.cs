@@ -25,9 +25,9 @@ namespace Campus.Abstracciones.ModelosUI
         [DisplayName("Fecha de Nacimiento")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public DateTime FechaDeNacimiento { get; set; }
-        [DisplayName("Cédula")]
+        [DisplayName("Identificacion")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public int Cedula { get; set; }
+        public string Identificacion { get; set; }
         [DisplayName("Fecha de Registro")]
         public DateTime FechaDeRegistro { get; set; }
         [DisplayName("Fecha de Modificación")]

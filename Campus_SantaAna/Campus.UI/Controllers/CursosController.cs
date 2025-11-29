@@ -169,11 +169,11 @@ namespace Campus.UI.Controllers
                     .SetMarginBottom(20);
                 document.Add(titulo);
 
-                Table cursosTable = new Table(new float[] { 2, 3, 3, 4 });
+                Table cursosTable = new Table(new float[] { 2, 3, 3, 4, 3 });
                 cursosTable.SetWidth(UnitValue.CreatePercentValue(100));
 
                 // Encabezados
-                string[] headers = { "Id", "Materia", "Grupo", "Profesor" };
+                string[] headers = { "Id", "Materia", "Grupo", "Profesor", "Estado" };
                 foreach (var header in headers)
                 {
                     cursosTable.AddHeaderCell(new Cell()
@@ -188,6 +188,9 @@ namespace Campus.UI.Controllers
                     cursosTable.AddCell(new Paragraph(dato.NombreMateria));
                     cursosTable.AddCell(new Paragraph(dato.NombreGrupo));
                     cursosTable.AddCell(new Paragraph(dato.NombreProfesor));
+                    cursosTable.AddCell(new Paragraph(dato.Estado ? "Activo" : "Inactivo")
+                        .SetBackgroundColor(dato.Estado ? iText.Kernel.Colors.ColorConstants.LIGHT_GRAY : iText.Kernel.Colors.ColorConstants.RED)
+                        .SetFontColor(dato.Estado ? iText.Kernel.Colors.ColorConstants.BLACK : iText.Kernel.Colors.ColorConstants.WHITE));
 
                 }
 
