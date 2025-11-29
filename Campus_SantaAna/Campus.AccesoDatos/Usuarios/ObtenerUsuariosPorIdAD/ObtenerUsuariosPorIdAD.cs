@@ -24,7 +24,7 @@ namespace Campus.AccesoDatos.Usuarios.ObtenerUsuariosPorIdAD
                     Apellido = usuario.Apellido,
                     Email = usuario.Email,
                     FechaDeNacimiento = usuario.FechaDeNacimiento,
-                    Cedula = usuario.Cedula,
+                    Identificacion = usuario.Identificacion,
                     FechaDeRegistro = usuario.FechaDeRegistro,
                     FechaDeModificacion = usuario.FechaDeModificacion,
                     Rol = usuario.Rol,

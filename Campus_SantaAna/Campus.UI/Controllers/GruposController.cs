@@ -274,7 +274,7 @@ namespace Campus.UI.Controllers
                 cursosTable.SetWidth(UnitValue.CreatePercentValue(100));
 
                 // Encabezados
-                string[] headers = { "Nombre", "Apellido", "Email", "Teléfonos", "Cédula" };
+                string[] headers = { "Nombre", "Apellido", "Email", "Teléfonos", "Identificacion" };
                 foreach (var header in headers)
                 {
                     cursosTable.AddHeaderCell(new Cell()
@@ -301,7 +301,7 @@ namespace Campus.UI.Controllers
                     }
 
                     cursosTable.AddCell(new Paragraph(string.Join("\n", telefonosFormateados)));
-                    cursosTable.AddCell(new Paragraph(u.Cedula.ToString()));
+                    cursosTable.AddCell(new Paragraph(u.Identificacion.ToString()));
                 }
 
                 document.Add(cursosTable);

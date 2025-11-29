@@ -4,7 +4,7 @@
     $("#btnEditar").on("click", function () {
 
         // Convertir celdas simples a inputs
-        $("#tablaDatos td.valor").each(function () {
+        $(".premium-table td.valor").each(function () {
             var campo = $(this).data("campo");
             if (!campo || campo === "Telefonos") return;
             var valor = $(this).text().trim();
@@ -12,38 +12,43 @@
         });
 
         // Manejar teléfonos
-        var telefonoTd = $("#tablaDatos td[data-campo='Telefonos']");
+        var telefonoTd = $(".premium-table td[data-campo='Telefonos']");
         var telefonos = [];
 
         // Extraer datos desde los div.telefono-item existentes
         telefonoTd.find('div.telefono-item').each(function (i) {
             var $div = $(this);
             var id = $div.data('id') || 0;
-            var rawText = $div.clone().children().remove().end().text().trim();
-            var m = rawText.match(/\(([^)]+)\)\s*([0-9\-]+):\s*(.*)/);
-            var codigo = m ? m[1].replace(/\+/g, '').trim() : '';
+            var rawText = $div.find('span').first().text().trim();
+            var m = rawText.match(/\(\+([^)]+)\)\s*([0-9\-]+):\s*(.*)/);
+            var codigo = m ? m[1].trim() : '';
             var numero = m ? m[2].replace(/-/g, '').trim() : '';
             var tipo = m ? m[3].trim() : '';
-            telefonos.push({ id: id, codigo: codigo, numero: numero, tipo: tipo });
+            var estado = $div.find('.badge').hasClass('bg-success');
+            telefonos.push({ id: id, codigo: codigo, numero: numero, tipo: tipo, estado: estado });
         });
 
         // Si no había teléfonos, crear uno vacío
         if (telefonos.length === 0) {
-            telefonos.push({ id: 0, codigo: "", numero: "", tipo: "" });
+            telefonos.push({ id: 0, codigo: "", numero: "", tipo: "", estado: true });
         }
 
         // Generar HTML de edición
         var html = '<div id="telefonosContainer">';
         telefonos.forEach(function (t, i) {
+            var estadoChecked = t.estado ? 'checked' : '';
+            var estadoClass = t.estado ? 'btn-success' : 'btn-danger';
+            var estadoTexto = t.estado ? 'Activo' : 'Inactivo';
             html += `
             <div class="row mb-2 telefono-edit-row" data-index="${i}">
                 <input type="hidden" class="tel-id" data-prop="Id" value="${t.id}" />
+                <input type="hidden" class="tel-estado" data-prop="Estado" value="${t.estado}" />
                 <div class="col-md-3">
                     <input type="text" class="form-control tel-codigo" data-prop="Codigo"
                         value="${t.codigo}" maxlength="3" placeholder="Código (ej: 506)"
                         oninput="this.value=this.value.replace(/[^0-9]/g,'').substring(0,3)" />
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-4">
                     <input type="text" class="form-control tel-numero" data-prop="Telefono"
                         value="${t.numero}" minlength="8" maxlength="8" placeholder="Número"
                         oninput="this.value=this.value.replace(/[^0-9]/g,'').substring(0,8)" />
@@ -58,6 +63,11 @@
                         <option value="Otro" ${t.tipo == "Otro" ? "selected" : ""}>Otro</option>
                     </select>
                 </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn ${estadoClass} btn-sm w-100 btn-toggle-estado">
+                        ${estadoTexto}
+                    </button>
+                </div>
             </div>`;
         });
         html += '</div>';
@@ -71,7 +81,7 @@
 
         // Agregar fila de botones
         if ($("#filaGuardar").length === 0) {
-            $("#tablaDatos tbody").append(`
+            $(".premium-table tbody").append(`
                 <tr id="filaGuardar">
                     <td colspan="2" class="text-end">
                         <button type="button" id="btnGuardar" class="btn btn-success">Guardar cambios</button>
@@ -92,12 +102,13 @@
         var newRow = `
         <div class="row mb-2 telefono-edit-row" data-index="${index}">
             <input type="hidden" class="tel-id" data-prop="Id" value="0" />
+            <input type="hidden" class="tel-estado" data-prop="Estado" value="true" />
             <div class="col-md-3">
                 <input type="text" class="form-control tel-codigo" data-prop="Codigo"
                     maxlength="3" placeholder="Código"
                     oninput="this.value=this.value.replace(/[^0-9]/g,'').substring(0,3)" />
             </div>
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <input type="text" class="form-control tel-numero" data-prop="Telefono"
                     minlength="8" maxlength="8" placeholder="Número"
                     oninput="this.value=this.value.replace(/[^0-9]/g,'').substring(0,8)" />
@@ -112,8 +123,31 @@
                     <option value="Otro">Otro</option>
                 </select>
             </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-success btn-sm w-100 btn-toggle-estado">
+                    Activo
+                </button>
+            </div>
         </div>`;
         container.append(newRow);
+    });
+
+    // Toggle estado del teléfono
+    $(document).on("click", ".btn-toggle-estado", function () {
+        var $btn = $(this);
+        var $row = $btn.closest('.telefono-edit-row');
+        var $estadoInput = $row.find('.tel-estado');
+
+        var estadoActual = $estadoInput.val() === 'true';
+        var nuevoEstado = !estadoActual;
+
+        $estadoInput.val(nuevoEstado);
+
+        if (nuevoEstado) {
+            $btn.removeClass('btn-danger').addClass('btn-success').text('Activo');
+        } else {
+            $btn.removeClass('btn-success').addClass('btn-danger').text('Inactivo');
+        }
     });
 
     // Manejar el click en Guardar
@@ -144,19 +178,20 @@
             var codigo = $row.find('.tel-codigo').val() || "0";
             var telefono = $row.find('.tel-numero').val() || "0";
             var tipo = $row.find('.tel-tipo').val() || "";
+            var estado = $row.find('.tel-estado').val() || "true";
 
             // Limpiar cualquier carácter no numérico
             codigo = codigo.replace(/[^0-9]/g, '') || "0";
             telefono = telefono.replace(/[^0-9]/g, '') || "0";
 
-            console.log(`Teléfono ${index}:`, { id, codigo, telefono, tipo });
+            console.log(`Teléfono ${index}:`, { id, codigo, telefono, tipo, estado });
 
             // IMPORTANTE: NO codificar los corchetes, solo los valores
             params.push('Telefonos[' + index + '].Id=' + encodeURIComponent(id));
             params.push('Telefonos[' + index + '].Codigo=' + encodeURIComponent(codigo));
             params.push('Telefonos[' + index + '].Telefono=' + encodeURIComponent(telefono));
             params.push('Telefonos[' + index + '].Tipo=' + encodeURIComponent(tipo));
-            params.push('Telefonos[' + index + '].Estado=' + encodeURIComponent('true'));
+            params.push('Telefonos[' + index + '].Estado=' + encodeURIComponent(estado));
         });
 
         var dataString = params.join('&');

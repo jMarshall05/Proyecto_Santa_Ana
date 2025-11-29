@@ -23,7 +23,7 @@ namespace Campus.AccesoDatos.Usuarios.ListarUsuariosAD
                                                      Apellido = Usuarios.Apellido,
                                                      Email = Usuarios.Email,
                                                      FechaDeNacimiento = Usuarios.FechaDeNacimiento,
-                                                     Cedula = Usuarios.Cedula,
+                                                     Identificacion = Usuarios.Identificacion,
                                                      FechaDeRegistro = Usuarios.FechaDeRegistro,
                                                      FechaDeModificacion = Usuarios.FechaDeModificacion,
                                                      Rol = Usuarios.Rol,
