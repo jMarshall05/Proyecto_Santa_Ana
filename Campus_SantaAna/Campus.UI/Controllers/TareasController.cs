@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Campus.Abstracciones.AccesoDatos.calificaciones.listarCalificacionDA;
 using Campus.Abstracciones.AccesoDatos.Cursos.ListarCursosLN;
 using Campus.Abstracciones.LogicaDeNegocio;
+using Campus.Abstracciones.LogicaDeNegocio.calificaciones.listarCalificacionLN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.agregarTareaLN;
@@ -15,6 +17,7 @@ using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
 using Campus.Abstracciones.LogicaNegocio.entregas.listarEntregaLN;
 using Campus.Abstracciones.ModelosUI;
 using Campus.LogicaDeNegocio.Bitacora;
+using Campus.LogicaDeNegocio.calificaciones.listarCalificacionesLN;
 using Campus.LogicaDeNegocio.Cursos.ListarCursosLN;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Materias.ListarMaterias;
@@ -39,6 +42,7 @@ namespace Campus.UI.Controllers
         private readonly IListarCursoLN _listarCursosLN;
         private readonly IListarEntregasLN _listarEntregasLN;
         private readonly IBitacoraLN _bitacora;
+        private readonly IListarCalificacionesLN _listarCalificaciones;
 
 
 
@@ -53,7 +57,7 @@ namespace Campus.UI.Controllers
             _listarCursosLN = new ListarCursosLN();
             _listarEntregasLN = new ListarEntregasLN();
             _bitacora = new BitacoraLN();
-
+            _listarCalificaciones = new ListarCalificacionesLN();
         }
 
         [Authorize(Roles = "Administradores,Profesores")]
@@ -386,8 +390,19 @@ namespace Campus.UI.Controllers
                 var tareas = (await _listarTareaLN.ListarTareasPorEstudiante(idUsuario)).Where(t => t.Estado == true);
                 foreach (var tarea in tareas)
                 {
-                    if (tarea.Calificacion != null)
-                        tarea.Calificacion.Entrega = (await _listarEntregasLN.ListarEntregas()).Where(e => e.id_entrega == tarea.Calificacion.id_entrega && e.estado == true).FirstOrDefault();
+                    var entrega = (await _listarEntregasLN.ListarEntregas()).Where(e => e.id_estudiante == idUsuario && e.id_tarea == tarea.IdTarea && e.estado == true).FirstOrDefault();
+                    var calificacion = await _listarCalificaciones.ListarCalificacionesPorEstudianteAsync(idUsuario);
+                    if (calificacion.Count() > 0 && entrega != null)
+                    {
+                        tarea.Calificacion = calificacion.Where(c => c.id_entrega == entrega.id_entrega).FirstOrDefault();
+                    }
+                    else if (entrega != null)
+                    {
+                        tarea.Calificacion = new CalificacionesDto
+                        {
+                            Entrega = entrega
+                        };
+                    }
                 }
                 if (materiaId.HasValue && grupoId.HasValue)
                 {
