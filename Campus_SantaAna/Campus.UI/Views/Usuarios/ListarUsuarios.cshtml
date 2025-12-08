@@ -75,7 +75,7 @@
                         <tr>
                             <th>Nombre Completo</th>
                             <th>@Html.DisplayNameFor(model => model.Email)</th>
-                            <th>@Html.DisplayNameFor(model => model.Cedula)</th>
+                            <th>@Html.DisplayNameFor(model => model.Identificacion)</th>
                             <th>@Html.DisplayNameFor(model => model.Estado)</th>
                             <th>Acciones</th>
                         </tr>
@@ -118,7 +118,7 @@
                                         </div>
                                     </td>
                                     <td class="id-cell" data-label="Cédula">
-                                        <span class="id-badge">@item.Cedula</span>
+                                        <span class="id-badge">@item.Identificacion</span>
                                     </td>
                                     <td class="status-cell" data-label="Estado">
                                         @if (item.Estado)

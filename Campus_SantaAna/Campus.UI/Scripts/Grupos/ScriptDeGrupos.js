@@ -20,12 +20,14 @@
         dom: '<"top"<"d-flex justify-content-between align-items-center"lf>>rt<"bottom"ip><"clear">',
         columnDefs: [
             { orderable: false, targets: [4] }, // Columna de acciones
-            { searchable: false, targets: [0, 4] }
+            { searchable: false, targets: [0, 1, 3] }
         ],
         initComplete: function () {
             $('.dataTables_length').addClass('mb-3');
             $('.dataTables_length label').addClass('d-flex align-items-center');
             $('.dataTables_length select').addClass('form-select-sm');
+
+            // Personalizar la barra de búsqueda
             $('.dataTables_filter').addClass('mb-3');
             $('.dataTables_filter label').addClass('position-relative');
         }

@@ -88,8 +88,8 @@ namespace Campus.UI.Models
         [DataType(DataType.Date)]
         public DateTime FechaDeNacimiento { get; set; }
         [Required]
-        [Display(Name = "Cedula")]
-        public int Cedula { get; set; }
+        [Display(Name = "Identificacion")]
+        public string Identificacion { get; set; }
 
 
         [Required]

@@ -220,7 +220,7 @@ namespace Campus.Web.Controllers
             };
             _bitacora.RegistrarEvento(bitacora);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("MisTareas","Tareas");
         }
         // GET: Entregas/Entregar/5
         public ActionResult Entregar(int id)
@@ -254,19 +254,24 @@ namespace Campus.Web.Controllers
         public async Task<ActionResult> MisEntregas()
         {
             var idEstudiante = User.Identity.GetUserId();
-            var lista = await _listarEntregasLN.ListarEntregasPorEstudianteAsync(idEstudiante);
+            var lista = (await _listarEntregasLN.ListarEntregasPorEstudianteAsync(idEstudiante)).Where(e => e.estado == true);
+            if (!lista.Any())
+            {
+                lista = new List<EntregasDto>();
+                return View(lista);
+            }
             ViewBag.Materias = _listarMaterias.ListarMaterias();
             foreach (var tarea in lista)
             {
                 tarea.Tarea = await _listarTareas.ObtenerPorIdAsync(tarea.id_tarea);
             }
-            return View(lista);
+            return View(lista.ToList());
         }
 
 
         [Authorize(Roles = "Estudiantes")]
         [HttpGet]
-        public ActionResult SubirEntrega(int idTarea)
+        public async Task<ActionResult> SubirEntrega(int idTarea)
         {
             var entrega = new EntregasDto
             {
@@ -274,6 +279,7 @@ namespace Campus.Web.Controllers
                 id_estudiante = User.Identity.GetUserId(),
                 fecha_entrega = DateTime.Now
             };
+            ViewBag.NombreTarea = (await _listarTareas.ObtenerPorIdAsync(idTarea)).Titulo;
 
             return View("SubirEntrega", entrega);
         }
@@ -335,7 +341,6 @@ namespace Campus.Web.Controllers
 
         private void GuardarArchivo(EntregasDto entrega, HttpPostedFileBase archivo)
         {
-            // Ruta del servidor donde se guardará el archivo
             var nombreArchivo = Path.GetFileNameWithoutExtension(archivo.FileName);
             var extension = Path.GetExtension(archivo.FileName);
             var rutaCarpeta = Server.MapPath("~/Uploads/Entregas/");
