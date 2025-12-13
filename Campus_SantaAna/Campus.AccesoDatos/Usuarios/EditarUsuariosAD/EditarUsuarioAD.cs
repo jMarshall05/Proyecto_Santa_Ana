@@ -26,6 +26,7 @@ namespace Campus.AccesoDatos.Usuarios.EditarUsuariosAD
                 usuarioExistente.FechaDeNacimiento = usuario.FechaDeNacimiento;
                 usuarioExistente.FechaDeModificacion = DateTime.Now;
                 usuarioExistente.Rol = usuario.Rol;
+                usuarioExistente.Identificacion = usuario.Identificacion;
                 usuarioExistente.Estado = usuario.Estado;
                 usuarioExistente.TipoIdentificacion = usuario.TipoIdentificacion;
 

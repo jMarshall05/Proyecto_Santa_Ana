@@ -427,7 +427,7 @@
                             <label>Número de Identificación</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-fingerprint input-icon"></i>
-                                @Html.TextBoxFor(m => m.Cedula, new
+                                @Html.TextBoxFor(m => m.Identificacion, new
                                 {
                                     @class = "form-control",
                                     id = "numeroIdentificacion",
@@ -436,7 +436,7 @@
                                 })
                                 <small class="form-text" id="formatoAyuda"></small>
                             </div>
-                            @Html.ValidationMessageFor(m => m.Cedula, "", new { @class = "text-danger" })
+                            @Html.ValidationMessageFor(m => m.Identificacion, "", new { @class = "text-danger" })
                         </div>
 
                         <div class="mb-3">

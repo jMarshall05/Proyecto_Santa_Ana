@@ -61,7 +61,7 @@
                                     <td class="valor" data-campo="Telefonos">
                                         @foreach (var telefono in Model.Telefonos)
                                         {
-                                            <div class="telefono-item d-flex align-items-center justify-content-between py-1 px-2 mb-1 rounded shadow-sm bg-light">
+                                            <div class="telefono-item d-flex align-items-center justify-content-between py-1 px-2 mb-1 rounded shadow-sm bg-light" data-id="@telefono.Id">
                                                 <span>(+@telefono.Codigo) @(telefono.Telefono.ToString().Insert(4, "-")): @telefono.Tipo</span>
                                                 @if (telefono.Estado)
                                                 {
@@ -85,9 +85,9 @@
                                 <tr>
                                     <th class="fw-semibold">
                                         <i class="bi bi-card-text me-2 text-dark"></i>
-                                        @Html.DisplayNameFor(model => model.Cedula)
+                                        @Html.DisplayNameFor(model => model.Identificacion)
                                     </th>
-                                    <td>@Html.DisplayFor(model => model.Cedula)</td>
+                                    <td>@Html.DisplayFor(model => model.Identificacion)</td>
                                 </tr>
                             </tbody>
                         </table>
