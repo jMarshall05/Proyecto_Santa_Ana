@@ -56,6 +56,8 @@
     <Compile Include="Cursos\ModificarEstadoCursoLN\ModificarEstadoCursoLN.cs" />
     <Compile Include="Cursos\ListarCursosLN\ListarCursosLN.cs" />
     <Compile Include="Documentos\AgregarDocumentoLN.cs" />
+    <Compile Include="Documentos\BorrarDocumentoLN.cs" />
+    <Compile Include="Documentos\EditarDocumentoLN.cs" />
     <Compile Include="Documentos\ListarDocumentosLN.cs" />
     <Compile Include="entregas\agregarEntregaLN\agregarEntregaLN.cs" />
     <Compile Include="entregas\editarEntregaLN\editarEntregaLN.cs" />
