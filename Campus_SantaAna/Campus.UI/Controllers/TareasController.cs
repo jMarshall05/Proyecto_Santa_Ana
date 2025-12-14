@@ -268,24 +268,18 @@ namespace Campus.UI.Controllers
                 bool eliminarArchivo = Request.Form["eliminarArchivo"] == "true";
                 bool archivoModificado = false;
 
-                if (eliminarArchivo && !string.IsNullOrEmpty(archivoAnterior))
+                if (eliminarArchivo)
                 {
-                    string rutaCompleta = Server.MapPath(archivoAnterior);
-                    if (System.IO.File.Exists(rutaCompleta))
-                        System.IO.File.Delete(rutaCompleta);
-
+                    EliminarArchivoFisico(archivoAnterior);
                     tarea.ArchivoAdjunto = null;
                     archivoModificado = true;
                 }
-                else if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
-                {
-                    if (!string.IsNullOrEmpty(archivoAnterior))
-                    {
-                        string rutaCompleta = Server.MapPath(archivoAnterior);
-                        System.IO.File.Delete(rutaCompleta);
-                    }
 
-                    ComprobarTipodeArchivo(tarea, out string[] extensionesPermitidas, out string extensionArchivo);
+                if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
+                {
+                    EliminarArchivoFisico(archivoAnterior);
+
+                    ComprobarTipodeArchivo(tarea, out var extensionesPermitidas, out var extensionArchivo);
 
                     if (!extensionesPermitidas.Contains(extensionArchivo))
                     {
@@ -296,17 +290,21 @@ namespace Campus.UI.Controllers
                     GuardarArchivo(tarea);
                     archivoModificado = true;
                 }
-                else
+                else if (!archivoModificado)
                 {
                     tarea.ArchivoAdjunto = archivoAnterior;
                 }
 
                 if (tarea.FechaEntrega < tarea.FechaPublicacion)
                 {
-                    ModelState.AddModelError("FechaEntrega", "La fecha de entrega no puede ser anterior a la fecha de publicacion");
+                    ModelState.AddModelError(
+                        "FechaEntrega",
+                        "La fecha de entrega no puede ser anterior a la fecha de publicación"
+                    );
                     return View(tarea);
                 }
 
+                // 4️⃣ Guardar cambios
                 await _editarTareaLN.EditarTarea(id, tarea);
 
                 // Bitácora: actualización de tarea
@@ -331,6 +329,16 @@ namespace Campus.UI.Controllers
                 return View(tarea);
             }
         }
+        private void EliminarArchivoFisico(string rutaRelativa)
+        {
+            if (string.IsNullOrEmpty(rutaRelativa)) return;
+
+            string rutaCompleta = Server.MapPath(rutaRelativa);
+
+            if (System.IO.File.Exists(rutaCompleta))
+                System.IO.File.Delete(rutaCompleta);
+        }
+
 
 
         [Authorize(Roles = "Administradores,Profesores")]
@@ -352,7 +360,6 @@ namespace Campus.UI.Controllers
 
             await _eliminarTareaLN.EliminarTarea(id);
 
-            // Bitácora: eliminación lógica de tarea
             var bitacora = new BitacoraDto
             {
                 Fecha = DateTime.Now,
