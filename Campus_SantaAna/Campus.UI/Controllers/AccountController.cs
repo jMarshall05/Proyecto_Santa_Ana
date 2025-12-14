@@ -510,9 +510,18 @@ namespace Campus.UI.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            AuthenticationManager.SignOut(
+                DefaultAuthenticationTypes.ApplicationCookie
+            );
+
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetNoStore();
+            Response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(-1));
+            Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+
             return RedirectToAction("Login", "Account");
         }
+
         public ActionResult EnableAuthenticator()
         {
             var userId = User.Identity.GetUserId();
