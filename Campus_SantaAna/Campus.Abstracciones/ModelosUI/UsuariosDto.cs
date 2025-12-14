@@ -40,5 +40,7 @@ namespace Campus.Abstracciones.ModelosUI
         [DisplayName("Estado")]
         public bool Estado { get; set; }
 
+        
+
     }
 }

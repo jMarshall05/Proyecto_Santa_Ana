@@ -161,10 +161,19 @@
                     @Html.LabelFor(model => model.Identificacion, "Número de Identificación", new { @class = "form-label" })
                     <span class="required-mark">*</span>
                     <div class="input-wrapper">
-                        <span class="input-icon"><i class="fas fa-fingerprint"></i></span>
-                        @Html.TextBoxFor(model => model.Identificacion, new { @class = "form-control", placeholder = "Ingrese el número", required = "required", id = "numeroIdentificacion" })
+                        <div class="input-field">
+                            <span class="input-icon"><i class="fas fa-fingerprint"></i></span>
+                            @Html.TextBoxFor(model => model.Identificacion, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Ingrese el número",
+                                required = "required",
+                                id = "numeroIdentificacion"
+                            })
+                        </div>
                         <small class="form-text text-muted" id="formatoAyuda"></small>
                     </div>
+
                     @Html.ValidationMessageFor(model => model.Identificacion, "", new { @class = "validation-message" })
                 </div>
 
@@ -349,6 +358,25 @@
     .input-wrapper {
         position: relative
     }
+
+    .input-field {
+        position: relative;
+    }
+
+        .input-field .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .input-field .form-control {
+            padding-left: 2.5rem;
+        }
+
 
     .input-icon {
         position: absolute;
