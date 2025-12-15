@@ -313,7 +313,7 @@ namespace Campus.UI.Controllers
             }
 
             // Guardar solo la ruta relativa en la base de datos
-            documento.RutaArchivo = "~/Uploads/Documentos" + Path.GetFileName(rutaCompleta);
+            documento.RutaArchivo = "~/Uploads/Documentos/" + Path.GetFileName(rutaCompleta);
         }
     }
 }

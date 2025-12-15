@@ -183,12 +183,14 @@
                                                 <i class="fas fa-ellipsis-v"></i>
                                             </button>
                                             <div class="menu-dropdown">
-                                                <a href="#" onclick="editarDocumento(@doc.Id)">
+                                                <a href="#" onclick="editarDocumento(this, @doc.Id)">
                                                     <i class="fas fa-edit"></i> Editar
                                                 </a>
-                                                <a href="@Url.Action("BorrarDocumento","Home", new { idDocumento = doc.Id })">
+
+                                                <a href="#" onclick="confirmarEliminar(@doc.Id)">
                                                     <i class="fas fa-trash"></i> Eliminar
                                                 </a>
+
                                             </div>
                                         </div>
                                     }
@@ -440,10 +442,37 @@
             }
         });
 
-        function editarDocumento(id) {
-            // Implementar lógica de edición
-            console.log('Editar documento:', id);
-        }
+       function editarDocumento(btn, id) {
+
+    document.getElementById('editIdDocumento').value = id;
+
+    const documentCard = btn.closest('.document-card');
+    if (!documentCard) return;
+
+    document.getElementById('editTituloDocumento').value =
+        documentCard.querySelector('.document-title').textContent;
+
+    document.getElementById('editDescripcionDocumento').value =
+        documentCard.querySelector('.document-description').textContent;
+
+    document.getElementById('editCategoriaDocumento').value = 'Otro';
+
+    const rutaArchivo = documentCard
+        .querySelector('.btn-document.btn-primary')
+        ?.getAttribute('href');
+
+    if (rutaArchivo) {
+        document.getElementById('editArchivoActualNombre').textContent =
+            rutaArchivo.split('/').pop();
+        document.getElementById('editArchivoActual').style.display = 'block';
+    }
+
+    new bootstrap.Modal(
+        document.getElementById('editarDocumentoModal')
+    ).show();
+}
+
+
 
         function eliminarDocumento(id) {
             if (confirm('¿Estás seguro de que deseas eliminar este documento?')) {
@@ -605,6 +634,13 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
         });
+
+        function confirmarEliminar(id) {
+    if (confirm('¿Estás segura de que deseas eliminar este documento?')) {
+        window.location.href = '@Url.Action("BorrarDocumento", "Home")' + '?idDocumento=' + id;
+    }
+}
+
     </script>
 
     <style>
