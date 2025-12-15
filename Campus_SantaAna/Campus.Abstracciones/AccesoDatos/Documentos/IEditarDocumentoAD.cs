@@ -9,6 +9,6 @@ namespace Campus.Abstracciones.AccesoDatos.Documentos
 {
     public interface IEditarDocumentoAD
     {
-       Task <bool> EditarDocumentoAsync(int idDocumento, DocumentosDto documento);
+       Task <bool> EditarDocumento(int idDocumento, DocumentosDto documento);
     }
 }
