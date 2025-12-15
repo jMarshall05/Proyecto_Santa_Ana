@@ -1,36 +1,195 @@
 ﻿@model IEnumerable<Campus.Abstracciones.ModelosUI.EntregasDto>
 
-<h2 class="container-title">Lista de Entregas</h2>
+@if (User.Identity.IsAuthenticated)
+{
+    Layout = User.IsInRole("Administradores")
+        ? "~/Views/Shared/_AdminLayout.cshtml"
+        : "~/Views/Shared/_Layout.cshtml";
+}
 
-<table class="table table-striped table-bordered">
-    <thead class="table-danger">
-        <tr>
-            <th>ID Entrega</th>
-            <th>Estudiante</th>
-            <th>ID Tarea</th>
-            <th>Fecha de Entrega</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="entregas-container container py-4">
+
+    <h2 class="titulo-principal">
+        Tareas Entregadas
+        <span class="subtitulo">@ViewBag.Titulo - Grupo @ViewBag.Grupo</span>
+    </h2>
+
+    <!--  Buscador y Filtros -->
+    <div class="filtros-box shadow-sm p-3 mb-4">
+        <div class="row g-3">
+
+            <!-- Buscador -->
+            <div class="col-md-6">
+                <input type="text" id="searchInput" class="form-control" placeholder="Buscar por estudiante o título...">
+            </div>
+
+            <!-- Filtrar por Fecha -->
+            <div class="col-md-4">
+                <input type="date" id="filtroFecha" class="form-control">
+            </div>
+
+            <!-- Botón limpiar -->
+            <div class="col-md-2 d-grid">
+                <button class="btn btn-secondary" id="btnClear">
+                    Limpiar Filtros
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row g-4" id="entregasListado">
+
         @foreach (var entrega in Model)
         {
-            <tr>
-                <td>@entrega.id_entrega</td>
-                <td>@entrega.Estudiante.Nombre @entrega.Estudiante.Apellido</td>
-                <td>@entrega.id_tarea</td>
-                <td>@entrega.fecha_entrega.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>
-                    <div class="btn-group" role="group">
-                        <a href="@Url.Action("ObtenerEntregaPorID", "Entregas", new { id = entrega.id_entrega })" class="btn btn-sm btn-warning">
-                            <i class="fas fa-info-circle me-1"></i> Ver Detalles
+            <div class="col-md-6 col-lg-4 entrega-item"
+                 data-estudiante="@($"{entrega.Estudiante.Nombre} {entrega.Estudiante.Apellido}").ToLower()"
+                 data-fecha="@entrega.fecha_entrega.ToString("yyyy-MM-dd")">
+
+                <div class="card entrega-card shadow-sm">
+
+                    <div class="card-header card-header-celeste">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-alt me-2"></i>
+                            Entrega #@entrega.id_entrega
+                        </h5>
+                    </div>
+
+                    <div class="card-body">
+                        <p class="dato">
+                            <i class="fas fa-user-graduate text-primary me-2"></i>
+                            <strong>Estudiante:</strong> @entrega.Estudiante.Nombre @entrega.Estudiante.Apellido
+                        </p>
+
+                        <p class="dato">
+                            <i class="fas fa-tasks text-primary me-2"></i>
+                            <strong>ID Tarea:</strong> @entrega.id_tarea
+                        </p>
+
+                        <p class="dato">
+                            <i class="far fa-calendar-check text-primary me-2"></i>
+                            <strong>Fecha:</strong> @entrega.fecha_entrega.ToString("dd/MM/yyyy HH:mm")
+                        </p>
+                    </div>
+
+                    <div class="card-footer d-flex justify-content-between">
+                        <a href="@Url.Action("ObtenerEntregaPorID", "Entregas", new { id = entrega.id_entrega })"
+                           class="btn btn-outline-primary w-50 me-2">
+                            <i class="fas fa-info-circle me-1"></i> Ver
                         </a>
-                        <a href="@Url.Action("Edit", "Entregas", new { id = entrega.id_entrega })" class="btn btn-primary">
-                            <i class="fas fa-edit me-1"></i> Calificar
+
+                        <a href="@Url.Action("Edit", "Entregas", new { id = entrega.id_entrega })"
+                           class="btn btn-celeste w-50">
+                            <i class="fas fa-pen-alt me-1"></i> Calificar
                         </a>
                     </div>
-                </td>
-            </tr>
+
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+</div>
+
+<style>
+    /* Títulos */
+    .titulo-principal {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #0b3c7c;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .subtitulo {
+        display: block;
+        font-size: 1.1rem;
+        color: #1d4ed8;
+        font-weight: 500;
+        margin-top: .25rem;
+    }
+
+    /* Caja de filtros */
+    .filtros-box {
+        border-radius: 15px;
+        background: #f8faff;
+        border: 1px solid #dbeafe;
+    }
+
+    /* Card entregas */
+    .entrega-card {
+        border-radius: 16px;
+        overflow: hidden;
+        transition: transform .2s ease, box-shadow .2s ease;
+        background: white;
+        position: relative;
+    }
+
+        .entrega-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 64, 160, .2);
+        }
+
+    /* Header celeste */
+    .card-header-celeste {
+        background-color: #3498db;
+        color: white;
+    }
+
+    /* Datos dentro de la card */
+    .dato {
+        font-size: 1rem;
+        margin-bottom: .6rem;
+    }
+
+    /* Botón Calificar celeste */
+    .btn-celeste {
+        background-color: #3498db;
+        color: white;
+        border-color: #3498db;
+        transition: background-color 0.2s ease;
+    }
+
+        .btn-celeste:hover {
+            background-color: #2980b9; /* un poco más oscuro al pasar el mouse */
+            border-color: #2980b9;
+            color: white;
+        }
+</style>
+
+<script>
+    //  FILTROS dinámicos
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const searchInput = document.getElementById("searchInput");
+        const filtroFecha = document.getElementById("filtroFecha");
+        const btnClear = document.getElementById("btnClear");
+
+        const items = document.querySelectorAll(".entrega-item");
+
+        function aplicarFiltros() {
+            const text = searchInput.value.toLowerCase();
+            const fecha = filtroFecha.value;
+
+            items.forEach(item => {
+                const est = item.dataset.estudiante;
+                const fechaEnt = item.dataset.fecha;
+
+                let visible = true;
+
+                if (text && !est.includes(text)) visible = false;
+                if (fecha && fechaEnt !== fecha) visible = false;
+
+                item.style.display = visible ? "block" : "none";
+            });
+        }
+
+        searchInput.oninput = aplicarFiltros;
+        filtroFecha.onchange = aplicarFiltros;
+
+        btnClear.onclick = () => {
+            searchInput.value = "";
+            filtroFecha.value = "";
+            aplicarFiltros();
+        };
+    });
+</script>

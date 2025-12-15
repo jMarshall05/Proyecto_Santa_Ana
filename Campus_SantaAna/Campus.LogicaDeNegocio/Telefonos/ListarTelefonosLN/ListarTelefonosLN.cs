@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Campus.Abstracciones.AccesoDatos.Telefonos.ListarTelefonos;
 using Campus.Abstracciones.LogicaDeNegocio.Telefonos.ListarTelefonos;
 using Campus.Abstracciones.ModelosUI;
@@ -23,6 +19,6 @@ namespace Campus.LogicaDeNegocio.Telefonos.ListarTelefonosLN
             return _listarTelefonos.ListarTelefonos();
         }
 
-   
+
     }
 }

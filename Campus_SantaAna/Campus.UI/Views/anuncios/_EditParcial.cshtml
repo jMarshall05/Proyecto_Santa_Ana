@@ -1,0 +1,512 @@
+﻿@model Campus.Abstracciones.ModelosUI.AnuncioDto
+
+
+<div class="edit-group-modal">
+    <!-- Header -->
+    <div class="edit-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-edit"></i>
+            </div>
+            <div>
+                <h2 class="modal-title">Editar Anuncio</h2>
+                <p class="modal-subtitle">Actualiza la información del anuncio</p>
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("EditParcialAsync", "Anuncios", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.IdAnuncio)
+
+        <div class="edit-content">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <!-- Información del anuncio -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-info-circle me-2"></i>Información del Grupo
+                </h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Titulo, htmlAttributes: new { @class = "form-label" })
+                        <div class="input-group">
+                            <span class="input-icon">
+                                <i class="fas fa-users"></i>
+                            </span>
+                            @Html.EditorFor(model => model.Titulo, new
+                            {
+                                htmlAttributes = new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Ingrese el título",
+                                    required = "required"
+                                }
+                            })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Titulo, "", new { @class = "validation-message" })
+                    </div>
+                </div>
+            </div>
+            <!-- descripcion del anuncio -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-align-left me-2"></i>Descripción
+                </h3>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Descripcion, htmlAttributes: new { @class = "form-label" })
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <i class="fas fa-pen"></i>
+                        </span>
+                        @Html.TextAreaFor(model => model.Descripcion, new
+                        {
+                            @class = "form-control",
+                            rows = 4,
+                            placeholder = "Ingrese la descripción...",
+                            required = "required"
+                        })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "validation-message" })
+                </div>
+            </div>
+
+            <!-- fecha del anuncio -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-calendar-alt me-2"></i>Fecha del Evento
+                </h3>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FechaEvento, htmlAttributes: new { @class = "form-label" })
+
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <i class="fas fa-clock"></i> <!-- Icono dentro del campo -->
+                        </span>
+
+                        @Html.TextBoxFor(model => model.FechaEvento, "{0:yyyy-MM-ddTHH:mm}", new
+                        {
+                            @class = "form-control",
+                            type = "datetime-local",
+                            required = "required"
+                        })
+                    </div>
+
+                    @Html.ValidationMessageFor(model => model.FechaEvento, "", new { @class = "validation-message" })
+                </div>
+            </div>
+
+
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-image me-2"></i>Imagen del Anuncio
+                </h3>
+
+                @* Imagen actual (solo si existe) *@
+                @if (!string.IsNullOrEmpty(Model.ImagenRuta))
+                {
+                    <div class="form-group mb-3">
+                        <label class="form-label">Imagen Actual</label>
+
+                        <div class="current-image-container mt-2">
+                            <img src="@Url.Content(Model.ImagenRuta)" class="img-fluid rounded shadow-sm" style="max-height:200px;" />
+                        </div>
+
+                        @Html.Hidden("ImagenActual", Model.ImagenRuta)
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input type="checkbox" class="form-check-input" name="EliminarImagen" id="EliminarImagen" value="true" />
+                        <label for="EliminarImagen" class="form-check-label">Eliminar imagen actual</label>
+                    </div>
+                }
+
+                @* Cargar nueva imagen *@
+                <div class="form-group">
+                    @Html.Label("Imagen", "Subir Nueva Imagen", htmlAttributes: new { @class = "form-label" })
+
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <i class="fas fa-upload"></i>
+                        </span>
+
+                        <input type="file" name="Imagen" id="Imagen" class="form-control" accept=".jpg,.jpeg,.png,.gif" />
+                    </div>
+
+                    <small class="text-muted d-block mt-1">Formatos permitidos: .jpg / .jpeg / .png / .gif</small>
+                </div>
+            </div>
+
+            <!-- Estado -->
+            <div class="form-group">
+                <label class="form-label">Estado</label>
+
+                <div class="toggle-group">
+                    <label class="toggle-label">
+
+                        @Html.CheckBoxFor(model => model.Estado, new
+                        {
+                            @class = "toggle-input",
+                            id = "Estado"
+                        })
+
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-text">@(Model.Estado ? "Activo" : "Inactivo")</span>
+
+                    </label>
+                </div>
+
+                @Html.ValidationMessageFor(model => model.Estado, "", new { @class = "validation-message" })
+            </div>
+
+
+        </div>
+
+        <!-- Footer -->
+        <div class="edit-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <i class="fas fa-times me-2"></i>Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>Guardar Cambios
+            </button>
+        </div>
+
+    }
+
+</div>
+
+<style>
+    /* Toggle base */
+    .toggle-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .toggle-label {
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+        gap: 10px;
+    }
+
+    /* Ocultar el checkbox */
+    .toggle-input {
+        display: none;
+    }
+
+    /* Switch */
+    .toggle-slider {
+        position: relative;
+        width: 50px;
+        height: 25px;
+        background-color: #ccc;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+
+        /* Círculo */
+        .toggle-slider::before {
+            content: "";
+            position: absolute;
+            width: 21px;
+            height: 21px;
+            left: 2px;
+            top: 2px;
+            background-color: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+    /* Activado */
+    .toggle-input:checked + .toggle-slider {
+        background-color: #10b981; /* verde */
+    }
+
+        .toggle-input:checked + .toggle-slider::before {
+            transform: translateX(25px);
+        }
+
+    /* Texto */
+    .toggle-text {
+        font-weight: 600;
+        color: #1e293b;
+        min-width: 70px;
+    }
+
+    /* Resto de estilos igual que en AgregarGrupo */
+    .edit-group-modal {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .header-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .modal-subtitle {
+        opacity: 0.9;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .edit-content {
+        padding: 2rem;
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: #f8fafc;
+        border-radius: 15px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .input-group {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        color: #6b7280;
+        z-index: 10;
+    }
+
+    .form-control {
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+        width: 100%;
+    }
+
+    textarea.form-control {
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .validation-message {
+        color: #ef4444;
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+    }
+
+    .alert-danger {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #dc2626;
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+    }
+
+    .edit-footer {
+        padding: 1.5rem 2rem;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-secondary {
+        background: #6b7280;
+        color: white;
+    }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(102, 126, 234, 0.3);
+        }
+
+    @@media (max-width: 768px) {
+        .edit-header {
+            padding: 1.5rem;
+        }
+
+        .edit-content {
+            padding: 1.5rem;
+            max-height: 50vh;
+        }
+
+        .form-section {
+            padding: 1rem;
+        }
+
+        .edit-footer {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .edit-header {
+            padding: 1rem;
+        }
+
+        .edit-content {
+            padding: 1rem;
+        }
+
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 0.5rem;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+        }
+    }
+</style>
+
+<!-- JS Corregido -->
+<script>
+    $(function () {
+        // Toggle principal y de teléfonos
+        $(document).on('change', 'input[type="checkbox"].toggle-input', function () {
+            const $label = $(this).closest('.toggle-label');
+            const $text = $label.find('.toggle-text');
+            const $slider = $label.find('.toggle-slider');
+
+            if (this.checked) {
+                $text.text('Activo').css('color', '#10b981');
+                $slider.css('background-color', '#10b981');
+                $slider.find('::before').css('transform', 'translateX(25px)');
+            } else {
+                $text.text('Inactivo').css('color', '#ef4444');
+                $slider.css('background-color', '#ccc');
+                $slider.find('::before').css('transform', 'translateX(0)');
+            }
+        });
+
+        // Inicializar estados al cargar
+        $('input[type="checkbox"].toggle-input').each(function () {
+            const $label = $(this).closest('.toggle-label');
+            const $text = $label.find('.toggle-text');
+            const $slider = $label.find('.toggle-slider');
+
+            if (this.checked) {
+                $text.css('color', '#10b981');
+                $slider.css('background-color', '#10b981');
+            } else {
+                $text.css('color', '#ef4444');
+                $slider.css('background-color', '#ccc');
+            }
+        });
+
+        // Hacer clic en el toggle-slider para cambiar el estado
+        $(document).on('click', '.toggle-slider', function (e) {
+            e.preventDefault();
+            const $label = $(this).closest('.toggle-label');
+            const $checkbox = $label.find('input[type="checkbox"].toggle-input');
+
+            // Cambiar el estado del checkbox
+            $checkbox.prop('checked', !$checkbox.prop('checked')).trigger('change');
+        });
+    });
+</script>

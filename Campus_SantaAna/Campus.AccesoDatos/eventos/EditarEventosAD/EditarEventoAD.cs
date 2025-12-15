@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Eventos.EditarEventoAD;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.Eventos.EditarEventoAD
 {

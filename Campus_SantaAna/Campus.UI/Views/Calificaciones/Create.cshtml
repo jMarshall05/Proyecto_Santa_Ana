@@ -4,63 +4,182 @@
     ViewBag.Title = "Añadir Calificación";
 }
 
-<div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
+<div class="card premium-card shadow-sm">
+    <div class="card-header premium-header text-white">
         <h3 class="card-title mb-0">
-            <i class="fas fa-plus-circle mr-2"></i> Añadir Calificación
+            <i class="fas fa-plus-circle me-2"></i> Añadir Calificación
         </h3>
     </div>
+
     @using (Html.BeginForm("Create", "Calificaciones", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-
-        @Html.HiddenFor(m => m.id_entrega) 
-        @Html.HiddenFor(m => m.fecha_calificacion) 
+        @Html.HiddenFor(m => m.id_entrega)
+        @Html.HiddenFor(m => m.fecha_calificacion)
 
         <div class="card-body">
 
             <div class="mb-3">
                 @Html.LabelFor(m => m.calificacion, new { @class = "form-label" })
-                @Html.TextBoxFor(m => m.calificacion, new { @class = "form-control", type = "number", min = "0", max = "100", required = "required" })
+                @Html.TextBoxFor(m => m.calificacion,
+                    new { @class = "form-control premium-input", type = "number", min = "0", max = "100", required = "required" })
             </div>
 
             <div class="mb-3">
                 @Html.LabelFor(m => m.comentario, new { @class = "form-label" })
-                @Html.TextAreaFor(m => m.comentario, new { @class = "form-control", rows = "3" })
+                @Html.TextAreaFor(m => m.comentario,
+                    new { @class = "form-control premium-input", rows = "3" })
             </div>
 
         </div>
 
-        <div class="card-footer bg-light d-flex justify-content-between">
-            @Html.ActionLink("Volver al listado", "Index", "Entregas", null, new { @class = "btn btn-secondary" })
+        <div class="card-footer bg-light d-flex justify-content-between premium-footer">
+            @Html.ActionLink("Volver al listado", "Index", "Entregas", null, new { @class = "btn premium-btn-secondary ripple" })
 
-            <button type="submit" class="btn btn-success">
+            <button type="submit" class="btn premium-btn-primary ripple">
                 <i class="fas fa-save me-1"></i> Guardar Calificación
             </button>
         </div>
+
+    }
+</div>
+
+@section styles {
+    <style>
+
+    /* Tarjeta premium */
+    .premium-card {
+        border: none;
+        border-radius: 14px;
+        overflow: hidden;
+        animation: fadeIn 0.4s ease;
+        background: #ffffff;
     }
 
-    </div>
-
-    @section styles {
-        <style>
-            .card {
-                border: none;
-                border-radius: 10px;
-            }
-
-            h3 {
-                font-size: 1.3rem;
-            }
-
-            .form-label {
-                font-weight: bold;
-            }
-        </style>
+    /* Header azul premium */
+    .premium-header {
+        background: linear-gradient(90deg, #0d6efd, #0a58ca);
+        padding: 15px 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
 
-    @section scripts {
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    h3 {
+        font-size: 1.35rem;
+        font-weight: 600;
     }
+
+    /* Inputs premium */
+    .premium-input {
+        border-radius: 8px;
+        transition: all .25s ease;
+        border: 1px solid #cbd3e1;
+    }
+    .premium-input:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 6px rgba(13,110,253,0.5);
+    }
+
+    /* Botón Premium Azul */
+    .premium-btn-primary {
+        background: linear-gradient(90deg, #0d6efd, #0a58ca);
+        color: white;
+        border: none !important;
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .premium-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(13,110,253,0.4);
+    }
+
+    /* Botón Secundario */
+    .premium-btn-secondary {
+        background: #e9f1ff;
+        color: #0d6efd;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+    .premium-btn-secondary:hover {
+        background: #d8e7ff;
+    }
+
+    /* Footer */
+    .premium-footer {
+        padding: 15px;
+        border-top: 1px solid #e5e5e5;
+    }
+
+    /* Animación fade-in */
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Ripple effect para botones */
+    .ripple {
+        position: relative;
+        overflow: hidden;
+    }
+    .ripple::after {
+        content: "";
+        position: absolute;
+        background: rgba(255,255,255,0.5);
+        border-radius: 50%;
+        transform: scale(0);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    </style>
+}
+
+@section scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <script>
+    // Efecto ripple premium
+    document.querySelectorAll('.ripple').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            let circle = document.createElement("span");
+            const diameter = Math.max(this.clientWidth, this.clientHeight);
+            const radius = diameter / 2;
+
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${e.clientX - this.offsetLeft - radius}px`;
+            circle.style.top = `${e.clientY - this.offsetTop - radius}px`;
+            circle.classList.add("ripple-effect");
+            this.appendChild(circle);
+
+            setTimeout(() => circle.remove(), 600);
+        });
+    });
+
+    // Estilos de círculo ripple
+    const rippleStyle = document.createElement("style");
+    rippleStyle.innerHTML = `
+        .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            transform: scale(0);
+            animation: ripple .6s linear;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+       @@keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(rippleStyle);
+    </script>
+}

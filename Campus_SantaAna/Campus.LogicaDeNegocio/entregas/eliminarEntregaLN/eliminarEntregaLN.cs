@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Campus.Abstracciones.LogicaNegocio.entregas.eliminarEntregaLN;
 using Campus.Abstracciones.AccesoDatos.entregas.eliminarEntregaAD;
+using Campus.Abstracciones.LogicaNegocio.entregas.eliminarEntregaLN;
+using Campus.AccesoDatos.Entregas.EliminarEntregaAD;
 
 namespace Campus.LogicaNegocio.Entregas.EliminarEntregaLN
 {
@@ -10,11 +11,7 @@ namespace Campus.LogicaNegocio.Entregas.EliminarEntregaLN
 
         public EliminarEntregaLN()
         {
-        }
-
-        public EliminarEntregaLN(IEliminarEntrega eliminarEntrega)
-        {
-            _eliminarEntrega = eliminarEntrega;
+            _eliminarEntrega = new EliminarEntregaAD();
         }
 
         public async Task<int> EliminarEntrega(int id_entrega)

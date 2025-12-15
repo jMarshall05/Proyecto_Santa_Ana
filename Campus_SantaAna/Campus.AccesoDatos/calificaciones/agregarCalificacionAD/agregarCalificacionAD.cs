@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data.Entity;
-using System.Runtime.Remoting.Contexts;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.calificaciones.agregarCalificacionAD;
 using Campus.Abstracciones.ModelosUI;
@@ -30,7 +29,8 @@ namespace Campus.AccesoDatos.calificaciones.agregarCalificacionAD
                 IdEntrega = calificacionDto.id_entrega,
                 Calificacion = calificacionDto.calificacion,
                 Comentario = calificacionDto.comentario,
-                FechaCalificacion = DateTime.Now
+                FechaCalificacion = DateTime.Now,
+                Estado = true
             };
 
             _elContexto.Calificaciones.Add(calificacionAD);

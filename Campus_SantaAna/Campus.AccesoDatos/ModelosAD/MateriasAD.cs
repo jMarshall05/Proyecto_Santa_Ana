@@ -14,7 +14,9 @@ namespace Campus.AccesoDatos.ModelosAD
         [Required]
         [StringLength(100)]
         public string Nombre { get; set; }
+        [Column("estado")]
+        public bool Estado { get; set; }
 
-        
+
     }
 }

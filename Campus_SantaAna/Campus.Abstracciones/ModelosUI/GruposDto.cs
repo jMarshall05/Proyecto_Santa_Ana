@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Campus.Abstracciones.ModelosUI
 {
@@ -29,6 +23,9 @@ namespace Campus.Abstracciones.ModelosUI
         public DateTime FechaDeCreacion { get; set; }
         [Display(Name = "Fecha de Modificación")]
         public DateTime? FechaDeModificacion { get; set; }
+
+        [Display(Name = "Modificado por")]
+        public string modificado_por { get; set; }
 
     }
 }

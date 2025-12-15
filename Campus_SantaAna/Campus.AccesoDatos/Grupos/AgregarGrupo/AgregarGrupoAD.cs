@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
+﻿using System.Data.Entity;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Grupos.AgregarGrupo;
 using Campus.Abstracciones.ModelosUI;
@@ -23,7 +19,7 @@ namespace Campus.AccesoDatos.Grupos.AgregarGrupo
             GruposAD Nuevogrupo = ConvertirAD(grupo);
             _elContexto.Grupos.Add(Nuevogrupo);
             EntityState estado = _elContexto.Entry(Nuevogrupo).State = System.Data.Entity.EntityState.Added;
-            int resultado =await _elContexto.SaveChangesAsync();
+            int resultado = await _elContexto.SaveChangesAsync();
             return resultado;
         }
 

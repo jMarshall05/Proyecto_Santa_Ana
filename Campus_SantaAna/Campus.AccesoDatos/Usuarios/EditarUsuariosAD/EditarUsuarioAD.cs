@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Usuarios.EditarUsuariosAD;
 using Campus.Abstracciones.ModelosUI;
@@ -28,7 +26,9 @@ namespace Campus.AccesoDatos.Usuarios.EditarUsuariosAD
                 usuarioExistente.FechaDeNacimiento = usuario.FechaDeNacimiento;
                 usuarioExistente.FechaDeModificacion = DateTime.Now;
                 usuarioExistente.Rol = usuario.Rol;
+                usuarioExistente.Identificacion = usuario.Identificacion;
                 usuarioExistente.Estado = usuario.Estado;
+                usuarioExistente.TipoIdentificacion = usuario.TipoIdentificacion;
 
                 EntityState estado = _elContexto.Entry(usuarioExistente).State = EntityState.Modified;
                 int resultado = await _elContexto.SaveChangesAsync();
@@ -39,7 +39,8 @@ namespace Campus.AccesoDatos.Usuarios.EditarUsuariosAD
                 throw new Exception("El usuario no existe o no se pudo encontrar en la base de datos.");
             }
         }
-        public async Task<int> EditarUsuario(string id, UsuariosDto usuario) {
+        public async Task<int> EditarUsuario(string id, UsuariosDto usuario)
+        {
             UsuariosAD usuarioExistente = _elContexto.Usuarios.FirstOrDefault(u => u.IdUsuario == id);
             if (usuarioExistente != null)
             {

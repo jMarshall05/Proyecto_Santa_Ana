@@ -9,7 +9,9 @@
     [FechaPublicacion]   DATETIME       NULL,
     [IdGrupo]            INT            NULL,
     [asignado_por]       NVARCHAR (128) NULL,
+    [estado]             BIT            DEFAULT ((1)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id_tarea] ASC),
+    CONSTRAINT [CK_tareas_estado] CHECK ([estado]=(1) OR [estado]=(0)),
     CONSTRAINT [FK_tareas_grupo] FOREIGN KEY ([IdGrupo]) REFERENCES [dbo].[grupos] ([id_grupo]) ON DELETE CASCADE,
     CONSTRAINT [FK_tareas_materia] FOREIGN KEY ([id_materia]) REFERENCES [dbo].[materias] ([id_materia]) ON DELETE CASCADE,
     CONSTRAINT [FK_tareas_Usuarios_tb] FOREIGN KEY ([asignado_por]) REFERENCES [dbo].[Usuarios_tb] ([IdUsuario])

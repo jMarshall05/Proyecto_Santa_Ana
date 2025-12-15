@@ -4,20 +4,28 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Campus.Abstracciones.AccesoDatos.calificaciones.listarCalificacionDA;
+using Campus.Abstracciones.AccesoDatos.Cursos.ListarCursosLN;
+using Campus.Abstracciones.LogicaDeNegocio;
+using Campus.Abstracciones.LogicaDeNegocio.calificaciones.listarCalificacionLN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.agregarTareaLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.editarTareaLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.eliminarTareaLN;
 using Campus.Abstracciones.LogicaDeNegocio.tareas.listarTareasLN;
+using Campus.Abstracciones.LogicaNegocio.entregas.listarEntregaLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Bitacora;
+using Campus.LogicaDeNegocio.calificaciones.listarCalificacionesLN;
+using Campus.LogicaDeNegocio.Cursos.ListarCursosLN;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Materias.ListarMaterias;
 using Campus.LogicaDeNegocio.tareas.agregarTareaLN;
 using Campus.LogicaDeNegocio.Tareas.EditarTareaLN;
 using Campus.LogicaDeNegocio.Tareas.EliminarTareaLN;
 using Campus.LogicaDeNegocio.Tareas.ListarTareaLN;
-using Campus.UI.Filtros;
+using Campus.LogicaNegocio.Entregas.ListarEntregaLN;
 using Microsoft.AspNet.Identity;
 
 namespace Campus.UI.Controllers
@@ -31,8 +39,11 @@ namespace Campus.UI.Controllers
         private readonly IEliminarTareaLN _eliminarTareaLN;
         private readonly IListarGruposLN _listarGruposLN;
         private readonly IListarMateriasLN _listarMateriasLN;
-        private static IEnumerable<GruposDto> grupos;
-        private static IEnumerable<MateriaDto> materias;
+        private readonly IListarCursoLN _listarCursosLN;
+        private readonly IListarEntregasLN _listarEntregasLN;
+        private readonly IBitacoraLN _bitacora;
+        private readonly IListarCalificacionesLN _listarCalificaciones;
+
 
 
         public TareasController()
@@ -43,42 +54,84 @@ namespace Campus.UI.Controllers
             _eliminarTareaLN = new EliminarTareaLN();
             _listarGruposLN = new ListarGruposLN();
             _listarMateriasLN = new ListarMateriasLN();
-
+            _listarCursosLN = new ListarCursosLN();
+            _listarEntregasLN = new ListarEntregasLN();
+            _bitacora = new BitacoraLN();
+            _listarCalificaciones = new ListarCalificacionesLN();
         }
 
         [Authorize(Roles = "Administradores,Profesores")]
         public async Task<ActionResult> ListarTareas(int? grupoId, int? materiaId)
         {
-            var tareas = await _listarTareaLN.ListarTareasAsync();
+            var tareas = (await _listarTareaLN.ListarTareasAsync()).Where(t => t.Estado == true);
+            var cursos = _listarCursosLN.ListarCursos().Where(c => c.Estado == true);
+            var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);
+            var materias = _listarMateriasLN.ListarMaterias().Where(g => g.Estado == true);
 
             if (grupoId.HasValue && materiaId.HasValue)
             {
                 tareas = tareas.Where(t => t.Id_grupo == grupoId && t.IdMateria == materiaId);
+                ViewBag.Grupo = grupos.Where(g => g.id_grupo == grupoId).FirstOrDefault().nombre_grupo;
+                ViewBag.Materia = materias.Where(m => m.Id_Materia == materiaId).FirstOrDefault().Nombre;
+                ViewBag.grupoId = grupoId;
+                ViewBag.materiaId = materiaId;
             }
-
-            // Cargar calificaciones para cada tarea
-            foreach (var tarea in tareas)
+            if (User.IsInRole("Profesores"))
             {
-                if (tarea.Calificacion == null)
+                cursos = _listarCursosLN.ListarCursos().Where(c => c.ProfesorId == User.Identity.GetUserId());
+                var tareasPorProfesor = new List<TareaDto>();
+                foreach (var curso in cursos)
                 {
-                    // Aquí necesitarías implementar un método para obtener la calificación por tarea
-                    // tarea.Calificacion = await _obtenerCalificacionPorTarea(tarea.IdTarea);
+                    if (curso.ProfesorId == User.Identity.GetUserId())
+                    {
+                        tareasPorProfesor.AddRange(tareas.Where(t => t.Id_grupo == curso.GrupoId && t.IdMateria == curso.MateriaId));
+                    }
                 }
+                tareas = tareasPorProfesor;
             }
 
-            var grupos = _listarGruposLN.ListarGrupos();
+            //foreach (var tarea in tareas)
+            //{
+            //    if (tarea.Calificacion == null)
+            //    {
+            //        // Aquí necesitarías implementar un método para obtener la calificación por tarea
+            //        // tarea.Calificacion = await _obtenerCalificacionPorTarea(tarea.IdTarea);
+            //    }
+            //}
+
+
             ViewBag.IdGrupo = new SelectList(grupos, "id_grupo", "nombre_grupo", grupoId ?? 0);
 
             return View(tareas);
         }
 
         [Authorize(Roles = "Administradores,Profesores")]
-        public ActionResult Create()
+        public ActionResult Create(int? idMateria, int? idGrupo)
         {
-            grupos = _listarGruposLN.ListarGrupos();
-            materias = _listarMateriasLN.ListarMaterias();
-            ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
-            ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
+            if (idMateria.HasValue && idGrupo.HasValue)
+            {
+                ViewBag.idMateria = idMateria;
+                ViewBag.idGrupo = idGrupo;
+                return PartialView("_CreateParcial", new TareaDto());
+            }
+
+            var cursos = _listarCursosLN.ListarCursos().Where(c => c.ProfesorId == User.Identity.GetUserId());
+            var materias = _listarMateriasLN.ListarMaterias().Where(m => m.Estado == true);
+            var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);
+            var materiaFiltrado = new List<MateriaDto>();
+            var gruposFiltrados = new List<GruposDto>();
+            foreach (var curso in cursos)
+            {
+                if (curso.ProfesorId == User.Identity.GetUserId())
+                {
+                    materiaFiltrado.AddRange(materias.Where(m => m.Id_Materia == curso.MateriaId));
+                    gruposFiltrados.AddRange(grupos.Where(g => g.id_grupo == curso.GrupoId));
+                }
+            }
+            materiaFiltrado = materiaFiltrado.Distinct().ToList();
+            gruposFiltrados = gruposFiltrados.Distinct().ToList();
+            ViewBag.Grupos = new SelectList(gruposFiltrados, "id_grupo", "nombre_grupo");
+            ViewBag.Materia = new SelectList(materiaFiltrado, "Id_Materia", "nombre");
             return View();
         }
 
@@ -88,13 +141,11 @@ namespace Campus.UI.Controllers
         public async Task<ActionResult> Create(TareaDto tarea)
         {
             tarea.asignado_por = User.Identity.GetUserId();
-            ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
-            ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
+
             if (ModelState.IsValid)
             {
                 try
                 {
-
                     if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
                     {
                         ComprobarTipodeArchivo(tarea, out string[] extensionesPermitidas, out string extensionArchivo);
@@ -107,16 +158,53 @@ namespace Campus.UI.Controllers
                     }
 
                     await _agregarTareaLN.AgregarTarea(tarea);
-                    return RedirectToAction("ListarTareas");
+
+                    // Bitácora: inserción de nueva tarea
+                    var materiaInfo = _listarMateriasLN.ObtenerMateriaPorId(tarea.IdMateria);
+                    var grupoInfo = _listarGruposLN.BuscarGruposPorId(tarea.Id_grupo);
+                    var bitacora = new BitacoraDto
+                    {
+                        Fecha = DateTime.Now,
+                        Usuario = User.Identity.GetUserId(),
+                        Accion = "INSERT",
+                        Tabla = "Tareas",
+                        Descripcion = $"Creación de tarea '{tarea.Titulo}' - Materia: {materiaInfo.Nombre}, Grupo: {grupoInfo.nombre_grupo}, Fecha entrega: {tarea.FechaEntrega:dd/MM/yyyy}"
+                    };
+                    _bitacora.RegistrarEvento(bitacora);
+
+                    return RedirectToAction("ListarTareas", new { materiaId = tarea.IdMateria, grupoId = tarea.Id_grupo });
                 }
                 catch (Exception ex)
                 {
+                    FiltrarMateriasCursosGrupos();
                     ModelState.AddModelError("", "Error al crear la tarea: " + ex.Message);
                     return View(tarea);
-
                 }
             }
+            FiltrarMateriasCursosGrupos();
             return View(tarea);
+        }
+
+        private void FiltrarMateriasCursosGrupos()
+        {
+            var cursos = _listarCursosLN.ListarCursos().Where(c => c.Estado == true);
+            var materias = _listarMateriasLN.ListarMaterias().Where(m => m.Estado == true);
+            var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);
+
+            var materiaFiltrado = new List<MateriaDto>();
+            var gruposFiltrados = new List<GruposDto>();
+            foreach (var curso in cursos)
+            {
+                if (curso.ProfesorId == User.Identity.GetUserId())
+                {
+                    materiaFiltrado.AddRange(materias.Where(m => m.Id_Materia == curso.MateriaId));
+                    gruposFiltrados.AddRange(grupos.Where(g => g.id_grupo == curso.GrupoId));
+                }
+            }
+            materiaFiltrado = materiaFiltrado.Distinct().ToList();
+
+            ViewBag.Grupos = new SelectList(gruposFiltrados, "id_grupo", "nombre_grupo");
+            ViewBag.Materia = new SelectList(materiaFiltrado, "Id_Materia", "nombre");
         }
 
         [Authorize(Roles = "Administradores,Profesores")]
@@ -125,9 +213,23 @@ namespace Campus.UI.Controllers
             var tarea = await _listarTareaLN.ObtenerPorIdAsync(id);
             if (tarea == null)
                 return HttpNotFound();
+            var materias = _listarMateriasLN.ListarMaterias().Where(m => m.Estado == true);
+            var cursos = _listarCursosLN.ListarCursos().Where(c => c.Estado == true);
+            var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);
+            var materiaFiltrado = new List<MateriaDto>();
+            var gruposFiltrados = new List<GruposDto>();
+            foreach (var curso in cursos)
+            {
+                if (curso.ProfesorId == User.Identity.GetUserId())
+                {
+                    materiaFiltrado.AddRange(materias.Where(m => m.Id_Materia == curso.MateriaId));
+                    gruposFiltrados.AddRange(grupos.Where(g => g.id_grupo == curso.GrupoId));
+                }
+            }
+            materiaFiltrado = materiaFiltrado.Distinct().ToList();
 
-            ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
-            ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
+            ViewBag.Grupos = new SelectList(gruposFiltrados, "id_grupo", "nombre_grupo");
+            ViewBag.Materia = new SelectList(materiaFiltrado, "Id_Materia", "nombre");
             return View(tarea);
         }
 
@@ -138,35 +240,46 @@ namespace Campus.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, TareaDto tarea)
         {
+            var grupos = _listarGruposLN.ListarGrupos().Where(g => g.estado == true);
+            var materias = _listarMateriasLN.ListarMaterias().Where(m => m.Estado == true);
+            var cursos = _listarCursosLN.ListarCursos().Where(c => c.Estado == true);
+            var materiaFiltrado = new List<MateriaDto>();
+            var gruposFiltrados = new List<GruposDto>();
 
-            ViewBag.Grupos = new SelectList(grupos, "id_grupo", "nombre_grupo");
-            ViewBag.Materia = new SelectList(materias, "Id_Materia", "nombre");
+            foreach (var curso in cursos)
+            {
+                if (curso.ProfesorId == User.Identity.GetUserId())
+                {
+                    materiaFiltrado.AddRange(materias.Where(m => m.Id_Materia == curso.MateriaId));
+                    gruposFiltrados.AddRange(grupos.Where(g => g.id_grupo == curso.GrupoId));
+                }
+            }
+            materiaFiltrado = materiaFiltrado.Distinct().ToList();
+
+            ViewBag.Grupos = new SelectList(gruposFiltrados, "id_grupo", "nombre_grupo");
+            ViewBag.Materia = new SelectList(materiaFiltrado, "Id_Materia", "nombre");
 
             if (!ModelState.IsValid)
                 return View(tarea);
 
             try
             {
-                string archivoAnterior = Request.Form["ArchivoAdjuntoActual"];
-                bool eliminarArchivo = Request.Form["EliminarArchivo"] == "true";
+                string archivoAnterior = Request.Form["archivoAdjuntoActual"];
+                bool eliminarArchivo = Request.Form["eliminarArchivo"] == "true";
+                bool archivoModificado = false;
 
-                if (eliminarArchivo && !string.IsNullOrEmpty(archivoAnterior))
+                if (eliminarArchivo)
                 {
-                    string rutaCompleta = Server.MapPath(archivoAnterior);
-                    if (System.IO.File.Exists(rutaCompleta))
-                        System.IO.File.Delete(rutaCompleta);
-
+                    EliminarArchivoFisico(archivoAnterior);
                     tarea.ArchivoAdjunto = null;
+                    archivoModificado = true;
                 }
-                else if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
-                {
-                    if (archivoAnterior != null)
-                    {
-                        string rutaCompleta = Server.MapPath(archivoAnterior);
-                        System.IO.File.Delete(rutaCompleta);
-                    }
 
-                    ComprobarTipodeArchivo(tarea, out string[] extensionesPermitidas, out string extensionArchivo);
+                if (tarea.Archivo != null && tarea.Archivo.ContentLength > 0)
+                {
+                    EliminarArchivoFisico(archivoAnterior);
+
+                    ComprobarTipodeArchivo(tarea, out var extensionesPermitidas, out var extensionArchivo);
 
                     if (!extensionesPermitidas.Contains(extensionArchivo))
                     {
@@ -175,22 +288,40 @@ namespace Campus.UI.Controllers
                     }
 
                     GuardarArchivo(tarea);
+                    archivoModificado = true;
                 }
-                else
+                else if (!archivoModificado)
                 {
                     tarea.ArchivoAdjunto = archivoAnterior;
                 }
 
                 if (tarea.FechaEntrega < tarea.FechaPublicacion)
                 {
-                    ModelState.AddModelError("FechaEntrega", "La fecha de entrega no puede ser anterior a la fecha de publicacion");
+                    ModelState.AddModelError(
+                        "FechaEntrega",
+                        "La fecha de entrega no puede ser anterior a la fecha de publicación"
+                    );
                     return View(tarea);
                 }
 
-                // 6. Guardar cambios
+                // 4️⃣ Guardar cambios
                 await _editarTareaLN.EditarTarea(id, tarea);
 
-                return RedirectToAction("ListarTareas");
+                // Bitácora: actualización de tarea
+                var materiaInfo = _listarMateriasLN.ObtenerMateriaPorId(tarea.IdMateria);
+                var grupoInfo = _listarGruposLN.BuscarGruposPorId(tarea.Id_grupo);
+                var descripcionArchivo = archivoModificado ? " - Archivo adjunto modificado" : "";
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = "UPDATE",
+                    Tabla = "Tareas",
+                    Descripcion = $"Actualización de tarea ID: {id} - '{tarea.Titulo}' - Materia: {materiaInfo.Nombre}, Grupo: {grupoInfo.nombre_grupo}{descripcionArchivo}"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+
+                return RedirectToAction("ListarTareas", new { materiaId = tarea.IdMateria, grupoId = tarea.Id_grupo });
             }
             catch (Exception ex)
             {
@@ -198,6 +329,16 @@ namespace Campus.UI.Controllers
                 return View(tarea);
             }
         }
+        private void EliminarArchivoFisico(string rutaRelativa)
+        {
+            if (string.IsNullOrEmpty(rutaRelativa)) return;
+
+            string rutaCompleta = Server.MapPath(rutaRelativa);
+
+            if (System.IO.File.Exists(rutaCompleta))
+                System.IO.File.Delete(rutaCompleta);
+        }
+
 
 
         [Authorize(Roles = "Administradores,Profesores")]
@@ -215,8 +356,21 @@ namespace Campus.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
+            var tareaInfo = await _listarTareaLN.ObtenerPorIdAsync(id);
+
             await _eliminarTareaLN.EliminarTarea(id);
-            return RedirectToAction("ListarTareas");
+
+            var bitacora = new BitacoraDto
+            {
+                Fecha = DateTime.Now,
+                Usuario = User.Identity.GetUserId(),
+                Accion = "DELETE",
+                Tabla = "Tareas",
+                Descripcion = $"Eliminación lógica de tarea ID: {id} - '{tareaInfo.Titulo}' - Estado cambiado a inactivo"
+            };
+            _bitacora.RegistrarEvento(bitacora);
+
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
         [Authorize]
@@ -240,7 +394,23 @@ namespace Campus.UI.Controllers
                 if (string.IsNullOrWhiteSpace(idUsuario))
                     return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "Usuario no identificado");
 
-                var tareas = await _listarTareaLN.ListarTareasPorEstudiante(idUsuario);
+                var tareas = (await _listarTareaLN.ListarTareasPorEstudiante(idUsuario)).Where(t => t.Estado == true);
+                foreach (var tarea in tareas)
+                {
+                    var entrega = (await _listarEntregasLN.ListarEntregas()).Where(e => e.id_estudiante == idUsuario && e.id_tarea == tarea.IdTarea && e.estado == true).FirstOrDefault();
+                    var calificacion = await _listarCalificaciones.ListarCalificacionesPorEstudianteAsync(idUsuario);
+                    if (calificacion.Count() > 0 && entrega != null)
+                    {
+                        tarea.Calificacion = calificacion.Where(c => c.id_entrega == entrega.id_entrega).FirstOrDefault();
+                    }
+                    else if (entrega != null)
+                    {
+                        tarea.Calificacion = new CalificacionesDto
+                        {
+                            Entrega = entrega
+                        };
+                    }
+                }
                 if (materiaId.HasValue && grupoId.HasValue)
                 {
                     tareas = tareas.Where(t => t.IdMateria == materiaId && t.Id_grupo == grupoId);

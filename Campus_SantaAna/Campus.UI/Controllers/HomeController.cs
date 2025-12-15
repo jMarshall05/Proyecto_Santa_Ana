@@ -1,31 +1,36 @@
-﻿using System.Drawing.Imaging;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Campus.Abstracciones.AccesoDatos.Cursos.ListarCursosLN;
+using Campus.Abstracciones.LogicaDeNegocio;
+using Campus.Abstracciones.LogicaDeNegocio.Documentos;
 using Campus.Abstracciones.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorILN;
 using Campus.Abstracciones.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ListarUsuariosLN;
 using Campus.Abstracciones.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorIdLN;
+using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Bitacora;
 using Campus.LogicaDeNegocio.Cursos.ListarCursosLN;
+using Campus.LogicaDeNegocio.Documentos;
 using Campus.LogicaDeNegocio.EstudianteGrupo.BuscarEstudianteGrupoPorIdLN;
 using Campus.LogicaDeNegocio.Grupos.ListarGrupos;
 using Campus.LogicaDeNegocio.Materias.ListarMaterias;
 using Campus.LogicaDeNegocio.Usuarios.ListarUsuarios;
 using Campus.LogicaDeNegocio.Usuarios.ObtenerUsuariosPorId;
-using Campus.UI.Filtros;
-using Campus.UI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using QRCoder;
 
 namespace Campus.UI.Controllers
 {
-    [Authorize] 
-    
+    [Authorize]
+
     public class HomeController : Controller
     {
         private readonly IListarCursoLN _listarCursos;
@@ -35,6 +40,11 @@ namespace Campus.UI.Controllers
         private readonly IListarUsuariosLN _listarUsuariosLN;
         private ApplicationUserManager _userManager;
         private readonly IBuscarEstudianteGrupoPorIdLN _estudianteGrupoLN;
+        private readonly IBitacoraLN _bitacora;
+        private readonly IAgregarDocumentoLN _agregarDocumentos;
+        private readonly IListarDocumentosLN _listarDocumentosLN;
+        private readonly IBorrarDocumentoLN _borrarDocumentoLN;
+        private readonly IEditarDocumentoLN _editarDocumetoLN;
 
         public HomeController()
         {
@@ -44,7 +54,11 @@ namespace Campus.UI.Controllers
             _listarGruposLN = new ListarGruposLN();
             _estudianteGrupoLN = new BuscarEstudianteGrupoPorIdLN();
             _listarUsuariosLN = new ListarUsuariosLN();
-
+            _bitacora = new BitacoraLN();
+            _agregarDocumentos = new AgregarDocumentoLN();
+            _listarDocumentosLN = new ListarDocumentosLN();
+            _borrarDocumentoLN = new BorrarDocumentoLN();
+            _editarDocumetoLN = new EditarDocumentoLN();
         }
         public HomeController(ApplicationUserManager userManager)
         {
@@ -64,51 +78,74 @@ namespace Campus.UI.Controllers
 
         public ActionResult Index()
         {
-
             var id = User.Identity.GetUserId();
             if (id == null)
                 return RedirectToAction("login", "Account");
 
             if (User.IsInRole("Profesores"))
             {
-                var listaDeCursos = _listarCursos.ListarCursos().Where(u => u.ProfesorId == id);
-                foreach (var item in listaDeCursos)
-                {
-                    var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(item.ProfesorId);
-                    item.NombreMateria = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId).Nombre;
-                    item.NombreGrupo = _listarGruposLN.BuscarGruposPorId(item.GrupoId).nombre_grupo;
-                    item.NombreProfesor = usuario.Nombre + " " + usuario.Apellido;
-                }
-                return View(listaDeCursos);
+                return VistaProfesor(id);
             }
             else if (User.IsInRole("Estudiantes"))
             {
-                var grupo = _estudianteGrupoLN.BuscarEstudianteGrupoPorEstudianteId(id);
-                if (grupo == null)
-                    return View();
-                var listaDeCursos = _listarCursos.ListarCursos().Where(u => u.GrupoId == grupo.GrupoId);
-                foreach (var item in listaDeCursos)
-                {
-                    var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(item.ProfesorId);
-                    item.NombreMateria = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId).Nombre;
-                    item.NombreGrupo = _listarGruposLN.BuscarGruposPorId(item.GrupoId).nombre_grupo;
-                    item.NombreProfesor = usuario.Nombre + " " + usuario.Apellido;
-                }
-                return View(listaDeCursos);
+                return VistaEstudiante(id);
             }
             else if (User.IsInRole("Administradores"))
             {
                 var Usuarios = _listarUsuariosLN.ListarUsuarios();
                 ViewBag.Estudiantes = Usuarios.Where(u => u.Rol == "Estudiantes").Count();
                 ViewBag.Profesores = Usuarios.Where(u => u.Rol == "Profesores").Count();
-                return View();
 
+                return View(new List<CursoDto>());
             }
 
-
-
-            return View();
+            return View(new List<CursoDto>());
         }
+
+        private ActionResult VistaEstudiante(string id)
+        {
+            var grupo = _estudianteGrupoLN.BuscarEstudianteGrupoPorEstudianteId(id);
+
+            if (grupo == null)
+                return View(new List<CursoDto>());
+
+            var listaDeCursos = _listarCursos.ListarCursos()
+                .Where(u => u.GrupoId == grupo.GrupoId)
+                .ToList();
+
+            FiltarCursos(listaDeCursos);
+            return View(listaDeCursos);
+        }
+
+        private ActionResult VistaProfesor(string id)
+        {
+            var listaDeCursos = _listarCursos.ListarCursos()
+                                .Where(u => u.ProfesorId == id && u.Estado == true)
+                                .ToList();
+
+            FiltarCursos(listaDeCursos);
+            return View(listaDeCursos.Where(c => c.Estado == true));
+        }
+
+        private void FiltarCursos(List<CursoDto> listaDeCursos)
+        {
+            foreach (var item in listaDeCursos)
+            {
+                var usuario = _obtenerUsuariosPorId.ObtenerUsuarioPorId(item.ProfesorId);
+                var materia = _listarMateriasLN.ObtenerMateriaPorId(item.MateriaId);
+                var grupo = _listarGruposLN.BuscarGruposPorId(item.GrupoId);
+
+
+                item.NombreMateria = materia?.Nombre ?? "Sin materia";
+                item.NombreGrupo = grupo?.nombre_grupo ?? "Sin grupo";
+                item.NombreProfesor = usuario != null ? $"{usuario.Nombre} {usuario.Apellido}" : "Sin profesor";
+                if (usuario.Estado == false || materia.Estado == false || grupo.estado == false)
+                {
+                    item.Estado = false;
+                }
+            }
+        }
+
         public ActionResult GenerarQR(string url)
         {
             using (var qrGenerator = new QRCodeGenerator())
@@ -142,9 +179,141 @@ namespace Campus.UI.Controllers
         }
         public ActionResult Documentos()
         {
-
+            var documentos = _listarDocumentosLN.ListarDocumentos().ToList();
+            ViewBag.DocumentosAdicionales = documentos;
 
             return View();
+        }
+        [HttpPost]
+        public ActionResult AgregarDocumento(HttpPostedFileBase Archivo, string Titulo, string Descripcion, string Categoria)
+        {
+            if (Archivo != null && Archivo.ContentLength > 0)
+            {
+                ComprobarTipodeArchivo(Archivo, out string[] extensionesPermitidas, out string extensionArchivo);
+
+                if (!extensionesPermitidas.Contains(extensionArchivo))
+                {
+                    throw new System.Exception("Tipo de archivo prohibido");
+                }
+
+                if (Archivo.ContentLength > 10485760)
+                {
+                    throw new System.Exception("Archivo demasiado pesado");
+
+                }
+                var documento = new DocumentosDto
+                {
+                    Titulo = Titulo,
+                    Descripcion = Descripcion,
+                    Categoria = Categoria,
+                    FechaRegistro = DateTime.Now,
+                    Archivo = Archivo
+                };
+                GuardarArchivo(documento);
+                _agregarDocumentos.AgregarDocumento(documento);
+
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = "Insert",
+                    Tabla = "Documentos",
+                    Descripcion = $"Insert de un nuevo documento de tipo {Categoria}, Titulo :{Titulo}"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+            }
+            return RedirectToAction("Documentos");
+        }
+
+        [HttpPost]
+        public ActionResult EditarDocumento( int idDocumento, HttpPostedFileBase Archivo, string Titulo,string Descripcion, string Categoria)
+        {
+            var documentoActual = _listarDocumentosLN.ListarDocumentos().FirstOrDefault(d => d.Id == idDocumento);
+            if (documentoActual == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (Archivo != null && Archivo.ContentLength > 0)
+            {
+                ComprobarTipodeArchivo(Archivo, out string[] extensionesPermitidas, out string extensionArchivo);
+
+                if (!extensionesPermitidas.Contains(extensionArchivo))
+                {
+                    throw new Exception("Tipo de archivo prohibido");
+                }
+
+                if (Archivo.ContentLength > 10485760)
+                {
+                    throw new Exception("Archivo demasiado pesado");
+                }
+
+                documentoActual.Archivo = Archivo;
+                GuardarArchivo(documentoActual);
+            }
+
+            documentoActual.Titulo = Titulo;
+            documentoActual.Descripcion = Descripcion;
+            documentoActual.Categoria = Categoria;
+
+            _editarDocumetoLN.EditarDocumento(idDocumento, documentoActual);
+
+            var bitacora = new BitacoraDto
+            {
+                Fecha = DateTime.Now,
+                Usuario = User.Identity.GetUserId(),
+                Accion = "Update",
+                Tabla = "Documentos",
+                Descripcion = $"Update del documento ID {idDocumento}, Titulo: {Titulo}"
+            };
+            _bitacora.RegistrarEvento(bitacora);
+
+            return RedirectToAction("Documentos");
+        }
+        public async Task<ActionResult> BorrarDocumento(int idDocumento)
+        {
+            var resultado = await _borrarDocumentoLN.BorrarDocumento(idDocumento);
+            if (resultado)
+            {
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = "Delete",
+                    Tabla = "Documentos",
+                    Descripcion = $"Eliminacion del documento con ID: {idDocumento}"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+            }
+            return RedirectToAction("Documentos");
+
+        }
+
+        private static void ComprobarTipodeArchivo(HttpPostedFileBase Archivo, out string[] extensionesPermitidas, out string extensionArchivo)
+        {
+            extensionesPermitidas = new[] { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx" };
+            extensionArchivo = Path.GetExtension(Archivo.FileName).ToLower();
+        }
+
+        private void GuardarArchivo(DocumentosDto documento)
+        {
+            var nombreArchivo = Path.GetFileNameWithoutExtension(documento.Archivo.FileName);
+            var extension = Path.GetExtension(documento.Archivo.FileName);
+            var rutaCarpeta = Server.MapPath("~/Uploads/Documentos");
+            var rutaCompleta = Path.Combine(rutaCarpeta, $"{nombreArchivo}_{Guid.NewGuid()}{extension}");
+
+
+            // Crear carpeta si no existe
+            if (!Directory.Exists(rutaCarpeta))
+                Directory.CreateDirectory(rutaCarpeta);
+
+            using (var fileStream = new FileStream(rutaCompleta, FileMode.Create))
+            {
+                documento.Archivo.InputStream.CopyTo(fileStream);
+            }
+
+            // Guardar solo la ruta relativa en la base de datos
+            documento.RutaArchivo = "~/Uploads/Documentos/" + Path.GetFileName(rutaCompleta);
         }
     }
 }

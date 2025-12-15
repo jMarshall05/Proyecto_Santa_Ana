@@ -34,60 +34,108 @@
                 <div class="info-items">
                     <div class="info-item">
                         <span class="info-label">Email</span>
-                        <span class="info-value">
+                        <span class="info-value email-value">
                             <i class="fas fa-envelope me-2 text-primary"></i>
-                            @Model.Email
+                            <span>@Model.Email</span>
                         </span>
                     </div>
 
                     <div class="info-item">
                         <span class="info-label">Teléfonos</span>
-                        <div class="info-value flex-column">
-                            <i class="fas fa-phone me-2 text-success"></i>
+                        <div class="info-value flex-column w-100">
                             @if (ViewBag.Telefonos != null)
                             {
                                 var telefonos = (IEnumerable<dynamic>)ViewBag.Telefonos;
                                 if (telefonos.Any())
                                 {
-                                    <ul class="list-unstyled mb-0 ms-4">
+                                    <ul class="list-unstyled mb-0">
                                         @foreach (var telefono in telefonos)
                                         {
-                                            <li class="mb-1 d-flex align-items-center justify-content-between">
-                                                <div>
-                                                    <strong>(+@telefono.Codigo)</strong>
-                                                    @telefono.Telefono.ToString().Insert(4, "-")
-                                                    <span class="text-muted"> @telefono.Tipo</span>
+                                            var telefonoStr = telefono.Telefono.ToString();
+                                            var telefonoFormateado = telefonoStr.Insert(4, "-");
+                                            var telefonoOculto = "****-" + telefonoStr.Substring(telefonoStr.Length - 4);
+
+                                            <li class="mb-2 phone-item">
+                                                <div class="phone-content-wrapper">
+                                                    <div class="phone-info">
+                                                        <i class="fas fa-phone me-2 text-success"></i>
+                                                        <strong class="phone-code">(+@telefono.Codigo)</strong>
+                                                        <span class="phone-number" data-full="@telefonoFormateado" data-hidden="@telefonoOculto">
+                                                            @telefonoOculto
+                                                        </span>
+                                                        <span class="phone-type">@telefono.Tipo</span>
+                                                    </div>
+                                                    <div class="phone-actions">
+                                                        <button class="btn-toggle-phone" onclick="togglePhone(this)" type="button" title="Mostrar/Ocultar teléfono">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        @if (telefono.Estado)
+                                                        {
+                                                            <span class="badge bg-success">Activo</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge bg-danger">Inactivo</span>
+                                                        }
+                                                    </div>
                                                 </div>
-                                                @if (telefono.Estado)
-                                                {
-                                                    <span class="badge bg-success">Activo</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge bg-danger">Inactivo</span>
-                                                }
                                             </li>
                                         }
                                     </ul>
                                 }
                                 else
                                 {
-                                    <span class="text-muted">No se registraron teléfonos</span>
+                                    <span class="text-muted"><i class="fas fa-phone me-2 text-success"></i>No se registraron teléfonos</span>
                                 }
                             }
                             else
                             {
-                                <span class="text-muted">No se registraron teléfonos</span>
+                                <span class="text-muted"><i class="fas fa-phone me-2 text-success"></i>No se registraron teléfonos</span>
                             }
 
                         </div>
                     </div>
 
                     <div class="info-item">
-                        <span class="info-label">Cédula</span>
-                        <span class="info-value">
-                            <i class="fas fa-id-card me-2 text-warning"></i>
-                            @Model.Cedula
+                        <span class="info-label">Tipo de Identificación</span>
+                        <span class="info-value tipo-id-value">
+                            @{
+                                var tipoIdIcon = "fa-id-card";
+                                var tipoIdText = "Cédula Física";
+                                var tipoIdColor = "text-primary";
+
+                                if (!string.IsNullOrEmpty(Model.TipoIdentificacion))
+                                {
+                                    switch (Model.TipoIdentificacion)
+                                    {
+                                        case "Fisica":
+                                            tipoIdIcon = "fa-id-card";
+                                            tipoIdText = "Cédula Física";
+                                            tipoIdColor = "text-primary";
+                                            break;
+                                        case "Dimex":
+                                            tipoIdIcon = "fa-passport";
+                                            tipoIdText = "DIMEX";
+                                            tipoIdColor = "text-info";
+                                            break;
+                                        case "Pasaporte":
+                                            tipoIdIcon = "fa-plane";
+                                            tipoIdText = "Pasaporte";
+                                            tipoIdColor = "text-success";
+                                            break;
+                                    }
+                                }
+                            }
+                            <i class="fas @tipoIdIcon me-2 @tipoIdColor"></i>
+                            <span>@tipoIdText</span>
+                        </span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Número de Identificación</span>
+                        <span class="info-value Identificacion-value">
+                            <i class="fas fa-fingerprint me-2 text-warning"></i>
+                            <span>@Model.Identificacion</span>
                         </span>
                     </div>
                 </div>
@@ -187,6 +235,26 @@
     </div>
 </div>
 
+<script>
+    function togglePhone(button) {
+        const phoneSpan = button.closest('.phone-item').querySelector('.phone-number');
+        const icon = button.querySelector('i');
+        const isHidden = icon.classList.contains('fa-eye');
+
+        if (isHidden) {
+            // Mostrar número completo
+            phoneSpan.textContent = phoneSpan.dataset.full;
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            // Ocultar número
+            phoneSpan.textContent = phoneSpan.dataset.hidden;
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+</script>
+
 <style>
     /* Estilos originales — no modificados */
     .user-detail-modal {
@@ -273,9 +341,10 @@
 
     .info-section {
         background: #f8fafc;
-        padding: 1.5rem;
+        padding: 2rem;
         border-radius: 15px;
         border: 1px solid #e2e8f0;
+        min-height: 250px;
     }
 
     .section-title {
@@ -296,7 +365,7 @@
     .info-item {
         display: flex;
         flex-direction: column;
-        gap: 0.3rem;
+        gap: 0.5rem;
     }
 
     .info-label {
@@ -312,6 +381,114 @@
         display: flex;
         align-items: center;
     }
+
+    /* Nuevos estilos para teléfonos */
+    .phone-item {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 0.75rem;
+        transition: all 0.2s ease;
+        width: 100%;
+    }
+
+        .phone-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+
+    .phone-content-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .phone-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+        min-width: 0;
+        flex-wrap: wrap;
+    }
+
+        .phone-info i {
+            flex-shrink: 0;
+        }
+
+    .phone-code {
+        flex-shrink: 0;
+        font-size: 0.95rem;
+    }
+
+    .phone-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+    }
+
+    .phone-type {
+        color: #64748b;
+        font-size: 0.8rem;
+        padding: 0.2rem 0.5rem;
+        background: #f1f5f9;
+        border-radius: 6px;
+        white-space: nowrap;
+        font-weight: 500;
+    }
+
+    .phone-number {
+        font-family: 'Courier New', monospace;
+        font-weight: 600;
+        color: #1e293b;
+        font-size: 0.95rem;
+    }
+
+    .btn-toggle-phone {
+        background: #667eea;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 0.4rem 0.6rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+        .btn-toggle-phone:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .btn-toggle-phone i {
+            font-size: 0.9rem;
+        }
+
+    .email-value,
+    .Identificacion-value,
+    .tipo-id-value {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 0.75rem;
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+        .email-value span,
+        .Identificacion-value span,
+        .tipo-id-value span {
+            word-break: break-all;
+            flex: 1;
+        }
 
     .qr-section {
         text-align: center;
@@ -420,6 +597,17 @@
         .qr-code {
             width: 150px;
             height: 150px;
+        }
+
+        .phone-content-wrapper {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .phone-actions {
+            width: 100%;
+            justify-content: space-between;
         }
     }
 

@@ -2,7 +2,6 @@
 using System.Linq;
 using Campus.Abstracciones.AccesoDatos.Anuncios.ListarAnunciosAD;
 using Campus.Abstracciones.ModelosUI;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.Anuncios.ListarAnunciosAD
 {
@@ -45,8 +44,9 @@ namespace Campus.AccesoDatos.Anuncios.ListarAnunciosAD
                 Descripcion = anuncio.Descripcion,
                 FechaEvento = anuncio.FechaEvento,
                 FechaPublicacion = anuncio.FechaPublicacion,
+                Estado = anuncio.Estado,
 
-             
+
                 ImagenRuta = anuncio.ImagenRuta
             };
         }

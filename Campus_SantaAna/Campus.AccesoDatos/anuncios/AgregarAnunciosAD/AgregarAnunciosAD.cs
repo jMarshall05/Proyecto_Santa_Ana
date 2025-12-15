@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Anuncios.AgregarAnunciosAD;
 using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.ModelosAD;
@@ -32,8 +31,9 @@ namespace Campus.AccesoDatos.Anuncios.AgregarAnunciosAD
                 Descripcion = anuncio.Descripcion,
                 FechaEvento = anuncio.FechaEvento,
                 FechaPublicacion = anuncio.FechaPublicacion,
+                Estado = anuncio.Estado,
 
-              
+
                 ImagenRuta = anuncio.ImagenRuta
             };
         }

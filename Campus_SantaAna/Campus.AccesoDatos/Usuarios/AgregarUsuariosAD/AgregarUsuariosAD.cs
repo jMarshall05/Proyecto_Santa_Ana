@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity;
-using System.Data.Entity.Core.Objects.DataClasses;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Usuarios.AgregarUsuariosAD;
 using Campus.Abstracciones.ModelosUI;
 using Campus.AccesoDatos.ModelosAD;
@@ -39,10 +32,11 @@ namespace Campus.AccesoDatos.Usuarios.AgregarUsuariosAD
                 Apellido = usuario.Apellido,
                 Email = usuario.Email,
                 FechaDeNacimiento = usuario.FechaDeNacimiento,
-                Cedula = usuario.Cedula,
+                Identificacion = usuario.Identificacion,
                 FechaDeRegistro = usuario.FechaDeRegistro,
                 Rol = usuario.Rol,
-                Estado = usuario.Estado
+                Estado = usuario.Estado,
+                TipoIdentificacion = usuario.TipoIdentificacion
 
             };
         }

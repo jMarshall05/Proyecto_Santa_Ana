@@ -17,7 +17,9 @@ namespace Campus.AccesoDatos.ModelosAD
 
         public DateTime FechaFin { get; set; }
         [Required]
-        public string IdUsuario { get; set; } 
+        public string IdUsuario { get; set; }
+        [Column("estado")]
+        public bool Estado { get; set; }
     }
 
 }

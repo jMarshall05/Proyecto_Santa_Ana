@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.tareas.eliminarTareaAD;
-using Campus.AccesoDatos.ModelosAD;
 
 namespace Campus.AccesoDatos.tareas.eliminarTareaAD
 {
@@ -22,8 +22,8 @@ namespace Campus.AccesoDatos.tareas.eliminarTareaAD
             {
                 throw new Exception("La tarea no fue encontrada.");
             }
-
-            _contexto.Tareas.Remove(tarea);
+            tarea.Estado = false;
+            _contexto.Entry(tarea).State = EntityState.Modified;
             return await _contexto.SaveChangesAsync();
         }
     }

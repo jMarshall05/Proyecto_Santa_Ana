@@ -56,10 +56,7 @@
                     <input type="text" class="search-input" placeholder="Buscar grupos..." id="searchInput">
                 </div>
                 <div class="filter-actions">
-                    <button class="btn-filter" id="filterBtn">
-                        <i class="fas fa-filter"></i>
-                        Filtros
-                    </button>
+                    
                 </div>
             </div>
         </div>
@@ -216,8 +213,6 @@
 </div>
 
 @section scripts {
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <script src="~/Scripts/Grupos/ScriptDeGrupos.js"></script>
 
     <style>
         /* Mantenemos las variables CSS del diseño anterior */
@@ -749,63 +744,107 @@
             }
     </style>
 
-    <script>
-        // Search functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            const rows = document.querySelectorAll('.group-row');
 
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                if (searchTerm === '') {
-                    row.style.display = '';
-                } else {
-                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar tooltips
+        const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltips.forEach(tooltip => {
+            new bootstrap.Tooltip(tooltip);
+        });
+
+        // Búsqueda segura para Grupos (asumiendo filas con clase .group-row)
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                // Selector actualizado para filas de grupo
+                const rows = document.querySelectorAll('.group-row');
+
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    if (searchTerm === '') {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    }
+                });
+            });
+        }
+
+        // Botones de acción para Grupos
+        // Botón Detalles
+        document.querySelectorAll('.btn-Detalles-Grupo').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const groupId = this.getAttribute('data-id'); // Cambiado a groupId
+                // Acción de controlador actualizada a Grupos
+                $('#GruposModal .modal-body-premium').load('@Url.Action("DetallesDeGrupoParcial", "Grupos")' + '?id=' + groupId);
+                $('#GruposModal').modal('show'); // ID de modal actualizado
+            });
+        });
+
+        // Botón Editar
+        document.querySelectorAll('.btn-Editar-Grupo').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const groupId = this.getAttribute('data-id'); // Cambiado a groupId
+                // Acción de controlador actualizada a Grupos
+                $('#GruposModal .modal-body-premium').load('@Url.Action("EditarGrupoParcial", "Grupos")' + '?id=' + groupId);
+                $('#GruposModal').modal('show'); // ID de modal actualizado
+            });
+        });
+
+        // Botones de exportación y filtros
+        document.getElementById('filterBtn')?.addEventListener('click', function() {
+            alert('Funcionalidad de filtros será implementada próximamente');
+        });
+
+        // Manejar el envío del formulario (Asume que los formularios están dentro de #GruposModal)
+        $(document).on('submit', 'form', function(e) {
+            e.preventDefault();
+
+            var form = $(this);
+            var url = form.attr('action');
+            var formData = form.serialize();
+
+            console.log('Enviando formulario a:', url);
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: formData,
+                success: function(response) {
+                    if (typeof response === 'string' && response.includes('Redirecting')) {
+                        location.reload();
+                    }
+                    else if (typeof response === 'string') {
+                        // Si la respuesta es HTML (ej. errores de validación)
+                        $('#GruposModal .modal-body-premium').html(response);
+                    }
+                    else {
+                        // Si la operación fue exitosa
+                        $('#GruposModal').modal('hide');
+                        location.reload();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error al editar:', error);
+                    console.log('Respuesta del servidor:', xhr.responseText);
+
+                    if (xhr.status === 302 || xhr.responseText.includes('Redirect')) {
+                        location.reload();
+                    } else {
+                        alert('Error al guardar los cambios. Por favor, intente nuevamente.');
+                    }
                 }
             });
         });
-    }
-
-    // Tooltip initialization
-    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    tooltips.forEach(tooltip => {
-        new bootstrap.Tooltip(tooltip);
     });
-
-    // Add Group button
-    document.querySelector('.btn-Agregar-Grupo')?.addEventListener('click', function() {
-        const userId = this.getAttribute('data-id');
-        $('#GruposModal .modal-body-premium').load('@Url.Action("AgregarGrupoParcial", "Grupos")' + '?id=' + userId);
-        $('#GruposModal').modal('show');
-    });
-
-    // CORRECCIÓN: Edit Group buttons
-    document.querySelectorAll('.btn-Editar-Grupo').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const grupoId = this.getAttribute('data-id');
-            console.log('Cargando vista de edición para grupo ID:', grupoId);
-            $('#GruposModal .modal-body-premium').load('@Url.Action("EditarGrupoParcial", "Grupos")' + '?id=' + grupoId);
-            $('#GruposModal').modal('show');
-        });
-    });
-
-    // CORRECCIÓN: Details Group buttons
-    document.querySelectorAll('.btn-Detalles-Grupo').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const grupoId = this.getAttribute('data-id');
-            console.log('Cargando vista de detalles para grupo ID:', grupoId);
-            $('#GruposModal .modal-body-premium').load('@Url.Action("DetallesDeGrupoParcial", "Grupos")' + '?id=' + grupoId);
-            $('#GruposModal').modal('show');
-        });
-    });
-
-    // Filter button
-    document.getElementById('filterBtn')?.addEventListener('click', function() {
-        alert('Funcionalidad de filtros será implementada próximamente');
-    });
+document.querySelector('.btn-Agregar-Grupo')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    $('#GruposModal .modal-body-premium').load('@Url.Action("AgregarGrupoParcial", "Grupos")');
+    $('#GruposModal').modal('show');
 });
     </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 }

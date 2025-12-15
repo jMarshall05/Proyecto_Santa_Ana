@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Usuarios.ListarUsuariosAD;
 using Campus.Abstracciones.ModelosUI;
 
@@ -18,15 +15,15 @@ namespace Campus.AccesoDatos.Usuarios.ListarUsuariosAD
 
         public List<UsuariosDto> ListarUsuarios()
         {
-            List<UsuariosDto> ListaDeUsuarios = (from Usuarios in _elContexto.Usuarios 
+            List<UsuariosDto> ListaDeUsuarios = (from Usuarios in _elContexto.Usuarios
                                                  select new UsuariosDto
                                                  {
                                                      IdUsuario = Usuarios.IdUsuario,
-                                                     Nombre=Usuarios.Nombre,
+                                                     Nombre = Usuarios.Nombre,
                                                      Apellido = Usuarios.Apellido,
                                                      Email = Usuarios.Email,
                                                      FechaDeNacimiento = Usuarios.FechaDeNacimiento,
-                                                     Cedula = Usuarios.Cedula,
+                                                     Identificacion = Usuarios.Identificacion,
                                                      FechaDeRegistro = Usuarios.FechaDeRegistro,
                                                      FechaDeModificacion = Usuarios.FechaDeModificacion,
                                                      Rol = Usuarios.Rol,

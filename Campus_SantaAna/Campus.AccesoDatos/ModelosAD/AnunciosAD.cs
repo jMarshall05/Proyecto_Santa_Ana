@@ -28,7 +28,9 @@ namespace Campus.AccesoDatos.ModelosAD
         [Required]
         public DateTime FechaPublicacion { get; set; }
         [Column("imagen_ruta")]
-      
+
         public string ImagenRuta { get; set; }
+        [Column("estado")]
+        public bool Estado { get; set; }
     }
 }

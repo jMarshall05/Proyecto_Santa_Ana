@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Campus.Abstracciones.AccesoDatos.Grupos.ListarGrupos;
 using Campus.Abstracciones.ModelosUI;
 
 namespace Campus.AccesoDatos.Grupos.ListarGrupos
 {
-    public class ListarGruposAD : IListarGruposAD  
+    public class ListarGruposAD : IListarGruposAD
     {
         private Contexto _elContexto;
         public ListarGruposAD()
@@ -28,6 +25,7 @@ namespace Campus.AccesoDatos.Grupos.ListarGrupos
                                    creado_por = Grupos.creado_por,
                                    FechaDeCreacion = Grupos.FechaDeCreacion,
                                    FechaDeModificacion = Grupos.FechaDeModificacion,
+                                   modificado_por = Grupos.modificado_por,
                                    estado = Grupos.estado
                                }).FirstOrDefault();
             return grupo;

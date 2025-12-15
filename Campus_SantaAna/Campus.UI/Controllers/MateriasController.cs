@@ -1,14 +1,17 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
+using Campus.Abstracciones.LogicaDeNegocio;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.AgregarMateriasLN;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.EditarMateriasLN;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.EliminarMateriasLN;
 using Campus.Abstracciones.LogicaDeNegocio.Materias.ListarMateriasLN;
 using Campus.Abstracciones.ModelosUI;
+using Campus.LogicaDeNegocio.Bitacora;
 using Campus.LogicaDeNegocio.Materias.AgregarMaterias;
 using Campus.LogicaDeNegocio.Materias.EditarMaterias;
 using Campus.LogicaDeNegocio.Materias.EliminarMaterias;
 using Campus.LogicaDeNegocio.Materias.ListarMaterias;
-using Campus.UI.Filtros;
+using Microsoft.AspNet.Identity;
 
 namespace Campus.UI.Controllers
 {
@@ -19,6 +22,7 @@ namespace Campus.UI.Controllers
         private readonly IAgregarMateriasLN _agregarMateriasLN;
         private readonly IEliminarMateriasLN _eliminarMateriasLN;
         private readonly IEditarMateriasLN _editarMateriasLN;
+        private readonly IBitacoraLN _bitacora;
 
         public MateriasController()
         {
@@ -26,6 +30,7 @@ namespace Campus.UI.Controllers
             _agregarMateriasLN = new AgregarMateriasLN();
             _eliminarMateriasLN = new EliminarMateriasLN();
             _editarMateriasLN = new EditarMateriasLN();
+            _bitacora = new BitacoraLN();
         }
 
         // GET: Materias/ListarMaterias
@@ -49,9 +54,20 @@ namespace Campus.UI.Controllers
             if (ModelState.IsValid)
             {
                 _agregarMateriasLN.AgregarMateria(materia);
+
+                // Bitácora: inserción de nueva materia
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = "INSERT",
+                    Tabla = "Materias",
+                    Descripcion = $"Creación de materia {materia.Nombre}"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+
                 return RedirectToAction("ListarMaterias");
             }
-
             return View(materia);
         }
 
@@ -75,9 +91,20 @@ namespace Campus.UI.Controllers
             if (ModelState.IsValid)
             {
                 _editarMateriasLN.EditarMateria(materia);
+
+                // Bitácora: actualización de materia
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = "UPDATE",
+                    Tabla = "Materias",
+                    Descripcion = $"Actualización de materia ID: {materia.Id_Materia} - '{materia.Nombre}'"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+
                 return RedirectToAction("ListarMaterias");
             }
-
             return View(materia);
         }
 
@@ -98,7 +125,21 @@ namespace Campus.UI.Controllers
         {
             try
             {
+                var materiaInfo = _listarMateriasLN.ObtenerMateriaPorId(IdMateria);
+
                 _eliminarMateriasLN.EliminarMateria(IdMateria);
+
+                // Bitácora: eliminación lógica de materia
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = "DELETE",
+                    Tabla = "Materias",
+                    Descripcion = $"Eliminación lógica de materia ID: {IdMateria} - '{materiaInfo.Nombre}' - Estado cambiado a inactivo"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+
                 return RedirectToAction("ListarMaterias");
             }
             catch
