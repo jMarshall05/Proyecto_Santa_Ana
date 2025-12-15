@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Santa Ana a un Click</title>
-    <link rel="icon" type="image/png" href="~/Content/logo_SantaAna.ico" />
+    <link rel="icon" type="image/png" href="~/Content/LogoColegioNuevo.png" />
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
     <link href="~/Content/styles.css" rel="stylesheet" />
@@ -60,7 +60,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm" style="background-color: #0D126E; border-color: #F44336; color: white; ">
             <div class="container">
                 <a class="navbar-brand" href="@Url.Action("Index", "Home")">
-                    <img src="~/Content/logo_SantaAna.jpg" alt="Logo" style="height: 65px;" />
+                    <img src="~/Content/LogoColegioNuevo.png" alt="Logo" style="height: 65px;" />
                 </a>
 
 
@@ -68,27 +68,27 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse d-sm-inline-flex">
+
+                    @* <ul class="navbar-nav flex-grow-1">
 
 
 
-                        @if (User.IsInRole("Profesores"))
-                        {
-                            <li class="nav-item">@Html.ActionLink("Asignar Tarea", "ListarTareas", "Tareas", null, new { @class = "nav-link", style = "color: white;" })</li>
-                            <li class="nav-item">@Html.ActionLink("Tareas recibidas", "Index", "Entregas", null, new { @class = "nav-link", style = "color: white;" })</li>
-                        }
+                            @if (User.IsInRole("Profesores"))
+                            {
+                                <li class="nav-item">@Html.ActionLink("Asignar Tarea", "ListarTareas", "Tareas", null, new { @class = "nav-link", style = "color: white;" })</li>
+                                <li class="nav-item">@Html.ActionLink("Tareas recibidas", "Index", "Entregas", null, new { @class = "nav-link", style = "color: white;" })</li>
+                            }
 
-                        @if (User.IsInRole("Estudiantes"))
-                        {
-                            <li class="nav-item">@Html.ActionLink("Mis Tareas", "MisTareas", "Tareas", null, new { @class = "nav-link", style = "color: white;" })</li>
-                        }
-                    </ul>
+                            @if (User.IsInRole("Estudiantes"))
+                            {
+                                <li class="nav-item">@Html.ActionLink("Mis Tareas", "MisTareas", "Tareas", null, new { @class = "nav-link", style = "color: white;" })</li>
+                            }
+                        </ul>*@
 
-                    <div class="d-flex align-items-center">
-
+                    <div class="d-flex align-items-center ms-auto">
                         @Html.Partial("_LoginPartial")
-                        @* Botón para abrir el sidebar *@
+
                         <div style="color: white; cursor: pointer; margin-left: 15px;" onclick="toggleSidebar()">
                             <i class="fa-solid fa-bars fa-lg"></i>
                         </div>
@@ -119,6 +119,12 @@
         <a href="@Url.Action("About", "Home")">Calendario</a>
         <a href="https://santaana.ed.cr/quiensomos.html" target="_blank">Sobre Nosotros</a>
     </div>
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <script>
+        window.location.href = '@Url.Action("Login","Account")';
+        </script>
+    }
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
@@ -135,6 +141,11 @@
             var sidebar = document.getElementById("mySidebar");
             sidebar.style.width = sidebar.style.width === "250px" ? "0" : "250px";
         }
+           document.getElementById("logoutForm").addEventListener("submit", function () {
+        setTimeout(() => {
+            window.location.href = '@Url.Action("Login","Account")';
+        }, 100);
+    });
     </script>
 
     @RenderSection("scripts", required: false)

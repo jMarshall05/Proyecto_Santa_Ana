@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Campus.Abstracciones.AccesoDatos.Cursos.ListarCursosLN;
@@ -42,6 +43,8 @@ namespace Campus.UI.Controllers
         private readonly IBitacoraLN _bitacora;
         private readonly IAgregarDocumentoLN _agregarDocumentos;
         private readonly IListarDocumentosLN _listarDocumentosLN;
+        private readonly IBorrarDocumentoLN _borrarDocumentoLN;
+        private readonly IEditarDocumentoLN _editarDocumetoLN;
 
         public HomeController()
         {
@@ -54,6 +57,8 @@ namespace Campus.UI.Controllers
             _bitacora = new BitacoraLN();
             _agregarDocumentos = new AgregarDocumentoLN();
             _listarDocumentosLN = new ListarDocumentosLN();
+            _borrarDocumentoLN = new BorrarDocumentoLN();
+            _editarDocumetoLN = new EditarDocumentoLN();
         }
         public HomeController(ApplicationUserManager userManager)
         {
@@ -217,10 +222,73 @@ namespace Campus.UI.Controllers
                 };
                 _bitacora.RegistrarEvento(bitacora);
             }
+            return RedirectToAction("Documentos");
+        }
 
+        [HttpPost]
+        public ActionResult EditarDocumento( int idDocumento, HttpPostedFileBase Archivo, string Titulo,string Descripcion, string Categoria)
+        {
+            var documentoActual = _listarDocumentosLN.ListarDocumentos().FirstOrDefault(d => d.Id == idDocumento);
+            if (documentoActual == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (Archivo != null && Archivo.ContentLength > 0)
+            {
+                ComprobarTipodeArchivo(Archivo, out string[] extensionesPermitidas, out string extensionArchivo);
+
+                if (!extensionesPermitidas.Contains(extensionArchivo))
+                {
+                    throw new Exception("Tipo de archivo prohibido");
+                }
+
+                if (Archivo.ContentLength > 10485760)
+                {
+                    throw new Exception("Archivo demasiado pesado");
+                }
+
+                documentoActual.Archivo = Archivo;
+                GuardarArchivo(documentoActual);
+            }
+
+            documentoActual.Titulo = Titulo;
+            documentoActual.Descripcion = Descripcion;
+            documentoActual.Categoria = Categoria;
+
+            _editarDocumetoLN.EditarDocumento(idDocumento, documentoActual);
+
+            var bitacora = new BitacoraDto
+            {
+                Fecha = DateTime.Now,
+                Usuario = User.Identity.GetUserId(),
+                Accion = "Update",
+                Tabla = "Documentos",
+                Descripcion = $"Update del documento ID {idDocumento}, Titulo: {Titulo}"
+            };
+            _bitacora.RegistrarEvento(bitacora);
 
             return RedirectToAction("Documentos");
         }
+        public async Task<ActionResult> BorrarDocumento(int idDocumento)
+        {
+            var resultado = await _borrarDocumentoLN.BorrarDocumento(idDocumento);
+            if (resultado)
+            {
+                var bitacora = new BitacoraDto
+                {
+                    Fecha = DateTime.Now,
+                    Usuario = User.Identity.GetUserId(),
+                    Accion = "Delete",
+                    Tabla = "Documentos",
+                    Descripcion = $"Eliminacion del documento con ID: {idDocumento}"
+                };
+                _bitacora.RegistrarEvento(bitacora);
+            }
+            return RedirectToAction("Documentos");
+
+        }
+
         private static void ComprobarTipodeArchivo(HttpPostedFileBase Archivo, out string[] extensionesPermitidas, out string extensionArchivo)
         {
             extensionesPermitidas = new[] { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx" };
@@ -245,7 +313,7 @@ namespace Campus.UI.Controllers
             }
 
             // Guardar solo la ruta relativa en la base de datos
-            documento.RutaArchivo = "~/Uploads/Documentos" + Path.GetFileName(rutaCompleta);
+            documento.RutaArchivo = "~/Uploads/Documentos/" + Path.GetFileName(rutaCompleta);
         }
     }
 }

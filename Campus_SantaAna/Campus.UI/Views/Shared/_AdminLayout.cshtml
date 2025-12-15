@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="icon" type="image/png" href="~/Content/logo_SantaAna.ico" />
+    <link rel="icon" type="image/png" href="~/Content/LogoColegioNuevo.png" />
     <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
     <style>
         html, body {
@@ -100,7 +100,7 @@
         <aside class="sidebar-admin">
             <div class="logo">
                 <a href="@Url.Action("Index", "Home")">
-                    <img src="~/Content/logo_SantaAna.jpg" alt="Logo" />
+                    <img src="~/Content/LogoColegioNuevo.png" alt="Logo" />
                 </a>
                 <h4>Panel Administrador</h4>
             </div>
@@ -246,6 +246,12 @@
             @RenderSection("Styles", required: false)
         </main>
     </div>
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <script>
+        window.location.href = '@Url.Action("Login","Account")';
+        </script>
+    }
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
@@ -255,6 +261,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script>
+    document.getElementById("logoutForm").addEventListener("submit", function () {
+        setTimeout(() => {
+            window.location.href = '@Url.Action("Login","Account")';
+        }, 100);
+    });
+    </script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -99,6 +99,7 @@ namespace Campus.AccesoDatos.tareas.listarTareaAD
                     FechaEntrega = t.FechaEntrega,
                     FechaPublicacion = t.FechaPublicacion,
                     ArchivoAdjunto = t.ArchivoAdjunto,
+                    Estado = t.Estado,
                     Id_grupo = t.IdGrupo,
                     IdMateria = t.id_materia,
                     Nombre_grupo = t.Grupo != null ? t.Grupo.nombre_grupo : "Sin grupo",
