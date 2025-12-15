@@ -15,177 +15,715 @@
     }
 }
 
-<div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-        <h3 class="card-title mb-0">
-            <i class="fas fa-info-circle mr-2"></i> Detalles de Tarea
-        </h3>
-    </div>
+@{
+    // Variables para manejar las fechas de forma segura
+    DateTime? fechaPublicacion = null;
+    DateTime? fechaModificacion = null;
+    DateTime fechaEntrega = DateTime.MinValue;
 
-    <div class="card-body">
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <h4 class="text-primary">@Model.Titulo</h4>
-                <!-- Grupo asignado -->
-                @if (Model.Id_grupo > 0)
-                {
-                    <div class="mt-2">
-                        <span class="badge bg-success">
-                            <i class="fas fa-users mr-1"></i> Grupo: @Model.Nombre_grupo
-                        </span>
+    if (Model.FechaPublicacion is DateTime)
+    {
+        fechaPublicacion = (DateTime)Model.FechaPublicacion;
+    }
+    else if (Model.FechaPublicacion != null)
+    {
+        DateTime.TryParse(Model.FechaPublicacion.ToString(), out DateTime tempFecha);
+        fechaPublicacion = tempFecha;
+    }
+
+    if (Model.FechaModificacion is DateTime)
+    {
+        fechaModificacion = (DateTime)Model.FechaModificacion;
+    }
+    else if (Model.FechaModificacion != null)
+    {
+        DateTime.TryParse(Model.FechaModificacion.ToString(), out DateTime tempFecha);
+        fechaModificacion = tempFecha;
+    }
+
+    if (Model.FechaEntrega is DateTime)
+    {
+        fechaEntrega = (DateTime)Model.FechaEntrega;
+    }
+    else if (Model.FechaEntrega != null)
+    {
+        DateTime.TryParse(Model.FechaEntrega.ToString(), out fechaEntrega);
+    }
+
+    // Calcular tiempo restante
+    var tiempoRestante = fechaEntrega - DateTime.Now;
+    var diasRestantes = tiempoRestante.Days;
+    var horasRestantes = tiempoRestante.Hours;
+    var minutosRestantes = tiempoRestante.Minutes;
+}
+
+<div class="container-fluid px-lg-4 py-4">
+    <div class="row justify-content-center">
+        <div class="col-xxl-8 col-xl-10 col-lg-12">
+            <!-- Header de página -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex align-items-center mb-3">
+                        @if (User.IsInRole("Administradores") || User.IsInRole("Profesores"))
+                        {
+                            <a href="@Url.Action("ListarTareas")" class="btn btn-outline-secondary btn-sm me-3 rounded-pill">
+                                <i class="fas fa-arrow-left me-2"></i>Volver al listado
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("MisTareas", new { Model.IdMateria, Model.Id_grupo })" class="btn btn-outline-secondary btn-sm me-3 rounded-pill">
+                                <i class="fas fa-arrow-left me-2"></i>Volver a mis tareas
+                            </a>
+                        }
+                        <div class="d-flex align-items-center">
+                            <div class="icon-container bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                                <i class="fas fa-tasks text-primary fs-4"></i>
+                            </div>
+                            <div>
+                                <h1 class="h3 mb-0 fw-bold text-dark">Detalles de Tarea</h1>
+                                <p class="text-muted mb-0">Información completa de la tarea asignada</p>
+                            </div>
+                        </div>
                     </div>
-                }
-                else
-                {
-                    <div class="mt-2">
-                        <span class="badge bg-secondary">
-                            <i class="fas fa-users mr-1"></i> Sin grupo asignado
-                        </span>
+
+                    <!-- Card Principal -->
+                    <div class="card border-0 shadow-lg">
+                        <!-- Header de la Card -->
+                        <div class="card-header bg-white py-4 border-bottom">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h4 class="mb-0 fw-bold text-dark d-flex align-items-center">
+                                        <i class="fas fa-info-circle text-primary me-3"></i>
+                                        @Model.Titulo
+                                    </h4>
+                                    <div class="mt-2 d-flex flex-wrap gap-2">
+                                        <!-- Grupo asignado -->
+                                        @if (Model.Id_grupo > 0)
+                                        {
+                                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                                                <i class="fas fa-users me-1"></i> Grupo: @Model.Nombre_grupo
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25">
+                                                <i class="fas fa-users me-1"></i> Sin grupo asignado
+                                            </span>
+                                        }
+
+                                        <!-- Materia -->
+                                        @if (!string.IsNullOrEmpty(ViewBag.Materia))
+                                        {
+                                            <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25">
+                                                <i class="fas fa-book me-1"></i> Materia: @ViewBag.Materia
+                                            </span>
+                                        }
+
+                                        <!-- Estado de fecha -->
+                                        @if (fechaEntrega > DateTime.Now)
+                                        {
+                                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                                                <i class="far fa-clock me-1"></i> Activa
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25">
+                                                <i class="far fa-clock me-1"></i> Vencida
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <!-- Fechas -->
+                                    <div class="d-flex flex-column align-items-md-end gap-2">
+                                        @if (fechaPublicacion.HasValue && fechaPublicacion.Value > DateTime.MinValue)
+                                        {
+                                            <span class="badge bg-light text-dark border">
+                                                <i class="fas fa-calendar-plus me-1"></i> Creada: @fechaPublicacion.Value.ToString("dd/MM/yyyy")
+                                            </span>
+                                        }
+
+                                        @if (fechaModificacion.HasValue && fechaModificacion.Value > DateTime.MinValue)
+                                        {
+                                            <span class="badge bg-light text-dark border">
+                                                <i class="fas fa-edit me-1"></i> Modificada: @fechaModificacion.Value.ToString("dd/MM/yyyy")
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contenido de la Card -->
+                        <div class="card-body p-4">
+                            <!-- Descripción -->
+                            <div class="row mb-5">
+                                <div class="col-12">
+                                    <h5 class="text-primary mb-3 d-flex align-items-center">
+                                        <i class="fas fa-align-left me-2"></i>Descripción
+                                    </h5>
+                                    <div class="description-box p-4 bg-light bg-opacity-25 rounded-3 border border-light">
+                                        @if (!string.IsNullOrEmpty(Model.Descripcion))
+                                        {
+                                            <p class="mb-0">@Model.Descripcion</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="mb-0 text-muted fst-italic">No hay descripción disponible</p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Detalles en dos columnas -->
+                            <div class="row">
+                                <!-- Columna Izquierda -->
+                                <div class="col-lg-6 mb-4 mb-lg-0">
+                                    <!-- Fecha de Entrega -->
+                                    <div class="mb-4">
+                                        <h5 class="text-primary mb-3 d-flex align-items-center">
+                                            <i class="fas fa-calendar-alt me-2"></i>Fecha de Entrega
+                                        </h5>
+                                        <div class="date-card p-3 bg-white rounded-3 border shadow-sm">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-container bg-danger bg-opacity-10 rounded-circle p-2 me-3">
+                                                    <i class="fas fa-clock text-danger"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-1 fw-bold text-dark">
+                                                        @fechaEntrega.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-ES"))
+                                                    </h6>
+                                                    <small class="text-muted">@fechaEntrega.ToString("hh:mm tt")</small>
+                                                </div>
+                                            </div>
+
+                                            <!-- Contador de tiempo restante -->
+                                            <div class="mt-3 pt-3 border-top">
+                                                <small class="fw-semibold d-block mb-1">Tiempo restante:</small>
+                                                @if (tiempoRestante.TotalSeconds > 0)
+                                                {
+                                                    <div class="d-flex align-items-center">
+                                                        @if (diasRestantes > 0)
+                                                        {
+                                                            <span class="badge bg-warning bg-opacity-10 text-warning me-2">
+                                                                <i class="fas fa-calendar-day me-1"></i> @diasRestantes día@(diasRestantes != 1 ? "s" : "")
+                                                            </span>
+                                                        }
+                                                        <span class="badge bg-info bg-opacity-10 text-info">
+                                                            <i class="fas fa-hourglass-half me-1"></i> @horasRestantes hora@(horasRestantes != 1 ? "s" : "")
+                                                        </span>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger bg-opacity-10 text-danger">
+                                                        <i class="fas fa-exclamation-triangle me-1"></i> Tiempo vencido
+                                                    </span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Columna Derecha -->
+                                <div class="col-lg-6">
+                                    <!-- Archivo Adjunto -->
+                                    <div class="mb-4">
+                                        <h5 class="text-primary mb-3 d-flex align-items-center">
+                                            <i class="fas fa-paperclip me-2"></i>Archivo Adjunto
+                                        </h5>
+                                        @if (!string.IsNullOrEmpty(Model.ArchivoAdjunto))
+                                        {
+                                            <div class="file-card p-3 bg-white rounded-3 border shadow-sm">
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div class="icon-container bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                                                        @{
+                                                            var extension = System.IO.Path.GetExtension(Model.ArchivoAdjunto)?.ToLower();
+                                                            string fileIcon;
+                                                            switch (extension)
+                                                            {
+                                                                case ".pdf":
+                                                                    fileIcon = "far fa-file-pdf";
+                                                                    break;
+                                                                case ".doc":
+                                                                case ".docx":
+                                                                    fileIcon = "far fa-file-word";
+                                                                    break;
+                                                                case ".xls":
+                                                                case ".xlsx":
+                                                                    fileIcon = "far fa-file-excel";
+                                                                    break;
+                                                                case ".ppt":
+                                                                case ".pptx":
+                                                                    fileIcon = "far fa-file-powerpoint";
+                                                                    break;
+                                                                case ".jpg":
+                                                                case ".jpeg":
+                                                                case ".png":
+                                                                case ".gif":
+                                                                    fileIcon = "far fa-file-image";
+                                                                    break;
+                                                                case ".zip":
+                                                                case ".rar":
+                                                                    fileIcon = "far fa-file-archive";
+                                                                    break;
+                                                                default:
+                                                                    fileIcon = "far fa-file";
+                                                                    break;
+                                                            }
+                                                        }
+                                                        <i class="@fileIcon text-success"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1 fw-bold text-dark">@Path.GetFileName(Model.ArchivoAdjunto)</h6>
+                                                        <small class="text-muted">@extension?.ToUpper() Replace(".", "") Document</small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-grid gap-2">
+                                                    <a href="@Url.Content(Model.ArchivoAdjunto)"
+                                                       class="btn btn-success d-flex align-items-center justify-content-center"
+                                                       target="_blank">
+                                                        <i class="fas fa-download me-2"></i> Descargar Archivo
+                                                    </a>
+                                                    <a href="@Url.Content(Model.ArchivoAdjunto)"
+                                                       class="btn btn-outline-primary d-flex align-items-center justify-content-center"
+                                                       target="_blank">
+                                                        <i class="fas fa-eye me-2"></i> Ver en nueva pestaña
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="file-card p-4 bg-light bg-opacity-25 rounded-3 border text-center">
+                                                <i class="fas fa-file-upload text-muted fs-1 mb-3"></i>
+                                                <h6 class="fw-semibold text-muted mb-2">Sin archivo adjunto</h6>
+                                                <p class="text-muted small mb-0">No hay archivos disponibles para esta tarea</p>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Información adicional -->
+                            @if (User.IsInRole("Administradores") || User.IsInRole("Profesores"))
+                            {
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <div class="p-3 bg-light bg-opacity-25 rounded-3 border border-light">
+                                            <h6 class="fw-semibold text-primary mb-2">
+                                                <i class="fas fa-chart-bar me-2"></i>Información para el profesor
+                                            </h6>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <small class="text-muted d-block">ID de la tarea:</small>
+                                                    <span class="fw-bold">@Model.IdTarea</span>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <small class="text-muted d-block">ID de materia:</small>
+                                                    <span class="fw-bold">@Model.IdMateria</span>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <small class="text-muted d-block">ID de grupo:</small>
+                                                    <span class="fw-bold">@Model.Id_grupo</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Footer de la Card -->
+                        <div class="card-footer bg-white py-3 border-top">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <!-- Botón Volver -->
+                                    @if (User.IsInRole("Administradores") || User.IsInRole("Profesores"))
+                                    {
+                                        <a href="@Url.Action("ListarTareas")" class="btn btn-outline-secondary d-flex align-items-center">
+                                            <i class="fas fa-arrow-left me-2"></i>Volver al listado
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("MisTareas", new { Model.IdMateria, Model.Id_grupo })" class="btn btn-outline-secondary d-flex align-items-center">
+                                            <i class="fas fa-arrow-left me-2"></i>Volver a mis tareas
+                                        </a>
+                                    }
+                                </div>
+
+                                <!-- Botones de acción para administradores/profesores -->
+                                @if (User.IsInRole("Administradores") || User.IsInRole("Profesores"))
+                                {
+                                    <div class="d-flex gap-2">
+                                        <a href="@Url.Action("Edit", new { id = Model.IdTarea })"
+                                           class="btn btn-warning d-flex align-items-center">
+                                            <i class="fas fa-edit me-2"></i>Editar
+                                        </a>
+
+                                        <button type="button"
+                                                class="btn btn-danger d-flex align-items-center"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal">
+                                            <i class="fas fa-trash me-2"></i>Eliminar
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                     </div>
-                }
-                <div class="mt-2">
-                    <span class="badge bg-secondary">
-                        <i class="fas fa-users mr-1"></i> Materia : @ViewBag.Materia
-                    </span>
-                </div>
-
-            </div>
-            <div class="col-md-6 text-end">
-                @if (Model.FechaPublicacion > DateTime.MinValue)
-                {
-                    <span class="badge bg-info">
-                        Creada: @Model.FechaPublicacion.ToString("dd/MM/yyyy")
-                    </span>
-                }
-                else
-                {
-                    <span class="badge bg-secondary">
-                        Fecha no disponible
-                    </span>
-                }
-
-                @if (Model.FechaModificacion > DateTime.MinValue)
-                {
-                    <span class="badge bg-warning ms-2">
-                        Modificada: @Model.FechaModificacion
-                    </span>
-                }
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <h5>Descripción</h5>
-            <div class="p-3 bg-light rounded">
-                @Model.Descripcion
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <h5>Fecha de Entrega</h5>
-                    <p>@Model.FechaEntrega.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-ES"))</p>
                 </div>
             </div>
-
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <h5>Archivo Adjunto</h5>
-                    @if (!string.IsNullOrEmpty(Model.ArchivoAdjunto))
-                    {
-                        <a href="@Url.Content(Model.ArchivoAdjunto)"
-                           class="btn btn-outline-primary"
-                           target="_blank">
-                            <i class="fas fa-download mr-1"></i> @Path.GetFileName(Model.ArchivoAdjunto)
-                        </a>
-                    }
-                    else
-                    {
-                        <span class="text-muted">No hay archivo adjunto</span>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card-footer bg-light">
-        <div class="d-flex justify-content-between">
-            @if (User.IsInRole("Administradores") || User.IsInRole("Profesores"))
-            {@Html.ActionLink("Volver al listado", "ListarTareas", null, new { @class = "btn btn-secondary" })
-        }
-        else
-        {
-            @Html.ActionLink("Volver al listado", "MisTareas", new { Model.IdMateria , Model.Id_grupo }, new { @class = "btn btn-secondary" })
-
-        }
-
-
-            @if (User.IsInRole("Administradores") || User.IsInRole("Profesores"))
-            {
-                <div>
-                    @Html.ActionLink("Editar", "Edit", new { id = Model.IdTarea }, new { @class = "btn btn-warning me-2" })
-
-                    <button type="button"
-                            class="btn btn-danger"
-                            data-bs-toggle="modal"
-                            data-bs-target="#deleteModal">
-                        <i class="fas fa-trash mr-1"></i> Eliminar
-                    </button>
-
-                </div>
-            }
         </div>
     </div>
 </div>
 
 <!-- Modal de Eliminación -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title">Confirmar Eliminación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-danger text-white border-0">
+                <div class="icon-container bg-white bg-opacity-20 rounded-circle p-2 me-3">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h5 class="modal-title fw-bold">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <p>¿Estás seguro de eliminar la tarea <strong>@Model.Titulo</strong>?</p>
-                <p class="text-muted">Esta acción no se puede deshacer.</p>
+            <div class="modal-body p-4">
+                <div class="text-center mb-4">
+                    <i class="fas fa-trash-alt text-danger fs-1 mb-3"></i>
+                    <h6 class="fw-bold text-dark">¿Estás seguro de eliminar esta tarea?</h6>
+                </div>
+
+                <div class="alert alert-warning bg-warning bg-opacity-10 border-warning border-opacity-25">
+                    <div class="d-flex">
+                        <i class="fas fa-exclamation-circle text-warning me-2 mt-1"></i>
+                        <div>
+                            <p class="mb-2"><strong>Esta acción no se puede deshacer</strong></p>
+                            <small class="text-muted d-block">• Se eliminará permanentemente la tarea "<strong>@Model.Titulo</strong>"</small>
+                            <small class="text-muted d-block">• Se perderán todas las entregas asociadas</small>
+                            <small class="text-muted d-block">• Los estudiantes ya no tendrán acceso a esta tarea</small>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <div class="modal-footer border-0 bg-light">
+                <button type="button" class="btn btn-outline-secondary d-flex align-items-center" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancelar
+                </button>
+
                 @using (Html.BeginForm("Delete", "Tareas", new { id = Model.IdTarea }, FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash mr-1"></i> Confirmar Eliminación
+                    <button type="submit" class="btn btn-danger d-flex align-items-center" id="confirmDelete">
+                        <i class="fas fa-trash me-2"></i>Confirmar Eliminación
                     </button>
                 }
             </div>
-
         </div>
     </div>
 </div>
 
 @section styles {
     <style>
-        .card {
-            border: none;
-            border-radius: 10px;
+        :root {
+            --primary-color: #4e73df;
+            --primary-dark: #224abe;
+            --secondary-color: #858796;
+            --success-color: #1cc88a;
+            --warning-color: #f6c23e;
+            --info-color: #36b9cc;
+            --danger-color: #e74a3b;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
         }
 
-        h5 {
-            color: #6c757d;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
+        body {
+            background: linear-gradient(135deg, #f8f9fc 0%, #e8eaf0 100%);
+            min-height: 100vh;
         }
+
+        .icon-container {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            border-radius: 15px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.15);
+                transform: translateY(-2px);
+            }
+
+        .card-header {
+            border-radius: 15px 15px 0 0 !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card-footer {
+            border-radius: 0 0 15px 15px !important;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .description-box {
+            background: linear-gradient(135deg, #f8f9fc 0%, #ffffff 100%);
+            min-height: 120px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .date-card, .file-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+            .date-card:hover, .file-card:hover {
+                box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+                transform: translateY(-2px);
+            }
 
         .badge {
-            font-size: 0.85rem;
-            padding: 0.35em 0.65em;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.4em 0.8em;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+        }
+
+        /* Botones */
+        .btn {
+            border-radius: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1.5rem;
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid #d1d3e2;
+            color: var(--secondary-color);
+            background: white;
+        }
+
+            .btn-outline-secondary:hover {
+                background: var(--secondary-color);
+                border-color: var(--secondary-color);
+                color: white;
+            }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 7px 14px rgba(50, 50, 93, 0.2), 0 3px 6px rgba(0, 0, 0, 0.08);
+            }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #dda20a 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(246, 194, 62, 0.2);
+        }
+
+            .btn-warning:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 7px 14px rgba(246, 194, 62, 0.3);
+            }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #c0392b 100%);
+            box-shadow: 0 4px 6px rgba(231, 74, 59, 0.2);
+        }
+
+            .btn-danger:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 7px 14px rgba(231, 74, 59, 0.3);
+            }
+
+        /* Modal */
+        .modal-content {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+        }
+
+        /* Animaciones */
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .container-fluid {
+                padding: 1rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .d-flex.justify-content-between {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 0.5rem;
+            }
+
+            .icon-container {
+                width: 40px;
+                height: 40px;
+                padding: 0.75rem;
+            }
+
+            .description-box {
+                padding: 1.25rem;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .card-body {
+                padding: 1rem;
+            }
+
+            .btn {
+                padding: 0.5rem 1rem;
+                min-height: 40px;
+                font-size: 0.9rem;
+            }
+
+            .badge {
+                font-size: 0.75rem;
+                padding: 0.3em 0.6em;
+            }
+        }
+
+        /* Estilo para el tiempo vencido */
+        .expired {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffeaea 100%);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        /* Estilo para el tiempo activo */
+        .active-time {
+            background: linear-gradient(135deg, #f0fff4 0%, #e6ffee 100%);
+            border-left: 4px solid var(--success-color);
         }
     </style>
 }
 
 @section scripts {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Actualizar contador de tiempo en tiempo real
+            function updateTimeCounter() {
+                const fechaEntrega = new Date('@fechaEntrega.ToString("yyyy-MM-ddTHH:mm:ss")');
+                const ahora = new Date();
+                const diferencia = fechaEntrega - ahora;
+
+                if (diferencia > 0) {
+                    const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+                    const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+
+                    // Actualizar visualmente si hay elementos con la clase time-counter
+                    const timeElements = document.querySelectorAll('.time-counter');
+                    timeElements.forEach(el => {
+                        if (dias > 0) {
+                            el.innerHTML = `<i class="fas fa-calendar-day me-1"></i> ${dias} día${dias !== 1 ? 's' : ''}, ${horas} hora${horas !== 1 ? 's' : ''}`;
+                        } else {
+                            el.innerHTML = `<i class="fas fa-hourglass-half me-1"></i> ${horas} hora${horas !== 1 ? 's' : ''}, ${minutos} minuto${minutos !== 1 ? 's' : ''}`;
+                        }
+                    });
+                }
+            }
+
+            // Actualizar cada minuto
+            updateTimeCounter();
+            setInterval(updateTimeCounter, 60000);
+
+            // Confirmación de eliminación con validación
+            const confirmDeleteBtn = document.getElementById('confirmDelete');
+            if (confirmDeleteBtn) {
+                confirmDeleteBtn.addEventListener('click', function(e) {
+                    const form = this.closest('form');
+                    if (form) {
+                        // Agregar animación de carga
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Eliminando...';
+                        this.disabled = true;
+
+                        // Agregar validación adicional
+                        setTimeout(() => {
+                            form.submit();
+                        }, 500);
+                    }
+                });
+            }
+
+            // Agregar clase según el estado de la fecha
+            const fechaEntrega = new Date('@fechaEntrega.ToString("yyyy-MM-ddTHH:mm:ss")');
+            const ahora = new Date();
+
+            const dateCard = document.querySelector('.date-card');
+            if (fechaEntrega < ahora) {
+                dateCard.classList.add('expired');
+            } else {
+                dateCard.classList.add('active-time');
+            }
+
+            // Efecto hover para badges
+            const badges = document.querySelectorAll('.badge');
+            badges.forEach(badge => {
+                badge.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                });
+
+                badge.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+    </script>
 }
