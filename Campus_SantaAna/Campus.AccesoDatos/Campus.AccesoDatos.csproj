@@ -66,6 +66,8 @@
     <Compile Include="Cursos\ModificarEstadoCursoAD\ModificarEstadoCursoAD.cs" />
     <Compile Include="Cursos\ListarCursosAD\ListarCursosAD.cs" />
     <Compile Include="Documentos\AgregarDocumentosAD.cs" />
+    <Compile Include="Documentos\BorrarDocumentoAD.cs" />
+    <Compile Include="Documentos\EditarDocumentoAD.cs" />
     <Compile Include="Documentos\ListarDocumentosAD.cs" />
     <Compile Include="entregas\agregarEntregaAD\agregarEntregaAD.cs" />
     <Compile Include="entregas\editarEntregaAD\editarEntregaAD.cs" />

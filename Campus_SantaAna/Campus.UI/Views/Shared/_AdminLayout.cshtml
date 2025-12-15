@@ -246,6 +246,12 @@
             @RenderSection("Styles", required: false)
         </main>
     </div>
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <script>
+        window.location.href = '@Url.Action("Login","Account")';
+        </script>
+    }
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
@@ -255,6 +261,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script>
+    document.getElementById("logoutForm").addEventListener("submit", function () {
+        setTimeout(() => {
+            window.location.href = '@Url.Action("Login","Account")';
+        }, 100);
+    });
+    </script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

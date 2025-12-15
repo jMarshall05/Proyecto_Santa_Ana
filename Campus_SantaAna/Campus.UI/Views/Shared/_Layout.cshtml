@@ -74,17 +74,17 @@
 
 
 
-            @if (User.IsInRole("Profesores"))
-            {
-                <li class="nav-item">@Html.ActionLink("Asignar Tarea", "ListarTareas", "Tareas", null, new { @class = "nav-link", style = "color: white;" })</li>
-                <li class="nav-item">@Html.ActionLink("Tareas recibidas", "Index", "Entregas", null, new { @class = "nav-link", style = "color: white;" })</li>
-            }
+                            @if (User.IsInRole("Profesores"))
+                            {
+                                <li class="nav-item">@Html.ActionLink("Asignar Tarea", "ListarTareas", "Tareas", null, new { @class = "nav-link", style = "color: white;" })</li>
+                                <li class="nav-item">@Html.ActionLink("Tareas recibidas", "Index", "Entregas", null, new { @class = "nav-link", style = "color: white;" })</li>
+                            }
 
-            @if (User.IsInRole("Estudiantes"))
-            {
-                <li class="nav-item">@Html.ActionLink("Mis Tareas", "MisTareas", "Tareas", null, new { @class = "nav-link", style = "color: white;" })</li>
-            }
-        </ul>*@
+                            @if (User.IsInRole("Estudiantes"))
+                            {
+                                <li class="nav-item">@Html.ActionLink("Mis Tareas", "MisTareas", "Tareas", null, new { @class = "nav-link", style = "color: white;" })</li>
+                            }
+                        </ul>*@
 
                     <div class="d-flex align-items-center ms-auto">
                         @Html.Partial("_LoginPartial")
@@ -119,6 +119,12 @@
         <a href="@Url.Action("About", "Home")">Calendario</a>
         <a href="https://santaana.ed.cr/quiensomos.html" target="_blank">Sobre Nosotros</a>
     </div>
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <script>
+        window.location.href = '@Url.Action("Login","Account")';
+        </script>
+    }
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
@@ -135,6 +141,11 @@
             var sidebar = document.getElementById("mySidebar");
             sidebar.style.width = sidebar.style.width === "250px" ? "0" : "250px";
         }
+           document.getElementById("logoutForm").addEventListener("submit", function () {
+        setTimeout(() => {
+            window.location.href = '@Url.Action("Login","Account")';
+        }, 100);
+    });
     </script>
 
     @RenderSection("scripts", required: false)

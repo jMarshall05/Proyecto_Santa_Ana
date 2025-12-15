@@ -72,7 +72,7 @@
                                 Consulta las reglas y lineamientos internos del centro educativo.
                                 Este documento contiene todas las normativas vigentes para el correcto funcionamiento institucional.
                             </p>
-                          
+
                         </div>
                         <div class="document-footer">
                             <div class="qr-container">
@@ -87,7 +87,7 @@
                                     <i class="fas fa-external-link-alt"></i>
                                     Ver Documento
                                 </a>
-                                <button class="btn-document btn-secondary" onclick="compartirDocumento('Normativa Interna', 'https://santaana.ed.cr/normativa/')"> 
+                                <button class="btn-document btn-secondary" onclick="compartirDocumento('Normativa Interna', 'https://santaana.ed.cr/normativa/')">
                                     <i class="fas fa-share-alt"></i>
                                 </button>
                             </div>
@@ -119,7 +119,7 @@
                                 Revisa los criterios y procesos de evaluación vigentes.
                                 Incluye lineamientos sobre calificaciones, exámenes y evaluación continua del desempeño estudiantil.
                             </p>
-                         
+
                         </div>
                         <div class="document-footer">
                             <div class="qr-container">
@@ -186,7 +186,7 @@
                                                 <a href="#" onclick="editarDocumento(@doc.Id)">
                                                     <i class="fas fa-edit"></i> Editar
                                                 </a>
-                                                <a href="#" onclick="eliminarDocumento(@doc.Id)">
+                                                <a href="@Url.Action("BorrarDocumento","Home", new { idDocumento = doc.Id })">
                                                     <i class="fas fa-trash"></i> Eliminar
                                                 </a>
                                             </div>
@@ -310,6 +310,91 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="editarDocumentoModal" tabindex="-1" aria-labelledby="editarDocumentoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarDocumentoLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    Editar Documento
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formEditarDocumento" method="post" action="@Url.Action("EditarDocumento", "Home")" enctype="multipart/form-data">
+                <input type="hidden" id="editIdDocumento" name="idDocumento">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editTituloDocumento" class="form-label">
+                            <i class="fas fa-heading"></i> Título del Documento
+                        </label>
+                        <input type="text" class="form-control" id="editTituloDocumento" name="Titulo" required
+                               placeholder="Ej: Manual de Convivencia">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDescripcionDocumento" class="form-label">
+                            <i class="fas fa-align-left"></i> Descripción
+                        </label>
+                        <textarea class="form-control" id="editDescripcionDocumento" name="Descripcion" rows="3" required
+                                  placeholder="Describe brevemente el contenido del documento"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editArchivoDocumento" class="form-label">
+                            <i class="fas fa-file-upload"></i> Archivo del Documento
+                        </label>
+                        <input type="file" class="form-control" id="editArchivoDocumento" name="Archivo"
+                               accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+                        <div class="form-text">
+                            <i class="fas fa-info-circle"></i> Deja vacío si no deseas cambiar el archivo actual. Formatos permitidos: PDF, Word, Excel, PowerPoint (Máx. 10MB)
+                        </div>
+                        <div id="editArchivoActual" class="file-current mt-2" style="display: none;">
+                            <div class="alert alert-info d-flex align-items-center gap-2 mb-0">
+                                <i class="fas fa-file-alt"></i>
+                                <div class="flex-grow-1">
+                                    <strong>Archivo actual:</strong>
+                                    <span id="editArchivoActualNombre"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="editArchivoPreview" class="file-preview mt-2" style="display: none;">
+                            <div class="file-preview-item">
+                                <i class="fas fa-file-pdf file-preview-icon"></i>
+                                <div class="file-preview-info">
+                                    <span class="file-preview-name"></span>
+                                    <span class="file-preview-size"></span>
+                                </div>
+                                <button type="button" class="btn-remove-file" onclick="removerArchivoEditar()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editCategoriaDocumento" class="form-label">
+                            <i class="fas fa-tag"></i> Categoría
+                        </label>
+                        <select class="form-select" id="editCategoriaDocumento" name="Categoria">
+                            <option value="Normativa">Normativa</option>
+                            <option value="Reglamento">Reglamento</option>
+                            <option value="Manual">Manual</option>
+                            <option value="Guía">Guía</option>
+                            <option value="Circular">Circular</option>
+                            <option value="Formato">Formato</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @section scripts{
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -407,9 +492,136 @@
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
         }
+        // Función para cargar datos del documento en el modal de edición
+        function editarDocumento(id) {
+            // Buscar el documento en el DOM para obtener sus datos
+            const documentCard = event.target.closest('.document-card');
+            if (!documentCard) return;
+
+            const titulo = documentCard.querySelector('.document-title').textContent;
+            const descripcion = documentCard.querySelector('.document-description').textContent;
+            const rutaArchivo = documentCard.querySelector('.btn-document.btn-primary').getAttribute('href');
+
+            // Cargar los datos en el formulario
+            document.getElementById('editIdDocumento').value = id;
+            document.getElementById('editTituloDocumento').value = titulo;
+            document.getElementById('editDescripcionDocumento').value = descripcion;
+
+            // Intentar obtener la categoría (si está disponible en el DOM)
+            // Por defecto, establecer en "Otro"
+            document.getElementById('editCategoriaDocumento').value = 'Otro';
+
+            // Mostrar archivo actual
+            if (rutaArchivo) {
+                const archivoActual = document.getElementById('editArchivoActual');
+                const archivoActualNombre = document.getElementById('editArchivoActualNombre');
+                const nombreArchivo = rutaArchivo.split('/').pop();
+                archivoActualNombre.textContent = nombreArchivo || 'documento_actual';
+                archivoActual.style.display = 'block';
+            }
+
+            // Limpiar preview de nuevo archivo
+            document.getElementById('editArchivoPreview').style.display = 'none';
+            document.getElementById('editArchivoDocumento').value = '';
+
+            // Abrir el modal
+            const modal = new bootstrap.Modal(document.getElementById('editarDocumentoModal'));
+            modal.show();
+        }
+
+        // Preview de archivo seleccionado en el modal de edición
+        document.getElementById('editArchivoDocumento')?.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validar tamaño (10MB máximo)
+                if (file.size > 10485760) {
+                    alert('El archivo es demasiado pesado. Máximo 10MB permitido.');
+                    this.value = '';
+                    return;
+                }
+
+                const preview = document.getElementById('editArchivoPreview');
+                const fileName = preview.querySelector('.file-preview-name');
+                const fileSize = preview.querySelector('.file-preview-size');
+                const icon = preview.querySelector('.file-preview-icon');
+
+                // Validar extensión
+                const ext = file.name.split('.').pop().toLowerCase();
+                const extensionesPermitidas = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+
+                if (!extensionesPermitidas.includes(ext)) {
+                    alert('Tipo de archivo no permitido. Solo se aceptan: PDF, Word, Excel, PowerPoint');
+                    this.value = '';
+                    return;
+                }
+
+                // Cambiar icono según el tipo de archivo
+                const iconMap = {
+                    'pdf': 'fa-file-pdf',
+                    'doc': 'fa-file-word',
+                    'docx': 'fa-file-word',
+                    'xls': 'fa-file-excel',
+                    'xlsx': 'fa-file-excel',
+                    'ppt': 'fa-file-powerpoint',
+                    'pptx': 'fa-file-powerpoint'
+                };
+
+                icon.className = 'fas ' + (iconMap[ext] || 'fa-file') + ' file-preview-icon';
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                preview.style.display = 'block';
+
+                // Ocultar el archivo actual
+                document.getElementById('editArchivoActual').style.display = 'none';
+            }
+        });
+
+        function removerArchivoEditar() {
+            document.getElementById('editArchivoDocumento').value = '';
+            document.getElementById('editArchivoPreview').style.display = 'none';
+            document.getElementById('editArchivoActual').style.display = 'block';
+        }
+
+        // Limpiar el formulario al cerrar el modal
+        document.getElementById('editarDocumentoModal')?.addEventListener('hidden.bs.modal', function () {
+            document.getElementById('formEditarDocumento').reset();
+            document.getElementById('editArchivoPreview').style.display = 'none';
+            document.getElementById('editArchivoActual').style.display = 'none';
+        });
+
+        // Validación del formulario antes de enviar
+        document.getElementById('formEditarDocumento')?.addEventListener('submit', function (e) {
+            const titulo = document.getElementById('editTituloDocumento').value.trim();
+            const descripcion = document.getElementById('editDescripcionDocumento').value.trim();
+
+            if (!titulo || !descripcion) {
+                e.preventDefault();
+                alert('Por favor, completa todos los campos requeridos.');
+                return false;
+            }
+
+            // Mostrar indicador de carga
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+        });
     </script>
 
     <style>
+
+        .file-current .alert {
+            font-size: 0.9rem;
+        }
+
+            .file-current .alert i {
+                font-size: 1.2rem;
+                color: #0dcaf0;
+            }
+
+            .file-current .alert strong {
+                color: #055160;
+            }
+
         :root {
             --primary: #0D126E;
             --primary-light: #1a237e;
