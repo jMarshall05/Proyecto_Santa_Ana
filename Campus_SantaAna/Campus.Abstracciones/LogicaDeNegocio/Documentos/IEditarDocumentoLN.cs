@@ -9,6 +9,6 @@ namespace Campus.Abstracciones.LogicaDeNegocio.Documentos
 {
     public interface IEditarDocumentoLN
     {
-        bool EditarDocumento(int idDocumento, DocumentosDto documento);
+        Task<bool> EditarDocumento(int idDocumento, DocumentosDto documento);
     }
 }

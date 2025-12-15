@@ -16,7 +16,7 @@ namespace Campus.AccesoDatos.Documentos
             _ElContexto = new Contexto();
         }
 
-        public async Task<bool> EditarDocumentoAsync(int idDocumento, DocumentosDto documento)
+        public async Task<bool> EditarDocumento(int idDocumento, DocumentosDto documento)
         {
             var documentoExistente = await _ElContexto.Documentos.FindAsync(idDocumento);
             if (documentoExistente != null)
